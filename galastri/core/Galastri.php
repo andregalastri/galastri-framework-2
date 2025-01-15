@@ -18,6 +18,7 @@ use galastri\extensions\Exception;
 // use galastri\extensions\output\File;
 // use galastri\language\Message;
 use galastri\modules\Tools;
+use galastri\modules\VarDump;
 // use galastri\modules\Redirect;
 // use galastri\modules\Authentication;
 // use galastri\modules\PerformanceAnalysis;
@@ -132,71 +133,6 @@ final class Galastri
     public static function run(): void
     {
         Config::run();
-
-        vardump(Config::get('displayErrors'));
-        // $myString = "<h1>This is my string";
-        // $myInteger = 123;
-        // $myFloat = 1.23;
-        // $myFalse = false;
-        // $myTrue = true;
-        // $myNull = null;
-        // $myArray = [
-        //     'My string inside array',
-        //     'myAssociativeKey' => 123,
-        // ];
-
-        // vardump($myString, $myArray);
-
-        // var_dump(
-        //     'This is my string',
-        //     123,
-        //     1.23,
-        //     true,
-        //     false,
-        //     null,
-        //     [
-        //         'String inside array',
-        //         456,
-        //         4.56,
-        //         true,
-        //         false,
-        //         null,
-        //         [
-        //             'Array inside array'
-        //         ],
-        //     ],
-        //     new MyClass()
-        // );
-        // \Dump::raw(
-            // 'This is my string',
-            // 123,
-            // 1.23,
-            // true,
-            // false,
-            // null,
-            // [
-            //     'String inside array',
-            //     456,
-            //     4.56,
-            //     true,
-            //     false,
-            //     null,
-            //     [
-            //         'Array inside array'
-            //     ],
-            // ],
-            // $t
-        // );
-
-        // throw new Exception("Error Processing %s %s", ['REQUEST', 'scd']);
-    
-
-        // Config::set('displayErrors', $config['displayErrors'] ?? null);
-        // Config::set('stopOnWarnings', $config['stopOnWarnings'] ?? null);
-        // Config::set('showTrace', $config['showTrace'] ?? null);
-        // Config::set('performanceAnalysis', $config['performanceAnalysis'] ?? null);
-
-        // unset($config);
         
         // try {
             /**

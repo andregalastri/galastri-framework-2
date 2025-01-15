@@ -38,12 +38,13 @@ final class VarDump
 
     const STYLESHEET_FILE = PROJECT_DIR.'/galastri/misc/dump.css';
 
+    private static int $backTraceLevel = 0;
 
     private function __construct() {}
 
     public static function print(mixed ...$values): void
     {
-        $debug = debug_backtrace()[0];
+        $debug = debug_backtrace()[self::getBacktraceLevel(RESET_BACKTRACE_LEVEL)];
 
         foreach (self::getValues(...$values) as $varDumpValue) {
             $varDumpValue = preg_replace(self::OBJECT_REGEX, self::OBJECT_HTML, $varDumpValue);
@@ -94,5 +95,21 @@ final class VarDump
         };
 
         return $contents;
+    }
+    
+    public static function addBacktraceLevel(): void
+    {
+        self::$backTraceLevel++;
+    }
+    
+    public static function getBacktraceLevel(bool $reset = KEEP_BACKTRACE_LEVEL): int
+    {
+        $level = self::$backTraceLevel;
+
+        if ($reset) {
+            self::$backTraceLevel = 0;
+        }
+
+        return $level;
     }
 }

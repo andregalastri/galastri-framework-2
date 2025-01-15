@@ -1,7 +1,7 @@
 <?php
 /**
  * Documentação da classe:
- * https://github.com/andregalastri/galastri-framework-2/wiki/ErrorHandler
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-ErrorHandler
  */
 
 namespace galastri\core;

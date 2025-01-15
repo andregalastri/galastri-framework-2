@@ -1,7 +1,7 @@
 <?php
 /**
  * Documentação da classe:
- * https://github.com/andregalastri/galastri-framework-2/wiki/VarDump
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-VarDump
  */
 
 namespace galastri\modules;

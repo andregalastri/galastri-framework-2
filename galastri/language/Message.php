@@ -79,13 +79,13 @@ final class Message
         'EXCEPTION_PARAMETER_ARRAY_1_NEEDS_2_VALUES',
     ];
 
-    public const TOO_FEW_ARGUMENTS_EXCEPTION_PRINTF = [
+    public const UNMATCHED_ARGUMENT_COUNT = [
         'O parâmetro #2 do método Tools::flagReplacer() espera %s argumento(s). %s fornecido(s).',
-        'TOO_FEW_ARGUMENTS_EXCEPTION_PRINTF',
+        'UNMATCHED_ARGUMENT_COUNT',
     ];
 
     public const WRONG_TYPE_EXCEPTION_CODE = [
-        'Tipo de parâmetro incorreto: galastri\extension\Exception [$code] espera ser [inteiro|string]. [%s] dado.',
+        'Tipo de parâmetro incorreto: galastri\extension\Exception [$code] espera ser [int|string]. [%s] dado.',
         'WRONG_TYPE_EXCEPTION_CODE',
     ];
 

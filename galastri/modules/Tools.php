@@ -1,4 +1,8 @@
 <?php
+/**
+ * Documentação da classe:
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-Tools
+ */
 
 namespace galastri\modules;
 
@@ -7,6 +11,10 @@ use galastri\language\Message;
 
 final class Tools
 {
+    const FLAG_REPLACER_REGEX = '/(?<!%)%s/m';
+    const FLAG_REPLACER_ESCAPE = '%%s';
+    const FLAG_REPLACER_REPLACE_TAG = '%s';
+
     private function __construct() {}
 
     public static function createDir(string $path, int $chmod = 0777): string
@@ -50,7 +58,7 @@ final class Tools
         return $types[$type];
     }
 
-    public static function arrayToString(string $separator, string $lastSeparator, array $array): string
+    public static function readableImplode(string $separator, string $lastSeparator, array $array): string
     {
         $array = array_map(function($value) {
             if (in_array(self::typeOf($value), ['null', 'bool'])) {
@@ -68,21 +76,45 @@ final class Tools
         return implode($separator, $array).$lastSeparator.$lastKey;
     }
 
-    public static function arrayMapRecursive(Closure $callback, array $array)
+    /**
+     * Source: https://stackoverflow.com/a/23528413
+     */
+    public static function flagReplace(string $message, array $args): string
     {
-        $recursive = function ($callback, $array, $recursive)
-        {
-            foreach ($array as $key => $value) {
-                if (self::typeOf($value) === 'array') {
-                    $result[$key] = $recursive($callback, $value, $array[$key], $recursive);
-                } else {
-                    $result[$key] = $callback($value);
-                }
-            }
+        preg_match_all(self::FLAG_REPLACER_REGEX, $message, $match);
     
-            return $result;
-        };
+        if (count($match[0]) > count($args)) {
+            throw new Exception(
+                Message::UNMATCHED_ARGUMENT_COUNT,
+                [
+                    (string)substr_count($message, self::FLAG_REPLACER_REPLACE_TAG),
+                    (string)count($args),
+                ],
+            );
+        }
     
-        return $recursive($callback, $array, $recursive);
+        foreach( $args as $arg ) {
+            $message = preg_replace(self::FLAG_REPLACER_REGEX, $arg, $message, 1);
+        }
+    
+        return str_replace(self::FLAG_REPLACER_ESCAPE, self::FLAG_REPLACER_REPLACE_TAG, $message);
     }
+
+    // public static function arrayMapRecursive(Closure $callback, array $array)
+    // {
+    //     $recursive = function ($callback, $array, $recursive)
+    //     {
+    //         foreach ($array as $key => $value) {
+    //             if (self::typeOf($value) === 'array') {
+    //                 $result[$key] = $recursive($callback, $value, $array[$key], $recursive);
+    //             } else {
+    //                 $result[$key] = $callback($value);
+    //             }
+    //         }
+    
+    //         return $result;
+    //     };
+    
+    //     return $recursive($callback, $array, $recursive);
+    // }
 }

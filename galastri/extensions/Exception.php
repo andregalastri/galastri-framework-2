@@ -5,7 +5,6 @@
  */
 namespace galastri\extensions;
 
-use galastri\core\CoreTools;
 use galastri\language\Message;
 use galastri\modules\Tools;
 
@@ -27,13 +26,13 @@ class Exception extends \Exception
                     throw new Exception(Message::EXCEPTION_PARAMETER_ARRAY_1_NEEDS_2_VALUES);
                 }
 
-                if (preg_match(CoreTools::FLAG_REPLACER_REGEX, $parameters[0][0])) {
+                if (preg_match(Tools::FLAG_REPLACER_REGEX, $parameters[0][0])) {
                     $this->processArrayWithFlags($parameters[0], $parameters[1] ?? [], $parameters[2] ?? null);
                 } else {
                     $this->processSimpleArray($parameters[0], $parameters[1] ?? null);
                 }
             } else {
-                if (preg_match(CoreTools::FLAG_REPLACER_REGEX, $parameters[0])) {
+                if (preg_match(Tools::FLAG_REPLACER_REGEX, $parameters[0])) {
                     $this->processStringWithFlags($parameters[0], $parameters[1] ?? [], $parameters[2] ?? null, $parameters[3] ?? null);
                 } else {
                     $this->processSimpleString($parameters[0], $parameters[1] ?? null, $parameters[2] ?? null);
@@ -44,7 +43,7 @@ class Exception extends \Exception
 
     private function processArrayWithFlags(array $data, array $printFArgs, ?array $additionalData): void
     {
-        $this->setMessage(CoreTools::flagReplace($data[0], $printFArgs));
+        $this->setMessage(Tools::flagReplace($data[0], $printFArgs));
         $this->setCode($data[1]);
         $this->setAdditionalData($additionalData);
     }
@@ -58,7 +57,7 @@ class Exception extends \Exception
     
     private function processStringWithFlags(string $message, array $printFArgs, array|int|null|string $code, ?array $additionalData): void
     {
-        $this->setMessage(CoreTools::flagReplace($message, $printFArgs));
+        $this->setMessage(Tools::flagReplace($message, $printFArgs));
         
         if ($code !== null && Tools::typeOf($code) !== 'array') {
             $this->setCode($code);

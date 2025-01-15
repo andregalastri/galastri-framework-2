@@ -1,4 +1,8 @@
 <?php
+/**
+ * Documentação da classe:
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-Galastri
+ */
 
 namespace galastri\core;
 
@@ -7,13 +11,13 @@ namespace galastri\core;
 // use galastri\core\Parameters;
 // use galastri\core\Router;
 use galastri\core\config\Config;
-use galastri\core\CoreTools;
 use galastri\extensions\Exception;
 // use galastri\extensions\output\View;
 // use galastri\extensions\output\Json;
 // use galastri\extensions\output\Text;
 // use galastri\extensions\output\File;
 // use galastri\language\Message;
+use galastri\modules\Tools;
 // use galastri\modules\Redirect;
 // use galastri\modules\Authentication;
 // use galastri\modules\PerformanceAnalysis;
@@ -186,7 +190,6 @@ final class Galastri
 
         // throw new Exception("Error Processing %s %s", ['REQUEST', 'scd']);
     
-        // $config = CoreTools::importConfig(PROJECT_DIR.'/app/config/debug.php');
 
         // Config::set('displayErrors', $config['displayErrors'] ?? null);
         // Config::set('stopOnWarnings', $config['stopOnWarnings'] ?? null);

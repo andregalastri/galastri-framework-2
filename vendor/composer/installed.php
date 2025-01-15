@@ -3,7 +3,7 @@
         'name' => 'andregalastri/galastri-framework',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '85ab4637e02d1e867493de1344bf2ee81533c247',
+        'reference' => '44a3a4c2fd4c2aa610b560393feff4f011817637',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'andregalastri/galastri-framework' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '85ab4637e02d1e867493de1344bf2ee81533c247',
+            'reference' => '44a3a4c2fd4c2aa610b560393feff4f011817637',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

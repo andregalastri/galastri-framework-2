@@ -1,0 +1,117 @@
+div.dump {
+    color: #333;
+    padding-left: 12px;
+    border-left: 4px solid #ddd;
+    font-family: monospace;
+}
+
+div.dump pre {
+    color: #999;
+}
+
+div.dump pre span.object-header {
+    display: inline-flex;
+    font-weight: bold;
+    background: #88cc7a;
+    color: #fff;
+    margin: 0 2px 0 1px;
+    padding: 1px 5px;
+}
+
+div.dump pre span.object-key {
+    display: inline-flex;
+    border: 2px solid #ffe000;
+    display: inline-flex;
+    color: #9c5300;
+    margin: 1px 0;
+    border-radius: 4px;
+}
+
+div.dump pre span.array-type {
+    display: inline-flex;
+    font-weight: bold;
+    background: #a684f7;
+    color: #fff;
+    margin: 0 2px 0 1px;
+    padding: 1px 5px;
+}
+
+div.dump pre span.array-key {
+    display: inline-flex;
+    border: 2px solid #ffe000;
+    color: #4f05ff;
+    margin: 1px 0;
+    border-radius: 4px;
+}
+
+div.dump pre span.string-type {
+    display: inline-flex;
+    font-weight: bold;
+    background: #66baff;
+    color: #fff;
+    margin: 1.5px;
+    padding: 0 3px;
+}
+
+div.dump pre span.string-value {
+    font-weight: bold;
+    color: #1298e8;
+}
+
+div.dump pre span.numeric-type {
+    display: inline-flex;
+    font-weight: bold;
+    background: #ff756e;
+    color: #fff;
+    margin: 2px;
+    padding: 0 3px;
+}
+
+div.dump pre span.numeric-value {
+    font-weight: bold;
+    color: #f14c45;
+}
+
+div.dump pre span.true-type {
+    display: inline-flex;
+    font-weight: bold;
+    background: #00ad74;
+    color: #fff;
+    margin: 2px;
+    padding: 0 3px;
+}
+
+div.dump pre span.true-value {
+    font-weight: bold;
+    color: #00ad74;
+}
+
+div.dump pre span.false-type {
+    display: inline-flex;
+    font-weight: bold;
+    background: #ff3287;
+    color: #fff;
+    margin: 2px;
+    padding: 0 3px;
+}
+
+div.dump pre span.false-value {
+    font-weight: bold;
+    color: #ff3287;
+}
+
+div.dump pre span.null {
+    font-style: oblique;
+    color: #a75de4;
+    text-transform: lowercase;
+}
+
+div.dump .division {
+    font-weight: bold;
+    color: #ff2bbd;
+    border-bottom: 1px solid #ccc;
+    display:block;
+    padding: 3px 0;
+    margin: 15px 0;
+    font-size:10px;
+}

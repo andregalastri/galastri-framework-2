@@ -7,7 +7,9 @@
 ## Sobre
 Este é um simple microframework PHP 8 criado como um estudo de caso para desenvolver webapps e websites.
 
-É um microframework que comecei a desenvolver estudando mais profundamente como o PHP funciona e como aplicar padrões de design com ele. Minha ideia é criar um framework simples, mais orientado para pessoas que estão começando com frameworks em geral, mas poderoso o suficiente para ser usado em projetos reais.
+O framework inicialmente era uma forma de estudar a linguagem PHP. Ao longo do desenvolvimento, o framework foi se mostrando viável para o desenvolvimento de sistemas web, APIs e sites em geral.
+
+Atualmente o framework visa ser uma maneira mais simples de se iniciar em programação PHP ao mesmo tempo que se mostra uma boa alternativa para projetos reais.
 
 **Aviso**<br>
 Este é um projeto em desenvolvimento inicial. Isso significa que posso mudar drasticamente a forma como o framework funciona entre cada commit e sem qualquer aviso. Se você usar o framework em projetos reais, é uma boa ideia mantê-lo na versão que você está usando, sem atualizá-lo. Se você quiser atualizar para versões mais recentes, faça um backup antes e esteja ciente das mudanças feitas.
@@ -22,4 +24,3 @@ Este é um projeto em desenvolvimento inicial. Isso significa que posso mudar dr
 - Classe **`Authentication`** para proteção de rotas;
 - Classe **`Permission`** para controle de permissões;
 - Poderosas classes de **tipo**, com múltiplos métodos para formatar, validar e armazenar dados;
-

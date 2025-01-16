@@ -20,7 +20,7 @@ final class Tools
     public static function createDir(string $path, int $chmod = 0777): string
     {
         if (!is_dir($path)){
-            mkdir($path, $chmod, true);
+            mkdir($path, self::normalizeChmodCode($chmod), true);
         }
     
         return $path;
@@ -32,7 +32,7 @@ final class Tools
             self::createDir(pathinfo($path)['dirname'], $chmod);
 
             file_put_contents($path, '');
-            chmod($path, $chmod);
+            self::chmod($path, $chmod);
         }
 
         switch ($mode) {
@@ -114,6 +114,20 @@ final class Tools
         }
     
         return str_replace(self::FLAG_REPLACER_ESCAPE, self::FLAG_REPLACER_REPLACE_TAG, $message);
+    }
+    
+    public static function chmod(?string $path, int|string $permission): void
+    {
+        chmod($path, self::nomalizeChmodCode($permission));
+    }
+    
+    private static function nomalizeChmodCode(?string $path, int|string $permission): int
+    {
+        if (preg_match('/^[0-7]{3}$/', (string)$permission)) {
+            $permission = octdec($permission);
+        }
+
+        return $permission;
     }
 
     // public static function arrayMapRecursive(Closure $callback, array $array)

@@ -1,19 +1,25 @@
-# Enabling rewrite
-	RewriteEngine On
+# Ativa o mecanismo de reescrita
+RewriteEngine On
 
-# Deny folder indexing
-	Options -Indexes
+# Retorna 404 para favicon.ico se ele não existir. Visa evitar chamadas duplas
+# ao framework, principalmente durante o desenvolvimento em que não há um
+# favicondefinido.
+RewriteCond %{REQUEST_URI} ^/favicon\.ico$
+RewriteCond %{DOCUMENT_ROOT}/favicon.ico !-f
+RewriteRule ^.*$ - [R=404,L]
 
-# Remove slash bar at the end of the URL
-	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^(.*)/$ /$1 [L,R]
+# Desativa a indexação de diretórios
+Options -Indexes
 
-# Remove the www from URL
-	RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
-	RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+# Remove a barra no final da URL, exceto para diretórios
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ /$1 [R=301,L]
 
-# Redirect all requests to index.php
-	RewriteCond %{HTTP_HOST} ^\. [NC]
-	RewriteRule ^(.*)/$ $1 [R=301,L]
-	RewriteRule ^(.+?)/$ / [R=404,L]
-	RewriteRule ^(.*)$ index.php [NC,QSA,L]
+# Remove o www da URL
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+
+# Redireciona todas as requisições para index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]

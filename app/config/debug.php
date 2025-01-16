@@ -45,4 +45,5 @@ return [
      * bool
      */
     'performanceAnalysis' => false,
+    'createLogsOnError' => true,
 ];

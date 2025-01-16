@@ -45,4 +45,13 @@ return [
         'configType' => 'debug',
         'execute' => null
     ],
+
+    'createLogsOnError' => [
+        'defaultValue' => true,
+        'allowedTypes' => ['bool'],
+        'allowedValues' => [],
+        'configFile' => '/app/config/debug.php',
+        'configType' => 'debug',
+        'execute' => null
+    ],
 ];

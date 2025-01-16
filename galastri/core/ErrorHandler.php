@@ -13,7 +13,7 @@ use galastri\modules\Tools;
 final class ErrorHandler
 {
 
-    const PATH_LOG = PROJECT_DIR.'/logs/ErrorHandler.log';
+    const PATH_LOG = PROJECT_DIR.'/logs/ErrorHandler-%s.log';
 
     private static string $displayErrorsType = 'view';
 
@@ -141,11 +141,12 @@ final class ErrorHandler
 
     private static function printError(int|string $code, string $message, string $file, int $line, array $trace): void
     {
-        // ob_start();
-        // ob_clean();
-        // ob_end_clean();
+        $currentDate = date('Y-m-d');
+        $currentTime = date('H:i:s');
 
         $data = [
+            'date' => $currentDate,
+            'time' => $currentTime,
             'code' => $code,
             'origin' => self::getFile($file),
             'line' => self::getLine($line),
@@ -168,8 +169,8 @@ final class ErrorHandler
                 self::printErrorView($data);
         }
 
-        if (Config::get('displayErrors', true)) {
-            self::createLogFile($code, $message, $file, $line, $trace);
+        if (Config::get('createLogsOnError', false)) {
+            self::createLogFile($code, $message, $file, $line, $trace, $currentDate, $currentTime);
         }
 
         if (Config::get('stopOnWarnings', true) or (Config::get('stopOnWarnings', true) and !in_array($code, ['E_WARNING', 'E_CORE_WARNING', 'E_COMPILE_WARNING', 'E_USER_WARNING']))) {
@@ -215,18 +216,22 @@ final class ErrorHandler
         imagepng($canvas);
     }
 
-    private static function createLogFile(int|string $code, string $message, string $file, int $line, array $trace): void
+    private static function createLogFile(int|string $code, string $message, string $file, int $line, array $trace, string $currentDate, string $currentTime): void
     {
         Tools::writeFile(
-            self::PATH_LOG,
+            Tools::flagReplace(self::PATH_LOG, [$currentDate]),
             implode("\n", [
+                'date     : '.$currentDate,
+                'time     : '.$currentTime,
                 'code     : '.var_export($code, true),
                 'origin   : '.var_export($file, true),
                 'line     : '.var_export($line, true),
                 'message  : '.var_export($message, true),
                 '',
                 'trace    : '.var_export($trace, true),
-            ])
+                "\n\n----------------------------------------\n\n\n",
+            ]),
+            INSERT_CONTENT_AT_START
         );
     }
 }

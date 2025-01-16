@@ -26,13 +26,29 @@ final class Tools
         return $path;
     }
 
-    public static function writeFile(string $path, string $content, string $mode = 'w+', int $chmod = 0777): void
+    public static function writeFile(string $path, string $content, int $mode = INSERT_CONTENT_AT_END, int $chmod = 0777): void
     {
-        self::createDir(pathinfo($path)['dirname'], $chmod);
-    
-        $fopen = fopen($path, $mode);
-        fwrite($fopen,$content);
-        fclose($fopen);
+        if (!file_exists($path)) {
+            self::createDir(pathinfo($path)['dirname'], $chmod);
+
+            file_put_contents($path, '');
+            chmod($path, $chmod);
+        }
+
+        switch ($mode) {
+            case INSERT_CONTENT_AT_END:
+                $content = file_get_contents($path).$content;
+                break;
+                
+            case INSERT_CONTENT_AT_START:
+                $content = $content.file_get_contents($path);
+                break;
+
+            case OVERWRITE_CONTENT:
+                break;
+        }
+
+        file_put_contents($path, $content);
     }
 
     public static function typeOf(mixed $value): string

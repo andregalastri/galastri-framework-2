@@ -1,7 +1,7 @@
 ![Logo do Galastri Framework](https://user-images.githubusercontent.com/49572917/112453870-df5b8700-8d36-11eb-9c31-0c3a628e5178.png)
 
 # Galastri Framework
-[![Licença MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/andregalastri/galastri-framework/blob/master/galastri/LICENSE)
+[![Licença MIT](https://img.shields.io/badge/Licença-MIT-yellow.svg)](https://github.com/andregalastri/galastri-framework/blob/master/galastri/LICENSE) [![Static Badge](https://img.shields.io/badge/Documentação-Wiki-09f)](https://github.com/andregalastri/galastri-framework-2/wiki)
 
 
 ## Sobre
@@ -23,6 +23,3 @@ Este é um projeto em desenvolvimento inicial. Isso significa que posso mudar dr
 - Classe **`Permission`** para controle de permissões;
 - Poderosas classes de **tipo**, com múltiplos métodos para formatar, validar e armazenar dados;
 
-
-## Documentação
-[📚 Acesse a Wiki](https://github.com/andregalastri/galastri-framework-2/wiki)

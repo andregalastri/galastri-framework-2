@@ -1,32 +1,39 @@
 <?php
 
 return [
-    'timezone' => [
-        'defaultValue' => date_default_timezone_get(),
-        'allowedTypes' => ['string'],
-        'allowedValues' => [],
-        'configFile' => PROJECT_DIR.'/app/config/route.php',
-        'configType' => 'route',
-        'execute' => null
+    'urlRoot' => [
+        'defaultValue' => '/',
+        'validTypes' => ['string'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '/^\/(?:[\p{L}\p{N}_-]+\/?)*[\p{L}\p{N}_-]+$|^\/$/u',
+        'invalidRegex' => '',
+        'context' => 'route',
     ],
+    // 'timezone' => [
+    //     'defaultValue' => date_default_timezone_get(),
+    //     'allowedTypes' => ['string'],
+    //     'allowedValues' => [],
+    //     'configFile' => '/app/config/route.php',
+    //     'configContext' => 'route',
+    // ],
 
-    'offline' => [
-        'defaultValue' => false,
-        'allowedTypes' => ['bool'],
-        'allowedValues' => [],
-        'configFile' => PROJECT_DIR.'/app/config/route.php',
-        'configType' => 'route',
-        'execute' => null
-    ],
+    // 'offline' => [
+    //     'defaultValue' => false,
+    //     'allowedTypes' => ['bool'],
+    //     'allowedValues' => [],
+    //     'configFile' => '/app/config/route.php',
+    //     'configContext' => 'route',
+    // ],
 
-    'projectTitle' => [
-        'defaultValue' => null,
-        'allowedTypes' => ['string', 'null'],
-        'allowedValues' => [],
-        'configFile' => PROJECT_DIR.'/app/config/route.php',
-        'configType' => 'route',
-        'execute' => null
-    ],
+    // 'projectTitle' => [
+    //     'defaultValue' => null,
+    //     'allowedTypes' => ['string', 'null'],
+    //     'allowedValues' => [],
+    //     'configFile' => '/app/config/route.php',
+    //     'configContext' => 'route',
+    // ],
 ];
 
 // return [

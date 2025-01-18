@@ -23,7 +23,7 @@ class Exception extends \Exception
         if (!empty($parameters)) {
             if (Tools::typeOf($parameters[0]) === 'array') {
                 if (count($parameters[0]) < 2) {
-                    throw new Exception(Message::EXCEPTION_PARAMETER_ARRAY_1_NEEDS_2_VALUES);
+                    throw new Exception(Message::get("EXCEPTION_INVALID_ARRAY"));
                 }
 
                 if (preg_match(Tools::FLAG_REPLACER_REGEX, $parameters[0][0])) {
@@ -74,9 +74,6 @@ class Exception extends \Exception
         }
         $this->setAdditionalData(Tools::typeOf($code) === 'array' ? $code : $additionalData);
     }
-    
-
-    
 
     private function setMessage(string $message): void
     {
@@ -88,7 +85,7 @@ class Exception extends \Exception
         if (Tools::typeOf($code) === 'int' or Tools::typeOf($code) === 'string') {
             $this->code = $code;
         } else {
-            throw new Exception(Message::WRONG_TYPE_EXCEPTION_CODE, [Tools::typeOf($code)]);
+            throw new Exception(Message::get("EXCEPTION_INVALID_CODE"), [Tools::typeOf($code)]);
         }
     }
 

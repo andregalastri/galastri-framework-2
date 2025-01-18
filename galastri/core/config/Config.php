@@ -16,14 +16,13 @@ final class Config
     private const GALASTRI_DEFINITIONS = PROJECT_DIR.'/galastri/core/config/definitions/*.php';
     private const APP_DEFINITIONS = PROJECT_DIR.'/app/config/definitions/*.php';
     
-    private const REQUIRED_PROPERTIES = ['defaultValue', 'allowedTypes', 'allowedValues', 'configFile', 'configType', 'execute'];
+    private const REQUIRED_PROPERTIES = ['defaultValue', 'validTypes', 'invalidTypes', 'validValues', 'invalidValues', 'validRegex', 'invalidRegex', 'context'];
     
-    private const APP_CONFIG_FILES = [
-        PROJECT_DIR.'/app/config/debug.php',
-    ];
+    private const APP_CONFIG_FILE_DEBUG = PROJECT_DIR.'/app/config/debug.php';
     
 
     private static array $config = [];
+
 
     private function __construct() {}
 
@@ -34,18 +33,17 @@ final class Config
         
             if (Tools::typeOf($definitions) !== 'array') {
                 throw new Exception(
-                    Message::INVALID_CONFIG_FILE,
+                    Message::get("CONFIG_FILE_RETURNED_INVALID_DATA"),
                     [
                         PROJECT_DIR.'/'.$definitionFile,
-                        Tools::typeOf($definitions)
                     ]
                 );
             }
         
-            foreach ($definitions as $name => $config) {
-                if (Tools::typeOf($config) !== 'array') {
+            foreach ($definitions as $name => $definitions) {
+                if (Tools::typeOf($definitions) !== 'array') {
                     throw new Exception(
-                        Message::CONFIG_DEFINITION_NEEDS_TO_BE_ARRAY,
+                        Message::get("DEFINITION_INVALID_PROPERTY_VALUE"),
                         [
                             $name
                         ]
@@ -53,13 +51,12 @@ final class Config
                 }
 
                 foreach (self::REQUIRED_PROPERTIES as $requiredProperty) {
-                    if (!array_key_exists($requiredProperty, $config)) {
+                    if (!array_key_exists($requiredProperty, $definitions)) {
                         throw new Exception(
-                            Message::CONFIG_DEFINITION_MISSING_REQUIRED_PROPERTY,
+                            Message::get("DEFINITION_MISSING_REQUIRED_PROPERTY"),
                             [
-                                $requiredProperty,
                                 $name,
-                                PROJECT_DIR.'/'.$definitionFile
+                                $requiredProperty,
                             ]
                         );
                     }
@@ -67,34 +64,28 @@ final class Config
         
                 self::create(
                     $name,
-                    $config['defaultValue'],
-                    $config['allowedTypes'],
-                    $config['allowedValues'],
-                    $config['configFile'],
-                    $config['configType'],
-                    $config['execute']
+                    $definitions,
                 );
             }
         }
 
-        foreach(self::APP_CONFIG_FILES as $path) {
-            foreach(self::importConfig($path) as $name => $config) {
-                self::set($name, $config);
-            }
+        foreach(self::importConfig(self::APP_CONFIG_FILE_DEBUG) as $name => $value) {
+            self::set($name, $value);
         }
     }
 
-    private static function create(string $name, mixed $defaultValue, array $allowedTypes, array $allowedValues, string $configFile, string $configType, ?\Closure $execute = null): void
+    private static function create(string $name, array $definitions): void
     {
         if (array_key_exists($name, self::list())) {
             throw new Exception(
-                Message::CONFIG_DEFINITION_PROPERTY_ALREADY_EXISTS,
+                Message::get("DEFINITION_CONFIG_NAME_ALREADY_IN_USE"),
                 [
                     $name,
                 ]
             );
         }
-        self::$config[$name] = new Definition($name, $defaultValue, $allowedTypes, $allowedValues, $configFile, $configType, $execute);
+
+        self::$config[$name] = new Definition($name, $definitions);
     }
 
     public static function set(string $name, mixed $value): void
@@ -125,16 +116,11 @@ final class Config
         return self::$config;
     }
 
-    public static function execute(string $name): void
-    {
-        self::$config[$name]->execute();
-    }
-
     private static function checkPropertyExists(string $name): void
     {
         if (!array_key_exists($name, self::list())) {
             throw new Exception(
-                Message::CONFIG_DEFINITION_PROPERTY_UNDEFINED,
+                Message::get("CONFIG_DOESNT_EXIST"),
                 [
                     $name,
                 ]
@@ -142,11 +128,11 @@ final class Config
         }
     }
 
-    private static function importConfig(string $path): array
+    public static function importConfig(string $path): array
     {
         if (!file_exists($path)) {
             throw new Exception(
-                Message::NOT_FOUND_CONFIG_FILE,
+                Message::get("CONFIG_FILE_NOT_FOUND"),
                 [
                     $path
                 ]

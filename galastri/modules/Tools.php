@@ -20,7 +20,7 @@ final class Tools
     public static function createDir(string $path, int $chmod = 0777): string
     {
         if (!is_dir($path)){
-            mkdir($path, self::normalizeChmodCode($chmod), true);
+            mkdir($path, self::validateChmodCode($chmod), true);
         }
     
         return $path;
@@ -101,7 +101,7 @@ final class Tools
     
         if (count($match[0]) > count($args)) {
             throw new Exception(
-                Message::UNMATCHED_ARGUMENT_COUNT,
+                Message::get("TOOLS_NUM_OF_FLAGS_UNMATCH_STRING_FLAGS"),
                 [
                     (string)substr_count($message, self::FLAG_REPLACER_REPLACE_TAG),
                     (string)count($args),
@@ -116,18 +116,21 @@ final class Tools
         return str_replace(self::FLAG_REPLACER_ESCAPE, self::FLAG_REPLACER_REPLACE_TAG, $message);
     }
     
-    public static function chmod(?string $path, int|string $permission): void
+    public static function chmod(string $path, int|string $chmod): void
     {
-        chmod($path, self::nomalizeChmodCode($permission));
+        chmod($path, self::validateChmodCode($chmod));
     }
     
-    private static function nomalizeChmodCode(?string $path, int|string $permission): int
+    private static function validateChmodCode(int|string $chmod): int
     {
-        if (preg_match('/^[0-7]{3}$/', (string)$permission)) {
-            $permission = octdec($permission);
+        if (!preg_match('/^0[0-7]{3}$/', '0'.decoct($chmod))) {
+            throw new Exception(
+                Message::get("TOOLS_INVALID_CHMOD_CODE"),
+                [$chmod]
+            );
         }
 
-        return $permission;
+        return $chmod;
     }
 
     // public static function arrayMapRecursive(Closure $callback, array $array)

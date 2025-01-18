@@ -9,85 +9,158 @@ namespace galastri\language;
 
 final class Message
 {
-    public const GENERIC_MESSAGE = 'Ocorreu um erro. Consulte os detalhes no arquivo logs/ErrorHandler.log.';
+    private function __construct() {}
 
-    public const INVALID_CONFIG_FILE = [
-        'O arquivo de definição de configuração "%s" precisa retornar um array. Um %s foi fornecido.',
-        'INVALID_CONFIG_FILE',
-    ];
+    public static function get(string $messageConstName): array
+    {
+        return [
+            self::{$messageConstName},
+            $messageConstName
+        ];
+    }
 
-    public const CONFIG_DEFINITION_NEEDS_TO_BE_ARRAY = [
-        'A definição "%s" precisa ser uma array.',
-        'CONFIG_DEFINITION_NEEDS_TO_BE_ARRAY',
-    ];
+    private const ERROR_MESSAGE = 'Ocorreu um problema. Consulte os detalhes nos relatórios de erro.';
 
-    public const CONFIG_DEFINITION_MISSING_REQUIRED_PROPERTY = [
-        'A propriedade "%s" não foi informada na definição da configuração "%s" no arquivo "%s"',
-        'CONFIG_DEFINITION_MISSING_REQUIRED_PROPERTY',
-    ];
+    /**
+     * Definição de configuração.
+     */
+    private const DEFINITION_INVALID_NAME = 'Erro na definição de configuração: O nome das configurações devem ser do tipo %s, mas %s é do tipo %s.';
 
-    public const CONFIG_DEFINITION_PROPERTY_ALREADY_EXISTS = [
-        'A propriedade "%s" já existe.',
-        'CONFIG_DEFINITION_PROPERTY_ALREADY_EXISTS',
-    ];
+    private const DEFINITION_INVALID_TYPE = 'Erro na definição da configuração "%s": A propriedade "%s" deve ser do tipo %s, mas foi informado um tipo %s.';
 
-    public const CONFIG_DEFINITION_PROPERTY_UNDEFINED = [
-        'A propriedade "%s" não foi definida.',
-        'CONFIG_DEFINITION_PROPERTY_UNDEFINED',
-    ];
+    private const DEFINITION_INVALID_TYPE_IN_ARRAY = 'Erro na definição da configuração "%s": A propriedade "%s" deve conter valores do tipo [%s], mas foi informado um tipo %s em uma ou mais chaves.';
+    
+    private const DEFINITION_INVALID_PROPERTY_VALUE = 'Erro na definição da configuração "%s": A propriedade precisa armazenar um array.';
 
-    public const WRONG_TYPE_CONFIG = [
-        'Tipo de configuração incorreto: a configuração "%s" espera ser [%s]. [%s] foi fornecido.',
-        'WRONG_TYPE_CONFIG',
-    ];
+    private const DEFINITION_MISSING_REQUIRED_PROPERTY = 'Erro na definição da configuração "%s": É obrigatório informar a propriedade "%s".';
 
-    public const INVALID_VALUE_CONFIG = [
-        'Valor de configuração inválido: o valor da configuração "%s" deve ser %s. %s foi fornecido.',
-        'INVALID_VALUE_CONFIG',
-    ];
+    private const DEFINITION_CONFIG_NAME_ALREADY_IN_USE = 'Erro na definição de configuração: O nome de configuração "%s" já está sendo usado.';
 
-    public const WRONG_TYPE_CONFIG_DEFINITION = [
-        'Tipo de definição de configuração incorreto: a definição de configuração "%s" espera ser [%s]. [%s] foi fornecido.',
-        'WRONG_TYPE_CONFIG_DEFINITION',
-    ];
+    /**
+     * Valor de configuração.
+     */
+    private const CONFIG_INVALID_TYPE = 'Erro na configuração "%s": O valor deve ser do tipo %s, mas foi informado um tipo %s.';
+
+    private const CONFIG_INVALID_TYPE_NOT = 'Erro na configuração "%s": O valor não pode ser do(s) tipo(s) %s.';
+    
+    private const CONFIG_INVALID_VALUE = 'Erro na configuração "%s": O valor deve ser %s, mas foi informado um tipo %s.';
+
+    private const CONFIG_INVALID_VALUE_NOT = 'Erro na configuração "%s": O valor não pode ser %s.';
+
+    private const CONFIG_VALUE_MATCHED_REGEX = 'Erro na configuração "%s": O valor %s não pode ser válido na expressão: %s.';
+
+    private const CONFIG_VALUE_MATCHED_REGEX_NOT = 'Erro na configuração "%s": O valor %s precisa ser válido na expressão: %s.';
+
+    private const CONFIG_DOESNT_EXIST = 'Erro: A configuração "%s" não existe.';
+
+    /**
+     * Arquivo de configuração.
+     */
+    private const CONFIG_FILE_RETURNED_INVALID_DATA = 'Erro no arquivo de definição de configuração: O arquivo de "%s" precisa retornar um array.';
+
+    private const CONFIG_FILE_NOT_FOUND = 'Erro: O arquivo de configuração "%s" não existe e é requerido.';
+    
+    /**
+     * Exception
+     */
+    private const EXCEPTION_INVALID_ARRAY = 'Erro no lançamento de exceção: A array informada no parâmetro 1 precisa ter duas chaves.';
+
+    private const EXCEPTION_INVALID_CODE = 'Erro no lançamento de exceção: O código informado não é válido.';
+
+    /**
+     * Ferramentas / Tools.
+     */
+    private const TOOLS_NUM_OF_FLAGS_UNMATCH_STRING_FLAGS = 'Erro no método flagReplace(): A mensagem possui %s flag(s), mas há apenas %s argumento(s) informado(s).';
+
+    private const TOOLS_INVALID_CHMOD_CODE = 'Erro no método validateChmodCode: O código %s não é válido para o chmod().';
+
+    /**
+     * Router
+     */
+    private const ROUTER_INVALID_URL_ROOT = 'Erro de configuração em "%s": A URL Root "%s" não segue um padrão válido de diretórios. Exemplo: "/pasta/subpasta". Acesse a documentação para entender seu funcionamento.';
+
+    
+    // private const DEFINITION_INVALID_VALUE = 'Erro:O valor da configuração "%s" é inválido. O valor desta configuração deve ser "%s", mas foi informado "%s".';
+    
+    // private const DEFINITION_INVALID_TYPE_OF_VALUE = 'A tipagem do valor da configuração "%s" é inválido. A tipagem do valor desta configuração precisa ser "%s", mas foi informado um tipo "".';
+
+    // private const INVALID_CONFIG_FILE = [
+    //     'O arquivo de definição de configuração "%s" precisa retornar um array. Um %s foi fornecido.',
+    //     'INVALID_CONFIG_FILE',
+    // ];
+
+    // private const CONFIG_DEFINITION_NEEDS_TO_BE_ARRAY = [
+    //     'A definição "%s" precisa ser uma array.',
+    //     'CONFIG_DEFINITION_NEEDS_TO_BE_ARRAY',
+    // ];
+
+    // private const CONFIG_DEFINITION_MISSING_REQUIRED_PROPERTY = [
+    //     'A propriedade "%s" não foi informada na definição da configuração "%s" no arquivo "%s"',
+    //     'CONFIG_DEFINITION_MISSING_REQUIRED_PROPERTY',
+    // ];
+
+    // private const CONFIG_DEFINITION_PROPERTY_ALREADY_EXISTS = [
+    //     'A propriedade "%s" já existe.',
+    //     'CONFIG_DEFINITION_PROPERTY_ALREADY_EXISTS',
+    // ];
+
+    // private const CONFIG_DEFINITION_PROPERTY_UNDEFINED = [
+    //     'A propriedade "%s" não foi definida.',
+    //     'CONFIG_DEFINITION_PROPERTY_UNDEFINED',
+    // ];
+
+    // private const WRONG_TYPE_CONFIG = [
+    //     'Tipo de configuração incorreto: a configuração "%s" espera ser [%s]. [%s] foi fornecido.',
+    //     'WRONG_TYPE_CONFIG',
+    // ];
+
+    // private const INVALID_VALUE_CONFIG = [
+    //     'Valor de configuração inválido: o valor da configuração "%s" deve ser %s. %s foi fornecido.',
+    //     'INVALID_VALUE_CONFIG',
+    // ];
+
+    // private const WRONG_TYPE_CONFIG_DEFINITION = [
+    //     'Tipo de definição de configuração incorreto: a definição de configuração "%s" espera ser [%s]. [%s] foi fornecido.',
+    //     'WRONG_TYPE_CONFIG_DEFINITION',
+    // ];
 
     
 
-    public const WRONG_TYPE_CONFIG_DEFINITION_VALUE = [
-        'Tipo de valor de definição de configuração incorreto: o valor da definição de configuração "%s" espera ser [%s]. [%s] foi fornecido.',
-        'WRONG_TYPE_CONFIG_DEFINITION_VALUE',
-    ];
-
-    public const CONFIG_NOT_FOUND = [
-        'Configuração não encontrada: A configuração "%s" não existe.',
-        'CONFIG_NOT_FOUND',
-    ];
-
-    public const WRONG_CONFIG_FORMAT = [
-        'Formato de configuração incorreto: o arquivo de configuração "%s" não está formatado corretamente. Consulte a documentação para entender como configurá-lo.',
-        'WRONG_CONFIG_FORMAT',
-    ];
-
-    // REMOVIDO
-    // public const NOT_FOUND_CONFIG_FILE = [
-    //     'Configuração não encontrada: o arquivo de configuração "%s" não existe.',
-    //     'NOT_FOUND_CONFIG_FILE',
+    // private const WRONG_TYPE_CONFIG_DEFINITION_VALUE = [
+    //     'Tipo de valor de definição de configuração incorreto: o valor da definição de configuração "%s" espera ser [%s]. [%s] foi fornecido.',
+    //     'WRONG_TYPE_CONFIG_DEFINITION_VALUE',
     // ];
 
-    public const EXCEPTION_PARAMETER_ARRAY_1_NEEDS_2_VALUES = [
-        'Ao lançar uma "galastri\extension\Exception" usando um array como parâmetro #1, espera-se que a chave [0] seja a mensagem e a chave [1] seja o código.',
-        'EXCEPTION_PARAMETER_ARRAY_1_NEEDS_2_VALUES',
-    ];
+    // private const CONFIG_NOT_FOUND = [
+    //     'Configuração não encontrada: A configuração "%s" não existe.',
+    //     'CONFIG_NOT_FOUND',
+    // ];
 
-    public const UNMATCHED_ARGUMENT_COUNT = [
-        'O parâmetro #2 do método Tools::flagReplacer() espera %s argumento(s). %s fornecido(s).',
-        'UNMATCHED_ARGUMENT_COUNT',
-    ];
+    // private const WRONG_CONFIG_FORMAT = [
+    //     'Formato de configuração incorreto: o arquivo de configuração "%s" não está formatado corretamente. Consulte a documentação para entender como configurá-lo.',
+    //     'WRONG_CONFIG_FORMAT',
+    // ];
 
-    public const WRONG_TYPE_EXCEPTION_CODE = [
-        'Tipo de parâmetro incorreto: galastri\extension\Exception [$code] espera ser [int|string]. [%s] dado.',
-        'WRONG_TYPE_EXCEPTION_CODE',
-    ];
+    // // REMOVIDO
+    // // private const NOT_FOUND_CONFIG_FILE = [
+    // //     'Configuração não encontrada: o arquivo de configuração "%s" não existe.',
+    // //     'NOT_FOUND_CONFIG_FILE',
+    // // ];
+
+    // private const EXCEPTION_PARAMETER_ARRAY_1_NEEDS_2_VALUES = [
+    //     'Ao lançar uma "galastri\extension\Exception" usando um array como parâmetro #1, espera-se que a chave [0] seja a mensagem e a chave [1] seja o código.',
+    //     'EXCEPTION_PARAMETER_ARRAY_1_NEEDS_2_VALUES',
+    // ];
+
+    // private const UNMATCHED_ARGUMENT_COUNT = [
+    //     'O parâmetro #2 do método Tools::flagReplacer() espera %s argumento(s). %s fornecido(s).',
+    //     'UNMATCHED_ARGUMENT_COUNT',
+    // ];
+
+    // private const WRONG_TYPE_EXCEPTION_CODE = [
+    //     'Tipo de parâmetro incorreto: galastri\extension\Exception [$code] espera ser [int|string]. [%s] dado.',
+    //     'WRONG_TYPE_EXCEPTION_CODE',
+    // ];
 
     // const INVALID_ROUTE_CONFIG_TYPE = [
     //     'INVALID_ROUTE_CONFIG_TYPE',

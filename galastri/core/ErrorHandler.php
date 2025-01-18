@@ -114,7 +114,7 @@ final class ErrorHandler
 
     private static function getMessage(string $message): string
     {
-        return Config::get('displayErrors', true) ? $message : Message::GENERIC_MESSAGE;
+        return Config::get('displayErrors', true) ? $message : Message::get("ERROR_MESSAGE");
     }
 
     private static function getLine(int $line): int
@@ -169,7 +169,7 @@ final class ErrorHandler
                 self::printErrorView($data);
         }
 
-        if (Config::get('createLogsOnError', false)) {
+        if (Config::get('createLogsOnError', true)) {
             self::createLogFile($code, $message, $file, $line, $trace, $currentDate, $currentTime);
         }
 

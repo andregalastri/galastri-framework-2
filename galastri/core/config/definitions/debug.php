@@ -3,55 +3,67 @@
 return [
     'displayErrors' => [
         'defaultValue' => true,
-        'allowedTypes' => ['bool'],
-        'allowedValues' => [],
-        'configFile' => '/app/config/debug.php',
-        'configType' => 'debug',
-        'execute' => null
+        'validTypes' => ['bool'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'debug',
     ],
 
     'stopOnWarnings' => [
         'defaultValue' => true,
-        'allowedTypes' => ['bool'],
-        'allowedValues' => [],
-        'configFile' => '/app/config/debug.php',
-        'configType' => 'debug',
-        'execute' => null
+        'validTypes' => ['bool'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'debug',
     ],
 
     'showTrace' => [
         'defaultValue' => false,
-        'allowedTypes' => ['bool'],
-        'allowedValues' => [],
-        'configFile' => '/app/config/debug.php',
-        'configType' => 'debug',
-        'execute' => null
+        'validTypes' => ['bool'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'debug',
     ],
 
     'performanceAnalysis' => [
         'defaultValue' => false,
-        'allowedTypes' => ['bool'],
-        'allowedValues' => [],
-        'configFile' => '/app/config/debug.php',
-        'configType' => 'debug',
-        'execute' => null
+        'validTypes' => ['bool'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'debug',
     ],
 
     'useErrorHandler' => [
         'defaultValue' => true,
-        'allowedTypes' => ['bool'],
-        'allowedValues' => [],
-        'configFile' => '/app/config/debug.php',
-        'configType' => 'debug',
-        'execute' => null
+        'validTypes' => ['bool'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'debug',
     ],
 
     'createLogsOnError' => [
         'defaultValue' => true,
-        'allowedTypes' => ['bool'],
-        'allowedValues' => [],
-        'configFile' => '/app/config/debug.php',
-        'configType' => 'debug',
-        'execute' => null
+        'validTypes' => ['bool'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'debug',
     ],
 ];

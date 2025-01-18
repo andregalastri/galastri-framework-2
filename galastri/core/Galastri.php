@@ -9,7 +9,7 @@ namespace galastri\core;
 // use galastri\core\Debug;
 // use galastri\core\Controller;
 // use galastri\core\Parameters;
-// use galastri\core\Router;
+use galastri\core\Router;
 use galastri\core\config\Config;
 use galastri\extensions\Exception;
 // use galastri\extensions\output\View;
@@ -116,9 +116,8 @@ final class Galastri
      *
      * @return void
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
+
 
     /**
      * This is the main method of the framework. It has a chain of methods that execute the entire
@@ -133,6 +132,7 @@ final class Galastri
     public static function run(): void
     {
         Config::run();
+        Router::run();
         
         // try {
             /**

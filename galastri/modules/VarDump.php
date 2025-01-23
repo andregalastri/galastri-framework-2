@@ -36,7 +36,7 @@ final class VarDump
     const VISIBILITY_HTML = '<span class="object-key">[$1:<small>$2</small>]</span> => ';
     const VISIBILITY_REGEX = '/\[((?:"|&quot;).*?(?:"|&quot;)):.*?(private|protected)\](?:=>|=&gt;)\n\s+/m';
 
-    const STYLESHEET_FILE = PROJECT_DIR.'/galastri/misc/dump.css';
+    const STYLESHEET_FILE = PROJECT_DIR.'/galastri/misc/vardump.css';
 
     private static int $backTraceLevel = 0;
 

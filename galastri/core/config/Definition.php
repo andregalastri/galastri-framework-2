@@ -270,23 +270,33 @@ final class Definition
 
     public function setValue(mixed $value): void
     {
-        if (!$this->isOfType($this->getValidTypes(), $value)) {
+        if (!empty($this->getValidTypes()) and !$this->isOfType($this->getValidTypes(), $value)) {
             throw new Exception(
                 Message::get("CONFIG_INVALID_TYPE"),
                 [
                     $this->getName(),
                     Tools::readableImplode(', ', ' ou ', $this->getValidTypes()),
                     Tools::typeOf($value),
+                ],
+                [
+                    'data' => [
+                        'testedValue' => $value,
+                    ]
                 ]
             );
         }
 
-        if ($this->isOfType($this->getInvalidTypes(), $value)) {
+        if (!empty($this->getInvalidTypes()) and $this->isOfType($this->getInvalidTypes(), $value)) {
             throw new Exception(
                 Message::get("CONFIG_INVALID_TYPE_NOT"),
                 [
                     $this->getName(),
                     Tools::readableImplode(', ', ' ou ', $this->getInvalidTypes()),
+                ],
+                [
+                    'data' => [
+                        'testedValue' => $value,
+                    ]
                 ]
             );
         }
@@ -298,6 +308,11 @@ final class Definition
                     $this->getName(),
                     Tools::readableImplode(', ', ' ou ', $this->getValidValues()),
                     $value,
+                ],
+                [
+                    'data' => [
+                        'testedValue' => $value,
+                    ]
                 ]
             );
         }
@@ -308,29 +323,47 @@ final class Definition
                 [
                     $this->getName(),
                     Tools::readableImplode(', ', ' ou ', $this->getValidValues()),
+                ],
+                [
+                    'data' => [
+                        'testedValue' => $value,
+                    ]
                 ]
             );
         }
 
-        if (!empty($this->getInvalidRegex()) and preg_match($this->getInvalidRegex(), $value, $matches)) {
-            throw new Exception(
-                Message::get("CONFIG_VALUE_MATCHED_REGEX"),
-                [
-                    $this->getName(),
-                    $value,
-                ]
-            );
-        }
 
-        if (!empty($this->getValidRegex()) and !preg_match($this->getValidRegex(), $value)) {
-            throw new Exception(
-                Message::get("CONFIG_VALUE_MATCHED_REGEX_NOT"),
-                [
-                    $this->getName(),
-                    $value,
-                    $this->getValidRegex(),
-                ]
-            );
+        if ($value !== '') {
+            if (!empty($this->getInvalidRegex()) and preg_match($this->getInvalidRegex(), $value)) {
+                throw new Exception(
+                    Message::get("CONFIG_VALUE_MATCHED_REGEX"),
+                    [
+                        $this->getName(),
+                        $value,
+                    ],
+                    [
+                        'data' => [
+                            'testedValue' => $value,
+                        ]
+                    ]
+                );
+            }
+
+            if (!empty($this->getValidRegex()) and !preg_match($this->getValidRegex(), $value)) {
+                throw new Exception(
+                    Message::get("CONFIG_VALUE_MATCHED_REGEX_NOT"),
+                    [
+                        $this->getName(),
+                        $value,
+                        $this->getValidRegex(),
+                    ],
+                    [
+                        'data' => [
+                            'testedValue' => $value,
+                        ]
+                    ]
+                );
+            }
         }
 
         $this->value = $value;

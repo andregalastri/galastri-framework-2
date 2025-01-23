@@ -43,7 +43,7 @@ final class Message
 
     private const CONFIG_INVALID_TYPE_NOT = 'Erro na configuração "%s": O valor não pode ser do(s) tipo(s) %s.';
     
-    private const CONFIG_INVALID_VALUE = 'Erro na configuração "%s": O valor deve ser %s, mas foi informado um tipo %s.';
+    private const CONFIG_INVALID_VALUE = 'Erro na configuração "%s": O valor deve ser "%s", mas foi informado o valor "%s".';
 
     private const CONFIG_INVALID_VALUE_NOT = 'Erro na configuração "%s": O valor não pode ser %s.';
 
@@ -77,7 +77,17 @@ final class Message
     /**
      * Router
      */
-    private const ROUTER_INVALID_URL_ROOT = 'Erro de configuração em "%s": A URL Root "%s" não segue um padrão válido de diretórios. Exemplo: "/pasta/subpasta". Acesse a documentação para entender seu funcionamento.';
+    private const ROUTER_INVALID_URL_ROOT = 'Erro de configuração em "%s": A URL Root "%s" não segue um padrão válido de diretórios. Exemplo válido: "/pasta/subpasta". Acesse a documentação para entender seu funcionamento.';
+    
+    private const ROUTER_INVALID_BASE_FOLDER = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "baseFolder". Exemplo válido: "/pasta/subpasta". Acesse a documentação para entender seu funcionamento.';
+    
+    private const ROUTER_INVALID_TEMPLATE_FILE = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "templateFile". Exemplo válido: "/pasta/subpasta/arquivo.php". Acesse a documentação para entender seu funcionamento.';
+    
+    private const ROUTER_INVALID_NAMESPACE = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "namespace". Exemplo válido: "\\App\\Controller". Acesse a documentação do PHP para entender o padrão válido de namespaces.';
+    
+    private const ROUTER_INVALID_ENDPOINT_PARAMETERS = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "parameters". Exemplo válido: "/param1/?param2". Acesse a documentação para entender seu funcionamento.';
+
+    private const ROUTER_MAIN_METHOD_NOT_FOUND = 'Erro de configuração em "%s": O endpoint @main não foi definido no node "%s"';
 
     
     // private const DEFINITION_INVALID_VALUE = 'Erro:O valor da configuração "%s" é inválido. O valor desta configuração deve ser "%s", mas foi informado "%s".';
@@ -207,6 +217,7 @@ final class Message
     //     "Error 404: The requested route or file was not found."
     // ];
 
+    
     // const CONTROLLER_NOT_FOUND = [
     //     'CONTROLLER_NOT_FOUND',
     //     "Requested controller '%s' doesn't exist. Check if the file '%s.php' exists in directory '%s' or if its namespace was correctly set."
@@ -490,8 +501,11 @@ final class Message
     // const INVALID_CONTROLLER_TYPE = [
     //     'INVALID_CONTROLLER_TYPE',
     //     "Invalid type. Type of parent node parameter 'controller' need to be 'string' or 'null'."
+    
     // ];
 
+
+    
     // const INVALID_NAMESPACE_TYPE = [
     //     'INVALID_NAMESPACE_TYPE',
     //     "Invalid type. Type of route parameter 'namespace' need to be 'string' or 'null'."

@@ -115,6 +115,23 @@ final class Tools
     
         return str_replace(self::FLAG_REPLACER_ESCAPE, self::FLAG_REPLACER_REPLACE_TAG, $message);
     }
+
+
+    public static function toCamelCase(string $string): string
+    {
+        $string = preg_replace('/[^a-zA-Z0-9À-ÿ]+/', ' ', $string);
+
+        $string = mb_convert_case($string, MB_CASE_TITLE, "UTF-8");
+        
+        $string = lcfirst(str_replace(' ', '', $string));
+
+        return $string;
+    }
+
+    public static function toPascalCase(string $string): string
+    {
+        return ucfirst(self::toCamelCase($string));
+    }
     
     public static function chmod(string $path, int|string $chmod): void
     {
@@ -132,6 +149,7 @@ final class Tools
 
         return $chmod;
     }
+
 
     // public static function arrayMapRecursive(Closure $callback, array $array)
     // {

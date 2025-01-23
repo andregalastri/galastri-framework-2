@@ -116,6 +116,17 @@ final class Config
         return self::$config;
     }
 
+    public static function listValues(): array
+    {
+        $valueList = [];
+
+        foreach (self::$config as $propertyName => $properties) {
+            $valueList[$propertyName] = $properties->getValue();
+        }
+
+        return $valueList;
+    }
+
     private static function checkPropertyExists(string $name): void
     {
         if (!array_key_exists($name, self::list())) {

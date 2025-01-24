@@ -79,7 +79,9 @@ final class Message
      */
     private const ROUTER_INVALID_URL_ROOT = 'Erro de configuração em "%s": A URL Root "%s" não segue um padrão válido de diretórios. Exemplo válido: "/pasta/subpasta". Acesse a documentação para entender seu funcionamento.';
     
-    private const ROUTER_INVALID_BASE_FOLDER = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "baseFolder". Exemplo válido: "/pasta/subpasta". Acesse a documentação para entender seu funcionamento.';
+    private const ROUTER_INVALID_FILE_FOLDER = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "fileFolder". Exemplo válido: "/pasta/subpasta". Acesse a documentação para entender seu funcionamento.';
+    
+    private const ROUTER_INVALID_VIEW_FOLDER = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "viewFolder". Exemplo válido: "/pasta/subpasta". Acesse a documentação para entender seu funcionamento.';
     
     private const ROUTER_INVALID_TEMPLATE_FILE = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "templateFile". Exemplo válido: "/pasta/subpasta/arquivo.php". Acesse a documentação para entender seu funcionamento.';
     

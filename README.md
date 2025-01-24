@@ -12,7 +12,7 @@ O framework inicialmente era uma forma de estudar a linguagem PHP. Ao longo do d
 Atualmente o framework visa ser uma maneira mais simples de se iniciar em programação PHP ao mesmo tempo que se mostra uma boa alternativa para projetos reais.
 
 **Aviso**<br>
-Este é um projeto em desenvolvimento inicial. Isso significa que posso mudar drasticamente a forma como o framework funciona entre cada commit e sem qualquer aviso. Se você usar o framework em projetos reais, é uma boa ideia mantê-lo na versão que você está usando, sem atualizá-lo. Se você quiser atualizar para versões mais recentes, faça um backup antes e esteja ciente das mudanças feitas.
+Este é um projeto em desenvolvimento inicial. Isso significa que posso mudar drasticamente a forma como o framework funciona entre cada commit e sem qualquer aviso.
 
 
 ## Recursos

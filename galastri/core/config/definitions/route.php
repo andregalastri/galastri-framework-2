@@ -1,16 +1,39 @@
 <?php
 
 return [
-    'urlRoot' => [
-        'defaultValue' => '/',
+    'projectName' => [
+        'defaultValue' => '',
         'validTypes' => ['string'],
         'invalidTypes' => [],
         'validValues' => [],
         'invalidValues' => [],
-        'validRegex' => '/^\/(?:[\p{L}\p{N}_-]+\/?)*[\p{L}\p{N}_-]+$|^\/$/u',
+        'validRegex' => '',
         'invalidRegex' => '',
         'context' => 'route',
     ],
+
+    'title' => [
+        'defaultValue' => '',
+        'validTypes' => ['string'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'route',
+    ],
+
+    'output' => [
+        'defaultValue' => 'view',
+        'validTypes' => ['string'],
+        'invalidTypes' => [],
+        'validValues' => ['view', 'file', 'json'],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'route',
+    ],
+    
     'timezone' => [
         'defaultValue' => date_default_timezone_get(),
         'validTypes' => ['string'],
@@ -33,7 +56,7 @@ return [
         'context' => 'route',
     ],
 
-    'projectName' => [
+    'offlineRedirect' => [
         'defaultValue' => '',
         'validTypes' => ['string'],
         'invalidTypes' => [],
@@ -44,8 +67,8 @@ return [
         'context' => 'route',
     ],
 
-    'pageTitle' => [
-        'defaultValue' => '',
+    'offlineMessage' => [
+        'defaultValue' => 'System is temporarily offline.',
         'validTypes' => ['string'],
         'invalidTypes' => [],
         'validValues' => [],
@@ -67,6 +90,28 @@ return [
     ],
 
     'authFailRedirect' => [
+        'defaultValue' => '',
+        'validTypes' => ['string'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'route',
+    ],
+
+    'authFailMessage' => [
+        'defaultValue' => 'Forbidden.',
+        'validTypes' => ['string'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'route',
+    ],
+
+    'notFoundRedirect' => [
         'defaultValue' => '',
         'validTypes' => ['string'],
         'invalidTypes' => [],
@@ -99,28 +144,6 @@ return [
         'context' => 'route',
     ],
 
-    'notFoundRedirect' => [
-        'defaultValue' => '',
-        'validTypes' => ['string'],
-        'invalidTypes' => [],
-        'validValues' => [],
-        'invalidValues' => [],
-        'validRegex' => '',
-        'invalidRegex' => '',
-        'context' => 'route',
-    ],
-
-    'output' => [
-        'defaultValue' => 'view',
-        'validTypes' => ['string'],
-        'invalidTypes' => [],
-        'validValues' => ['view', 'file', 'json'],
-        'invalidValues' => [],
-        'validRegex' => '',
-        'invalidRegex' => '',
-        'context' => 'route',
-    ],
-
     'browserCache' => [
         'defaultValue' => null,
         'validTypes' => ['null', 'string'],
@@ -143,7 +166,18 @@ return [
         'context' => 'route',
     ],
 
-    'baseFolder' => [
+    'viewFolder' => [
+        'defaultValue' => '/app/views',
+        'validTypes' => ['string'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '/^\/(?:[\p{L}\p{N}_-]+\/?)*[\p{L}\p{N}_-]+$|^\/$/u',
+        'invalidRegex' => '',
+        'context' => 'route',
+    ],
+
+    'fileFolder' => [
         'defaultValue' => '',
         'validTypes' => ['string'],
         'invalidTypes' => [],
@@ -154,9 +188,9 @@ return [
         'context' => 'route',
     ],
 
-    'offlineMessage' => [
-        'defaultValue' => 'System is temporarily offline.',
-        'validTypes' => ['string'],
+    'isDownloadableFile' => [
+        'defaultValue' => false,
+        'validTypes' => ['bool'],
         'invalidTypes' => [],
         'validValues' => [],
         'invalidValues' => [],
@@ -165,9 +199,9 @@ return [
         'context' => 'route',
     ],
 
-    'authFailMessage' => [
-        'defaultValue' => 'Forbidden.',
-        'validTypes' => ['string'],
+    'allowedFileExtensions' => [
+        'defaultValue' => [],
+        'validTypes' => ['array'],
         'invalidTypes' => [],
         'validValues' => [],
         'invalidValues' => [],

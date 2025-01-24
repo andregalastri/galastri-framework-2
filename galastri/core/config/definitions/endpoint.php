@@ -1,42 +1,9 @@
 <?php
 
 return [
-    'downloadable' => [
-        'defaultValue' => false,
-        'validTypes' => ['bool'],
-        'invalidTypes' => [],
-        'validValues' => [],
-        'invalidValues' => [],
-        'validRegex' => '',
-        'invalidRegex' => '',
-        'context' => 'endpoint',
-    ],
-
-    'allowedExtensions' => [
-        'defaultValue' => null,
-        'validTypes' => ['null', 'array'],
-        'invalidTypes' => [],
-        'validValues' => [],
-        'invalidValues' => [],
-        'validRegex' => '',
-        'invalidRegex' => '',
-        'context' => 'endpoint',
-    ],
-
-    'viewPath' => [
-        'defaultValue' => 'app/views',
+    'method' => [
+        'defaultValue' => '',
         'validTypes' => ['string'],
-        'invalidTypes' => [],
-        'validValues' => [],
-        'invalidValues' => [],
-        'validRegex' => '',
-        'invalidRegex' => '',
-        'context' => 'endpoint',
-    ],
-
-    'httpMethod' => [
-        'defaultValue' => [],
-        'validTypes' => ['array'],
         'invalidTypes' => [],
         'validValues' => [],
         'invalidValues' => [],
@@ -52,6 +19,17 @@ return [
         'validValues' => [],
         'invalidValues' => [],
         'validRegex' => '/^\/(?:[a-zA-Z0-9_]+\/?)*[a-zA-Z0-9_]+$/',
+        'invalidRegex' => '',
+        'context' => 'endpoint',
+    ],
+
+    'httpMethod' => [
+        'defaultValue' => [],
+        'validTypes' => ['array'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
         'invalidRegex' => '',
         'context' => 'endpoint',
     ],

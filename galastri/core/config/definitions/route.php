@@ -122,6 +122,17 @@ return [
         'context' => 'route',
     ],
 
+    'notFoundMessage' => [
+        'defaultValue' => '404 - Route not found',
+        'validTypes' => ['string'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'route',
+    ],
+
     'forceRedirect' => [
         'defaultValue' => false,
         'validTypes' => ['bool', 'string'],

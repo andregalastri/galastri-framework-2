@@ -142,6 +142,7 @@ final class Router
         self::setConfigIfExists('authFailRedirect');
         self::setConfigIfExists('authFailMessage');
         self::setConfigIfExists('notFoundRedirect');
+        self::setConfigIfExists('notFoundMessage');
         self::setConfigIfExists('forceRedirect');
 
         try {

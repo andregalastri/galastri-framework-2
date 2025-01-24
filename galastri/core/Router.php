@@ -15,6 +15,7 @@ final class Router
 {
     private const APP_CONFIG_FILE_ROUTES = PROJECT_DIR.'/app/config/routes.php';
 
+    private static string $urlRoot;
     private static array $routeData;
     private static array $urlParts;
     private static string $nodeName = '';
@@ -42,14 +43,16 @@ final class Router
 
     private static function configureUrlRoot(): void
     {
-        try {
-            Config::set('urlRoot', array_key_first(self::$routeData));
-        } catch (Exception $e) {
+        $urlRoot = array_key_first(self::$routeData);
+        
+        if (preg_match('/^\/(?:[\p{L}\p{N}_-]+\/?)*[\p{L}\p{N}_-]+$|^\/$/u', $urlRoot)) {
+            self::$urlRoot = $urlRoot;
+        } else {
             throw new Exception(
                 Message::get("ROUTER_INVALID_URL_ROOT"),
                 [
                     str_replace(PROJECT_DIR.'/', '', self::APP_CONFIG_FILE_ROUTES),
-                    array_key_first(self::$routeData),
+                    $urlRoot,
                 ]
             );
         }
@@ -57,7 +60,7 @@ final class Router
 
     private static function setUrlParts(): void
     {
-        $requestUri = self::removePrefixOnce($_SERVER['REQUEST_URI'], Config::get('urlRoot'));
+        $requestUri = self::removePrefixOnce($_SERVER['REQUEST_URI'], self::$urlRoot);
         $urlSplit = explode('?', $requestUri);
 
         $querystring = $urlSplit[1] ?? [];
@@ -128,21 +131,18 @@ final class Router
 
     private static function configureRouteProperties(): void
     {
+        self::setConfigIfExists('projectName');
+        self::setConfigIfExists('title');
+        self::setConfigIfExists('output');
         self::setConfigIfExists('timezone');
         self::setConfigIfExists('offline');
-        self::setConfigIfExists('projectName');
-        self::setConfigIfExists('pageTitle');
+        self::setConfigIfExists('offlineRedirect');
+        self::setConfigIfExists('offlineMessage');
         self::setConfigIfExists('authTag');
         self::setConfigIfExists('authFailRedirect');
-        self::setConfigIfExists('forceRedirect');
-        self::setConfigIfExists('notFoundRedirect');
-        self::setConfigIfExists('output');
-        self::setConfigIfExists('browserCache');
-        self::setConfigIfExists('offlineMessage');
         self::setConfigIfExists('authFailMessage');
-        self::setConfigIfExists('permissionFailMessage');
-        self::setConfigIfExists('ignoreMimeType');
-
+        self::setConfigIfExists('notFoundRedirect');
+        self::setConfigIfExists('forceRedirect');
 
         try {
             self::setConfigIfExists('namespace');
@@ -156,17 +156,7 @@ final class Router
             );
         }
 
-        try {
-            self::setConfigIfExists('baseFolder');
-        } catch (Exception $e) {
-            throw new Exception(
-                Message::get("ROUTER_INVALID_BASE_FOLDER"),
-                [
-                    str_replace(PROJECT_DIR.'/', '', self::APP_CONFIG_FILE_ROUTES),
-                    $e->getData('testedValue'),
-                ]
-            );
-        }
+        self::setConfigIfExists('browserCache');
 
         try {
             self::setConfigIfExists('templateFile');
@@ -179,6 +169,35 @@ final class Router
                 ]
             );
         }
+
+        try {
+            self::setConfigIfExists('viewFolder');
+        } catch (Exception $e) {
+            throw new Exception(
+                Message::get("ROUTER_INVALID_VIEW_FOLDER"),
+                [
+                    str_replace(PROJECT_DIR.'/', '', self::APP_CONFIG_FILE_ROUTES),
+                    $e->getData('testedValue'),
+                ]
+            );
+        }
+
+        try {
+            self::setConfigIfExists('fileFolder');
+        } catch (Exception $e) {
+            throw new Exception(
+                Message::get("ROUTER_INVALID_FILE_FOLDER"),
+                [
+                    str_replace(PROJECT_DIR.'/', '', self::APP_CONFIG_FILE_ROUTES),
+                    $e->getData('testedValue'),
+                ]
+            );
+        }
+
+        self::setConfigIfExists('isDownloadableFile');
+        self::setConfigIfExists('allowedFileExtensions');
+        self::setConfigIfExists('permissionFailMessage');
+        self::setConfigIfExists('ignoreMimeType');
     }
 
     private static function configureNodeProperties(): void
@@ -194,9 +213,7 @@ final class Router
 
     private static function configureEndpointProperties(): void
     {
-        self::setConfigIfExists('downloadable');
-        self::setConfigIfExists('allowedExtensions');
-        self::setConfigIfExists('viewPath');
+        self::setConfigIfExists('method');
         self::setConfigIfExists('httpMethod');
 
         try {

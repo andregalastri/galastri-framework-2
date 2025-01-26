@@ -100,18 +100,6 @@ final class ErrorHandler
         return $errorMap[$errorLevel] ?? $default;
     }
 
-    public static function setDisplayErrorsType(string $type): void
-    {
-        if (in_array($type, ['json', 'view', 'file'])) {
-            self::$displayErrorsType = $type;
-        }
-    }
-
-    private static function getDisplayErrorsType(): string
-    {
-        return self::$displayErrorsType;
-    }
-
     private static function getMessage(string $message): string
     {
         return Config::get('displayErrors', true) ? $message : Message::get("ERROR_MESSAGE");
@@ -156,7 +144,7 @@ final class ErrorHandler
             'error' => true,
         ];
 
-        switch (self::getDisplayErrorsType()) {
+        switch (Config::get('output', 'view')) {
             case 'json':
                 self::printErrorJson($data);
                 break;
@@ -200,20 +188,55 @@ final class ErrorHandler
 
     private static function printErrorFile(array $data): void
     {
-        $lineHeight = 25;
-
-        $canvas = imagecreate(600, 150);
-        imagecolorallocate($canvas, 60, 61, 66);
-
-        imagestring($canvas, 3, 10, 10, 'ERROR', imagecolorallocate($canvas, 218, 200, 182));
-
+        $width = 600;
+        $lineHeight = 18;
+        $margin = 15;
+        $logoWidth = 40;
+        $logoHeight = 40;
+        
+        $fontPath = PROJECT_DIR.'/galastri/misc/error-handler-font.ttf'; // Caminho da fonte TTF
+        $logoPath = PROJECT_DIR.'/galastri/misc/error-handler-logo.png'; // Caminho do logotipo
+        $fontSize = 11; // Ajuste o tamanho conforme necessário
+    
+        $lines = []; // Primeira linha do cabeçalho
+    
+        // Quebrando o texto em múltiplas linhas
         foreach ($data as $key => $value) {
-            imagestring($canvas, 3, 10, $lineHeight, (str_pad($key, 10).': '.var_export($value, true)), imagecolorallocate($canvas, 218, 200, 182));
-            $lineHeight = $lineHeight + 15;
-        }
+            $text = str_pad($key, 10) . ': ' . var_export($value, true);
+            $lines = array_merge($lines, explode("\n", wordwrap($text, 64))); // Ajusta quebras de linha
 
+            if (in_array($key, ['line', 'message'])) {
+                $lines[] = '';
+            }
+        }
+    
+        // Calculando a altura dinâmica
+        $height = $margin * 2 + count($lines) * $lineHeight;
+    
+        // Criando a imagem principal
+        $canvas = imagecreatetruecolor($width, $height);
+        $bgColor = imagecolorallocate($canvas, 60, 61, 66); // Cor de fundo
+        $textColor = imagecolorallocate($canvas, 255, 255, 255); // Cor do texto
+        imagefilledrectangle($canvas, 0, 0, $width, $height, $bgColor);
+    
+        // Desenhando o texto na imagem
+        $y = $margin + $fontSize;
+        foreach ($lines as $line) {
+            imagettftext($canvas, $fontSize, 0, $margin, $y, $textColor, $fontPath, $line);
+            $y += $lineHeight;
+        }
+    
+        // Inserindo o logotipo na parte inferior direita, se o arquivo existir
+        $logoImage = imagecreatefrompng($logoPath);
+        $xPos = $width - $logoWidth - $margin;
+        $yPos = $height - $logoHeight - $margin;
+        imagecopyresampled($canvas, $logoImage, $xPos, $yPos, 0, 0, $logoWidth, $logoHeight, imagesx($logoImage), imagesy($logoImage));
+        imagedestroy($logoImage); // Liberar memória
+    
+        // Enviando a imagem como resposta
         header('Content-type: image/png');
         imagepng($canvas);
+        imagedestroy($canvas); // Liberando memória
     }
 
     private static function createLogFile(int|string $code, string $message, string $file, int $line, array $trace, string $currentDate, string $currentTime): void

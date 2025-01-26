@@ -150,6 +150,24 @@ final class Tools
         return $chmod;
     }
 
+    public static function deleteLastKey(array $array, int $quantity = 1): array
+    {
+        if ($quantity >= count($quantity)) {
+            return [];
+        }
+
+        return array_slice($array, 0, -$quantity);
+    }
+
+    public static function deleteFirstKey(array $array, int $quantity = 1): array
+    {
+        if ($quantity >= count($array)) {
+            return [];
+        }
+
+        // Remove os primeiros $times elementos de uma vez
+        return array_slice($array, $quantity);
+    }
 
     // public static function arrayMapRecursive(Closure $callback, array $array)
     // {

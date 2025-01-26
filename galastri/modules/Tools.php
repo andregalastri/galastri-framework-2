@@ -152,7 +152,7 @@ final class Tools
 
     public static function deleteLastKey(array $array, int $quantity = 1): array
     {
-        if ($quantity >= count($quantity)) {
+        if ($quantity >= count($array)) {
             return [];
         }
 
@@ -165,7 +165,6 @@ final class Tools
             return [];
         }
 
-        // Remove os primeiros $times elementos de uma vez
         return array_slice($array, $quantity);
     }
 

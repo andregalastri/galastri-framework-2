@@ -194,17 +194,17 @@ final class ErrorHandler
         $logoWidth = 40;
         $logoHeight = 40;
         
-        $fontPath = PROJECT_DIR.'/galastri/misc/error-handler-font.ttf'; // Caminho da fonte TTF
-        $logoPath = PROJECT_DIR.'/galastri/misc/error-handler-logo.png'; // Caminho do logotipo
-        $fontSize = 11; // Ajuste o tamanho conforme necessário
+        $fontPath = PROJECT_DIR.'/galastri/misc/error-handler-font.ttf';
+        $logoPath = PROJECT_DIR.'/galastri/misc/error-handler-logo.png';
+        $fontSize = 11;
     
-        $lines = []; // Primeira linha do cabeçalho
+        $lines = [];
     
         // Quebrando o texto em múltiplas linhas
         foreach ($data as $key => $value) {
             $text = str_pad($key, 10) . ': ' . var_export($value, true);
             $lines = array_merge($lines, explode("\n", wordwrap($text, 64))); // Ajusta quebras de linha
-
+    
             if (in_array($key, ['line', 'message'])) {
                 $lines[] = '';
             }
@@ -231,12 +231,12 @@ final class ErrorHandler
         $xPos = $width - $logoWidth - $margin;
         $yPos = $height - $logoHeight - $margin;
         imagecopyresampled($canvas, $logoImage, $xPos, $yPos, 0, 0, $logoWidth, $logoHeight, imagesx($logoImage), imagesy($logoImage));
-        imagedestroy($logoImage); // Liberar memória
+        imagedestroy($logoImage);
     
-        // Enviando a imagem como resposta
+        
         header('Content-type: image/png');
         imagepng($canvas);
-        imagedestroy($canvas); // Liberando memória
+        imagedestroy($canvas);
     }
 
     private static function createLogFile(int|string $code, string $message, string $file, int $line, array $trace, string $currentDate, string $currentTime): void

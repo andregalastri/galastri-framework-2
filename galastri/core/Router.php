@@ -15,7 +15,7 @@ final class Router
 {
     private const APP_CONFIG_FILE_ROUTES = PROJECT_DIR.'/app/config/routes.php';
 
-    private static string $urlRoot;
+    private static string $rootDir;
     private static array $routeData;
     private static array $urlParts;
     private static string $nodeName = '';
@@ -33,26 +33,28 @@ final class Router
     {
         self::$routeData = Config::importConfig(self::APP_CONFIG_FILE_ROUTES);
 
-        self::configureUrlRoot();
+        self::configureRootDir();
         self::setUrlParts();
         self::resolveNodes();
         self::configureNodeProperties();
         self::resolveEndpoints();
         self::resolveParameters();
+
+        self::setUrlParts();
     }
 
-    private static function configureUrlRoot(): void
+    private static function configureRootDir(): void
     {
-        $urlRoot = array_key_first(self::$routeData);
+        $rootDir = array_key_first(self::$routeData);
         
-        if (preg_match('/^\/(?:[\p{L}\p{N}_-]+\/?)*[\p{L}\p{N}_-]+$|^\/$/u', $urlRoot)) {
-            self::$urlRoot = $urlRoot;
+        if (preg_match('/^\/(?:[\p{L}\p{N}_-]+\/?)*[\p{L}\p{N}_-]+$|^\/$/u', $rootDir)) {
+            self::$rootDir = $rootDir;
         } else {
             throw new Exception(
                 Message::get("ROUTER_INVALID_URL_ROOT"),
                 [
                     str_replace(PROJECT_DIR.'/', '', self::APP_CONFIG_FILE_ROUTES),
-                    $urlRoot,
+                    $rootDir,
                 ]
             );
         }
@@ -60,7 +62,7 @@ final class Router
 
     private static function setUrlParts(): void
     {
-        $requestUri = self::removePrefixOnce($_SERVER['REQUEST_URI'], self::$urlRoot);
+        $requestUri = self::removePrefixOnce($_SERVER['REQUEST_URI'], self::$rootDir);
         $urlSplit = explode('?', $requestUri);
 
         $querystring = $urlSplit[1] ?? [];
@@ -187,7 +189,7 @@ final class Router
             self::setConfigIfExists('fileFolder');
         } catch (Exception $e) {
             throw new Exception(
-                Message::get("ROUTER_INVALID_FILE_FOLDER"),
+                Message::get("ROUTER_INVALID_VIEW_FILE"),
                 [
                     str_replace(PROJECT_DIR.'/', '', self::APP_CONFIG_FILE_ROUTES),
                     $e->getData('testedValue'),
@@ -215,13 +217,34 @@ final class Router
     private static function configureEndpointProperties(): void
     {
         self::setConfigIfExists('method');
-        self::setConfigIfExists('httpMethod');
+
+        if (isset(self::$routeData['httpMethod'])) {
+            $httpMethod = [];
+
+            foreach(self::$routeData['httpMethod'] as $type => $method) {
+                $httpMethod[mb_strtolower($type)] = ltrim($method, '@');
+            }
+
+            Config::set('httpMethod', $httpMethod);
+        }
 
         try {
             self::setConfigIfExists('parameters');
         } catch (Exception $e) {
             throw new Exception(
                 Message::get("ROUTER_INVALID_ENDPOINT_PARAMETERS"),
+                [
+                    str_replace(PROJECT_DIR.'/', '', self::APP_CONFIG_FILE_ROUTES),
+                    $e->getData('testedValue'),
+                ]
+            );
+        }
+
+        try {
+            self::setConfigIfExists('viewFile');
+        } catch (Exception $e) {
+            throw new Exception(
+                Message::get("ROUTER_INVALID_VIEW_FILE"),
                 [
                     str_replace(PROJECT_DIR.'/', '', self::APP_CONFIG_FILE_ROUTES),
                     $e->getData('testedValue'),
@@ -266,13 +289,13 @@ final class Router
 
     private static function resolveParameters(): void
     {
-        $parametersList = array_values(array_filter(explode('/', Config::get('parameters'))));
+        $parametersValues = array_values(array_filter(explode('/', Config::get('parameters'))));
 
-        if (count(self::$urlParts) > 0 and count($parametersList) <= 0) {
+        if (count(self::$urlParts) > 0 and count($parametersValues) <= 0) {
             self::$isValidRoute = false;
         }
 
-        foreach ($parametersList as $parameterId) {
+        foreach ($parametersValues as $parameterId) {
             if (strpos($parameterId, '?') !== 0 and count(self::$urlParts) <= 0) {
                 self::$isValidRoute = false;
             }
@@ -287,7 +310,7 @@ final class Router
             self::$controllerNamespace = array_filter(explode('\\', self::$routeData['namespace']));
         }
 
-        if (!self::$removedIndexFromNamespace and count(self::$controllerNamespace) > 3) {
+        if (!self::$removedIndexFromNamespace and count(self::$controllerNamespace) > 2) {
             self::$removedIndexFromNamespace = true;
 
             self::$controllerNamespace = array_filter(self::$controllerNamespace, function($value) {
@@ -323,6 +346,11 @@ final class Router
 
     /************************ */
 
+    public static function getUrlParts(): array
+    {
+        return self::$urlParts;
+    }
+
     public static function getControllerName(): string
     {
         return self::$controllerName;
@@ -333,9 +361,14 @@ final class Router
         return self::$controllerNamespace;
     }
     
-    public static function getDynamicNodes(): array
+    public static function getDynamicNodeValues(): array
     {
         return self::$dynamicNodes;
+    }
+    
+    public static function getDynamicNode(string $key): string
+    {
+        return self::$dynamicNodes[$key];
     }
     
     public static function getMethodName(): string
@@ -343,13 +376,23 @@ final class Router
         return self::$methodName;
     }
     
-    public static function isInvalidRoute(): bool
+    public static function isValidRoute(): bool
     {
-        return self::$isInvalidRoute;
+        return self::$isValidRoute;
     }
     
-    public static function getParameters(): array
+    public static function getParameterValues(): array
     {
         return self::$parameters;
+    }
+    
+    public static function getParameter(string $key): string
+    {
+        return self::$parameters[$key];
+    }
+    
+    public static function getRootDir(): string
+    {
+        return self::$rootDir;
     }
 }

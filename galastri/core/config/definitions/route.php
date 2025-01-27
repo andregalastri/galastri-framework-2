@@ -167,7 +167,7 @@ return [
     ],
 
     'templateFile' => [
-        'defaultValue' => '/app/template/template.php',
+        'defaultValue' => '/app/templates/template.php',
         'validTypes' => ['string'],
         'invalidTypes' => [],
         'validValues' => [],

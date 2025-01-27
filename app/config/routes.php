@@ -3,7 +3,7 @@
 return [
     '/' => [
         'projectName' => 'Galastri Framework',
-        'templateFile' => '/app/templates/main.php',
+        'templateFile' => '/app/templates/template.php',
         'output' => 'view',
 
         '@main' => [

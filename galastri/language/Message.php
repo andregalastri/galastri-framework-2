@@ -83,6 +83,8 @@ final class Message
     
     private const ROUTER_INVALID_VIEW_FOLDER = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "viewFolder". Exemplo válido: "/pasta/subpasta". Acesse a documentação para entender seu funcionamento.';
     
+    private const ROUTER_INVALID_VIEW_FILE = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "viewFile". Exemplo válido: "arquivo.php" ou "/pasta/subpasta/arquivo.php". Acesse a documentação para entender seu funcionamento.';
+    
     private const ROUTER_INVALID_TEMPLATE_FILE = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "templateFile". Exemplo válido: "/pasta/subpasta/arquivo.php". Acesse a documentação para entender seu funcionamento.';
     
     private const ROUTER_INVALID_NAMESPACE = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "namespace". Exemplo válido: "\\App\\Controller". Acesse a documentação do PHP para entender o padrão válido de namespaces.';
@@ -90,6 +92,24 @@ final class Message
     private const ROUTER_INVALID_ENDPOINT_PARAMETERS = 'Erro de configuração em "%s": O valor "%s" é inválido para o parâmetro "parameters". Exemplo válido: "/param1/?param2". Acesse a documentação para entender seu funcionamento.';
 
     private const ROUTER_MAIN_METHOD_NOT_FOUND = 'Erro de configuração em "%s": O endpoint @main não foi definido no node "%s"';
+
+    /**
+     * Controller
+     */
+    private const CONTROLLER_NOT_FOUND = 'Erro de controller: A controller "%s" não foi encontrada em "%s".';
+
+    private const CONTROLLER_MUST_EXTEND_MODULE = 'Erro de controller: A controller "%s" precisa herdar o módulo "galastri\modules\Controller".';
+    
+    private const CONTROLLER_METHOD_NOT_FOUND = 'Erro de controller: A controller "%s" não possui o método "%s".';
+    
+    
+    /**
+     * Output
+     */
+    private const OUTPUT_TEMPLATE_FILE_NOT_FOUND = 'Erro de saída (output): O arquivo de template "%s" não foi encontrado.';
+    
+    private const OUTPUT_VIEW_FILE_NOT_FOUND = 'Erro de saída (output): A view "%s" não foi encontrada.';
+    
 
     
     // private const DEFINITION_INVALID_VALUE = 'Erro:O valor da configuração "%s" é inválido. O valor desta configuração deve ser "%s", mas foi informado "%s".';

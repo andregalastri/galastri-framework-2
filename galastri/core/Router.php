@@ -40,7 +40,7 @@ final class Router
         self::resolveEndpoints();
         self::resolveParameters();
 
-        self::setUrlParts();
+        // self::setUrlParts();
     }
 
     private static function configureRootDir(): void
@@ -200,7 +200,7 @@ final class Router
         self::setConfigIfExists('isDownloadableFile');
         self::setConfigIfExists('allowedFileExtensions');
         self::setConfigIfExists('permissionFailMessage');
-        self::setConfigIfExists('ignoreMimeType');
+        self::setConfigIfExists('validateMimeType');
     }
 
     private static function configureNodeProperties(): void

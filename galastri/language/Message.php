@@ -110,6 +110,14 @@ final class Message
     
     private const OUTPUT_VIEW_FILE_NOT_FOUND = 'Erro de saída (output): A view "%s" não foi encontrada.';
     
+    private const OUTPUT_UNDEFINED_FILE_FOLDER = 'Erro de saída (file output): É necessário informar um parâmetro "fileFolder" para esta rota.';
+    
+    private const OUTPUT_INVALID_FILE_EXTENSION = 'Erro de saída (file output): Esta rota não permite exibir arquivos com extensão "%s", apenas "%s".';
+    
+    private const OUTPUT_UNDEFINED_FILE_MIME_EXTENSION = 'A extensão "%s" não possui um tipo MIME definido na configuração.';
+    
+    private const OUTPUT_UNLISTED_FILE_MIME_TYPE = 'O tipo MIME "%s" não foi configurado como um tipo válido para arquivos "%s".';
+    
 
     
     // private const DEFINITION_INVALID_VALUE = 'Erro:O valor da configuração "%s" é inválido. O valor desta configuração deve ser "%s", mas foi informado "%s".';

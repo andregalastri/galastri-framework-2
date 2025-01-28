@@ -232,8 +232,8 @@ return [
         'context' => 'route',
     ],
 
-    'ignoreMimeType' => [
-        'defaultValue' => false,
+    'validateMimeType' => [
+        'defaultValue' => true,
         'validTypes' => ['bool'],
         'invalidTypes' => [],
         'validValues' => [],

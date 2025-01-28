@@ -56,7 +56,7 @@ return [
         'context' => 'route',
     ],
 
-    'offlineRedirect' => [
+    'offlineRedirectTo' => [
         'defaultValue' => '',
         'validTypes' => ['string'],
         'invalidTypes' => [],
@@ -89,7 +89,7 @@ return [
         'context' => 'route',
     ],
 
-    'authFailRedirect' => [
+    'authFailRedirectTo' => [
         'defaultValue' => '',
         'validTypes' => ['string'],
         'invalidTypes' => [],
@@ -111,7 +111,7 @@ return [
         'context' => 'route',
     ],
 
-    'notFoundRedirect' => [
+    'notFoundRedirectTo' => [
         'defaultValue' => '',
         'validTypes' => ['string'],
         'invalidTypes' => [],
@@ -133,7 +133,7 @@ return [
         'context' => 'route',
     ],
 
-    'forceRedirect' => [
+    'forceRedirectTo' => [
         'defaultValue' => false,
         'validTypes' => ['bool', 'string'],
         'invalidTypes' => [],

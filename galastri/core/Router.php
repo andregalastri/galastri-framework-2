@@ -138,14 +138,14 @@ final class Router
         self::setConfigIfExists('output');
         self::setConfigIfExists('timezone');
         self::setConfigIfExists('offline');
-        self::setConfigIfExists('offlineRedirect');
+        self::setConfigIfExists('offlineRedirectTo');
         self::setConfigIfExists('offlineMessage');
         self::setConfigIfExists('authTag');
-        self::setConfigIfExists('authFailRedirect');
+        self::setConfigIfExists('authFailRedirectTo');
         self::setConfigIfExists('authFailMessage');
-        self::setConfigIfExists('notFoundRedirect');
+        self::setConfigIfExists('notFoundRedirectTo');
         self::setConfigIfExists('notFoundMessage');
-        self::setConfigIfExists('forceRedirect');
+        self::setConfigIfExists('forceRedirectTo');
 
         try {
             self::setConfigIfExists('namespace');

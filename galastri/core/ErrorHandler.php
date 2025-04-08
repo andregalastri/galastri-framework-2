@@ -12,10 +12,7 @@ use galastri\modules\Tools;
 
 final class ErrorHandler
 {
-
     const PATH_LOG = PROJECT_DIR.'/logs/ErrorHandler-%s.log';
-
-    private static string $displayErrorsType = 'view';
 
     private function __construct() {}
 
@@ -94,7 +91,6 @@ final class ErrorHandler
             E_USER_WARNING => 'E_USER_WARNING',
             E_NOTICE => 'E_NOTICE',
             E_USER_NOTICE => 'E_USER_NOTICE',
-            E_STRICT => 'E_STRICT',
         ];
 
         return $errorMap[$errorLevel] ?? $default;

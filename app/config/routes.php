@@ -2,6 +2,7 @@
 
 return [
     '/' => [
+        'displayErrors' => true,
         'projectName' => 'Galastri Framework',
         'templateFile' => '/app/templates/template.php',
         'fileFolder' => '/galastri/misc',

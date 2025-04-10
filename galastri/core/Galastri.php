@@ -56,7 +56,6 @@ final class Galastri
         self::executeOutput();
     }
 
-
     private static function checkForceRedirectTo(): void
     {
         $forceRedirectTo = Config::get('forceRedirectTo');

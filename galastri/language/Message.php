@@ -19,7 +19,7 @@ final class Message
         ];
     }
 
-    private const ERROR_MESSAGE = 'Ocorreu um problema. Consulte os detalhes nos relatórios de erro.';
+    private const DEFAULT_ERROR_MESSAGE = 'Ocorreu um problema. Consulte os detalhes nos relatórios de erro.';
 
     /**
      * Definição de configuração.

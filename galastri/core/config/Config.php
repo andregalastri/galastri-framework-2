@@ -18,9 +18,7 @@ final class Config
     
     private const REQUIRED_PROPERTIES = ['defaultValue', 'validTypes', 'invalidTypes', 'validValues', 'invalidValues', 'validRegex', 'invalidRegex', 'context'];
     
-    private const APP_CONFIG_FILE_DEBUG = PROJECT_DIR.'/app/config/debug.php';
     
-
     private static array $config = [];
 
 
@@ -67,10 +65,6 @@ final class Config
                     $definitions,
                 );
             }
-        }
-
-        foreach(self::importConfig(self::APP_CONFIG_FILE_DEBUG) as $name => $value) {
-            self::set($name, $value);
         }
     }
 

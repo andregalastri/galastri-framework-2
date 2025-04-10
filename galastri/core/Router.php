@@ -39,8 +39,6 @@ final class Router
         self::configureNodeProperties();
         self::resolveEndpoints();
         self::resolveParameters();
-
-        // self::setUrlParts();
     }
 
     private static function configureRootDir(): void
@@ -133,6 +131,13 @@ final class Router
 
     private static function configureRouteProperties(): void
     {
+        self::setConfigIfExists('displayErrors', false);
+        self::setConfigIfExists('stopOnWarnings', true);
+        // self::setConfigIfExists('useErrorHandler', true);
+        self::setConfigIfExists('showTrace', false);
+        // self::setConfigIfExists('performanceAnalysis', false);
+        self::setConfigIfExists('createLogsOnError', true);
+
         self::setConfigIfExists('projectName');
         self::setConfigIfExists('title');
         self::setConfigIfExists('output');
@@ -338,6 +343,9 @@ final class Router
     {
         if (isset(self::$routeData[$configName])) {
             Config::set($configName, self::$routeData[$configName]);
+            return true;
+        } elseif (isset(func_get_args()[1])) {
+            Config::set($configName, func_get_args()[1]);
             return true;
         }
 

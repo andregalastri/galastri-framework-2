@@ -98,7 +98,7 @@ final class ErrorHandler
 
     private static function getMessage(string $message): string
     {
-        return Config::get('displayErrors', true) ? $message : Message::get("ERROR_MESSAGE");
+        return Config::get('displayErrors', true) ? $message : Message::get("DEFAULT_ERROR_MESSAGE")[0];
     }
 
     private static function getLine(int $line): int

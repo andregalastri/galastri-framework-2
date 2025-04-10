@@ -1,4 +1,8 @@
 <?php
+/**
+ * Documentação:
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-PhpEngine
+ */
 
 namespace galastri\core\output\engines;
 
@@ -7,19 +11,19 @@ use galastri\core\output\View;
 
 final class PhpEngine
 {
+
     private array $controllerData;
-    private bool $safeChars;
 
     public function __construct() {
         $this->controllerData = Galastri::getControllerResponse();
     }
 
-    public function get($key): mixed
+    public function get(int|string $key): mixed
     {
         return $this->controllerData[$key] ?? null;
     }
 
-    public function print(string $key) : void
+    public function print(int|string $key) : void
     {
         $data = $this->get($key);
 

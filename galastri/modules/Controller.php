@@ -1,4 +1,8 @@
 <?php
+/**
+ * Documentação:
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-Controller
+ */
 
 namespace galastri\modules;
 
@@ -14,7 +18,6 @@ abstract class Controller
     private array $controllerHttpMethodData = [];
     private array $response = [];
     private array $fileContents = [];
-
 
     final public function __construct()
     {

@@ -1,4 +1,8 @@
 <?php
+/**
+ * Documentação:
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-View
+ */
 
 namespace galastri\core\output;
 
@@ -12,7 +16,9 @@ use galastri\modules\Tools;
 final class View
 {
     public static string $viewPath;
-    private static string $templateFile = '';
+    private static string $templatePath = '';
+
+    private function __construct() {}
 
     public static function run(): void
     {
@@ -39,7 +45,7 @@ final class View
             throw new Exception(
                 Message::get("OUTPUT_VIEW_FILE_NOT_FOUND"),
                 [
-                    Config::get('viewFolder').$viewFile,
+                    $viewPath,
                 ]
             );
         }
@@ -50,19 +56,19 @@ final class View
     private static function checkTemplateFile(): void
     {
         $templateFile = Config::get('templateFile');
-        $templateFileFullPath = PROJECT_DIR.$templateFile;
+        $templatePath = PROJECT_DIR.$templateFile;
 
         if ($templateFile != '') {
-            if (!file_exists($templateFileFullPath)) {
+            if (!file_exists($templatePath)) {
                 throw new Exception(
                     Message::get("OUTPUT_TEMPLATE_FILE_NOT_FOUND"),
                     [
-                        $templateFile,
+                        $templatePath,
                     ]
                 );
             }
 
-            self::$templateFile = $templateFileFullPath;
+            self::$templatePath = $templatePath;
         }
     }
 
@@ -75,7 +81,7 @@ final class View
         $phpEngine = 'galastri\core\output\engines\PhpEngine';
         $g = new $phpEngine();
         
-        require(self::$templateFile == '' ? self::$viewPath : self::$templateFile);
+        require(self::$templatePath == '' ? self::$viewPath : self::$templatePath);
     }
 
     public static function requiresController(): bool

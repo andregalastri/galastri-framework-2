@@ -1,4 +1,8 @@
 <?php
+/**
+ * Documentação:
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-File
+ */
 
 namespace galastri\core\output;
 
@@ -12,11 +16,12 @@ use galastri\modules\Tools;
 final class File
 {
     private static array $contents = [];
+    private static string $folder = '';
     private static string $path = '';
     private static string $extension = '';
-    private static string $folder = '';
     private static string $mimeType = '';
-    private static bool $isLoaded = false;
+
+    private function __construct() {}
 
     public static function run(): void
     {
@@ -27,7 +32,7 @@ final class File
             self::checkFileExists();
             self::checkExtension();
             self::checkMimeType();
-            self::createFileData();
+            self::setFileContents();
         }
 
         if (Config::get('isDownloadableFile')) {
@@ -71,9 +76,9 @@ final class File
 
     private static function checkExtension(): void
     {
-        $info = pathinfo(self::$path);
+        $fileInfo = pathinfo(self::$path);
 
-        $extension = $info['extension'] ?? '';
+        $extension = $fileInfo['extension'] ?? '';
         $allowedExtensions = Config::get('allowedFileExtensions');
 
         if ($allowedExtensions != [] and !in_array($extension, $allowedExtensions)) {
@@ -116,7 +121,7 @@ final class File
         self::$mimeType = $mimeType;
     }
 
-    private static function createFileData(): void
+    private static function setFileContents(): void
     {
         self::$contents = [file_get_contents(self::$path), pathinfo(self::$path)['basename'], self::$mimeType];
     }

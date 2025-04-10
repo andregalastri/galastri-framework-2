@@ -1,14 +1,11 @@
 <?php
 /**
- * Documentação da classe:
+ * Documentação:
  * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-Galastri
  */
 
 namespace galastri\core;
 
-// use galastri\core\Debug;
-// use galastri\core\Controller;
-// use galastri\core\Parameters;
 use galastri\core\Router;
 use galastri\core\config\Config;
 use galastri\extensions\Exception;

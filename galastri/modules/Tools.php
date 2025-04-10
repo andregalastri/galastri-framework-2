@@ -1,6 +1,6 @@
 <?php
 /**
- * Documentação da classe:
+ * Documentação:
  * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-Tools
  */
 

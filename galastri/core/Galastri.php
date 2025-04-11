@@ -12,7 +12,7 @@ use galastri\extensions\Exception;
 use galastri\language\Message;
 use galastri\modules\Tools;
 use galastri\modules\VarDump;
-// use galastri\modules\Redirect;
+use galastri\modules\Redirect;
 // use galastri\modules\Authentication;
 // use galastri\modules\PerformanceAnalysis;
 
@@ -61,7 +61,7 @@ final class Galastri
         $forceRedirectTo = Config::get('forceRedirectTo');
 
         if ($forceRedirectTo !== '') {
-            // Redirect::to($forceRedirectTo);
+            Redirect::to($forceRedirectTo);
         }
     }
 
@@ -74,7 +74,7 @@ final class Galastri
         if ($offline) {
 
             if ($offlineRedirectTo !== '') {
-                // Redirect::to($offlineRedirectTo);
+                Redirect::to($offlineRedirectTo);
             }
 
             throw new Exception(
@@ -97,8 +97,7 @@ final class Galastri
         $notFoundMessage = Config::get('notFoundMessage');
 
         if ($notFoundRedirectTo !== '' and $output != 'json') {
-            exit(header('Location: '.$notFoundRedirectTo));
-            // Redirect::to($notFoundRedirectTo));
+            Redirect::to($notFoundRedirectTo);
         }
 
         header("HTTP/1.0 404 Not Found");
@@ -119,7 +118,7 @@ final class Galastri
 
 
                 if ($authFailRedirectTo !== '' and $output != 'json') {
-                    // Redirect::to($authFailRedirectTo);
+                    Redirect::to($authFailRedirectTo);
                 }
 
                 throw new Exception(

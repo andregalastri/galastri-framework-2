@@ -73,7 +73,7 @@ final class Message
     private const TOOLS_NUM_OF_FLAGS_UNMATCH_STRING_FLAGS = 'Erro no método flagReplace(): A mensagem possui %s flag(s), mas há apenas %s argumento(s) informado(s).';
 
     private const TOOLS_INVALID_CHMOD_CODE = 'Erro no método validateChmodCode: O código %s não é válido para o chmod().';
-
+    
     /**
      * Router
      */
@@ -118,7 +118,10 @@ final class Message
     
     private const OUTPUT_UNLISTED_FILE_MIME_TYPE = 'O tipo MIME "%s" não foi configurado como um tipo válido para arquivos "%s".';
     
-
+    /**
+     * Redirect
+     */
+    private const REDIRECT_INVALID_STATUS_CODE = 'O status de redirecionamento %s é inválido. Os códigos válidos são: %s.';
     
     // private const DEFINITION_INVALID_VALUE = 'Erro:O valor da configuração "%s" é inválido. O valor desta configuração deve ser "%s", mas foi informado "%s".';
     

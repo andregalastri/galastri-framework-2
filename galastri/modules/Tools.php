@@ -168,6 +168,28 @@ final class Tools
         return array_slice($array, $quantity);
     }
 
+    public static function arrayAt(array &$array, int $index, bool $remove = false): mixed
+    {
+        if ($index < 0) {
+            $index = count($array) + $index;
+        }
+    
+        $keys = array_keys($array);
+    
+        if (isset($keys[$index])) {
+            $key = $keys[$index];
+            $value = $array[$key];
+    
+            if ($remove) {
+                unset($array[$key]);
+            }
+    
+            return $value;
+        }
+    
+        return null;
+    }
+
     // public static function arrayMapRecursive(Closure $callback, array $array)
     // {
     //     $recursive = function ($callback, $array, $recursive)

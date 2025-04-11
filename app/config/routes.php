@@ -3,15 +3,28 @@
 return [
     '/' => [
         'displayErrors' => true,
-        'projectName' => 'Galastri Framework',
-        'templateFile' => '/app/templates/template.php',
-        'fileFolder' => '/galastri/misc',
-        'output' => 'view',
-        'allowedFileExtensions' => [],
-        'validateMimeType' => true,
-        // 'notFoundRedirect' => 'https://google.com.br',
+        'permissions' => [
+            'userPermissions' => \app\modules\UserPermission::class,
+            'managerPermissions' => \app\modules\ManagerPermission::class,
+        ],
 
         '@main' => [
+            // Configuração do endpoint principal.
+        ],
+
+        '/listar-produtos' => [
+
+            '@main' => [
+                'permissions' => [
+                    'allow' => ['userPermissions' => ['listar-produtos']],
+                ],
+            ],
+
+            '@deletar' => [
+                'permissions' => [
+                    'deny' => ['managerPermissions' => ['deletar-produtos']],
+                ],
+            ]
         ],
     ],
 ];

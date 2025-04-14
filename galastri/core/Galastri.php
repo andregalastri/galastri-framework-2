@@ -13,7 +13,7 @@ use galastri\language\Message;
 use galastri\modules\Tools;
 use galastri\modules\VarDump;
 use galastri\modules\Redirect;
-// use galastri\modules\Authentication;
+use galastri\modules\Authentication;
 // use galastri\modules\PerformanceAnalysis;
 
 final class Galastri
@@ -60,7 +60,7 @@ final class Galastri
     {
         $forceRedirectTo = Config::get('forceRedirectTo');
 
-        if ($forceRedirectTo !== '') {
+        if ($forceRedirectTo !== false && $forceRedirectTo !== '') {
             Redirect::to($forceRedirectTo);
         }
     }
@@ -85,7 +85,7 @@ final class Galastri
 
     private static function isValidRoute(): void
     {
-        if (!Router::isValidRoute() and self::$output::requiresController()) {
+        if (!Router::isValidRoute() && self::$output::requiresController()) {
             self::notFound();
         }
     }
@@ -96,7 +96,7 @@ final class Galastri
         $notFoundRedirectTo = Config::get('notFoundRedirectTo');
         $notFoundMessage = Config::get('notFoundMessage');
 
-        if ($notFoundRedirectTo !== '' and $output != 'json') {
+        if ($notFoundRedirectTo !== '' && $output != 'json') {
             Redirect::to($notFoundRedirectTo);
         }
 
@@ -114,10 +114,9 @@ final class Galastri
         $output = Config::get('output');
 
         if ($authTag !== '') {
-            if (/*Authentication::validate($authTag) === */false) {
+            if (Authentication::validate($authTag) === false) {
 
-
-                if ($authFailRedirectTo !== '' and $output != 'json') {
+                if ($authFailRedirectTo !== '' && $output != 'json') {
                     Redirect::to($authFailRedirectTo);
                 }
 
@@ -196,7 +195,7 @@ final class Galastri
         $httpMethodList = Config::get('httpMethod');
         $serverHttpMethod = mb_strtolower($_SERVER['REQUEST_METHOD']);
 
-        if (!empty($httpMethodList) and array_key_exists($serverHttpMethod, $httpMethodList)) {
+        if (!empty($httpMethodList) && array_key_exists($serverHttpMethod, $httpMethodList)) {
 
             self::$controllerHttpMethodName = $httpMethodList[$serverHttpMethod];
             self::$controllerHttpMethodExists = true;

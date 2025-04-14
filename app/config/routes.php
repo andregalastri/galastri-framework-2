@@ -3,28 +3,19 @@
 return [
     '/' => [
         'displayErrors' => true,
-        'permissions' => [
-            'userPermissions' => \app\modules\UserPermission::class,
-            'managerPermissions' => \app\modules\ManagerPermission::class,
-        ],
+        'title' => 'Galastri Framework',
 
         '@main' => [
             // Configuração do endpoint principal.
         ],
 
-        '/listar-produtos' => [
+        '@protected-route' => [
+            'title' => 'Galastri a',
+            // Configuração do endpoint principal.
+        ],
 
-            '@main' => [
-                'permissions' => [
-                    'allow' => ['userPermissions' => ['listar-produtos']],
-                ],
-            ],
-
-            '@deletar' => [
-                'permissions' => [
-                    'deny' => ['managerPermissions' => ['deletar-produtos']],
-                ],
-            ]
+        '@login' => [
+            'authTag' => 'login',
         ],
     ],
 ];

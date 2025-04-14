@@ -52,6 +52,8 @@ final class Message
     private const CONFIG_VALUE_MATCHED_REGEX_NOT = 'Erro na configuração "%s": O valor %s precisa ser válido na expressão: %s.';
 
     private const CONFIG_DOESNT_EXIST = 'Erro: A configuração "%s" não existe.';
+    
+    private const CONFIG_EXISTS = 'Erro: A configuração "%s" existe.';
 
     /**
      * Arquivo de configuração.
@@ -122,6 +124,15 @@ final class Message
      * Redirect
      */
     private const REDIRECT_INVALID_STATUS_CODE = 'O status de redirecionamento %s é inválido. Os códigos válidos são: %s.';
+
+    /**
+     * Authentication
+     */
+    private const AUTHENTICATION_UNDEFINED_AUTH_TAG = 'Erro de autenticação: Nenhuma tag de autenticação foi definida. Defina-o como parâmetro do método.';
+
+    private const AUTHENTICATION_UNCONFIGURED_AUTH_TAG = 'Erro de autenticação: A tag de autenticação "%s" não foi configurada. Configure-a usando o método "configure" antes de usar o método "create".';
+
+    private const AUTHENTICATION_UNCONFIGURED_SECRET_KEY = 'Erro de autenticação: A chave secreta não foi configurada. Configure-a usando o método "configure" antes de usar o método "create".';
     
     // private const DEFINITION_INVALID_VALUE = 'Erro:O valor da configuração "%s" é inválido. O valor desta configuração deve ser "%s", mas foi informado "%s".';
     

@@ -116,7 +116,7 @@ final class ErrorHandler
 
     private static function getTrace(array $trace): array
     {
-        if (Config::get('displayErrors', true) and Config::get('showTrace', false)) {
+        if (Config::get('displayErrors', true) && Config::get('showTrace', false)) {
             return $trace;
         }
 
@@ -157,7 +157,7 @@ final class ErrorHandler
             self::createLogFile($code, $message, $file, $line, $trace, $currentDate, $currentTime);
         }
 
-        if (Config::get('stopOnWarnings', true) or (Config::get('stopOnWarnings', true) and !in_array($code, ['E_WARNING', 'E_CORE_WARNING', 'E_COMPILE_WARNING', 'E_USER_WARNING']))) {
+        if (Config::get('stopOnWarnings', true) || (Config::get('stopOnWarnings', true) && !in_array($code, ['E_WARNING', 'E_CORE_WARNING', 'E_COMPILE_WARNING', 'E_USER_WARNING']))) {
             exit;
         }
     }

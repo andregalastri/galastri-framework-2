@@ -260,7 +260,7 @@ final class Router
 
     private static function resolveEndpoints(): void
     {
-        if (Config::get('output') !== 'file' and count(preg_grep('/^@main(:|$)/', array_keys(self::$routeData))) == 0) {
+        if (Config::get('output') !== 'file' && count(preg_grep('/^@main(:|$)/', array_keys(self::$routeData))) == 0) {
             throw new Exception(
                 Message::get("ROUTER_MAIN_METHOD_NOT_FOUND"),
                 [
@@ -287,8 +287,9 @@ final class Router
         }
 
         self::$routeData = self::$routeData['@'.$methodName];
+        self::configureRouteProperties();
 
-        self::$methodName = $methodName;
+        self::$methodName = Tools::toCamelCase($methodName);
         self::configureEndpointProperties();
     }
 
@@ -296,12 +297,12 @@ final class Router
     {
         $parametersValues = array_values(array_filter(explode('/', Config::get('parameters'))));
 
-        if (count(self::$urlParts) > 0 and count($parametersValues) <= 0) {
+        if (count(self::$urlParts) > 0 && count($parametersValues) <= 0) {
             self::$isValidRoute = false;
         }
 
         foreach ($parametersValues as $parameterId) {
-            if (strpos($parameterId, '?') !== 0 and count(self::$urlParts) <= 0) {
+            if (strpos($parameterId, '?') !== 0 && count(self::$urlParts) <= 0) {
                 self::$isValidRoute = false;
             }
 
@@ -315,7 +316,7 @@ final class Router
             self::$controllerNamespace = array_filter(explode('\\', self::$routeData['namespace']));
         }
 
-        if (!self::$removedIndexFromNamespace and count(self::$controllerNamespace) > 2) {
+        if (!self::$removedIndexFromNamespace && count(self::$controllerNamespace) > 2) {
             self::$removedIndexFromNamespace = true;
 
             self::$controllerNamespace = array_filter(self::$controllerNamespace, function($value) {
@@ -344,7 +345,8 @@ final class Router
         if (isset(self::$routeData[$configName])) {
             Config::set($configName, self::$routeData[$configName]);
             return true;
-        } elseif (isset(func_get_args()[1])) {
+        }
+        if (isset(func_get_args()[1]) && Config::notExists($configName)) {
             Config::set($configName, func_get_args()[1]);
             return true;
         }

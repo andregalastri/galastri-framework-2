@@ -84,7 +84,7 @@ final class Config
 
     public static function set(string $name, mixed $value): void
     {
-        self::checkPropertyExists($name);
+        self::exists($name, true);
         self::$config[$name]->setValue($value);
     }
 
@@ -93,7 +93,7 @@ final class Config
         try {
             $name = $parameters[0];
     
-            self::checkPropertyExists($name);
+            self::exists($name, true);
             return self::$config[$name]->getValue();
     
         } catch (Exception $e) {
@@ -121,9 +121,13 @@ final class Config
         return $valueList;
     }
 
-    private static function checkPropertyExists(string $name): void
+    public static function exists(string $name, bool $throwException = false): bool
     {
-        if (!array_key_exists($name, self::list())) {
+        if (array_key_exists($name, self::list())) {
+            return true;
+        }
+
+        if ($throwException) {
             throw new Exception(
                 Message::get("CONFIG_DOESNT_EXIST"),
                 [
@@ -131,6 +135,26 @@ final class Config
                 ]
             );
         }
+
+        return false;
+    }
+
+    public static function notExists(string $name, bool $throwException = false): bool
+    {
+        if (!array_key_exists($name, self::list())) {
+            return true;
+        }
+
+        if ($throwException) {
+            throw new Exception(
+                Message::get("CONFIG_EXISTS"),
+                [
+                    $name,
+                ]
+            );
+        }
+
+        return false;
     }
 
     public static function importConfig(string $path): array

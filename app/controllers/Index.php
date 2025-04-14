@@ -15,4 +15,22 @@ final class Index extends Controller
             return [];
         }
     }
+
+    protected function protectedRoute(): array
+    {
+        try {
+            return [];
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+
+    protected function login(): array
+    {
+        try {
+            return [];
+        } catch (Exception $e) {
+            return [];
+        }
+    }
 }

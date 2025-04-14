@@ -9,7 +9,6 @@ namespace galastri\modules;
 use galastri\core\Router;
 use galastri\core\Galastri;
 use galastri\core\config\Config;
-use galastri\extensions\Exception;
 
 abstract class Controller
 {
@@ -83,7 +82,7 @@ abstract class Controller
 
     final protected function getTitle(): string
     {
-        return Config::get('projectName');
+        return Config::get('title');
     }
 
     /************** */
@@ -93,9 +92,9 @@ abstract class Controller
         Config::set('output', $value);
     }
 
-    final protected function getOutput(): void
+    final protected function getOutput(): string
     {
-        Config::get('output');
+        return Config::get('output');
     }
 
     /************** */

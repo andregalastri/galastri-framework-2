@@ -82,7 +82,7 @@ class Exception extends \Exception
 
     private function setCode(int|string $code): void
     {
-        if (Tools::typeOf($code) === 'int' or Tools::typeOf($code) === 'string') {
+        if (Tools::typeOf($code) === 'int' || Tools::typeOf($code) === 'string') {
             $this->code = $code;
         } else {
             throw new Exception(Message::get("EXCEPTION_INVALID_CODE"), [Tools::typeOf($code)]);

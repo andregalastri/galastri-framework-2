@@ -246,7 +246,7 @@ final class Definition
             );
         }
 
-        if (empty(self::ALLOWED_CONFIG_CONTEXT) or !in_array($value, self::ALLOWED_CONFIG_CONTEXT, true)) {
+        if (empty(self::ALLOWED_CONFIG_CONTEXT) || !in_array($value, self::ALLOWED_CONFIG_CONTEXT, true)) {
             throw new Exception(
                 Message::get("DEFINITION_INVALID_VALUE_IN_ARRAY"),
                 [
@@ -270,7 +270,7 @@ final class Definition
 
     public function setValue(mixed $value): void
     {
-        if (!empty($this->getValidTypes()) and !$this->isOfType($this->getValidTypes(), $value)) {
+        if (!empty($this->getValidTypes()) && !$this->isOfType($this->getValidTypes(), $value)) {
             throw new Exception(
                 Message::get("CONFIG_INVALID_TYPE"),
                 [
@@ -286,7 +286,7 @@ final class Definition
             );
         }
 
-        if (!empty($this->getInvalidTypes()) and $this->isOfType($this->getInvalidTypes(), $value)) {
+        if (!empty($this->getInvalidTypes()) && $this->isOfType($this->getInvalidTypes(), $value)) {
             throw new Exception(
                 Message::get("CONFIG_INVALID_TYPE_NOT"),
                 [
@@ -301,7 +301,7 @@ final class Definition
             );
         }
 
-        if (!empty($this->getValidValues()) and !in_array($value, $this->getValidValues(), true)) {
+        if (!empty($this->getValidValues()) && !in_array($value, $this->getValidValues(), true)) {
             throw new Exception(
                 Message::get("CONFIG_INVALID_VALUE"),
                 [
@@ -317,7 +317,7 @@ final class Definition
             );
         }
 
-        if (!empty($this->getInvalidValues()) and in_array($value, $this->getInvalidValues(), true)) {
+        if (!empty($this->getInvalidValues()) && in_array($value, $this->getInvalidValues(), true)) {
             throw new Exception(
                 Message::get("CONFIG_INVALID_VALUE_NOT"),
                 [
@@ -334,7 +334,7 @@ final class Definition
 
 
         if ($value !== '') {
-            if (!empty($this->getInvalidRegex()) and preg_match($this->getInvalidRegex(), $value)) {
+            if (!empty($this->getInvalidRegex()) && preg_match($this->getInvalidRegex(), $value)) {
                 throw new Exception(
                     Message::get("CONFIG_VALUE_MATCHED_REGEX"),
                     [
@@ -349,7 +349,7 @@ final class Definition
                 );
             }
 
-            if (!empty($this->getValidRegex()) and !preg_match($this->getValidRegex(), $value)) {
+            if (!empty($this->getValidRegex()) && !preg_match($this->getValidRegex(), $value)) {
                 throw new Exception(
                     Message::get("CONFIG_VALUE_MATCHED_REGEX_NOT"),
                     [

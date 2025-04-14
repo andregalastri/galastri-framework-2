@@ -67,7 +67,7 @@ final class File
         $urlParts = implode('/', Router::getUrlParts());
         $path = PROJECT_DIR.'/'.self::$folder.'/'.$urlParts;
 
-        if ($urlParts == '' or !file_exists($path)) {
+        if ($urlParts == '' || !file_exists($path)) {
             Galastri::notFound();
         }
 

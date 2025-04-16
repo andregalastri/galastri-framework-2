@@ -3,6 +3,7 @@
 return [
     '/' => [
         'displayErrors' => true,
+        'showTrace' => false,
         'title' => 'Galastri Framework',
 
         '@main' => [
@@ -11,11 +12,17 @@ return [
 
         '@protected-route' => [
             'title' => 'Galastri a',
+            'output' => 'view',
+            'authTag' => 'login',
             // Configuração do endpoint principal.
         ],
 
         '@login' => [
-            'authTag' => 'login',
+            'output' => 'json',
+        ],
+
+        '@logout' => [
+            'output' => 'json',
         ],
     ],
 ];

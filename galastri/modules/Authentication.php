@@ -1,5 +1,4 @@
 <?php
-
 namespace galastri\modules;
 
 use galastri\extensions\Exception;
@@ -7,69 +6,39 @@ use galastri\language\Message;
 
 final class Authentication
 {
-    
-    private static array $fields;
-    private static array $token;
-    private static array $ip;
-    private static array $cookieExpiration;
-    private static ?string $authTag = null;
+    private static ?string $currentAuthTag = null;
+    private static array $tagList = [];
 
-    private static string $secretKeyLocation = PROJECT_DIR.'/app/config/secrets.php';
-    private static string $secretKey = '';
-    private static string $cipher = 'aes-256-cbc';
-
-    private function __construct() {}
-
-    public static function configure(string $authTag, ?int $cookieExpiration = null): void
+    public static function setAuthTag(string $authTag): void
     {
-        self::$token[$authTag] = base64_encode(random_bytes(48));
-        self::$ip[$authTag] = $_SERVER['REMOTE_ADDR'];
-        self::$cookieExpiration[$authTag] = $cookieExpiration ?? 86400;
+        self::$currentAuthTag = $authTag;
 
-
-        self::$authTag = $authTag;
+        if (!self::validate($authTag)) {
+            self::$tagList[$authTag] = [
+                'token' => base64_encode(random_bytes(48)),
+                'ip' => $_SERVER['REMOTE_ADDR'],
+                'cookieExpiration' => 86400,
+                'fields' => [],
+            ];
+        }
     }
 
-    public static function setField(string $field, bool|int|null|string $value, ?string $authTag = null)// : self
+    public static function create(?string $authTag = null, bool $regenerateIdSession = true): void
     {
-        $authTag = $authTag ?? self::$authTag;
+        $authTag = $authTag ?? self::$currentAuthTag;
 
-        if (empty($authTag)) {
-            throw new Exception(
-                Message::get('AUTHENTICATION_UNDEFINED_AUTH_TAG')
-            );
-        }
+        self::startSession();
 
-        self::$fields[$authTag][$field] = $value;
-    }
-
-    public static function create(?string $authTag = null): void
-    {
-        $authTag = $authTag ?? self::$authTag;
-
-        if (empty($authTag)) {
-            throw new Exception(
-                Message::get('AUTHENTICATION_UNDEFINED_AUTH_TAG')
-            );
-        }
-
-        if (!isset(self::$token[$authTag])) {
-            throw new Exception(
-                Message::get('AUTHENTICATION_UNCONFIGURED_AUTH_TAG')
-            );
-        }
-
-        session_start();
-
-        $_SESSION[$authTag]['token'] = self::$token[$authTag];
-        $_SESSION[$authTag]['ip'] = self::$ip[$authTag];
-        $_SESSION[$authTag]['cookieExpiration'] = self::$cookieExpiration[$authTag];
+        $_SESSION[$authTag]['token'] = self::$tagList[$authTag]['token'];
+        $_SESSION[$authTag]['ip'] = self::$tagList[$authTag]['ip'];
+        $_SESSION[$authTag]['cookieExpiration'] = self::$tagList[$authTag]['cookieExpiration'];
+        $_SESSION[$authTag]['fields'] = self::$tagList[$authTag]['fields'];
 
         setcookie(
             $authTag,
-            self::$token[$authTag],
+            json_encode(self::$tagList[$authTag]),
             [
-                'expires' => time() + self::$cookieExpiration[$authTag],
+                'expires' => time() + self::$tagList[$authTag]['cookieExpiration'],
                 'path' => '/',
                 'secure' => true,
                 'httponly' => true,
@@ -78,15 +47,81 @@ final class Authentication
             ]
         );
 
-        foreach (self::$fields[$authTag] as $field => $value) {
-            $_SESSION[$authTag]['fields'][$field] = $value;
+        if ($regenerateIdSession) {
+            session_regenerate_id();
         }
+
+        session_write_close();
+    }
+
+    public static function validate(string $authTag, bool $ipCheck = false): bool
+    {
+        self::startSession();
+
+        if (!isset($_SESSION[$authTag]) && !self::createSessionFromCookie($authTag)) {
+            session_write_close();
+            return false;
+        }
+
+        $cookie = json_decode($_COOKIE[$authTag], true);
+
+        if (!is_array($cookie) || !isset($cookie['token'], $_SESSION[$authTag]['token'])) {
+            session_write_close();
+            return false;
+        }
+
+        if ($_SESSION[$authTag]['token'] !== $cookie['token']) {
+            session_write_close();
+            return false;
+        }
+
+        if ($ipCheck && $_SESSION[$authTag]['ip'] !== $_SERVER['REMOTE_ADDR']) {
+            session_write_close();
+            return false;
+        }
+
+        session_write_close();
+        return true;
+    }
+
+    public static function setField(string $fieldName, bool|int|null|string $fieldValue, ?string $authTag = null): void
+    {
+        $authTag = $authTag ?? self::$currentAuthTag;
+
+        self::$tagList[$authTag]['fields'][$fieldName] = $fieldValue;
+    }
+
+    public static function getField(string $field, ?string $authTag = null): bool|int|null|string
+    {
+        self::startSession();
+
+        $authTag = $authTag ?? self::$currentAuthTag;
+
+        $value = $_SESSION[$authTag]['fields'][$field] ?? null;
+
+        session_write_close();
+
+        return $value;
+    }
+
+    public static function setCookieExpiration(int $seconds, ?string $authTag = null): void
+    {
+        $authTag = $authTag ?? self::$currentAuthTag;
+
+        self::$tagList[$authTag]['cookieExpiration'] = $seconds;
+    }
+
+    public static function remove(string $authTag): void
+    {
+        self::startSession();
+
+        unset($_SESSION[$authTag]);
 
         setcookie(
-            $authTag.'Fields',
-            self::encryptCookie($_SESSION[$authTag]['fields']),
+            $authTag,
+            '',
             [
-                'expires' => time() + self::$cookieExpiration[$authTag],
+                'expires' => time() - 86400,
                 'path' => '/',
                 'secure' => true,
                 'httponly' => true,
@@ -95,163 +130,59 @@ final class Authentication
             ]
         );
 
-        session_regenerate_id();
-        session_write_close();
-    }
-
-    public static function update(string $authTag): void
-    {
-        if (self::check($authTag)){
-            self::create($authTag);
-        }
-    }
-
-    public static function remove(string $authTag): bool
-    {
-        session_start();
-
-        if (self::check($authTag)){
-            unset($_SESSION[$authTag]);
-
-            setcookie($authTag, null, time() - 3600, '/');
-            unset($_COOKIE[$authTag]);
-
-            setcookie($authTag.'Fields', null, time() - 3600, '/');
-            unset($_COOKIE[$authTag.'Fields']);
-
-            return true;
-        }
+        unset($_COOKIE[$authTag]);
 
         session_write_close();
-
-        return false;
     }
 
     public static function destroy(): void
     {
-        session_start();
+        self::startSession();
 
-        foreach($_SESSION as $key => $value){
-            setcookie($key, null, time() - 3600, '/');
-            unset($_COOKIE[$key]);
-            unset($_COOKIE[$key.'Fields']);
+        foreach(array_keys($_COOKIE) as $authTag){
+            setcookie(
+                $authTag,
+                '',
+                [
+                    'expires' => time() - 86400,
+                    'path' => '/',
+                    'secure' => true,
+                    'httponly' => true,
+                    'samesite' => 'Strict',
+                    'domain' => $_SERVER['HTTP_HOST'],
+                ]
+            );
+
+            unset($_COOKIE[$authTag]);
         }
 
         session_unset();
         session_destroy();
     }
 
-    public static function getSession(string $authTag): ?array
+    private static function startSession(): void
     {
-        session_start();
-
-        if (self::check($authTag)){
-            $sessionFields = $_SESSION[$authTag]['fields'];
-
-            session_write_close();
-
-            return $sessionFields;
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
         }
-
-        session_write_close();
-
-        return null;
     }
 
-    public static function getCookies(string $authTag): ?array
+    private static function createSessionFromCookie(string $authTag): bool
     {
-        session_start();
+        if (isset($_COOKIE[$authTag])) {
+            $cookie = json_decode($_COOKIE[$authTag], true);
 
-        if (self::check($authTag)){
-            $cookie = self::decryptCookie($_COOKIE[$authTag.'Fields'], true);
+            if (is_array($cookie) && isset($cookie['token'])) {
+                self::$tagList[$authTag]['token'] = $cookie['token'];
+                self::$tagList[$authTag]['ip'] = $_SERVER['REMOTE_ADDR'];
+                self::$tagList[$authTag]['cookieExpiration'] = $cookie['cookieExpiration'];
+                self::$tagList[$authTag]['fields'] = $cookie['fields'];
 
-            session_write_close();
-
-            return $cookie;
-        }
-
-        session_write_close();
-
-        return null;
-    }
-
-    public static function validate(string $authTag, bool $ipCheck = false): bool
-    {
-        session_start();
-
-        if (self::check($authTag)){
-            if ($_SESSION[$authTag]['token'] === $_COOKIE[$authTag]){
-                if ($ipCheck){
-                    if ($_SESSION[$authTag]['ip'] === $_SERVER['REMOTE_ADDR']){
-                        session_write_close();
-
-                        return true;
-                    } else {
-                        session_write_close();
-
-                        return false;
-                    }
-                } else {
-                    session_write_close();
-
-                    return true;
-                }
+                self::create($authTag);
+                return true;
             }
         }
 
-        session_write_close();
-        
         return false;
-    }
-
-    private static function check(string $authTag): bool
-    {
-        return session_status() !== PHP_SESSION_NONE && isset($_SESSION[$authTag]['token']);
-    }
-
-    private static function encryptCookie(array $data): string
-    {
-        self::getAuthKey();
-
-        $iv = random_bytes(openssl_cipher_iv_length(self::$cipher));
-        $encryptedData = openssl_encrypt(json_encode($data), self::$cipher, self::$secretKey, 0, $iv);
-        
-        return base64_encode($iv.$encryptedData);
-    }
-
-    private static function decryptCookie(string $data): ?array
-    {
-        self::getAuthKey();
-
-        $raw = base64_decode($data);
-        $ivLength = openssl_cipher_iv_length(self::$cipher);
-        $iv = substr($raw, 0, $ivLength);
-        $encryptedData = substr($raw, $ivLength);
-        $decryptedData = openssl_decrypt($encryptedData, self::$cipher, self::$secretKey, 0, $iv);
-        
-        return $decryptedData !== false ? json_decode($decryptedData, true) : null;
-    }
-
-    private static function getAuthKey(): void
-    {
-        if (self::$secretKey !== '') {
-            return;
-        }
-
-        if (!file_exists(self::$secretKeyLocation)){
-            throw new Exception(
-                Message::get('AUTHENTICATION_UNCONFIGURED_SECRET_KEY')
-            );
-        }
-        
-        $secretKey = require(self::$secretKeyLocation);
-
-        if (!is_array($secretKey) || empty($secretKey['AUTH_SECRET_KEY'])) {
-            throw new Exception(
-                Message::get('AUTHENTICATION_UNCONFIGURED_SECRET_KEY')
-            );
-        }
-
-        self::$secretKey = $secretKey['AUTH_SECRET_KEY'];
     }
 }

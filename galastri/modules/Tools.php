@@ -190,21 +190,14 @@ final class Tools
         return null;
     }
 
-    // public static function arrayMapRecursive(Closure $callback, array $array)
-    // {
-    //     $recursive = function ($callback, $array, $recursive)
-    //     {
-    //         foreach ($array as $key => $value) {
-    //             if (self::typeOf($value) === 'array') {
-    //                 $result[$key] = $recursive($callback, $value, $array[$key], $recursive);
-    //             } else {
-    //                 $result[$key] = $callback($value);
-    //             }
-    //         }
-    
-    //         return $result;
-    //     };
-    
-    //     return $recursive($callback, $array, $recursive);
-    // }
+    public static function arrayFlatten(array $list): array
+    {
+        $result = [];
+
+        array_walk_recursive($list, function ($item) use (&$result) {
+            $result[] = $item;
+        });
+
+        return $result;
+    }
 }

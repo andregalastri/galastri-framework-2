@@ -26,13 +26,13 @@ class Exception extends \Exception
                     throw new Exception(Message::get("EXCEPTION_INVALID_ARRAY"));
                 }
 
-                if (preg_match(Tools::FLAG_REPLACER_REGEX, $parameters[0][0])) {
+                if (preg_match(Tools::FLAG_REPLACER_REGEX_SEQUENTIAL, $parameters[0][0]) || preg_match(Tools::FLAG_REPLACER_REGEX_POSITIONAL, $parameters[0][0])) {
                     $this->processArrayWithFlags($parameters[0], $parameters[1] ?? [], $parameters[2] ?? null);
                 } else {
                     $this->processSimpleArray($parameters[0], $parameters[1] ?? null);
                 }
             } else {
-                if (preg_match(Tools::FLAG_REPLACER_REGEX, $parameters[0])) {
+                if (preg_match(Tools::FLAG_REPLACER_REGEX_SEQUENTIAL, $parameters[0][0]) || preg_match(Tools::FLAG_REPLACER_REGEX_POSITIONAL, $parameters[0][0])) {
                     $this->processStringWithFlags($parameters[0], $parameters[1] ?? [], $parameters[2] ?? null, $parameters[3] ?? null);
                 } else {
                     $this->processSimpleString($parameters[0], $parameters[1] ?? null, $parameters[2] ?? null);

@@ -340,12 +340,13 @@ final class Router
         return $string;
     }
 
-    private static function setConfigIfExists(string $configName): bool
+    private static function setConfigIfExists(string $configName /*, [1]*/): bool
     {
         if (isset(self::$routeData[$configName])) {
             Config::set($configName, self::$routeData[$configName]);
             return true;
         }
+        
         if (isset(func_get_args()[1]) && Config::notExists($configName)) {
             Config::set($configName, func_get_args()[1]);
             return true;

@@ -11,9 +11,10 @@ use galastri\language\Message;
 
 final class Tools
 {
-    const FLAG_REPLACER_REGEX = '/(?<!%)%s/m';
-    const FLAG_REPLACER_ESCAPE = '%%s';
-    const FLAG_REPLACER_REPLACE_TAG = '%s';
+    const FLAG_REPLACER_REGEX_SEQUENTIAL = '/(?<!%)%s(?!\d)/';
+    const FLAG_REPLACER_REGEX_POSITIONAL = '/(?<!%)%(\d+)/';
+    const FLAG_REPLACER_ESCAPE = '%%';
+    const FLAG_REPLACER_ESCAPE_REPLACE_TAG = '%';
 
     private function __construct() {}
 
@@ -97,23 +98,33 @@ final class Tools
      */
     public static function flagReplace(string $message, array $args): string
     {
-        preg_match_all(self::FLAG_REPLACER_REGEX, $message, $match);
+        preg_match_all(self::FLAG_REPLACER_REGEX_SEQUENTIAL, $message, $matchSequential);
+        preg_match_all(self::FLAG_REPLACER_REGEX_POSITIONAL, $message, $matchPositional);
     
-        if (count($match[0]) > count($args)) {
+        if (count($matchSequential[0]) + count($matchPositional[0]) > count($args)) {
             throw new Exception(
                 Message::get("TOOLS_NUM_OF_FLAGS_UNMATCH_STRING_FLAGS"),
                 [
-                    (string)substr_count($message, self::FLAG_REPLACER_REPLACE_TAG),
-                    (string)count($args),
+                    count($matchSequential[0]) + count($matchPositional[0]),
+                    count($args),
                 ],
             );
         }
-    
-        foreach( $args as $arg ) {
-            $message = preg_replace(self::FLAG_REPLACER_REGEX, $arg, $message, 1);
+
+        foreach($matchPositional[0] as $key => $flag) {
+            $index = $matchPositional[1][$key] - 1;
+            
+            if (isset($args[$index])) {
+                $message = str_replace($flag, $args[$index], $message);
+                unset($args[$index]);
+            }
         }
     
-        return str_replace(self::FLAG_REPLACER_ESCAPE, self::FLAG_REPLACER_REPLACE_TAG, $message);
+        foreach($args as $arg) {
+            $message = preg_replace(self::FLAG_REPLACER_REGEX_SEQUENTIAL, $arg, $message, 1);
+        }
+    
+        return str_replace(self::FLAG_REPLACER_ESCAPE, self::FLAG_REPLACER_ESCAPE_REPLACE_TAG, $message);
     }
 
 

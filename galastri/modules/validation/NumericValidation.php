@@ -1,0 +1,94 @@
+<?php
+
+namespace galastri\modules\validation;
+
+final class NumericValidation
+{
+    use traits\CoreValidation;
+    use traits\EmptyValidation;
+    use traits\ListValidation;
+
+    public function minValue(int|float $minValue): self
+    {
+        $this->validationChain[] = function () use ($minValue) {
+            $value = $this->value;
+
+            if ($value < $minValue) {
+                $this->messageData = [$value, $minValue];
+                $this->throwError();
+            }
+        };
+
+        return $this;
+    }
+
+    public function maxValue(int|float $maxValue): self
+    {
+        $this->validationChain[] = function () use ($maxValue) {
+            $value = $this->value;
+            
+            if ($value > $maxValue) {
+                $this->messageData = [$value, $maxValue];
+                $this->throwError();
+            }
+        };
+
+        return $this;
+    }
+
+    public function valueRange(int $minValue, int $maxValue): self
+    {
+        $this->validationChain[] = function () use ($minLength, $maxLength) {
+            $value = $this->value;
+            
+            if ($value < $minValue || $value > $maxValue) {
+                $this->messageData = [$value, $minValue, $maxValue];
+                $this->throwError();
+            }
+        };
+
+        return $this;
+    }
+
+    public function denyFloat(): self
+    {
+        $this->validationChain[] = function () {
+            $value = $this->value;
+
+            if (is_float($value)) {
+                $this->messageData = [$value];
+                $this->throwError();
+            }
+        };
+
+        return $this;
+    }
+
+    public function denyZero(): self
+    {
+        $this->validationChain[] = function () {
+            $value = (int)$this->value;
+
+            if ($value === 0) {
+                $this->messageData = [$value];
+                $this->throwError();
+            }
+        };
+        
+        return $this;
+    }
+
+    public function denyNegative(): self
+    {
+        $this->validationChain[] = function () {
+            $value = (int)$this->value;
+
+            if ($value < 0) {
+                $this->messageData = [$value];
+                $this->throwError();
+            }
+        };
+        
+        return $this;
+    }
+}

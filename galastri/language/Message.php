@@ -138,7 +138,11 @@ final class Message
      * Validation
      */
 
-    private const VALIDATION_DEFAULT_FAIL_MESSAGE = 'Os dados informados são inválidos.';
+    private const VALIDATION_FAIL = 'Os dados informados são inválidos.';
     
     private const VALIDATION_INVALID_DATETIME = 'Erro de validação: A data/hora "%s" não condiz com o formato "%s".';
+    
+    private const VALIDATION_WRONG_CONFIG = 'Erro de validação: O método %s não foi configurado corretamente.';
+    
+    private const VALIDATION_INVALID_MODE = 'Erro de validação: O modo %s não existe.';
 }

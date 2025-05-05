@@ -12,11 +12,7 @@ final class Index extends Controller
 {
     protected function main(): array
     {
-        $validation = Validation::dateTime()
-            ->minDateTime('yesterday')
-                ->withMessage('O valor precisa no mínimo %2');
-
-        $validation->validate('24/04/2025 10:00:00', 'd/m/Y H:i:s');
+        $validation = Validation::string();
             
         return [];
     }

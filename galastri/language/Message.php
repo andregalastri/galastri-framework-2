@@ -145,4 +145,21 @@ final class Message
     private const VALIDATION_WRONG_CONFIG = 'Erro de validação: O método %s não foi configurado corretamente.';
     
     private const VALIDATION_INVALID_MODE = 'Erro de validação: O modo %s não existe.';
+
+        
+    /**
+     * Database
+     */
+
+     private const DATABASE_CONFIG_DOESNT_EXIST = 'Erro de banco de dados: A configuração "%s" não existe.';
+
+     private const DATABASE_CONFIG_MISSING_REQUIRED_PROPERTY = 'Erro de banco de dados: A configuração "%s" não possui a propriedade "%s".';
+     
+     private const DATABASE_MISSING_REQUIRED_PROPERTY = 'Erro de banco de dados: A propriedade "%s" precisa ser configurada.';
+     
+     private const DATABASE_DISCONNECTED = 'Erro de banco de dados: O banco de dados não está conectado.';
+     
+     private const DATABASE_BIND_PARAMETER_TYPE = 'Erro de banco de dados: O tipo do parâmetro "%s" não é válido. Os tipos válidos são: "%s".';
+     
+     private const DATABASE_RESULT_DOESNT_EXIST = 'Erro de banco de dados: O nome "%s" para o resultado da consulta não existe.';
 }

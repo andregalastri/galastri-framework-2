@@ -52,7 +52,7 @@ final class Tools
         file_put_contents($path, $content);
     }
 
-    public static function typeOf(mixed $value): string
+    public static function typeOf(mixed $value, bool $getClassForObjects = false): string
     {
         $types = [
             'boolean' => 'bool',
@@ -68,7 +68,7 @@ final class Tools
     
         $type = gettype($value);
     
-        if ($type === 'object') {
+        if ($getClassForObjects && $type === 'object') {
             return get_class($value);
         }
     
@@ -210,5 +210,10 @@ final class Tools
         });
 
         return $result;
+    }
+
+    public static function import(string $location, mixed $defaultValue): mixed
+    {
+        return file_exists($location) ? require $location : $defaultValue;
     }
 }

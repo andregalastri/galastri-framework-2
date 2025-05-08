@@ -5,15 +5,26 @@ namespace app\controllers;
 use galastri\modules\Controller;
 use galastri\modules\Permission;
 use galastri\modules\Redirect;
-use galastri\modules\Validation;
+use galastri\modules\Database;
 use galastri\extensions\Exception;
 
 final class Index extends Controller
 {
     protected function main(): array
     {
-        $validation = Validation::string();
-            
+        $db = Database::createMysql();
+        $db->setHost('localhost');
+        $db->setDatabase('test');
+        $db->setUsername('phpmyadmin');
+        $db->setPassword('phpmyadmin#tr3');
+        $db->connect();
+
+        $db->query('SELECT * FROM framework WHERE id = :id');
+        $db->bind(':id', 1);
+        $db->submit();
+
+        vardump($db->getResult());
+        
         return [];
     }
 

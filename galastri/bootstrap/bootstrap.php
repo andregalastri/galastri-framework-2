@@ -16,7 +16,6 @@ require('constants.php');
 require('functions.php');
 require(PROJECT_DIR.'/vendor/autoload.php');
 
-
 class_alias(\galastri\modules\VarDump::class, '\VarDump');
 
 ErrorHandler::run();

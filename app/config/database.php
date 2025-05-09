@@ -1,15 +1,15 @@
 <?php
 return [
-    'mysql' => [
-        'host' => 'localhost',
-        'port' => '',
-        'database' => 'test',
-        'username' => 'phpmyadmin',
-        'password' => 'phpmyadmin#tr3',
-        'options' => [],
+    'mysql-example' => [
+        'host'       => '',
+        'port'       => '',
+        'database'   => '',
+        'username'   => '',
+        'password'   => '',
+        'options'    => [],
     ],
 
-    'sqlite' => [
-        'location'      => '',
+    'sqlite-example' => [
+        'location'   => '',
     ],
 ];

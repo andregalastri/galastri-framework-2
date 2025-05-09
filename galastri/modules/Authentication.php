@@ -1,4 +1,9 @@
 <?php
+/**
+ * Documentação:
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-Authentication
+ */
+
 namespace galastri\modules;
 
 use galastri\extensions\Exception;

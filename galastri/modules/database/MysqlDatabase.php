@@ -1,4 +1,8 @@
 <?php
+/**
+ * Documentação:
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-MysqlDatabase
+ */
 
 namespace galastri\modules\database;
 

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Documentação:
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-Permission
+ */
+
 namespace galastri\modules;
 
 use galastri\core\config\Config;

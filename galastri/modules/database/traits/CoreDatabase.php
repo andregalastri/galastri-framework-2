@@ -1,4 +1,8 @@
 <?php
+/**
+ * Documentação:
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Trait-CoreDatabase
+ */
 
 namespace galastri\modules\database\traits;
 

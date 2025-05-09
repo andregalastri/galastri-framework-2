@@ -3,6 +3,7 @@
  * Documentação:
  * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-Exception
  */
+
 namespace galastri\extensions;
 
 use galastri\language\Message;

@@ -1,4 +1,8 @@
 <?php
+/**
+ * Documentação:
+ * https://github.com/andregalastri/galastri-framework-2/wiki/Trait-ListValidation
+ */
 
 namespace galastri\modules\validation\traits;
 

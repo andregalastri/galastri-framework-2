@@ -234,8 +234,6 @@ final class Galastri
         return self::$controllerHttpMethodExists;
     }
 
-
-
     public static function getControllerResponse(): array
     {
         return self::$controller->getResponse();
@@ -246,8 +244,6 @@ final class Galastri
         return self::$controller->getFileContents();
     }
 
-
-    
     public static function getControllerNamespace(): string
     {
        return self::$controllerNamespace;

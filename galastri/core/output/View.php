@@ -15,6 +15,8 @@ use galastri\modules\Tools;
 
 final class View
 {
+    use traits\BrowserCache;
+
     public static string $viewPath;
     private static string $templatePath = '';
 
@@ -72,17 +74,28 @@ final class View
         }
     }
 
-    private static function render()
+    private static function render(): void
     {
+        ob_start();
+
         /**
          * Está assim pois futuramente pretendo inserir a possibilidade de usar
          * template engines alternativas.
          */
         $phpEngine = 'galastri\core\output\engines\PhpEngine';
         $g = new $phpEngine();
-        
-        require(self::$templatePath == '' ? self::$viewPath : self::$templatePath);
+
+        require(self::$templatePath === '' ? self::$viewPath : self::$templatePath);
+
+        $renderedContent = ob_get_clean();
+
+        if (self::checkBrowserCache($renderedContent)) {
+            return;
+        }
+
+        @print($renderedContent);
     }
+
 
     public static function requiresController(): bool
     {

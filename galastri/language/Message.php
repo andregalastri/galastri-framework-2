@@ -137,7 +137,6 @@ final class Message
     /**
      * Validation
      */
-
     private const VALIDATION_FAIL = 'Os dados informados são inválidos.';
     
     private const VALIDATION_INVALID_DATETIME = 'Erro de validação: A data/hora "%s" não condiz com o formato "%s".';
@@ -150,16 +149,22 @@ final class Message
     /**
      * Database
      */
+    private const DATABASE_CONFIG_DOESNT_EXIST = 'Erro de banco de dados: A configuração "%s" não existe.';
 
-     private const DATABASE_CONFIG_DOESNT_EXIST = 'Erro de banco de dados: A configuração "%s" não existe.';
+    private const DATABASE_CONFIG_MISSING_REQUIRED_PROPERTY = 'Erro de banco de dados: A configuração "%s" não possui a propriedade "%s".';
+     
+    private const DATABASE_MISSING_REQUIRED_PROPERTY = 'Erro de banco de dados: A propriedade "%s" precisa ser configurada.';
+    
+    private const DATABASE_DISCONNECTED = 'Erro de banco de dados: O banco de dados não está conectado.';
+    
+    private const DATABASE_BIND_PARAMETER_TYPE = 'Erro de banco de dados: O tipo do parâmetro "%s" não é válido. Os tipos válidos são: "%s".';
+    
+    private const DATABASE_RESULT_DOESNT_EXIST = 'Erro de banco de dados: O nome "%s" para o resultado da consulta não existe.';
 
-     private const DATABASE_CONFIG_MISSING_REQUIRED_PROPERTY = 'Erro de banco de dados: A configuração "%s" não possui a propriedade "%s".';
-     
-     private const DATABASE_MISSING_REQUIRED_PROPERTY = 'Erro de banco de dados: A propriedade "%s" precisa ser configurada.';
-     
-     private const DATABASE_DISCONNECTED = 'Erro de banco de dados: O banco de dados não está conectado.';
-     
-     private const DATABASE_BIND_PARAMETER_TYPE = 'Erro de banco de dados: O tipo do parâmetro "%s" não é válido. Os tipos válidos são: "%s".';
-     
-     private const DATABASE_RESULT_DOESNT_EXIST = 'Erro de banco de dados: O nome "%s" para o resultado da consulta não existe.';
+    /**
+     * Browser Cache
+     */
+    private const CACHE_INVALID_DURATION = 'Erro de cache: A configuração "browserCache" precisa que o primeiro valor seja um número inteiro maior que zero.';
+    
+    private const CACHE_INVALID_CACHE_CONTROL = 'Erro de cache: A configuração "browserCache" precisa que o segundo valor seja uma string.';
 }

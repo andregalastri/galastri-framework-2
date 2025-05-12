@@ -1,9 +1,11 @@
 # Ativa o mecanismo de reescrita
 RewriteEngine On
 
-Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
-Header set Pragma "no-cache"
-Header set Expires "0"
+FileETag None
+
+<IfModule mod_deflate.c>
+    SetEnv no-gzip 1
+</IfModule>
 
 # Retorna 404 para favicon.ico se ele não existir. Visa evitar chamadas duplas
 # ao framework, principalmente durante o desenvolvimento em que não há um

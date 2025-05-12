@@ -160,8 +160,8 @@ return [
     ],
 
     'browserCache' => [
-        'defaultValue' => null,
-        'validTypes' => ['null', 'string'],
+        'defaultValue' => [],
+        'validTypes' => ['array'],
         'invalidTypes' => [],
         'validValues' => [],
         'invalidValues' => [],

@@ -246,4 +246,15 @@ return [
         'invalidRegex' => '',
         'context' => 'route',
     ],
+    
+    'forceMimeType' => [
+        'defaultValue' => [],
+        'validTypes' => ['array'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'route',
+    ],
 ];

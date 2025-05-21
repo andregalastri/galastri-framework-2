@@ -206,6 +206,7 @@ final class Router
         self::setConfigIfExists('allowedFileExtensions');
         self::setConfigIfExists('permissionFailMessage');
         self::setConfigIfExists('validateMimeType');
+        self::setConfigIfExists('forceMimeType');
     }
 
     private static function configureNodeProperties(): void
@@ -286,6 +287,10 @@ final class Router
             }
         }
 
+        if (Config::get('output') === 'file' && !isset(self::$routeData['@'.$methodName])) {
+            return;
+        }
+        
         self::$routeData = self::$routeData['@'.$methodName];
         self::configureRouteProperties();
 

@@ -141,6 +141,8 @@ final class ErrorHandler
             'error' => true,
         ];
 
+        http_response_code(self::getHttpStatusCode($code));
+
         switch (Config::get('output', 'view')) {
             case 'json':
                 self::printErrorJson($data);
@@ -253,5 +255,13 @@ final class ErrorHandler
             ]),
             INSERT_CONTENT_AT_START
         );
+    }
+    
+    private static function getHttpStatusCode(int|string $code): int
+    {
+        return match ($code) {
+            'E_WARNING', 'E_USER_WARNING', 'E_NOTICE', 'E_USER_NOTICE' => 400,
+            default => 500,
+        };
     }
 }

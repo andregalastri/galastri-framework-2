@@ -98,7 +98,13 @@ final class File
     private static function checkMimeType(): void
     {
         $extension = self::$extension;
-        $mimeType = mime_content_type(self::$path);
+        $forceMimeType = Config::get('forceMimeType');
+
+        if (!empty($forceMimeType) && isset($forceMimeType[$extension])) {
+            $mimeType = $forceMimeType[$extension];
+        } else {
+            $mimeType = mime_content_type(self::$path);
+        }
 
         if (Config::get('validateMimeType')) {
             if (!isset(MIME_TYPE_LIST[$extension])) {

@@ -28,7 +28,7 @@ final class DateTimeValidation
             $minDateTime = self::createDateTimeFromString($minDateTime, $minFormat);
 
             if ($value < $minDateTime) {
-                $this->messageData = [$value->format($valueFormat), $minDateTime->format($valueFormat)];
+                $this->messageFlagValues = [$value->format($valueFormat), $minDateTime->format($valueFormat)];
                 $this->throwError();
             }
         };
@@ -46,7 +46,7 @@ final class DateTimeValidation
             $maxDateTime = self::createDateTimeFromString($maxDateTime, $maxFormat);
             
             if ($value > $maxDateTime) {
-                $this->messageData = [$value->format($valueFormat), $maxDateTime->format($valueFormat)];
+                $this->messageFlagValues = [$value->format($valueFormat), $maxDateTime->format($valueFormat)];
                 $this->throwError();
             }
         };
@@ -65,7 +65,7 @@ final class DateTimeValidation
             $maxDateTime = self::createDateTimeFromString($maxDateTime, $rangeFormat);
             
             if ($value < $minDateTime || $value > $maxDateTime) {
-                $this->messageData = [$value->format($valueFormat), $minDateTime->format($valueFormat), $maxDateTime->format($valueFormat)];
+                $this->messageFlagValues = [$value->format($valueFormat), $minDateTime->format($valueFormat), $maxDateTime->format($valueFormat)];
                 $this->throwError();
             }
         };
@@ -95,7 +95,7 @@ final class DateTimeValidation
             }
         }
 
-        $this->messageData = [$value, $format];
+        $this->messageFlagValues = [$value, $format];
         $this->failMessage = Message::get('VALIDATION_INVALID_DATETIME');
         $this->throwError();
     }

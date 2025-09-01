@@ -46,7 +46,7 @@ final class StringValidation
             $value = $this->value;
 
             if (mb_strlen($value) < $length) {
-                $this->messageData = [$value, $length, mb_strlen($value)];
+                $this->messageFlagValues = [$value, $length, mb_strlen($value)];
                 $this->throwError();
             }
         };
@@ -60,7 +60,7 @@ final class StringValidation
             $value = $this->value;
             
             if (mb_strlen($value) > $length) {
-                $this->messageData = [$value, $length, mb_strlen($value)];
+                $this->messageFlagValues = [$value, $length, mb_strlen($value)];
                 $this->throwError();
             }
         };
@@ -74,7 +74,7 @@ final class StringValidation
             $value = $this->value;
             
             if (mb_strlen($value) < $minLength || mb_strlen($value) > $maxLength) {
-                $this->messageData = [$value, $minLength, $maxLength, mb_strlen($value)];
+                $this->messageFlagValues = [$value, $minLength, $maxLength, mb_strlen($value)];
                 $this->throwError();
             }
         };
@@ -137,7 +137,7 @@ final class StringValidation
                 $count = count($matches[0] ?? []);
 
                 if ($count < $minimum) {
-                    $this->messageData = [$value, $dataset, $minimum, $count];
+                    $this->messageFlagValues = [$value, $dataset, $minimum, $count];
                     $this->throwError();
                 }
             }
@@ -165,14 +165,14 @@ final class StringValidation
             $isNumericOnly = preg_match('/^\d{11}$/', $value);
 
             if (!$isFormatted && !$isNumericOnly) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
 
             $digits = preg_replace('/\D/', '', $value);
 
             if (preg_match('/^(\d)\1{10}$/', $digits)) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
 
@@ -188,7 +188,7 @@ final class StringValidation
                 $digit = $digit % 10;
 
                 if ((int) $digits[$position] !== $digit) {
-                    $this->messageData = [$value];
+                    $this->messageFlagValues = [$value];
                     $this->throwError();
                 }
             }
@@ -207,14 +207,14 @@ final class StringValidation
             $isNumericOnly = preg_match('/^\d{14}$/', $value);
 
             if (!$isFormatted && !$isNumericOnly) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
 
             $digits = preg_replace('/\D/', '', $value);
 
             if (preg_match('/^(\d)\1{13}$/', $digits)) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
 
@@ -234,7 +234,7 @@ final class StringValidation
                 $digit = ($sum % 11 < 2) ? 0 : 11 - ($sum % 11);
 
                 if ((int) $digits[$limit] !== $digit) {
-                    $this->messageData = [$value];
+                    $this->messageFlagValues = [$value];
                     $this->throwError();
                 }
             }
@@ -249,7 +249,7 @@ final class StringValidation
             $value = $this->value;
 
             if (!is_string($value) || !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
         };
@@ -263,7 +263,7 @@ final class StringValidation
             $value = $this->value;
 
             if (!is_string($value)) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
 
@@ -283,7 +283,7 @@ final class StringValidation
             }
 
             if (!$valid) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
         };
@@ -330,7 +330,7 @@ final class StringValidation
             preg_match_all($modeList[$mode], $value, $matches);
 
             if (!empty($matches[0])) {
-                $this->messageData = [$value, implode(', ', array_unique($matches[0]))];
+                $this->messageFlagValues = [$value, implode(', ', array_unique($matches[0]))];
                 $this->throwError();
             }
         };
@@ -366,7 +366,7 @@ final class StringValidation
             preg_match_all($modeList[$mode], implode($allLetters[0]), $unmatches);
 
             if (!empty($unmatches[0])) {
-                $this->messageData = [$value, implode(', ', array_unique($unmatches[0]))];
+                $this->messageFlagValues = [$value, implode(', ', array_unique($unmatches[0]))];
                 $this->throwError();
             }
         };

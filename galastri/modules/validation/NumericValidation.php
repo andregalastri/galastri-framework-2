@@ -18,7 +18,7 @@ final class NumericValidation
             $value = $this->value;
 
             if ($value < $minValue) {
-                $this->messageData = [$value, $minValue];
+                $this->messageFlagValues = [$value, $minValue];
                 $this->throwError();
             }
         };
@@ -32,7 +32,7 @@ final class NumericValidation
             $value = $this->value;
             
             if ($value > $maxValue) {
-                $this->messageData = [$value, $maxValue];
+                $this->messageFlagValues = [$value, $maxValue];
                 $this->throwError();
             }
         };
@@ -46,7 +46,7 @@ final class NumericValidation
             $value = $this->value;
             
             if ($value < $minValue || $value > $maxValue) {
-                $this->messageData = [$value, $minValue, $maxValue];
+                $this->messageFlagValues = [$value, $minValue, $maxValue];
                 $this->throwError();
             }
         };
@@ -60,7 +60,7 @@ final class NumericValidation
             $value = $this->value;
 
             if (is_float($value)) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
         };
@@ -74,7 +74,7 @@ final class NumericValidation
             $value = (int)$this->value;
 
             if ($value === 0) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
         };
@@ -88,7 +88,7 @@ final class NumericValidation
             $value = (int)$this->value;
 
             if ($value < 0) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
         };

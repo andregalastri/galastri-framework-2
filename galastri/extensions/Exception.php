@@ -12,11 +12,21 @@ use galastri\modules\Tools;
 class Exception extends \Exception
 {
     protected array $data = [];
+    private static string $testedMessage = '';
+    private static bool $testedHasFlags = false;
 
     public function __construct()
     {
         $this->__overload(func_get_args());
         parent::__construct($this->getMessage());
+    }
+
+    public static function hasFlags(string $message): bool
+    {
+        self::$testedMessage = $message;
+        self::$testedHasFlags = preg_match(Tools::FLAG_REPLACER_REGEX_SEQUENTIAL, $message) || preg_match(Tools::FLAG_REPLACER_REGEX_POSITIONAL, $message);
+
+        return self::$testedHasFlags;
     }
 
     private function __overload(array $parameters): void
@@ -27,13 +37,14 @@ class Exception extends \Exception
                     throw new Exception(Message::get("EXCEPTION_INVALID_ARRAY"));
                 }
 
-                if (preg_match(Tools::FLAG_REPLACER_REGEX_SEQUENTIAL, $parameters[0][0]) || preg_match(Tools::FLAG_REPLACER_REGEX_POSITIONAL, $parameters[0][0])) {
+                if (self::$testedMessage == $parameters[0][0] && self::$testedHasFlags || self::hasFlags($parameters[0][0])) {
+                    $this->processArrayWithFlags($parameters[0], $parameters[1] ?? [], $parameters[2] ?? null);
                     $this->processArrayWithFlags($parameters[0], $parameters[1] ?? [], $parameters[2] ?? null);
                 } else {
                     $this->processSimpleArray($parameters[0], $parameters[1] ?? null);
                 }
             } else {
-                if (preg_match(Tools::FLAG_REPLACER_REGEX_SEQUENTIAL, $parameters[0][0]) || preg_match(Tools::FLAG_REPLACER_REGEX_POSITIONAL, $parameters[0][0])) {
+                if (self::$testedMessage == $parameters[0][0] && self::$testedHasFlags || self::hasFlags($parameters[0][0])) {
                     $this->processStringWithFlags($parameters[0], $parameters[1] ?? [], $parameters[2] ?? null, $parameters[3] ?? null);
                 } else {
                     $this->processSimpleString($parameters[0], $parameters[1] ?? null, $parameters[2] ?? null);
@@ -91,17 +102,17 @@ class Exception extends \Exception
     }
 
     private function setAdditionalData(?array $additionalData){
-        if (($additionalData['data'] ?? false) !== false) {
-            $this->setData($additionalData['data']);
-        }
-
         if (($additionalData['line'] ?? false) !== false) {
             $this->setLine($additionalData['line']);
+            unset($additionalData['line']);
         }
-
+        
         if (($additionalData['file'] ?? false) !== false) {
             $this->setFile($additionalData['file']);
+            unset($additionalData['file']);
         }
+
+        $this->setData($additionalData ?? []);
     }
 
     private function setLine(int $line): void

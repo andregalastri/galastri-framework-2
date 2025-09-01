@@ -39,7 +39,8 @@ final class Redirect
             }
         }
 
-        exit(header('Location: '.vsprintf($location, $printfData), true, self::$statusCode));
+        header('Location: '.vsprintf($location, $printfData), true, self::$statusCode);
+        exit();
     }
 
     public static function statusCode(int $statusCode): string

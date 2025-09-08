@@ -44,7 +44,7 @@ class Exception extends \Exception
                     $this->processSimpleArray($parameters[0], $parameters[1] ?? null);
                 }
             } else {
-                if (self::$testedMessage == $parameters[0][0] && self::$testedHasFlags || self::hasFlags($parameters[0][0])) {
+                if (self::$testedMessage == $parameters[0] && self::$testedHasFlags || self::hasFlags($parameters[0])) {
                     $this->processStringWithFlags($parameters[0], $parameters[1] ?? [], $parameters[2] ?? null, $parameters[3] ?? null);
                 } else {
                     $this->processSimpleString($parameters[0], $parameters[1] ?? null, $parameters[2] ?? null);
@@ -130,8 +130,8 @@ class Exception extends \Exception
         $this->data = $data;
     }
 
-    public function getData(int|null|string $key = null) // : mixed
+    public function getData(int|null|string $key = null): mixed
     {
-        return $key === null ? $this->data : $this->data[$key];
+        return $key === null ? $this->data : $this->data[$key] ?? null;
     }
 }

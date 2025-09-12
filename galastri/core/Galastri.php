@@ -40,6 +40,7 @@ final class Galastri
         Config::run();
         Router::run();
 
+        self::setTimezone();
         self::setOutputClass();
         self::checkForceRedirectTo();
         self::checkOffline();
@@ -54,6 +55,15 @@ final class Galastri
         }
 
         self::executeOutput();
+    }
+
+    private static function setTimezone(): void
+    {
+        $timezone = Config::get('timezone');
+
+        if ($timezone !== false && $timezone !== '') {
+            date_default_timezone_set($timezone);
+        }
     }
 
     private static function checkForceRedirectTo(): void

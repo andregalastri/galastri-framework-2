@@ -17,7 +17,7 @@ trait ListValidation
             $valueList = Tools::arrayFlatten($valueList);
     
             if (!in_array($value, $valueList, true)) {
-                $this->messageData = [$value, implode(', ', $valueList)];
+                $this->messageFlagValues = [$value, implode(', ', $valueList)];
                 $this->throwError();
             }
         };

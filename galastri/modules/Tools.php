@@ -214,6 +214,30 @@ final class Tools
 
     public static function import(string $location, mixed $defaultValue): mixed
     {
-        return file_exists($location) ? require $location : $defaultValue;
+        return file_exists(PROJECT_DIR.'/'.$location) ? require $location : $defaultValue;
+    }
+
+    public static function trimLeft(string $string, ...$replacementList): string
+    {
+        $replacementList = array_map('preg_quote', $replacementList);
+
+        return preg_replace('/^('.implode('|', $replacementList).')\b\s*/i', '', $string);
+    }
+
+    public static function trimRight(string $string, ...$replacementList): string
+    {
+        $replacementList = array_map('preg_quote', $replacementList);
+
+        return preg_replace('/('.implode('|', $replacementList).')\b\s*$/i', '', $string);
+    }
+
+    public static function trimBoth(string $string, ...$replacementList): string
+    {
+        $replacementList = array_map('preg_quote', $replacementList);
+
+        $string = preg_replace('/^('.implode('|', $replacementList).')\b\s*/i', '', $string);
+        $string = preg_replace('/('.implode('|', $replacementList).')\b\s*$/i', '', $string);
+
+        return $string;
     }
 }

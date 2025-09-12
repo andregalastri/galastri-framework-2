@@ -26,17 +26,29 @@ final class StringValidation
         '--numbersUtf8' => '\p{Nl}',
         '--letters' => 'a-zA-Z',
         '--lettersUtf8' => '\p{L}',
+        '--words' => 'a-zA-Z\s',
+        '--wordsUtf8' => '\p{L}\s',
         '--upperLetters' => 'A-Z',
+        '--upperWords' => 'A-Z\s',
         '--upperLettersUtf8' => '\p{Lu}',
+        '--upperWordsUtf8' => '\p{Lu}\s',
         '--lowerLetters' => 'a-z',
+        '--lowerWords' => 'a-z\s',
         '--lowerLettersUtf8' => '\p{Ll}',
+        '--lowerWordsUtf8' => '\p{Ll}\s',
         '--specialChars' => self::SPECIAL_CHARS,
-        '--accentedChars' => self::UPPER_ACCENTED_CHARS.self::LOWER_ACCENTED_CHARS,
-        '--upperAccentedChars' => self::UPPER_ACCENTED_CHARS,
-        '--lowerAccentedChars' => self::LOWER_ACCENTED_CHARS,
-        '--extendedAccentedChars' => self::UPPER_EXTENDED_ACCENTED_CHARS.self::UPPER_EXTENDED_ACCENTED_CHARS,
-        '--upperExtendedAccentedChars' => self::UPPER_EXTENDED_ACCENTED_CHARS,
-        '--lowerExtendedAccentedChars' => self::UPPER_EXTENDED_ACCENTED_CHARS,
+        '--accentedLetters' => self::UPPER_ACCENTED_CHARS.self::LOWER_ACCENTED_CHARS,
+        '--accentedWords' => self::UPPER_ACCENTED_CHARS.self::LOWER_ACCENTED_CHARS.'a-zA-Z\s',
+        '--upperAccentedLetters' => self::UPPER_ACCENTED_CHARS,
+        '--upperAccentedWords' => self::UPPER_ACCENTED_CHARS.'A-Z\s',
+        '--lowerAccentedLetters' => self::LOWER_ACCENTED_CHARS,
+        '--lowerAccentedWords' => self::LOWER_ACCENTED_CHARS.'a-z\s',
+        '--extendedAccentedLetters' => self::UPPER_EXTENDED_ACCENTED_CHARS.self::UPPER_EXTENDED_ACCENTED_CHARS,
+        '--extendedAccentedWords' => self::UPPER_ACCENTED_CHARS.self::LOWER_ACCENTED_CHARS.self::UPPER_EXTENDED_ACCENTED_CHARS.self::UPPER_EXTENDED_ACCENTED_CHARS.'a-zA-Z\s',
+        '--upperExtendedAccentedLetters' => self::UPPER_EXTENDED_ACCENTED_CHARS,
+        '--upperExtendedAccentedWords' => self::UPPER_ACCENTED_CHARS.self::UPPER_EXTENDED_ACCENTED_CHARS.'a-zA-Z\s',
+        '--lowerExtendedAccentedLetters' => self::LOWER_EXTENDED_ACCENTED_CHARS,
+        '--lowerExtendedAccentedWords' => self::LOWER_ACCENTED_CHARS.self::LOWER_EXTENDED_ACCENTED_CHARS.'a-zA-Z\s',
         '--spaces' => '\s',
     ];
 
@@ -46,7 +58,7 @@ final class StringValidation
             $value = $this->value;
 
             if (mb_strlen($value) < $length) {
-                $this->messageData = [$value, $length, mb_strlen($value)];
+                $this->messageFlagValues = [$value, $length, mb_strlen($value)];
                 $this->throwError();
             }
         };
@@ -60,7 +72,7 @@ final class StringValidation
             $value = $this->value;
             
             if (mb_strlen($value) > $length) {
-                $this->messageData = [$value, $length, mb_strlen($value)];
+                $this->messageFlagValues = [$value, $length, mb_strlen($value)];
                 $this->throwError();
             }
         };
@@ -74,7 +86,7 @@ final class StringValidation
             $value = $this->value;
             
             if (mb_strlen($value) < $minLength || mb_strlen($value) > $maxLength) {
-                $this->messageData = [$value, $minLength, $maxLength, mb_strlen($value)];
+                $this->messageFlagValues = [$value, $minLength, $maxLength, mb_strlen($value)];
                 $this->throwError();
             }
         };
@@ -137,7 +149,7 @@ final class StringValidation
                 $count = count($matches[0] ?? []);
 
                 if ($count < $minimum) {
-                    $this->messageData = [$value, $dataset, $minimum, $count];
+                    $this->messageFlagValues = [$value, $dataset, $minimum, $count];
                     $this->throwError();
                 }
             }
@@ -165,14 +177,14 @@ final class StringValidation
             $isNumericOnly = preg_match('/^\d{11}$/', $value);
 
             if (!$isFormatted && !$isNumericOnly) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
 
             $digits = preg_replace('/\D/', '', $value);
 
             if (preg_match('/^(\d)\1{10}$/', $digits)) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
 
@@ -188,7 +200,7 @@ final class StringValidation
                 $digit = $digit % 10;
 
                 if ((int) $digits[$position] !== $digit) {
-                    $this->messageData = [$value];
+                    $this->messageFlagValues = [$value];
                     $this->throwError();
                 }
             }
@@ -207,14 +219,14 @@ final class StringValidation
             $isNumericOnly = preg_match('/^\d{14}$/', $value);
 
             if (!$isFormatted && !$isNumericOnly) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
 
             $digits = preg_replace('/\D/', '', $value);
 
             if (preg_match('/^(\d)\1{13}$/', $digits)) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
 
@@ -234,7 +246,7 @@ final class StringValidation
                 $digit = ($sum % 11 < 2) ? 0 : 11 - ($sum % 11);
 
                 if ((int) $digits[$limit] !== $digit) {
-                    $this->messageData = [$value];
+                    $this->messageFlagValues = [$value];
                     $this->throwError();
                 }
             }
@@ -249,7 +261,7 @@ final class StringValidation
             $value = $this->value;
 
             if (!is_string($value) || !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
         };
@@ -263,7 +275,7 @@ final class StringValidation
             $value = $this->value;
 
             if (!is_string($value)) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
 
@@ -283,7 +295,7 @@ final class StringValidation
             }
 
             if (!$valid) {
-                $this->messageData = [$value];
+                $this->messageFlagValues = [$value];
                 $this->throwError();
             }
         };
@@ -294,14 +306,9 @@ final class StringValidation
 
     private function validateCharset(string $mode, string ...$datasets): self
     {
-        $modeList = [
-            'allowChars' => '/[^'.implode($datasets).']/u',
-            'denyChars' => '/['.implode($datasets).']/u',
-            'allowWords' => '/^(?:'.implode('|', $datasets).')$/u',
-            'denyWords'  => '/(?:'.implode('|', $datasets).')/u',
-        ];
+        $modeList = ['allowChars', 'denyChars', 'allowWords', 'denyWords'];
 
-        if (!isset($modeList[$mode])) {
+        if (!in_array($mode, $modeList)) {
             throw new Exception(
                 Message::get("VALIDATION_INVALID_MODE"),
                 [
@@ -319,18 +326,26 @@ final class StringValidation
             );
         }
 
-        $this->validationChain[] = function () use ($mode, $datasets, $modeList) {
+        $this->validationChain[] = function () use ($mode, $datasets) {
             $value = $this->value;
 
             foreach ($datasets as &$data) {
                 $data = self::CHAR_FLAGS[$data] ?? preg_quote($data);
             }
             unset($data);
-            
+
+            $modeList = [
+                'allowChars' => '/[^'.implode($datasets).']/u',
+                'denyChars' => '/['.implode($datasets).']/u',
+                'allowWords' => '/^(?:'.implode('|', $datasets).')$/u',
+                'denyWords'  => '/(?:'.implode('|', $datasets).')/u',
+            ];
+
             preg_match_all($modeList[$mode], $value, $matches);
 
+
             if (!empty($matches[0])) {
-                $this->messageData = [$value, implode(', ', array_unique($matches[0]))];
+                $this->messageFlagValues = [$value, implode(', ', array_unique($matches[0]))];
                 $this->throwError();
             }
         };
@@ -366,7 +381,7 @@ final class StringValidation
             preg_match_all($modeList[$mode], implode($allLetters[0]), $unmatches);
 
             if (!empty($unmatches[0])) {
-                $this->messageData = [$value, implode(', ', array_unique($unmatches[0]))];
+                $this->messageFlagValues = [$value, implode(', ', array_unique($unmatches[0]))];
                 $this->throwError();
             }
         };

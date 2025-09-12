@@ -15,16 +15,18 @@ trait CoreValidation
     private array $validationChain = [];
     private mixed $value = null;
     private array $failMessage;
-    private array $messageData = [];
+    private array $messageFlagValues = [];
+    private array $additionalData = [];
 
     public function __construct()
     {
         $this->failMessage = Message::get('VALIDATION_FAIL');
     }
 
-    public function withMessage(string $message, int|null|string $code = null): self
+    public function onError(string $message, int|null|string $code = null, $additionalData = []): self
     {
-        $this->validationChain[] = function () use ($message, $code) {
+        $this->validationChain[] = function () use ($message, $code, $additionalData) {
+            $this->additionalData = $additionalData;
             $this->failMessage = [$message, $code ?? $this->failMessage[1]];
         };
 
@@ -48,8 +50,14 @@ trait CoreValidation
     {
         Validation::$displayError = true;
 
+        if (Exception::hasFlags($this->failMessage[0])) {
+            throw new Exception(
+                $this->failMessage, $this->messageFlagValues, $this->additionalData
+            );
+        }
+        
         throw new Exception(
-            $this->failMessage, $this->messageData
+            $this->failMessage, $this->additionalData
         );
     }
 }

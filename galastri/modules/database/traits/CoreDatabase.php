@@ -27,6 +27,11 @@ trait CoreDatabase
     private array $options = [];
     private string $location = '';
     private array $queryChain = [];
+    private array $errorChain = [];
+    private array $additionalData = [];
+    private array $failMessage;
+    private array $messageFlagValues = [];
+    private bool $displayError = false;
 
     public function setHost(string $host): self
     {
@@ -83,7 +88,10 @@ trait CoreDatabase
     public function begin(): self
     {
         $this->isConnected();
-        $this->pdo->beginTransaction();
+
+        if (!$this->pdo->inTransaction()) {
+            $this->pdo->beginTransaction();
+        }
 
         return $this;
     }
@@ -152,32 +160,62 @@ trait CoreDatabase
                     $this->setResult($result, $label);
                 }
 
-                $this->bind = [];
-
             } catch (\PDOException $e) {
-                throw new Exception(
-                    $this->filterPdoExceptionMessage($e->getMessage()),
-                    $e->getCode()
-                );
+                $this->filterPdoExceptionMessage($e);
+                $this->throwError();
             }
         };
 
         return $this;
     }
 
-    public function bind(array|int|string $bind, float|int|null|string $value = null)
+    public function bind(array|int|string $bind, float|int|null|string $value = null): self
     {
         $this->isConnected();
 
-        $this->queryChain[] = function () use ($bind, $value) {
+        if (!is_array($bind)) {
+            $bind = [$bind => $value];
+        }
 
-            if (!is_array($bind)) {
-                $bind = [$bind => $value];
-            }
+        foreach ($bind as $key => $value) {
+            $this->bind[$key] = $value;
+        }
 
-            foreach ($bind as $key => $value) {
-                $this->bind[$key] = $value;
+        return $this;
+    }
+
+    public function clearBind(): self
+    {
+        $this->bind = [];
+
+        return $this;
+    }
+
+    private function throwError(): void
+    {
+        $this->displayError = true;
+
+        if (Exception::hasFlags($this->failMessage[0])) {
+            throw new Exception(
+                $this->failMessage, $this->messageFlagValues, $this->additionalData
+            );
+        }
+        
+        throw new Exception(
+            $this->failMessage, $this->additionalData
+        );
+    }
+
+    public function onError(array|string $message, int|string $code, array $additionalData = []): self
+    {
+        $this->errorChain[] = function () use ($message, $code, $additionalData) {
+            if (Tools::typeOf($message) !== 'array') {
+                $message = [$message];
             }
+            
+            $this->additionalData = $additionalData;
+            $this->failMessage = [array_shift($message), $code];
+            $this->messageFlagValues = $message ?? [];
         };
 
         return $this;
@@ -187,10 +225,12 @@ trait CoreDatabase
     {
         $this->isConnected();
 
-        foreach (array_reverse($this->queryChain) as $key => $function) {
+        foreach ($this->queryChain as $key => $function) {
             $function();
             unset($this->queryChain[$key]);
         }
+
+        $this->errorChain = [];
 
         return $this;
     }
@@ -255,10 +295,8 @@ trait CoreDatabase
             $this->connected = true;
 
         } catch (\PDOException $e) {
-            throw new Exception(
-                $this->filterPdoExceptionMessage($e->getMessage()),
-                'PDO'.$e->getCode()
-            );
+            $this->filterPdoExceptionMessage($e);
+            $this->throwError();
         }
     }
 
@@ -343,9 +381,40 @@ trait CoreDatabase
         return $config;
     }
 
-    private function filterPdoExceptionMessage(string $message): string
+    
+    private function filterPdoExceptionMessage(\PDOException $e): void
     {
-        $message = preg_replace('/[\t\n]+/u', ' ', trim($message));
-        return str_replace(['%'], ['%%'], $message);
+        $info = $e->errorInfo ?? [];
+        $sqlstateErrorCode = $e->getCode();
+        $driverErrorCode = $info[1] ?? null;
+        $constraintErrorCode = $info[2] ?? $e->getMessage();
+
+        if (empty($this->errorChain)) {
+            $message = preg_replace('/[\t\n]+/u', ' ', trim($e->getMessage()));
+            $message = str_replace('%', '%%', $message);
+            $this->failMessage = [$message, $e->getCode()];
+            
+            return;
+        }
+
+        foreach ($this->errorChain as $key => $function) {
+            $function();
+            unset($this->errorChain[$key]);
+
+            $message = $this->failMessage[0];
+            $code = $this->failMessage[1];
+
+            if (
+                $sqlstateErrorCode == $code ||
+                $driverErrorCode == $code ||
+                ($code && is_string($constraintErrorCode) && strpos($constraintErrorCode, (string)$code) !== false)
+            ) {
+                return;
+            }
+
+            $message = preg_replace('/[\t\n]+/u', ' ', trim($e->getMessage()));
+            $message = str_replace('%', '%%', $message);
+            $this->failMessage = [$message, $e->getCode()];
+        }
     }
 }

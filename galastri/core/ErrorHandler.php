@@ -256,7 +256,7 @@ final class ErrorHandler
             INSERT_CONTENT_AT_START
         );
     }
-    
+
     private static function getHttpStatusCode(int|string $code): int
     {
         return match ($code) {

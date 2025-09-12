@@ -293,7 +293,7 @@ final class Router
         
         self::$routeData = self::$routeData['@'.$methodName];
         self::configureRouteProperties();
-
+        
         self::$methodName = Tools::toCamelCase($methodName);
         self::configureEndpointProperties();
     }

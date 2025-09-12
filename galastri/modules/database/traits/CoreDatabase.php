@@ -210,7 +210,7 @@ trait CoreDatabase
     {
         $this->errorChain[] = function () use ($message, $code, $additionalData) {
             if (Tools::typeOf($message) !== 'array') {
-                $message = [$message];
+               $message = [$message];
             }
             
             $this->additionalData = $additionalData;

@@ -105,7 +105,7 @@ final class File
         } else {
             $mimeType = mime_content_type(self::$path);
         }
-
+        
         if (Config::get('validateMimeType')) {
             if (!isset(MIME_TYPE_LIST[$extension])) {
                 throw new Exception(

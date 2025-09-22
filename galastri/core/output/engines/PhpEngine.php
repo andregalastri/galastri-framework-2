@@ -8,6 +8,8 @@ namespace galastri\core\output\engines;
 
 use galastri\core\Galastri;
 use galastri\core\output\View;
+use galastri\extensions\Exception;
+use galastri\language\Message;
 
 final class PhpEngine
 {
@@ -32,7 +34,7 @@ final class PhpEngine
             case 'object':
             case 'boolean':
             case 'null':
-                throw new Exception(self::VIEW_INVALID_PRINT_DATA);
+                throw new Exception(Message::get('VIEW_INVALID_PRINT_DATA'));
         }
 
         echo htmlspecialchars($data, ENT_QUOTES, 'UTF-8');

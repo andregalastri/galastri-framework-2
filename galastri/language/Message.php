@@ -167,4 +167,6 @@ final class Message
     private const CACHE_INVALID_DURATION = 'Erro de cache: A configuração "browserCache" precisa que o primeiro valor seja um número inteiro maior que zero.';
     
     private const CACHE_INVALID_CACHE_CONTROL = 'Erro de cache: A configuração "browserCache" precisa que o segundo valor seja uma string.';
+    
+    private const VIEW_INVALID_PRINT_DATA = 'Erro no PHP View Engine: O tipo de dado no print() é inválido.';
 }

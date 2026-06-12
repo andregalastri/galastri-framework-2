@@ -5,7 +5,7 @@
 
 
 # Galastri Framework
-<a href="https://github.com/andregalastri/galastri-framework/blob/master/galastri/LICENSE" target="_blank"><img src="https://img.shields.io/badge/Licença-MIT-yellow.svg"></a> <a href="(https://framework.andregalastri.com.br/?id=20260608152530-tqnoujh" target="_blank"><img src="https://img.shields.io/badge/Documentação-ee6f5b"></a>
+<a href="https://raw.githubusercontent.com/andregalastri/galastri-framework-2/refs/heads/main/LICENSE" target="_blank"><img src="https://img.shields.io/badge/Licença-MIT-yellow.svg"></a> <a href="https://framework.andregalastri.com.br/?id=20260608152530-tqnoujh" target="_blank"><img src="https://img.shields.io/badge/Documentação-ee6f5b"></a>
 
 
 

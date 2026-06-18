@@ -8,6 +8,10 @@ final class Index extends Controller
 {
     protected function main(): array
     {
-        return [];
+        $version = file_get_contents(PROJECT_DIR.'/galastri/VERSION');
+        
+        return [
+            'version' => $version,
+        ];
     }
 }

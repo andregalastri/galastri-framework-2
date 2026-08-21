@@ -411,4 +411,9 @@ final class Router
     {
         return self::$rootDir;
     }
+    
+    public static function getBaseHref(): string
+    {
+        return rtrim(self::$rootDir, '/').'/';
+    }
 }

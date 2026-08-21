@@ -59,6 +59,7 @@ abstract class Controller
                 'projectName' => Config::get('projectName'),
                 'title' => Config::get('title'),
                 'rootDir' => Router::getRootDir(),
+                'baseHref' => Router::getBaseHref(),
             ]
         );
     }

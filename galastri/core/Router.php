@@ -83,11 +83,13 @@ final class Router
 
         foreach (self::$urlParts as $partValue) {
 
-            if (array_key_exists('/'.$partValue, self::$routeData)) {
+            $routeName = $partValue === '' ? self::$rootDir : '/'.$partValue;
+
+            if (array_key_exists($routeName, self::$routeData)) {
                 $found = true;
 
-                self::$routeData = self::$routeData['/'.$partValue];
-                self::$nodeName = '/'.$partValue;
+                self::$routeData = self::$routeData[$routeName];
+                self::$nodeName = $routeName;
 
                 self::processNodeData($partValue);
                 break;

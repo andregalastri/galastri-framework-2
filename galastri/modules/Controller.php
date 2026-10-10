@@ -60,6 +60,8 @@ abstract class Controller
                 'title' => Config::get('title'),
                 'rootDir' => Router::getRootDir(),
                 'baseHref' => Router::getBaseHref(),
+                'galastriVersion' => GALASTRI_VERSION,
+                'appVersion' => APP_VERSION,
             ]
         );
     }

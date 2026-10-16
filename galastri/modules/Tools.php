@@ -158,8 +158,8 @@ final class Tools
 
         $replacePositional = function ($matches) use ($positionalArgs, &$args) {
             $index = $matches[1] - 1;
-
-            if (isset($positionalArgs[$index])) {
+            
+            if (array_key_exists($index, $positionalArgs)) {
                 unset($args[$index]);
 
                 return (string) $positionalArgs[$index];

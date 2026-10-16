@@ -20,22 +20,24 @@ final class PhpEngine
         $this->controllerData = Galastri::getControllerResponse();
     }
 
-    public function get(...$keyList): mixed
+    public function get(int|string ...$keyList): mixed
     {
         $currentValue = $this->controllerData;
-        
-        foreach ($keyList[0] as $key) {
-            if (array_key_exists($key, $currentValue)) {
-                $currentValue = $currentValue[$key];
+
+        foreach ($keyList as $key) {
+            if (!is_array($currentValue) || !array_key_exists($key, $currentValue)) {
+                return null;
             }
+
+            $currentValue = $currentValue[$key];
         }
-        
+
         return $currentValue;
     }
 
-    public function print(...$keyList) : void
+    public function print(int|string ...$keyList) : void
     {
-        $data = $this->get($keyList);
+        $data = $this->get(...$keyList);
         
         if ($data === []) {
             $data = null;

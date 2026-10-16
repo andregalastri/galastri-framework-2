@@ -114,6 +114,10 @@ final class Tools
 
     public static function readableImplode(string $separator, string $lastSeparator, array $array): string
     {
+        if ($array === []) {
+            return '';
+        }
+        
         $array = array_map(function($value) {
             if (in_array(self::typeOf($value), ['null', 'bool'])) {
                 return '['.var_export($value, true).']';

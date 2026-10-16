@@ -42,7 +42,7 @@ final class NumericValidation
 
     public function valueRange(int $minValue, int $maxValue): self
     {
-        $this->validationChain[] = function () use ($minLength, $maxLength) {
+        $this->validationChain[] = function () use ($minValue, $maxValue) {
             $value = $this->value;
             
             if ($value < $minValue || $value > $maxValue) {

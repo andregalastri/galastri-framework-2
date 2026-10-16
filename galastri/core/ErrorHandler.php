@@ -66,16 +66,17 @@ final class ErrorHandler
             {
                 $error = error_get_last();
 
-                try {
-                    $code = self::getErrorCode($error['type'] ?? false);
-
-                    if ($code) {
-                        throw new \Exception();
-                    }
-
-                } catch (\Exception $e) {
-                    self::printError($code, $error['message'], $error['file'], $error['line'], debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS));
+                if ($error === null) {
+                    return;
                 }
+
+                $isFatalError = in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, E_RECOVERABLE_ERROR], true);
+
+                if (!$isFatalError) {
+                    return;
+                }
+
+                self::printError(self::getErrorCode($error['type']), $error['message'], $error['file'], $error['line'], debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS));
             }
         );
     }

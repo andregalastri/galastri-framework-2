@@ -12,7 +12,7 @@ use galastri\modules\validation\DateTimeValidation;
 
 final class Validation
 {
-    public static bool $overlapDisplayError = false;
+    public static bool $displayError = false;
 
     private function __construct() {}
 

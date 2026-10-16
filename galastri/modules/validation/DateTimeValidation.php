@@ -6,6 +6,7 @@
 
 namespace galastri\modules\validation;
 
+use galastri\language\Message;
 use \DateTime;
 
 final class DateTimeValidation
@@ -81,18 +82,22 @@ final class DateTimeValidation
 
         $format = $format ?? $this->format ?? 'Y-m-d H:i:s';
 
-        if (is_string($value)) {
-            try {
-                $dateTime = new DateTime($value);     
-                return $dateTime;
-            } catch (\Exception) {
-                $dateTime = DateTime::createFromFormat($format, $value);
-                $errors = DateTime::getLastErrors();
+        try {
+            $dateTime = DateTime::createFromFormat('!'.$format, $value);
+            $errors = DateTime::getLastErrors();
+        } catch (\ValueError) {
+            $dateTime = false;
+            $errors = false;
+        }
 
-                if (!$errors) {
-                    return $dateTime;
-                }
-            }
+        if (
+            $dateTime !== false
+            && (
+                $errors === false
+                || ($errors['warning_count'] === 0 && $errors['error_count'] === 0)
+            )
+        ) {
+            return $dateTime;
         }
 
         $this->messageFlagValues = [$value, $format];

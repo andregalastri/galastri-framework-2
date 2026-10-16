@@ -22,7 +22,7 @@ return [
         'invalidTypes' => [],
         'validValues' => [],
         'invalidValues' => [],
-        'validRegex' => '/^\/(?:[a-zA-Z0-9_]+\/?)*[a-zA-Z0-9_]+$/',
+        'validRegex' => '/\A\/\??[a-zA-Z0-9_]+(?:\/\??[a-zA-Z0-9_]+)*\z/',
         'invalidRegex' => '',
         'context' => 'endpoint',
     ],

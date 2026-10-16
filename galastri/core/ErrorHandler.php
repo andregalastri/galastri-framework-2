@@ -160,7 +160,9 @@ final class ErrorHandler
             self::createLogFile($code, $message, $file, $line, $trace, $currentDate, $currentTime);
         }
 
-        if (Config::get('stopOnWarnings', true) || (Config::get('stopOnWarnings', true) && !in_array($code, ['E_WARNING', 'E_CORE_WARNING', 'E_COMPILE_WARNING', 'E_USER_WARNING']))) {
+        $isWarning = in_array($code, ['E_WARNING', 'E_CORE_WARNING', 'E_COMPILE_WARNING', 'E_USER_WARNING'], true);
+
+        if (Config::get('stopOnWarnings', true) || !$isWarning) {
             exit;
         }
     }

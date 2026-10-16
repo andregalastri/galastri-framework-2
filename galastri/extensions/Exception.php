@@ -12,14 +12,15 @@ use galastri\modules\Validation;
 
 class Exception extends \Exception
 {
+    public static bool $overlapDisplayError = false;
+    
     protected array $data = [];
-    private static bool $overlapDisplayError = false;
     private static string $testedMessage = '';
     private static bool $testedHasFlags = false;
 
     public function __construct()
     {
-        $this->overlapDisplayError = Validation::$overlapDisplayError;
+        self::$overlapDisplayError = Validation::$overlapDisplayError;
         Validation::$overlapDisplayError = false;
         
         $this->__overload(func_get_args());

@@ -106,7 +106,7 @@ final class ErrorHandler
         $overlapDisplayError = Exception::$overlapDisplayError;
         Exception::$overlapDisplayError = false;
         
-        return Config::get('displayErrors', true) || Exception::$overlapDisplayError ? $message : Message::get("DEFAULT_ERROR_MESSAGE")[0];
+        return Config::get('displayErrors', true) || $overlapDisplayError ? $message : Message::get("DEFAULT_ERROR_MESSAGE")[0];
     }
 
     private static function getLine(int $line): int

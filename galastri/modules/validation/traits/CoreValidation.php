@@ -48,7 +48,7 @@ trait CoreValidation
 
     private function throwError(): void
     {
-        Validation::$displayError = true;
+        Validation::$overlapDisplayError = true;
 
         if (Exception::hasFlags($this->failMessage[0])) {
             throw new Exception(

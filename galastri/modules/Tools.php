@@ -142,11 +142,13 @@ final class Tools
         preg_match_all(self::FLAG_REPLACER_REGEX_SEQUENTIAL, $message, $matchSequential);
         preg_match_all(self::FLAG_REPLACER_REGEX_POSITIONAL, $message, $matchPositional);
     
-        if (count($matchSequential[0]) + count($matchPositional[0]) > count($args)) {
+        $requiredArgs = count($matchSequential[0]) + count(array_unique($matchPositional[1]));
+
+        if ($requiredArgs > count($args)) {
             throw new Exception(
                 Message::get("TOOLS_NUM_OF_FLAGS_UNMATCH_STRING_FLAGS"),
                 [
-                    count($matchSequential[0]) + count($matchPositional[0]),
+                    $requiredArgs,
                     count($args),
                 ],
             );

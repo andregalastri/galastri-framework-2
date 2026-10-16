@@ -246,6 +246,8 @@ final class ErrorHandler
 
     private static function createLogFile(int|string $code, string $message, string $file, int $line, array $trace, string $currentDate, string $currentTime): void
     {
+        Tools::createDir(PROJECT_DIR.'/logs', 0700);
+        
         Tools::writeFile(
             Tools::flagReplace(self::PATH_LOG, [$currentDate]),
             implode("\n", [
@@ -259,7 +261,8 @@ final class ErrorHandler
                 'trace    : '.var_export($trace, true),
                 "\n\n----------------------------------------\n\n\n",
             ]),
-            INSERT_CONTENT_AT_START
+            INSERT_CONTENT_AT_START,
+            0600
         );
     }
 

@@ -190,21 +190,21 @@ abstract class Controller
 
     final protected function getParameterValues(): array
     {
-        return Route::getParameterValues();
+        return Router::getParameterValues();
     }
 
     final protected function getParameter(string $key): bool|null|string
     {
-        return Route::getParameter($key) ?? false;
+        return Router::getParameter($key) ?? false;
     }
 
     final protected function getDynamicNodeValues(): array
     {
-        return Route::getDynamicNodeValues();
+        return Router::getDynamicNodeValues();
     }
 
     final protected function getDynamicNode(string $key): bool|null|string
     {
-        return Route::getDynamicNode($key);
+        return Router::getDynamicNode($key);
     }
 }

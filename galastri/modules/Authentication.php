@@ -63,7 +63,7 @@ final class Authentication
     {
         self::startSession();
 
-        if (!isset($_SESSION[$authTag]) && !self::createSessionFromCookie($authTag)) {
+        if (!isset($_SESSION[$authTag], $_COOKIE[$authTag]) || !is_string($_COOKIE[$authTag])) {
             session_write_close();
             return false;
         }
@@ -170,24 +170,5 @@ final class Authentication
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-    }
-
-    private static function createSessionFromCookie(string $authTag): bool
-    {
-        if (isset($_COOKIE[$authTag])) {
-            $cookie = json_decode($_COOKIE[$authTag], true);
-
-            if (is_array($cookie) && isset($cookie['token'])) {
-                self::$tagList[$authTag]['token'] = $cookie['token'];
-                self::$tagList[$authTag]['ip'] = $_SERVER['REMOTE_ADDR'];
-                self::$tagList[$authTag]['cookieExpiration'] = $cookie['cookieExpiration'];
-                self::$tagList[$authTag]['fields'] = $cookie['fields'];
-
-                self::create($authTag);
-                return true;
-            }
-        }
-
-        return false;
     }
 }

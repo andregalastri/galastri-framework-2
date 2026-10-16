@@ -128,9 +128,7 @@ trait CoreDatabase
             ];
 
             try {
-                $pdo = $this->pdo->prepare(
-                    preg_replace('/[\t\n]+/u', ' ', trim($queryString))
-                );
+                $pdo = $this->pdo->prepare($queryString);
 
                 foreach ($this->bind as $key => &$value) {
                     $type = Tools::typeOf($value);

@@ -152,7 +152,7 @@ trait CoreDatabase
                 }
                 unset($value);
 
-                if ($pdo->execute($this->bind)) {
+                if ($pdo->execute()) {
                     $result = $this->processResult($pdo);
 
                     $this->setResult($result, $label);

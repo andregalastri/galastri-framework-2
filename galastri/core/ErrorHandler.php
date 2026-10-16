@@ -9,7 +9,7 @@ namespace galastri\core;
 use galastri\core\config\Config;
 use galastri\language\Message;
 use galastri\modules\Tools;
-use galastri\modules\Validation;
+use galastri\extensions\Exception;
 
 final class ErrorHandler
 {
@@ -54,7 +54,7 @@ final class ErrorHandler
                     }, ARRAY_FILTER_USE_KEY);
                 }
 
-                self::printError($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), $trace);
+                self::printError($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), $trace, $e instanceof Exception && $e->displayError);
             }
         );
     }
@@ -101,9 +101,13 @@ final class ErrorHandler
         return $errorMap[$errorLevel] ?? $default;
     }
 
-    private static function getMessage(string $message): string
+    private static function getMessage(string $message, bool $displayError = false): string
     {
-        return Config::get('displayErrors', true) || Validation::$displayError ? $message : Message::get("DEFAULT_ERROR_MESSAGE")[0];
+        if (Config::get('displayErrors', true) || $displayError) {
+            return $message;
+        }
+
+        return Message::get('DEFAULT_ERROR_MESSAGE')[0];
     }
 
     private static function getLine(int $line): int
@@ -128,7 +132,7 @@ final class ErrorHandler
         return [];
     }
 
-    private static function printError(int|string $code, string $message, string $file, int $line, array $trace): void
+    private static function printError(int|string $code, string $message, string $file, int $line, array $trace, bool $displayError = false): void
     {
         $currentDate = date('Y-m-d');
         $currentTime = date('H:i:s');
@@ -139,7 +143,7 @@ final class ErrorHandler
             'code' => $code,
             'origin' => self::getFile($file),
             'line' => self::getLine($line),
-            'message' => self::getMessage($message),
+            'message' => self::getMessage($message, $displayError),
             'trace' => self::getTrace($trace),
             'warning' => true,
             'error' => true,

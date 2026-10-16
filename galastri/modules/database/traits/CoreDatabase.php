@@ -218,17 +218,19 @@ trait CoreDatabase
 
         return $this;
     }
-
+    
     public function submit(): self
     {
         $this->isConnected();
 
-        foreach ($this->queryChain as $key => $function) {
-            $function();
-            unset($this->queryChain[$key]);
+        try {
+            foreach ($this->queryChain as $function) {
+                $function();
+            }
+        } finally {
+            $this->queryChain = [];
+            $this->errorChain = [];
         }
-
-        $this->errorChain = [];
 
         return $this;
     }

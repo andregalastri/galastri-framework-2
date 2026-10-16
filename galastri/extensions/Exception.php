@@ -8,15 +8,20 @@ namespace galastri\extensions;
 
 use galastri\language\Message;
 use galastri\modules\Tools;
+use galastri\modules\Validation;
 
 class Exception extends \Exception
 {
     protected array $data = [];
+    private static bool $overlapDisplayError = false;
     private static string $testedMessage = '';
     private static bool $testedHasFlags = false;
 
     public function __construct()
     {
+        $this->overlapDisplayError = Validation::$overlapDisplayError;
+        Validation::$overlapDisplayError = false;
+        
         $this->__overload(func_get_args());
         parent::__construct($this->getMessage());
     }

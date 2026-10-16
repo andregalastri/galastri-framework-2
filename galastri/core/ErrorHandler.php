@@ -9,7 +9,7 @@ namespace galastri\core;
 use galastri\core\config\Config;
 use galastri\language\Message;
 use galastri\modules\Tools;
-use galastri\modules\Validation;
+use galastri\extensions\Exception;
 
 final class ErrorHandler
 {
@@ -103,7 +103,10 @@ final class ErrorHandler
 
     private static function getMessage(string $message): string
     {
-        return Config::get('displayErrors', true) || Validation::$displayError ? $message : Message::get("DEFAULT_ERROR_MESSAGE")[0];
+        $overlapDisplayError = Exception::$overlapDisplayError;
+        Exception::$overlapDisplayError = false;
+        
+        return Config::get('displayErrors', true) || Exception::$overlapDisplayError ? $message : Message::get("DEFAULT_ERROR_MESSAGE")[0];
     }
 
     private static function getLine(int $line): int

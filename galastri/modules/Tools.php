@@ -161,8 +161,12 @@ final class Tools
             }
         }
     
-        foreach($args as $arg) {
-            $message = preg_replace(self::FLAG_REPLACER_REGEX_SEQUENTIAL, $arg, $message, 1);
+        foreach ($args as $arg) {
+            $replacement = function ($matches) use ($arg) {
+                return (string) $arg;
+            };
+
+            $message = preg_replace_callback(self::FLAG_REPLACER_REGEX_SEQUENTIAL, $replacement, $message, 1);
         }
     
         return str_replace(self::FLAG_REPLACER_ESCAPE, self::FLAG_REPLACER_ESCAPE_REPLACE_TAG, $message);

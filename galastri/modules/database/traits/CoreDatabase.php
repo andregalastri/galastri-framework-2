@@ -333,15 +333,22 @@ trait CoreDatabase
             return -1;
         }
     }
-
+    
     private function processResult(\PDOStatement $pdo): array
     {
-        if ($pdo->rowCount() > 0) {
-            while ($found = $pdo->fetch(\PDO::FETCH_ASSOC)) {
-                $result['data'][] = $found;
+        $result = [
+            'data' => [],
+            'found' => false,
+        ];
+
+        if ($pdo->columnCount() > 0) {
+            while (($row = $pdo->fetch(\PDO::FETCH_ASSOC)) !== false) {
+                $result['data'][] = $row;
             }
 
-            $result['found'] = true;
+            $result['found'] = !empty($result['data']);
+        } else {
+            $result['found'] = $pdo->rowCount() > 0;
         }
 
         $result['affectedRows'] = $pdo->rowCount();

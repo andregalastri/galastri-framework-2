@@ -59,6 +59,7 @@ abstract class Controller
         
         if (Config::get('includeJsonMetadata')) {
             $this->response = array_merge(
+                $this->response,
                 [
                     'meta' => [
                         'projectName' => Config::get('projectName'),

@@ -63,13 +63,20 @@ final class File
 
         self::$folder = $folder;
     }
-
+    
     private static function checkFileExists(): void
     {
         $urlParts = implode('/', Router::getUrlParts());
-        $path = PROJECT_DIR.'/'.self::$folder.'/'.$urlParts;
+        $folder = realpath(PROJECT_DIR.'/'.self::$folder);
 
-        if ($urlParts == '' || !file_exists($path)) {
+        if ($urlParts === '' || $folder === false || !is_dir($folder)) {
+            Galastri::notFound();
+        }
+
+        $path = realpath($folder.'/'.$urlParts);
+        $prefix = rtrim($folder, '/\\').DIRECTORY_SEPARATOR;
+
+        if ($path === false || !is_file($path) || !str_starts_with($path, $prefix)) {
             Galastri::notFound();
         }
 

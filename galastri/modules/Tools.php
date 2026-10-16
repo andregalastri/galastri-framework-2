@@ -29,29 +29,66 @@ final class Tools
 
     public static function writeFile(string $path, string $content, int $mode = INSERT_CONTENT_AT_END, int $chmod = 0777): void
     {
-        if (!file_exists($path)) {
+        $isNewFile = !file_exists($path);
+
+        if ($isNewFile) {
             self::createDir(pathinfo($path)['dirname'], $chmod);
-
-            file_put_contents($path, '');
-            self::chmod($path, $chmod);
         }
 
-        switch ($mode) {
-            case INSERT_CONTENT_AT_END:
-                $content = file_get_contents($path).$content;
-                break;
-                
-            case INSERT_CONTENT_AT_START:
-                $content = $content.file_get_contents($path);
-                break;
+        $handle = fopen($path, 'c+b');
 
-            case OVERWRITE_CONTENT:
-                break;
+        if ($handle === false) {
+            throw new \RuntimeException('Não foi possível abrir o arquivo para escrita.');
         }
 
-        file_put_contents($path, $content);
+        try {
+            if (!flock($handle, LOCK_EX)) {
+                throw new \RuntimeException('Não foi possível bloquear o arquivo.');
+            }
+
+            if ($isNewFile) {
+                self::chmod($path, $chmod);
+            }
+
+            if (in_array($mode, [INSERT_CONTENT_AT_START, INSERT_CONTENT_AT_END], true)) {
+                $existingContent = stream_get_contents($handle);
+
+                if ($existingContent === false) {
+                    throw new \RuntimeException('Não foi possível ler o arquivo.');
+                }
+
+                $content = $mode === INSERT_CONTENT_AT_START ? $content.$existingContent : $existingContent.$content;
+            }
+
+            if (!rewind($handle)) {
+                throw new \RuntimeException('Não foi possível reposicionar o arquivo.');
+            }
+
+            $length = strlen($content);
+            $offset = 0;
+
+            while ($offset < $length) {
+                $written = fwrite($handle, substr($content, $offset));
+
+                if ($written === false || $written === 0) {
+                    throw new \RuntimeException('Não foi possível concluir a escrita.');
+                }
+
+                $offset += $written;
+            }
+
+            if (!fflush($handle)) {
+                throw new \RuntimeException('Não foi possível descarregar a escrita.');
+            }
+
+            if (!ftruncate($handle, $length)) {
+                throw new \RuntimeException('Não foi possível ajustar o tamanho do arquivo.');
+            }
+        } finally {
+            fclose($handle);
+        }
     }
-
+    
     public static function typeOf(mixed $value, bool $getClassForObjects = false): string
     {
         $types = [

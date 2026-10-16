@@ -71,23 +71,23 @@ final class NumericValidation
     public function denyZero(): self
     {
         $this->validationChain[] = function () {
-            $value = (int)$this->value;
+            $value = (float)$this->value;
 
-            if ($value === 0) {
+            if ($value === 0.0) {
                 $this->messageFlagValues = [$value];
                 $this->throwError();
             }
         };
-        
+
         return $this;
     }
 
     public function denyNegative(): self
     {
         $this->validationChain[] = function () {
-            $value = (int)$this->value;
+            $value = (float)$this->value;
 
-            if ($value < 0) {
+            if ($value < 0.0) {
                 $this->messageFlagValues = [$value];
                 $this->throwError();
             }

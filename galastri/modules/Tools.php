@@ -152,14 +152,21 @@ final class Tools
             );
         }
 
-        foreach($matchPositional[0] as $key => $flag) {
-            $index = $matchPositional[1][$key] - 1;
-            
-            if (isset($args[$index])) {
-                $message = str_replace($flag, $args[$index], $message);
+        $positionalArgs = $args;
+
+        $replacePositional = function ($matches) use ($positionalArgs, &$args) {
+            $index = $matches[1] - 1;
+
+            if (isset($positionalArgs[$index])) {
                 unset($args[$index]);
+
+                return (string) $positionalArgs[$index];
             }
-        }
+
+            return $matches[0];
+        };
+
+        $message = preg_replace_callback(self::FLAG_REPLACER_REGEX_POSITIONAL, $replacePositional, $message);
     
         foreach ($args as $arg) {
             $replacement = function ($matches) use ($arg) {

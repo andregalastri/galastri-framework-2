@@ -29,6 +29,9 @@ final class ErrorHandler
         set_error_handler(
             function (int $level, string $message, string $file, int $line): void
             {
+                if ((error_reporting() & $level) === 0) {
+                    return;
+                }
                 self::printError(self::getErrorCode($level, 'E_WARNING'), $message, $file, $line, debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS));
             }
         );

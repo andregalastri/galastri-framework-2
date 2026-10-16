@@ -112,7 +112,7 @@ final class Router
                         self::$routeData = $routeData;
                         self::$nodeName = $key;
 
-                        self::$dynamicNodes = [ltrim($key, '/?') => $partValue];
+                        self::$dynamicNodes[ltrim($key, '/?')] = $partValue;
 
                         self::processNodeData($key);
                         break 2;

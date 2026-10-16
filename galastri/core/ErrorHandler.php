@@ -268,9 +268,16 @@ final class ErrorHandler
 
     private static function getHttpStatusCode(int|string $code): int
     {
-        return match ($code) {
-            'E_WARNING', 'E_USER_WARNING', 'E_NOTICE', 'E_USER_NOTICE' => 400,
-            default => 500,
-        };
+        $currentStatus = http_response_code();
+
+        if ($currentStatus !== false && $currentStatus >= 400 && $currentStatus <= 599) {
+            return $currentStatus;
+        }
+
+        if (in_array($code, ['E_WARNING', 'E_USER_WARNING', 'E_NOTICE', 'E_USER_NOTICE'], true)) {
+            return 400;
+        }
+
+        return 500;
     }
 }

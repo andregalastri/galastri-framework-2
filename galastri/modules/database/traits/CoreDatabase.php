@@ -14,7 +14,7 @@ trait CoreDatabase
 {
     private string $configFile = PROJECT_DIR.'/app/config/database.php';
 
-    private \PDO $pdo;
+    private ?\PDO $pdo = null;
     private bool $connected = false;
     private array $bind = [];
     private array $namedResult = [];

@@ -44,9 +44,15 @@ class MysqlDatabase
 
     public function connect(): self
     {
+        $dsn = self::DRIVER.':host='.$this->host.';dbname='.$this->database;
+
+        if ($this->port !== '') {
+            $dsn .= ';'.$this->port;
+        }
+
         $this->establishConnection(
-            new \PDO (
-                self::DRIVER.':host='.$this->host.';'.$this->port.' dbname='.$this->database,
+            new \PDO(
+                $dsn,
                 $this->username,
                 $this->password,
                 $this->options

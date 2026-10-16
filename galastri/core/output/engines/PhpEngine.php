@@ -20,21 +20,36 @@ final class PhpEngine
         $this->controllerData = Galastri::getControllerResponse();
     }
 
-    public function get(int|string $key): mixed
+    public function get(...$keyList): mixed
     {
-        return $this->controllerData[$key] ?? null;
+        $currentValue = $this->controllerData;
+        
+        foreach ($keyList[0] as $key) {
+            if (array_key_exists($key, $currentValue)) {
+                $currentValue = $currentValue[$key];
+            }
+        }
+        
+        return $currentValue;
     }
 
-    public function print(int|string $key) : void
+    public function print(...$keyList) : void
     {
-        $data = $this->get($key);
-
+        $data = $this->get($keyList);
+        
+        if ($data === []) {
+            $data = null;
+        }
+        
         switch (gettype($data)) {
+            case 'boolean':
             case 'array':
             case 'object':
-            case 'boolean':
-            case 'null':
+            case 'resource':
+            case 'unknown type':
                 throw new Exception(Message::get('VIEW_INVALID_PRINT_DATA'));
+            case 'NULL':
+                $data = '';
         }
 
         echo htmlspecialchars($data, ENT_QUOTES, 'UTF-8');

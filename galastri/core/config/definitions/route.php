@@ -257,4 +257,15 @@ return [
         'invalidRegex' => '',
         'context' => 'route',
     ],
+    
+    'includeJsonMetadata' => [
+        'defaultValue' => true,
+        'validTypes' => ['bool'],
+        'invalidTypes' => [],
+        'validValues' => [],
+        'invalidValues' => [],
+        'validRegex' => '',
+        'invalidRegex' => '',
+        'context' => 'route',
+    ],
 ];

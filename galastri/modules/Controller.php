@@ -55,15 +55,22 @@ abstract class Controller
         $this->response = array_merge(
             $this->controllerMethodData,
             $this->controllerHttpMethodData,
-            [
-                'projectName' => Config::get('projectName'),
-                'title' => Config::get('title'),
-                'rootDir' => Router::getRootDir(),
-                'baseHref' => Router::getBaseHref(),
-                'galastriVersion' => GALASTRI_VERSION,
-                'appVersion' => APP_VERSION,
-            ]
         );
+        
+        if (Config::get('includeJsonMetadata')) {
+            $this->response = array_merge(
+                [
+                    'meta' => [
+                        'projectName' => Config::get('projectName'),
+                        'title' => Config::get('title'),
+                        'rootDir' => Router::getRootDir(),
+                        'baseHref' => Router::getBaseHref(),
+                        'galastriVersion' => GALASTRI_VERSION,
+                        'appVersion' => APP_VERSION,
+                    ],
+                ]
+            );
+        }
     }
 
     final protected function setProjectName(string $value): void

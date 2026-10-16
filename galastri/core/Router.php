@@ -405,9 +405,9 @@ final class Router
         return self::$parameters;
     }
     
-    public static function getParameter(string $key): string
+    public static function getParameter(string $key): ?string
     {
-        return self::$parameters[$key];
+        return self::$parameters[$key] ?? null;
     }
     
     public static function getRootDir(): string

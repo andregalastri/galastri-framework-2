@@ -303,7 +303,6 @@ final class StringValidation
         return $this;
     }
 
-
     private function validateCharset(string $mode, string ...$datasets): self
     {
         $modeList = ['allowChars', 'denyChars', 'allowWords', 'denyWords'];
@@ -343,8 +342,13 @@ final class StringValidation
 
             preg_match_all($modeList[$mode], $value, $matches);
 
+            if ($mode === 'allowWords') {
+                $invalid = empty($matches[0]);
+            } else {
+                $invalid = !empty($matches[0]);
+            }
 
-            if (!empty($matches[0])) {
+            if ($invalid) {
                 $this->messageFlagValues = [$value, implode(', ', array_unique($matches[0]))];
                 $this->throwError();
             }

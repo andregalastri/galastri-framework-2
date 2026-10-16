@@ -339,8 +339,13 @@ final class StringValidation
                 'allowWords' => '/^(?:'.implode('|', $datasets).')$/u',
                 'denyWords'  => '/(?:'.implode('|', $datasets).')/u',
             ];
-
-            preg_match_all($modeList[$mode], $value, $matches);
+            
+            $matchCount = preg_match_all($modeList[$mode], $value, $matches);
+            
+            if ($matchCount === false) {
+                $this->messageFlagValues = [$value, ''];
+                $this->throwError();
+            }
 
             if ($mode === 'allowWords') {
                 $invalid = empty($matches[0]);
@@ -375,8 +380,13 @@ final class StringValidation
 
         $this->validationChain[] = function () use ($mode, $modeList) {
             $value = $this->value;
-
-            preg_match_all('/[\p{L}]/u', $value, $allLetters);
+            
+            $matchCount = preg_match_all('/[\p{L}]/u', $value, $allLetters);
+            
+            if ($matchCount === false) {
+                $this->messageFlagValues = [$value, ''];
+                $this->throwError();
+            }
 
             if (empty($allLetters[0])) {
                 return;

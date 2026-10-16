@@ -209,7 +209,7 @@ final class Router
         self::setConfigIfExists('permissionFailMessage');
         self::setConfigIfExists('validateMimeType');
         self::setConfigIfExists('forceMimeType');
-        self::setConfigIfExists('includeJsonMetadata');
+        self::setConfigIfExists('includeProjectMetadata');
     }
 
     private static function configureNodeProperties(): void

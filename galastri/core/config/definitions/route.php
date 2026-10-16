@@ -258,7 +258,7 @@ return [
         'context' => 'route',
     ],
     
-    'includeJsonMetadata' => [
+    'includeProjectMetadata' => [
         'defaultValue' => true,
         'validTypes' => ['bool'],
         'invalidTypes' => [],

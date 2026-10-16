@@ -57,7 +57,7 @@ abstract class Controller
             $this->controllerHttpMethodData,
         );
         
-        if (Config::get('includeJsonMetadata')) {
+        if (Config::get('includeProjectMetadata')) {
             $this->response = array_merge(
                 $this->response,
                 [

@@ -182,7 +182,7 @@ final class ErrorHandler
                 $value = var_export($value, true);
             }
 
-            echo str_pad($key, 10).': '.$value."\n";
+            echo htmlspecialchars(str_pad($key, 10).': '.$value."\n", ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         }
         echo '</pre>';
     }

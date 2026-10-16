@@ -31,12 +31,16 @@ final class HttpData
 
     private static function getRequestData(): array
     {
-        if(!empty($_GET)) {
-            return $_GET;
-        } elseif (!empty($_POST)) {
-            return $_POST;
-        } else {
-            return json_decode(file_get_contents('php://input'), true) ?? [];
+        if (!empty($_POST)) {
+            return array_replace($_GET, $_POST);
         }
+
+        $body = json_decode(file_get_contents('php://input'), true);
+
+        if (is_array($body)) {
+            return array_replace($_GET, $body);
+        }
+
+        return $_GET;
     }
 }

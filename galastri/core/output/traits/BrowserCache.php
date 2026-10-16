@@ -14,6 +14,16 @@ trait BrowserCache
 {
     private static function checkBrowserCache(string $currentContent): bool
     {
+        if (Config::get('authTag') !== '') {
+            header('Cache-Control: private, no-store', true);
+
+            header_remove('Expires');
+            header_remove('ETag');
+            header_remove('Last-Modified');
+
+            return false;
+        }
+        
         $browserCache = Config::get('browserCache');
 
         if (is_array($browserCache) && !empty($browserCache)) {

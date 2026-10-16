@@ -57,9 +57,9 @@ final class DateTimeValidation
    
     public function dateTimeRange(DateTime|string $minDateTime, DateTime|string $maxDateTime, ?string $format = null): self
     {
-        $this->validationChain[] = function () use ($minDateTime, $maxDateTime) {
+        $this->validationChain[] = function () use ($minDateTime, $maxDateTime, $format) {
             $valueFormat = $this->format;
-            $rangeFormat = $format ?? $inputFormat;
+            $rangeFormat = $format ?? $valueFormat;
 
             $value = self::createDateTimeFromString($this->value, $valueFormat);
             $minDateTime = self::createDateTimeFromString($minDateTime, $rangeFormat);

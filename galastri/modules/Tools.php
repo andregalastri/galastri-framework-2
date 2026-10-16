@@ -156,29 +156,36 @@ final class Tools
 
         $positionalArgs = $args;
 
-        $replacePositional = function ($matches) use ($positionalArgs, &$args) {
-            $index = $matches[1] - 1;
-            
-            if (array_key_exists($index, $positionalArgs)) {
-                unset($args[$index]);
+        foreach ($matchPositional[1] as $position) {
+            unset($args[$position - 1]);
+        }
 
-                return (string) $positionalArgs[$index];
+        $sequentialArgs = array_values($args);
+        $sequentialIndex = 0;
+
+        $replaceFlags = function ($matches) use ($positionalArgs, $sequentialArgs, &$sequentialIndex) {
+            if ($matches[0] === self::FLAG_REPLACER_ESCAPE) {
+                return self::FLAG_REPLACER_ESCAPE_REPLACE_TAG;
             }
 
-            return $matches[0];
+            if ($matches[1] === 's') {
+                $value = $sequentialArgs[$sequentialIndex];
+                $sequentialIndex++;
+
+                return (string) $value;
+            } else {
+                $index = $matches[1] - 1;
+
+                if (array_key_exists($index, $positionalArgs)) {
+                    return (string) $positionalArgs[$index];
+                }
+
+                return $matches[0];
+            }
         };
 
-        $message = preg_replace_callback(self::FLAG_REPLACER_REGEX_POSITIONAL, $replacePositional, $message);
-    
-        foreach ($args as $arg) {
-            $replacement = function ($matches) use ($arg) {
-                return (string) $arg;
-            };
-
-            $message = preg_replace_callback(self::FLAG_REPLACER_REGEX_SEQUENTIAL, $replacement, $message, 1);
-        }
-    
-        return str_replace(self::FLAG_REPLACER_ESCAPE, self::FLAG_REPLACER_ESCAPE_REPLACE_TAG, $message);
+        return preg_replace_callback('/%%|(?<!%)%(\d+|s(?!\d))/', $replaceFlags, $message
+        );
     }
 
 

@@ -406,6 +406,8 @@ trait CoreDatabase
             $message = preg_replace('/[\t\n]+/u', ' ', trim($e->getMessage()));
             $message = str_replace('%', '%%', $message);
             $this->failMessage = [$message, $e->getCode()];
+            $this->additionalData = [];
+            $this->messageFlagValues = [];
             
             return;
         }
@@ -428,6 +430,8 @@ trait CoreDatabase
             $message = preg_replace('/[\t\n]+/u', ' ', trim($e->getMessage()));
             $message = str_replace('%', '%%', $message);
             $this->failMessage = [$message, $e->getCode()];
+            $this->additionalData = [];
+            $this->messageFlagValues = [];
         }
     }
 }

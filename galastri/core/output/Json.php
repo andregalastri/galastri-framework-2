@@ -20,6 +20,11 @@ final class Json
         header('Content-Type: application/json');
         echo $json;
     }
+    
+    public static function stream(array $data): void
+    {
+        // Stream
+    }
 
     public static function requiresController(): bool
     {

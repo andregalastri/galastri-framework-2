@@ -81,6 +81,13 @@ trait CoreDatabase
     {
         $this->pdo = null;
         $this->connected = false;
+        $this->queryChain = [];
+        $this->errorChain = [];
+        $this->bind = [];
+        $this->lastResult = [];
+        $this->namedResult = [];
+        $this->additionalData = [];
+        $this->messageFlagValues = [];
 
         return $this;
     }

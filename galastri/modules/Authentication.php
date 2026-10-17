@@ -18,14 +18,19 @@ final class Authentication
     {
         self::$currentAuthTag = $authTag;
 
-        if (!self::validate($authTag)) {
-            self::$tagList[$authTag] = [
-                'token' => base64_encode(random_bytes(48)),
-                'ip' => $_SERVER['REMOTE_ADDR'],
-                'cookieExpiration' => 86400,
-                'fields' => [],
-            ];
+        if (self::validate($authTag)) {
+            self::startSession();
+            self::$tagList[$authTag] = $_SESSION[$authTag];
+            session_write_close();
+            return;
         }
+
+        self::$tagList[$authTag] = [
+            'token' => base64_encode(random_bytes(48)),
+            'ip' => $_SERVER['REMOTE_ADDR'],
+            'cookieExpiration' => 86400,
+            'fields' => [],
+        ];
     }
 
     public static function create(?string $authTag = null, bool $regenerateIdSession = true): void

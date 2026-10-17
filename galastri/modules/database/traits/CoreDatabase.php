@@ -282,7 +282,7 @@ trait CoreDatabase
         return isset($this->namedResult[$label]['found']) && $this->namedResult[$label]['found'];
     }
 
-    private function establishConnection(\PDO $pdo): void
+    private function establishConnection(callable $createPdo): void
     {
         try {
             foreach ($this->requiredProperties as $property) {
@@ -293,8 +293,7 @@ trait CoreDatabase
                     );
                 }
             }
-
-            $this->pdo = $pdo;
+            $this->pdo = $createPdo();
 
             $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);

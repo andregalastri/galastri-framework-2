@@ -50,14 +50,16 @@ class MysqlDatabase
             $dsn .= ';'.$this->port;
         }
 
-        $this->establishConnection(
-            new \PDO(
+        $createPdo = function () use ($dsn): \PDO {
+            return new \PDO(
                 $dsn,
                 $this->username,
                 $this->password,
                 $this->options
-            )
-        );
+            );
+        };
+
+        $this->establishConnection($createPdo);
 
         return $this;
     }

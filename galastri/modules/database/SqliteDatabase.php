@@ -32,14 +32,16 @@ class SqliteDatabase
 
     public function connect(): self
     {
-        $this->establishConnection(
-            new \PDO(
+        $createPdo = function (): \PDO {
+            return new \PDO(
                 self::DRIVER.':'.$this->location,
                 null,
                 null,
                 $this->options
-            )
-        );
+            );
+        };
+
+        $this->establishConnection($createPdo);
 
         return $this;
     }

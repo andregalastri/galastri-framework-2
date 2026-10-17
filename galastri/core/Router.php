@@ -79,45 +79,32 @@ final class Router
 
     private static function resolveNodes(): void
     {
-        $found = false;
+        $partValue = self::$urlParts[0] ?? null;
 
-        foreach (self::$urlParts as $partValue) {
+        if ($partValue === null) {
+            return;
+        }
 
-            $routeName = $partValue === '' ? self::$rootDir : '/'.$partValue;
+        $routeName = $partValue === '' ? self::$rootDir : '/'.$partValue;
 
-            if (array_key_exists($routeName, self::$routeData)) {
-                $found = true;
+        if (array_key_exists($routeName, self::$routeData)) {
+            self::$routeData = self::$routeData[$routeName];
+            self::$nodeName = $routeName;
+            self::processNodeData($partValue);
+            return;
+        }
 
-                self::$routeData = self::$routeData[$routeName];
-                self::$nodeName = $routeName;
+        if (array_key_exists('@'.$partValue, self::$routeData)) {
+            return;
+        }
 
-                self::processNodeData($partValue);
-                break;
-            }
-
-            if (!$found) {
-                foreach (self::$routeData as $key => $routeData) {
-                    if ('@'.$partValue == $key) {
-                        $found = true;
-                        break 2;
-                    }
-                }
-            }
-
-            if (!$found) {
-                foreach (self::$routeData as $key => $routeData) {
-                    if (strpos($key, '/?') === 0) {
-                        $found = true;
-
-                        self::$routeData = $routeData;
-                        self::$nodeName = $key;
-
-                        self::$dynamicNodes[ltrim($key, '/?')] = $partValue;
-
-                        self::processNodeData($key);
-                        break 2;
-                    }
-                }
+        foreach (self::$routeData as $key => $routeData) {
+            if (strpos($key, '/?') === 0) {
+                self::$routeData = $routeData;
+                self::$nodeName = $key;
+                self::$dynamicNodes[ltrim($key, '/?')] = $partValue;
+                self::processNodeData($key);
+                return;
             }
         }
     }

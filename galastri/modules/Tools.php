@@ -141,7 +141,7 @@ final class Tools
         );
 
         if ($result === false) {
-            throw new Exception('Não foi possível analisar os placeholders.');
+            throw new Exception(Message::get('TOOLS_PLACEHOLDER_ANALYSIS_FAILED'));
         }
 
         foreach ($matches as $match) {
@@ -175,18 +175,18 @@ final class Tools
                 } elseif (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/D', $placeholder)) {
                     $currentMode = 'named';
                 } else {
-                    throw new Exception('Placeholder inválido: '.$match[0]);
+                    throw new Exception(Message::get('TOOLS_INVALID_PLACEHOLDER'), [$match[0]]);
                 }
 
                 if ($mode !== null && $mode !== $currentMode) {
-                    throw new Exception('Não misture placeholders sequenciais, posicionais e nomeados na mesma mensagem.');
+                    throw new Exception(Message::get('TOOLS_MIXED_PLACEHOLDER_MODES'));
                 }
 
                 $mode = $currentMode;
 
                 if ($mode === 'named') {
                     if (!array_key_exists($placeholder, $replacements)) {
-                        throw new Exception('Não foi informado um valor para o placeholder '.$match[0].'.');
+                        throw new Exception(Message::get('TOOLS_MISSING_PLACEHOLDER_VALUE'), [$match[0]]);
                     }
 
                     $value = $replacements[$placeholder];
@@ -197,14 +197,14 @@ final class Tools
                         $position = filter_var($placeholder, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 
                         if ($position === false) {
-                            throw new Exception('Posição inválida no placeholder '.$match[0].'.');
+                            throw new Exception(Message::get('TOOLS_INVALID_PLACEHOLDER_POSITION'), [$match[0]]);
                         }
 
                         $index = $position - 1;
                     }
 
                     if (!array_key_exists($index, $values)) {
-                        throw new Exception('Não foi informado um valor para o placeholder '.$match[0].'.');
+                        throw new Exception(Message::get('TOOLS_MISSING_PLACEHOLDER_VALUE'), [$match[0]]);
                     }
 
                     $value = $values[$index];
@@ -215,7 +215,7 @@ final class Tools
                     && !is_scalar($value)
                     && !$value instanceof \Stringable
                 ) {
-                    throw new Exception('O valor de um placeholder deve ser escalar, null ou implementar Stringable.');
+                    throw new Exception(Message::get('TOOLS_INVALID_PLACEHOLDER_VALUE'));
                 }
 
                 return (string) $value;
@@ -224,8 +224,7 @@ final class Tools
         );
 
         if ($result === null) {
-            throw new Exception('Não foi possível substituir os placeholders.'
-            );
+            throw new Exception(Message::get('TOOLS_PLACEHOLDER_REPLACEMENT_FAILED'));
         }
 
         return $result;

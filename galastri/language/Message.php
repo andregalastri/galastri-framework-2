@@ -72,7 +72,19 @@ final class Message
     /**
      * Ferramentas / Tools.
      */
-    private const TOOLS_NUM_OF_FLAGS_UNMATCH_STRING_FLAGS = 'Erro no método flagReplace(): A mensagem possui {{}} flag(s), mas há apenas {{}} argumento(s) informado(s).';
+    private const TOOLS_PLACEHOLDER_ANALYSIS_FAILED = 'Não foi possível analisar os placeholders.';
+
+    private const TOOLS_INVALID_PLACEHOLDER = 'Placeholder inválido: {{}}';
+
+    private const TOOLS_MIXED_PLACEHOLDER_MODES = 'Não misture placeholders sequenciais, posicionais e nomeados na mesma mensagem.';
+
+    private const TOOLS_MISSING_PLACEHOLDER_VALUE = 'Não foi informado um valor para o placeholder {{}}.';
+
+    private const TOOLS_INVALID_PLACEHOLDER_POSITION = 'Posição inválida no placeholder {{}}.';
+
+    private const TOOLS_INVALID_PLACEHOLDER_VALUE = 'O valor de um placeholder deve ser escalar, null ou implementar Stringable.';
+
+    private const TOOLS_PLACEHOLDER_REPLACEMENT_FAILED = 'Não foi possível substituir os placeholders.';
 
     private const TOOLS_INVALID_CHMOD_CODE = 'Erro no método validateChmodCode: O código {{}} não é válido para o chmod().';
     

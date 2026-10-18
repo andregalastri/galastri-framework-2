@@ -6,7 +6,6 @@
 
 namespace galastri\core\output;
 
-use galastri\core\Debug;
 use galastri\core\Galastri;
 
 final class Json
@@ -27,6 +26,11 @@ final class Json
         }
         
         echo $json;
+
+        if (self::isStreaming()) {
+            echo "\n";
+            flush();
+        }
     }
     
     public static function stream(array $data): void
@@ -61,6 +65,11 @@ final class Json
         echo $json."\n";
 
         flush();
+    }
+    
+    public static function isStreaming(): bool
+    {
+        return self::$streaming;
     }
 
     public static function requiresController(): bool

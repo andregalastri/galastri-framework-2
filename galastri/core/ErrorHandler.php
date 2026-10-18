@@ -7,6 +7,7 @@
 namespace galastri\core;
 
 use galastri\core\config\Config;
+use galastri\core\output\Json;
 use galastri\language\Message;
 use galastri\modules\Tools;
 use galastri\extensions\Exception;
@@ -148,8 +149,10 @@ final class ErrorHandler
             'warning' => true,
             'error' => true,
         ];
-
-        http_response_code(self::getHttpStatusCode($code));
+        
+        if (!headers_sent()) {
+            http_response_code(self::getHttpStatusCode($code));
+        }
 
         switch (Config::get('output', 'view')) {
             case 'json':
@@ -177,8 +180,18 @@ final class ErrorHandler
 
     private static function printErrorJson(array $data): void
     {
-        header('Content-Type: application/json');
-        echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+        if (Json::isStreaming()) {
+            Json::stream($data);
+            return;
+        }
+
+        if (!headers_sent()) {
+            header('Content-Type: application/json');
+        }
+
+        echo json_encode(
+            $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE
+        );
     }
 
 

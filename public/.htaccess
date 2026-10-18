@@ -21,7 +21,10 @@ Options -Indexes
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)/$ /$1 [R=301,L]
 
-# Redireciona todas as requisições para index.php
-RewriteCond %{REQUEST_FILENAME} !-f
+# Entrega o favicon diretamente, sem passar pelo bootstrap.
+RewriteRule ^favicon\.ico$ - [END]
+
+# Encaminha as requisições ao bootstrap, exceto diretórios
+# e as exceções tratadas anteriormente.
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
+RewriteRule ^(.*)$ index.php [QSA,END]

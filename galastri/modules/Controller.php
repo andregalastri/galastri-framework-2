@@ -165,13 +165,14 @@ abstract class Controller
 
     /************** */
 
-    final protected function isDownloadableFile(bool|null $value = null): bool
+    final protected function setDownloadableFile(bool $value): void
     {
-        if ($value == null) {
-            return Config::get('isDownloadableFile');
-        }
-
         Config::set('isDownloadableFile', $value);
+    }
+
+    final protected function isDownloadableFile(): bool
+    {
+        return Config::get('isDownloadableFile');
     }
     
     /************** */

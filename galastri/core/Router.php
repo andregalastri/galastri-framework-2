@@ -60,11 +60,8 @@ final class Router
 
     private static function setUrlParts(): void
     {
-        $requestUri = self::removePrefixOnce($_SERVER['REQUEST_URI'], self::$rootDir);
-        $urlSplit = explode('?', $requestUri);
-
-        $querystring = $urlSplit[1] ?? [];
-        $parts = $urlSplit[0] ?? [];
+        $requestPath = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
+        $parts = self::removePrefixOnce($requestPath, self::$rootDir);
 
         $urlParts = [''];
 

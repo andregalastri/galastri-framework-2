@@ -1,30 +1,29 @@
-# Ativa o mecanismo de reescrita
+# Ativa o mecanismo de reescrita.
 RewriteEngine On
 
+# Desativa a geração automática de ETag para arquivos estáticos.
 FileETag None
 
+# Desativa a compressão gzip.
 <IfModule mod_deflate.c>
     SetEnv no-gzip 1
 </IfModule>
 
-# Retorna 404 para favicon.ico se ele não existir. Visa evitar chamadas duplas
-# ao framework, principalmente durante o desenvolvimento em que não há um
-# favicondefinido.
+# Desativa a listagem de arquivos dos diretórios.
+Options -Indexes
+
+# Remove a barra final da URL, exceto para diretórios existentes.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ /$1 [R=301,L]
+
+# Entrega o favicon existente ou retorna 404, sem chamar o bootstrap.
 RewriteCond %{REQUEST_URI} ^/favicon\.ico$
 RewriteCond %{DOCUMENT_ROOT}/favicon.ico !-f
 RewriteRule ^.*$ - [R=404,L]
 
-# Desativa a indexação de diretórios
-Options -Indexes
-
-# Remove a barra no final da URL, exceto para diretórios
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)/$ /$1 [R=301,L]
-
-# Entrega o favicon diretamente, sem passar pelo bootstrap.
 RewriteRule ^favicon\.ico$ - [END]
 
-# Encaminha as requisições ao bootstrap, exceto diretórios
-# e as exceções tratadas anteriormente.
+# Preserva diretórios existentes e encaminha as demais requisições ao bootstrap,
+# exceto as tratadas pelas regras anteriores.
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,END]

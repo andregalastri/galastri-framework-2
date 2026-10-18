@@ -47,13 +47,13 @@ final class Json
                 $buffer = ob_get_status();
 
                 if (($buffer['flags'] & PHP_OUTPUT_HANDLER_REMOVABLE) === 0) {
-                    throw new \RuntimeException(
+                    throw new Exception(
                         'Não foi possível iniciar o streaming: existe um buffer que não permite ser encerrado.'
                     );
                 }
 
                 if (!ob_end_flush()) {
-                    throw new \RuntimeException(
+                    throw new Exception(
                         'Não foi possível liberar e encerrar um buffer de saída.'
                     );
                 }

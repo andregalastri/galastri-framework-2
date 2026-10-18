@@ -11,10 +11,7 @@ use galastri\language\Message;
 
 final class Tools
 {
-    const FLAG_REPLACER_REGEX_SEQUENTIAL = '/(?<!%)%s(?!\d)/';
-    const FLAG_REPLACER_REGEX_POSITIONAL = '/(?<!%)%(\d+)/';
-    const FLAG_REPLACER_ESCAPE = '%%';
-    const FLAG_REPLACER_ESCAPE_REPLACE_TAG = '%';
+    private const PLACEHOLDER_REGEX = '~(\\\\)?\{\{([^{}]*)\}\}~';
 
     private function __construct() {}
 
@@ -38,12 +35,12 @@ final class Tools
         $handle = fopen($path, 'c+b');
 
         if ($handle === false) {
-            throw new \RuntimeException('Não foi possível abrir o arquivo para escrita.');
+            throw new Exception('Não foi possível abrir o arquivo para escrita.');
         }
 
         try {
             if (!flock($handle, LOCK_EX)) {
-                throw new \RuntimeException('Não foi possível bloquear o arquivo.');
+                throw new Exception('Não foi possível bloquear o arquivo.');
             }
 
             if ($isNewFile) {
@@ -54,14 +51,14 @@ final class Tools
                 $existingContent = stream_get_contents($handle);
 
                 if ($existingContent === false) {
-                    throw new \RuntimeException('Não foi possível ler o arquivo.');
+                    throw new Exception('Não foi possível ler o arquivo.');
                 }
 
                 $content = $mode === INSERT_CONTENT_AT_START ? $content.$existingContent : $existingContent.$content;
             }
 
             if (!rewind($handle)) {
-                throw new \RuntimeException('Não foi possível reposicionar o arquivo.');
+                throw new Exception('Não foi possível reposicionar o arquivo.');
             }
 
             $length = strlen($content);
@@ -71,18 +68,18 @@ final class Tools
                 $written = fwrite($handle, substr($content, $offset));
 
                 if ($written === false || $written === 0) {
-                    throw new \RuntimeException('Não foi possível concluir a escrita.');
+                    throw new Exception('Não foi possível concluir a escrita.');
                 }
 
                 $offset += $written;
             }
 
             if (!fflush($handle)) {
-                throw new \RuntimeException('Não foi possível descarregar a escrita.');
+                throw new Exception('Não foi possível descarregar a escrita.');
             }
 
             if (!ftruncate($handle, $length)) {
-                throw new \RuntimeException('Não foi possível ajustar o tamanho do arquivo.');
+                throw new Exception('Não foi possível ajustar o tamanho do arquivo.');
             }
         } finally {
             fclose($handle);
@@ -134,58 +131,104 @@ final class Tools
         return implode($separator, $array).$lastSeparator.$lastKey;
     }
 
-    /**
-     * Source: https://stackoverflow.com/a/23528413
-     */
-    public static function flagReplace(string $message, array $args): string
+    public static function hasPlaceholders(string $message): bool
     {
-        preg_match_all(self::FLAG_REPLACER_REGEX_SEQUENTIAL, $message, $matchSequential);
-        preg_match_all(self::FLAG_REPLACER_REGEX_POSITIONAL, $message, $matchPositional);
-    
-        $requiredArgs = count($matchSequential[0]) + count(array_unique($matchPositional[1]));
+        $result = preg_match_all(
+            self::PLACEHOLDER_REGEX,
+            $message,
+            $matches,
+            PREG_SET_ORDER
+        );
 
-        if ($requiredArgs > count($args)) {
-            throw new Exception(
-                Message::get("TOOLS_NUM_OF_FLAGS_UNMATCH_STRING_FLAGS"),
-                [
-                    $requiredArgs,
-                    count($args),
-                ],
+        if ($result === false) {
+            throw new Exception('Não foi possível analisar os placeholders.');
+        }
+
+        foreach ($matches as $match) {
+            if ($match[1] === '') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function replacePlaceholders(string $message, array $replacements = []): string
+    {
+        $values = array_values($replacements);
+        $mode = null;
+        $sequentialIndex = 0;
+
+        $result = preg_replace_callback(
+            self::PLACEHOLDER_REGEX,
+            function (array $match) use ($replacements, $values, &$mode, &$sequentialIndex): string {
+                if ($match[1] !== '') {
+                    return substr($match[0], 1);
+                }
+
+                $placeholder = $match[2];
+
+                if ($placeholder === '') {
+                    $currentMode = 'sequential';
+                } elseif (preg_match('/^[1-9][0-9]*$/D', $placeholder)) {
+                    $currentMode = 'positional';
+                } elseif (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/D', $placeholder)) {
+                    $currentMode = 'named';
+                } else {
+                    throw new Exception('Placeholder inválido: '.$match[0]);
+                }
+
+                if ($mode !== null && $mode !== $currentMode) {
+                    throw new Exception('Não misture placeholders sequenciais, posicionais e nomeados na mesma mensagem.');
+                }
+
+                $mode = $currentMode;
+
+                if ($mode === 'named') {
+                    if (!array_key_exists($placeholder, $replacements)) {
+                        throw new Exception('Não foi informado um valor para o placeholder '.$match[0].'.');
+                    }
+
+                    $value = $replacements[$placeholder];
+                } else {
+                    if ($mode === 'sequential') {
+                        $index = $sequentialIndex++;
+                    } else {
+                        $position = filter_var($placeholder, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+                        if ($position === false) {
+                            throw new Exception('Posição inválida no placeholder '.$match[0].'.');
+                        }
+
+                        $index = $position - 1;
+                    }
+
+                    if (!array_key_exists($index, $values)) {
+                        throw new Exception('Não foi informado um valor para o placeholder '.$match[0].'.');
+                    }
+
+                    $value = $values[$index];
+                }
+
+                if (
+                    $value !== null
+                    && !is_scalar($value)
+                    && !$value instanceof \Stringable
+                ) {
+                    throw new Exception('O valor de um placeholder deve ser escalar, null ou implementar Stringable.');
+                }
+
+                return (string) $value;
+            },
+            $message
+        );
+
+        if ($result === null) {
+            throw new Exception('Não foi possível substituir os placeholders.'
             );
         }
 
-        $positionalArgs = $args;
-
-        foreach ($matchPositional[1] as $position) {
-            unset($args[$position - 1]);
-        }
-
-        $sequentialArgs = array_values($args);
-        $sequentialIndex = 0;
-
-        $replaceFlags = function ($matches) use ($positionalArgs, $sequentialArgs, &$sequentialIndex) {
-            if ($matches[0] === self::FLAG_REPLACER_ESCAPE) {
-                return self::FLAG_REPLACER_ESCAPE_REPLACE_TAG;
-            }
-
-            if ($matches[1] === 's') {
-                $value = $sequentialArgs[$sequentialIndex];
-                $sequentialIndex++;
-
-                return (string) $value;
-            } else {
-                $index = $matches[1] - 1;
-
-                if (array_key_exists($index, $positionalArgs)) {
-                    return (string) $positionalArgs[$index];
-                }
-
-                return $matches[0];
-            }
-        };
-
-        return preg_replace_callback('/%%|(?<!%)%(\d+|s(?!\d))/', $replaceFlags, $message
-        );
+        return $result;
     }
 
 
@@ -213,10 +256,7 @@ final class Tools
     private static function validateChmodCode(int|string $chmod): int
     {
         if (!preg_match('/^0[0-7]{3}$/', '0'.decoct($chmod))) {
-            throw new Exception(
-                Message::get("TOOLS_INVALID_CHMOD_CODE"),
-                [$chmod]
-            );
+            throw new Exception(Message::get("TOOLS_INVALID_CHMOD_CODE"), [$chmod]);
         }
 
         return $chmod;

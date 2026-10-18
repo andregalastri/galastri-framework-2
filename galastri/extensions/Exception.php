@@ -16,9 +16,6 @@ class Exception extends \Exception
     
     protected array $data = [];
     
-    private static string $testedMessage = '';
-    private static bool $testedHasFlags = false;
-
     public function __construct()
     {
         $this->displayError = Validation::$displayError;
@@ -28,12 +25,9 @@ class Exception extends \Exception
         parent::__construct($this->getMessage());
     }
 
-    public static function hasFlags(string $message): bool
+    public static function hasPlaceholders(string $message): bool
     {
-        self::$testedMessage = $message;
-        self::$testedHasFlags = preg_match(Tools::FLAG_REPLACER_REGEX_SEQUENTIAL, $message) || preg_match(Tools::FLAG_REPLACER_REGEX_POSITIONAL, $message);
-
-        return self::$testedHasFlags;
+        return Tools::hasPlaceholders($message);
     }
 
     private function __overload(array $parameters): void
@@ -44,14 +38,13 @@ class Exception extends \Exception
                     throw new Exception(Message::get("EXCEPTION_INVALID_ARRAY"));
                 }
 
-                if (self::$testedMessage == $parameters[0][0] && self::$testedHasFlags || self::hasFlags($parameters[0][0])) {
-                    $this->processArrayWithFlags($parameters[0], $parameters[1] ?? [], $parameters[2] ?? null);
+                if (self::hasPlaceholders($parameters[0][0])) {
                     $this->processArrayWithFlags($parameters[0], $parameters[1] ?? [], $parameters[2] ?? null);
                 } else {
                     $this->processSimpleArray($parameters[0], $parameters[1] ?? null);
                 }
             } else {
-                if (self::$testedMessage == $parameters[0] && self::$testedHasFlags || self::hasFlags($parameters[0])) {
+                if (self::hasPlaceholders($parameters[0])) {
                     $this->processStringWithFlags($parameters[0], $parameters[1] ?? [], $parameters[2] ?? null, $parameters[3] ?? null);
                 } else {
                     $this->processSimpleString($parameters[0], $parameters[1] ?? null, $parameters[2] ?? null);
@@ -62,21 +55,21 @@ class Exception extends \Exception
 
     private function processArrayWithFlags(array $data, array $printFArgs, ?array $additionalData): void
     {
-        $this->setMessage(Tools::flagReplace($data[0], $printFArgs));
+        $this->setMessage(Tools::replacePlaceholders($data[0], $printFArgs));
         $this->setCode($data[1]);
         $this->setAdditionalData($additionalData);
     }
 
     private function processSimpleArray(array $data, ?array $additionalData): void
     {
-        $this->setMessage($data[0]);
+        $this->setMessage(Tools::replacePlaceholders($data[0]));
         $this->setCode($data[1]);
         $this->setAdditionalData($additionalData);
     }
     
     private function processStringWithFlags(string $message, array $printFArgs, array|int|null|string $code, ?array $additionalData): void
     {
-        $this->setMessage(Tools::flagReplace($message, $printFArgs));
+        $this->setMessage(Tools::replacePlaceholders($message, $printFArgs));
         
         if ($code !== null && Tools::typeOf($code) !== 'array') {
             $this->setCode($code);
@@ -86,7 +79,7 @@ class Exception extends \Exception
 
     private function processSimpleString(string $message, array|int|null|string $code, ?array $additionalData): void
     {
-        $this->setMessage($message);
+        $this->setMessage(Tools::replacePlaceholders($message));
 
         if ($code !== null && Tools::typeOf($code) !== 'array') {
             $this->setCode($code);

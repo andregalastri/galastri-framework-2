@@ -21,8 +21,10 @@ final class Redirect
 
     private function __construct() {}
 
-    public static function to(string $location, string ...$printfData): void
+    public static function to(string $location, array $replacements = []): void
     {
+        $location = Tools::replacePlaceholders($location, $replacements);
+        
         $location = self::cleanLocation($location);
 
         if ($location == '') {
@@ -37,10 +39,6 @@ final class Redirect
             if (!self::$ignoreRootDir) {
                 $location = '/'.self::cleanLocation(Router::getRootDir().$location);
             }
-        }
-
-        if ($printfData !== []) {
-            $location = vsprintf($location, $printfData);
         }
 
         header('Location: '.$location, true, self::$statusCode);

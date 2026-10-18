@@ -66,15 +66,16 @@ final class Permission
 
         if (!$valid) {
             throw new Exception(
-                $this->currentFailMessage,
+                '{{}}',
+                [$this->currentFailMessage],
                 'PERMISSION_DENIED'
             );
         }
     }
 
-    public function setFailMessage(string $message, string ...$printf): self
+    public function setFailMessage(string $message, array $replacements = []): self
     {
-        $this->currentFailMessage = vsprintf($message, $printf);
+        $this->currentFailMessage = Tools::replacePlaceholders($message, $replacements);
 
         return $this;
     }

@@ -50,7 +50,7 @@ trait CoreValidation
     {
         Validation::$displayError = true;
 
-        if (Exception::hasFlags($this->failMessage[0])) {
+        if (Exception::hasPlaceholders($this->failMessage[0])) {
             throw new Exception(
                 $this->failMessage, $this->messageFlagValues, $this->additionalData
             );

@@ -14,7 +14,7 @@ use galastri\extensions\Exception;
 
 final class ErrorHandler
 {
-    const PATH_LOG = PROJECT_DIR.'/logs/ErrorHandler-%s.log';
+    const PATH_LOG = PROJECT_DIR.'/logs/ErrorHandler-{{}}.log';
 
     private function __construct() {}
 
@@ -266,7 +266,7 @@ final class ErrorHandler
         Tools::createDir(PROJECT_DIR.'/logs', 0700);
         
         Tools::writeFile(
-            Tools::flagReplace(self::PATH_LOG, [$currentDate]),
+            Tools::replacePlaceholders(self::PATH_LOG, [$currentDate]),
             implode("\n", [
                 'date     : '.$currentDate,
                 'time     : '.$currentTime,

@@ -200,7 +200,7 @@ trait CoreDatabase
     {
         $this->displayError = true;
 
-        if (Exception::hasFlags($this->failMessage[0])) {
+        if (Exception::hasPlaceholders($this->failMessage[0])) {
             throw new Exception(
                 $this->failMessage, $this->messageFlagValues, $this->additionalData
             );
@@ -404,7 +404,7 @@ trait CoreDatabase
 
         if (empty($this->errorChain)) {
             $message = preg_replace('/[\t\n]+/u', ' ', trim($e->getMessage()));
-            $message = str_replace('%', '%%', $message);
+            $message = str_replace('{{', '\\{{', $message);
             $this->failMessage = [$message, $e->getCode()];
             $this->additionalData = [];
             $this->messageFlagValues = [];
@@ -428,7 +428,7 @@ trait CoreDatabase
             }
 
             $message = preg_replace('/[\t\n]+/u', ' ', trim($e->getMessage()));
-            $message = str_replace('%', '%%', $message);
+            $message = str_replace('{{', '\\{{', $message);
             $this->failMessage = [$message, $e->getCode()];
             $this->additionalData = [];
             $this->messageFlagValues = [];

@@ -98,11 +98,6 @@ abstract class Controller
 
     /************** */
 
-    final protected function setOutput(string $value): void
-    {
-        Config::set('output', $value);
-    }
-
     final protected function getOutput(): string
     {
         return Config::get('output');

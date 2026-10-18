@@ -39,7 +39,12 @@ final class Redirect
             }
         }
 
-        header('Location: '.vsprintf($location, $printfData), true, self::$statusCode);
+        if ($printfData !== []) {
+            $location = vsprintf($location, $printfData);
+        }
+
+        header('Location: '.$location, true, self::$statusCode);
+        
         exit();
     }
 

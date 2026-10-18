@@ -305,6 +305,10 @@ final class Router
 
             self::$parameters[ltrim($parameterId, '?')] = array_shift(self::$urlParts);
         }
+
+        if (self::$urlParts !== []) {
+            self::$isValidRoute = false;
+        }
     }
 
     private static function resolveNamespace(string $partValue): void

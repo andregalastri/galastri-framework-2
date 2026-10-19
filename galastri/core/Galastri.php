@@ -123,7 +123,7 @@ final class Galastri
         $authFailMessage = Config::get('authFailMessage');
         $output = Config::get('output');
 
-        if (!empty($authTag) && !Authentication::validate($authTag)) {
+        if ($authTag !== '' && !Authentication::validate($authTag)) {
             if ($authFailRedirectTo !== '' && $output != 'json') {
                 Redirect::to($authFailRedirectTo);
             }

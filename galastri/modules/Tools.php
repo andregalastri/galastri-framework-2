@@ -237,14 +237,21 @@ final class Tools
 
         $string = mb_convert_case($string, MB_CASE_TITLE, "UTF-8");
 
-        $string = lcfirst(str_replace(' ', '', $string));
+        $string = str_replace(' ', '', $string);
+        $first = mb_substr($string, 0, 1, 'UTF-8');
+        $rest = mb_substr($string, 1, null, 'UTF-8');
+        $string = mb_strtolower($first, 'UTF-8').$rest;
 
         return $string;
     }
 
     public static function toPascalCase(string $string): string
     {
-        return ucfirst(self::toCamelCase($string));
+        $string = self::toCamelCase($string);
+        $first = mb_substr($string, 0, 1, 'UTF-8');
+        $rest = mb_substr($string, 1, null, 'UTF-8');
+
+        return mb_strtoupper($first, 'UTF-8').$rest;
     }
 
     public static function chmod(string $path, int|string $chmod): void

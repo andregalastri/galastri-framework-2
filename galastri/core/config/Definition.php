@@ -332,6 +332,7 @@ final class Definition
                     [
                         $this->getName(),
                         $value,
+                        $this->getInvalidRegex(),
                     ],
                     [
                         'testedValue' => $value,

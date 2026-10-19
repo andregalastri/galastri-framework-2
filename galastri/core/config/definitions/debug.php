@@ -6,7 +6,7 @@
 
 return [
     'displayErrors' => [
-        'defaultValue' => true,
+        'defaultValue' => false,
         'validTypes' => ['bool'],
         'invalidTypes' => [],
         'validValues' => [],

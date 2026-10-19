@@ -104,7 +104,7 @@ final class ErrorHandler
 
     private static function getMessage(string $message, bool $displayError = false): string
     {
-        if (Config::get('displayErrors', true) || $displayError) {
+        if (Config::get('displayErrors', false) || $displayError) {
             return $message;
         }
 
@@ -113,7 +113,7 @@ final class ErrorHandler
 
     private static function getLine(int $line): int
     {
-        return Config::get('displayErrors', true) ? $line : 0;
+        return Config::get('displayErrors', false) ? $line : 0;
     }
 
     private static function getFile(string $file): ?string
@@ -121,12 +121,12 @@ final class ErrorHandler
         $directory = str_replace(PROJECT_DIR, '', pathinfo($file)['dirname']);
         $path = '.'.$directory.'/'.pathinfo($file)['basename'];
 
-        return Config::get('displayErrors', true) ? $path : null;
+        return Config::get('displayErrors', false) ? $path : null;
     }
 
     private static function getTrace(array $trace): array
     {
-        if (Config::get('displayErrors', true) && Config::get('showTrace', false)) {
+        if (Config::get('displayErrors', false) && Config::get('showTrace', false)) {
             return $trace;
         }
 
@@ -149,7 +149,7 @@ final class ErrorHandler
             'warning' => true,
             'error' => true,
         ];
-        
+
         if (!headers_sent()) {
             http_response_code(self::getHttpStatusCode($code));
         }
@@ -215,47 +215,47 @@ final class ErrorHandler
         $margin = 15;
         $logoWidth = 40;
         $logoHeight = 40;
-        
+
         $fontPath = PROJECT_DIR.'/galastri/misc/error-handler-font.ttf';
         $logoPath = PROJECT_DIR.'/galastri/misc/error-handler-logo.png';
         $fontSize = 11;
-    
+
         $lines = [];
-    
+
         // Quebrando o texto em múltiplas linhas
         foreach ($data as $key => $value) {
             $text = str_pad($key, 10) . ': ' . var_export($value, true);
             $lines = array_merge($lines, explode("\n", wordwrap($text, 64))); // Ajusta quebras de linha
-    
+
             if (in_array($key, ['line', 'message'])) {
                 $lines[] = '';
             }
         }
-    
+
         // Calculando a altura dinâmica
         $height = $margin * 2 + count($lines) * $lineHeight;
-    
+
         // Criando a imagem principal
         $canvas = imagecreatetruecolor($width, $height);
         $bgColor = imagecolorallocate($canvas, 60, 61, 66); // Cor de fundo
         $textColor = imagecolorallocate($canvas, 255, 255, 255); // Cor do texto
         imagefilledrectangle($canvas, 0, 0, $width, $height, $bgColor);
-    
+
         // Desenhando o texto na imagem
         $y = $margin + $fontSize;
         foreach ($lines as $line) {
             imagettftext($canvas, $fontSize, 0, $margin, $y, $textColor, $fontPath, $line);
             $y += $lineHeight;
         }
-    
+
         // Inserindo o logotipo na parte inferior direita, se o arquivo existir
         $logoImage = imagecreatefrompng($logoPath);
         $xPos = $width - $logoWidth - $margin;
         $yPos = $height - $logoHeight - $margin;
         imagecopyresampled($canvas, $logoImage, $xPos, $yPos, 0, 0, $logoWidth, $logoHeight, imagesx($logoImage), imagesy($logoImage));
         imagedestroy($logoImage);
-    
-        
+
+
         header('Content-type: image/png');
         imagepng($canvas);
         imagedestroy($canvas);
@@ -264,7 +264,7 @@ final class ErrorHandler
     private static function createLogFile(int|string $code, string $message, string $file, int $line, array $trace, string $currentDate, string $currentTime): void
     {
         Tools::createDir(PROJECT_DIR.'/logs', 0700);
-        
+
         Tools::writeFile(
             Tools::replacePlaceholders(self::PATH_LOG, [$currentDate]),
             implode("\n", [

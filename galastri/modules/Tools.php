@@ -29,7 +29,8 @@ final class Tools
         $isNewFile = !file_exists($path);
 
         if ($isNewFile) {
-            self::createDir(pathinfo($path)['dirname'], $chmod);
+            $directoryChmod = $chmod | (($chmod & 0444) >> 2) | 0300;
+            self::createDir(pathinfo($path)['dirname'], $directoryChmod);
         }
 
         $handle = fopen($path, 'c+b');

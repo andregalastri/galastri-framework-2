@@ -153,6 +153,8 @@ final class File
 
     private static function download(): void
     {
+        self::applyAuthenticationCachePolicy();
+
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="'.self::$contents[1].'"');

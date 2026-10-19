@@ -12,15 +12,25 @@ use galastri\language\Message;
 
 trait BrowserCache
 {
-    private static function checkBrowserCache(string $currentContent): bool
+    private static function applyAuthenticationCachePolicy(): bool
     {
-        if (Config::get('authTag') !== '') {
-            header('Cache-Control: private, no-store', true);
+        if (Config::get('authTag') === '') {
+            return false;
+        }
 
+        if (!headers_sent()) {
+            header('Cache-Control: private, no-store', true);
             header_remove('Expires');
             header_remove('ETag');
             header_remove('Last-Modified');
+        }
 
+        return true;
+    }
+
+    private static function checkBrowserCache(string $currentContent): bool
+    {
+        if (self::applyAuthenticationCachePolicy()) {
             return false;
         }
 

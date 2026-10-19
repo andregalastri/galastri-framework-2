@@ -105,11 +105,6 @@ abstract class Controller
 
     /************** */
 
-    final protected function setTimezone(string $value): void
-    {
-        Config::set('timezone', $value);
-    }
-
     final protected function getTimezone(): string
     {
         return Config::get('timezone');

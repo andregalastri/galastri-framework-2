@@ -26,7 +26,7 @@ final class View
     {
         self::checkViewFile();
         self::checkTemplateFile();
-        
+
         self::render();
     }
 
@@ -76,18 +76,33 @@ final class View
 
     private static function render(): void
     {
+        $bufferLevel = ob_get_level();
         ob_start();
 
-        /**
-         * Está assim pois futuramente pretendo inserir a possibilidade de usar
-         * template engines alternativas.
-         */
-        $phpEngine = 'galastri\core\output\engines\PhpEngine';
-        $g = new $phpEngine();
+        try {
+            /**
+             * Está assim pois futuramente pretendo inserir a possibilidade de usar
+             * template engines alternativas.
+             */
+            $phpEngine = 'galastri\core\output\engines\PhpEngine';
+            $g = new $phpEngine();
 
-        require(self::$templatePath === '' ? self::$viewPath : self::$templatePath);
+            require(self::$templatePath === '' ? self::$viewPath : self::$templatePath);
 
-        $renderedContent = ob_get_clean();
+            $renderedContent = ob_get_clean();
+        } catch (\Throwable $e) {
+            while (ob_get_level() > $bufferLevel) {
+                $buffer = ob_get_status();
+
+                if (($buffer['flags'] & PHP_OUTPUT_HANDLER_REMOVABLE) === 0) {
+                    break;
+                }
+
+                ob_end_clean();
+            }
+
+            throw $e;
+        }
 
         if (self::checkBrowserCache($renderedContent)) {
             return;

@@ -107,6 +107,13 @@ trait CoreDatabase
     {
         $this->isConnected();
         $this->pdo->rollBack();
+        $this->queryChain = [];
+        $this->errorChain = [];
+        $this->bind = [];
+        $this->lastResult = [];
+        $this->namedResult = [];
+        $this->additionalData = [];
+        $this->messageFlagValues = [];
 
         return $this;
     }
@@ -205,7 +212,7 @@ trait CoreDatabase
                 $this->failMessage, $this->messageFlagValues, $this->additionalData
             );
         }
-        
+
         throw new Exception(
             $this->failMessage, $this->additionalData
         );
@@ -217,7 +224,7 @@ trait CoreDatabase
             if (Tools::typeOf($message) !== 'array') {
                $message = [$message];
             }
-            
+
             $this->additionalData = $additionalData;
             $this->failMessage = [array_shift($message), $code];
             $this->messageFlagValues = $message ?? [];
@@ -225,7 +232,7 @@ trait CoreDatabase
 
         return $this;
     }
-    
+
     public function submit(): self
     {
         $this->isConnected();
@@ -341,7 +348,7 @@ trait CoreDatabase
             return -1;
         }
     }
-    
+
     private function processResult(\PDOStatement $pdo): array
     {
         $result = [
@@ -394,7 +401,7 @@ trait CoreDatabase
         return $config;
     }
 
-    
+
     private function filterPdoExceptionMessage(\PDOException $e): void
     {
         $info = $e->errorInfo ?? [];
@@ -408,7 +415,7 @@ trait CoreDatabase
             $this->failMessage = [$message, $e->getCode()];
             $this->additionalData = [];
             $this->messageFlagValues = [];
-            
+
             return;
         }
 

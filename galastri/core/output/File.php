@@ -63,7 +63,7 @@ final class File
 
         self::$folder = $folder;
     }
-    
+
     private static function checkFileExists(): void
     {
         $urlParts = implode('/', Router::getUrlParts());
@@ -101,7 +101,7 @@ final class File
 
         self::$extension = $extension;
     }
-    
+
     private static function checkMimeType(): void
     {
         $extension = self::$extension;
@@ -112,7 +112,7 @@ final class File
         } else {
             $mimeType = mime_content_type(self::$path);
         }
-        
+
         if (Config::get('validateMimeType')) {
             if (!isset(MIME_TYPE_LIST[$extension])) {
                 throw new Exception(
@@ -122,7 +122,7 @@ final class File
                 );
             }
 
-            
+
             if (!in_array($mimeType, MIME_TYPE_LIST[$extension])) {
                 throw new Exception(
                     Message::get('OUTPUT_UNLISTED_FILE_MIME_TYPE'), [
@@ -157,7 +157,16 @@ final class File
 
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="'.self::$contents[1].'"');
+        $fileName = mb_convert_encoding(self::$contents[1], 'UTF-8', 'UTF-8');
+        $fileName = str_replace(['/', '\\'], '_', $fileName);
+        $fileName = preg_replace('/[\x00-\x1F\x7F]/u', '_', $fileName);
+
+        if ($fileName === '' || $fileName === '.' || $fileName === '..') {
+            $fileName = 'download';
+        }
+
+        $fallbackName = preg_replace('/[^a-zA-Z0-9._ -]/u', '_', $fileName);
+        header('Content-Disposition: attachment; filename="'.$fallbackName.'"; filename*=UTF-8\'\''.rawurlencode($fileName));
         header('Expires: 0');
         header('Content-Length: '.mb_strlen(self::$contents[0], '8bit'));
         flush();

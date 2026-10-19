@@ -135,7 +135,8 @@ final class StringValidation
             foreach ($charGroups as $group) {
                 if (!is_array($group) || count($group) !== 2 || !is_string($group[0]) || !is_int($group[1])) {
                     throw new Exception(
-                        Message::get("VALIDATION_INVALID_REQUIRED_CHAR_CONFIG"),
+                        Message::get("VALIDATION_WRONG_CONFIG"),
+                        ['requiredChars']
                     );
                 }
 

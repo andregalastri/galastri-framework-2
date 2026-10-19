@@ -325,21 +325,33 @@ final class Tools
 
     public static function trimLeft(string $string, ...$replacementList): string
     {
-        $replacementList = array_map('preg_quote', $replacementList);
+        $quoteReplacement = function ($value) {
+            return preg_quote($value, '/');
+        };
+
+        $replacementList = array_map($quoteReplacement, $replacementList);
 
         return preg_replace('/^('.implode('|', $replacementList).')\b\s*/i', '', $string);
     }
 
     public static function trimRight(string $string, ...$replacementList): string
     {
-        $replacementList = array_map('preg_quote', $replacementList);
+        $quoteReplacement = function ($value) {
+            return preg_quote($value, '/');
+        };
+
+        $replacementList = array_map($quoteReplacement, $replacementList);
 
         return preg_replace('/('.implode('|', $replacementList).')\b\s*$/i', '', $string);
     }
 
     public static function trimBoth(string $string, ...$replacementList): string
     {
-        $replacementList = array_map('preg_quote', $replacementList);
+        $quoteReplacement = function ($value) {
+            return preg_quote($value, '/');
+        };
+
+        $replacementList = array_map($quoteReplacement, $replacementList);
 
         $string = preg_replace('/^('.implode('|', $replacementList).')\b\s*/i', '', $string);
         $string = preg_replace('/('.implode('|', $replacementList).')\b\s*$/i', '', $string);

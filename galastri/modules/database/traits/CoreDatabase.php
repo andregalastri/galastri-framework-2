@@ -96,9 +96,11 @@ trait CoreDatabase
     {
         $this->isConnected();
 
-        if (!$this->pdo->inTransaction()) {
-            $this->pdo->beginTransaction();
+        if ($this->pdo->inTransaction()) {
+            throw new Exception(Message::get('DATABASE_TRANSACTION_ALREADY_ACTIVE'));
         }
+
+        $this->pdo->beginTransaction();
 
         return $this;
     }

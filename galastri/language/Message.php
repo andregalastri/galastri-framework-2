@@ -190,6 +190,8 @@ final class Message
 
     private const DATABASE_RESULT_DOESNT_EXIST = 'Erro de banco de dados: O nome "{{}}" para o resultado da consulta não existe.';
 
+    private const DATABASE_TRANSACTION_ALREADY_ACTIVE = 'Erro de banco de dados: Já existe uma transação ativa nesta conexão.';
+
     /**
      * Browser Cache
      */

@@ -66,10 +66,10 @@ final class File
 
     private static function checkFileExists(): void
     {
-        $urlParts = implode('/', Router::getUrlParts());
+        $urlParts = implode('/', array_map('rawurldecode', Router::getUrlParts()));
         $folder = realpath(PROJECT_DIR.'/'.self::$folder);
 
-        if ($urlParts === '' || $folder === false || !is_dir($folder)) {
+        if ($urlParts === '' || str_contains($urlParts, "\0") || $folder === false || !is_dir($folder)) {
             Galastri::notFound();
         }
 

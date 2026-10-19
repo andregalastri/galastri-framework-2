@@ -316,7 +316,7 @@ final class Definition
                 Message::get("CONFIG_INVALID_VALUE_NOT"),
                 [
                     $this->getName(),
-                    Tools::readableImplode(', ', ' ou ', $this->getValidValues()),
+                    Tools::readableImplode(', ', ' ou ', $this->getInvalidValues()),
                 ],
                 [
                     'testedValue' => $value,

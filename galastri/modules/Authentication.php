@@ -53,7 +53,7 @@ final class Authentication
                 'secure' => true,
                 'httponly' => true,
                 'samesite' => 'Strict',
-                'domain' => $_SERVER['HTTP_HOST'],
+                'domain' => parse_url('http://'.$_SERVER['HTTP_HOST'], PHP_URL_HOST),
             ]
         );
 
@@ -136,7 +136,7 @@ final class Authentication
                 'secure' => true,
                 'httponly' => true,
                 'samesite' => 'Strict',
-                'domain' => $_SERVER['HTTP_HOST'],
+                'domain' => parse_url('http://'.$_SERVER['HTTP_HOST'], PHP_URL_HOST),
             ]
         );
 
@@ -159,7 +159,7 @@ final class Authentication
                     'secure' => true,
                     'httponly' => true,
                     'samesite' => 'Strict',
-                    'domain' => $_SERVER['HTTP_HOST'],
+                    'domain' => parse_url('http://'.$_SERVER['HTTP_HOST'], PHP_URL_HOST),
                 ]
             );
 

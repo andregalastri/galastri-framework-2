@@ -24,25 +24,20 @@ final class Redirect
     public static function to(string $location, array $replacements = []): void
     {
         $location = Tools::replacePlaceholders($location, $replacements);
-        
-        $location = self::cleanLocation($location);
 
-        if ($location == '') {
+        if ($location === '') {
             $location = '/';
         }
-        
-        preg_match(self::PROTOCOLS_REGEX, $location, $match);
 
-        if (empty($match)) {
-            $location = '/'.$location;
+        if (!preg_match(self::PROTOCOLS_REGEX, $location)) {
+            $location = '/'.ltrim($location, '/');
 
             if (!self::$ignoreRootDir) {
-                $location = '/'.self::cleanLocation(Router::getRootDir().$location);
+                $location = rtrim(Router::getRootDir(), '/').$location;
             }
         }
 
         header('Location: '.$location, true, self::$statusCode);
-        
         exit();
     }
 
@@ -67,10 +62,5 @@ final class Redirect
     {
         self::$ignoreRootDir = true;
         return __CLASS__;
-    }
-
-    private static function cleanLocation(string $string): string
-    {
-        return trim($string, '/?:;<>,.[]{}!@#$%&*()_+-=\\|');
     }
 }

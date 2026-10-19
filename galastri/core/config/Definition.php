@@ -279,9 +279,7 @@ final class Definition
                     Tools::typeOf($value),
                 ],
                 [
-                    'data' => [
-                        'testedValue' => $value,
-                    ]
+                    'testedValue' => $value,
                 ]
             );
         }
@@ -294,9 +292,7 @@ final class Definition
                     Tools::readableImplode(', ', ' ou ', $this->getInvalidTypes()),
                 ],
                 [
-                    'data' => [
-                        'testedValue' => $value,
-                    ]
+                    'testedValue' => $value,
                 ]
             );
         }
@@ -310,9 +306,7 @@ final class Definition
                     $value,
                 ],
                 [
-                    'data' => [
-                        'testedValue' => $value,
-                    ]
+                    'testedValue' => $value,
                 ]
             );
         }
@@ -325,9 +319,7 @@ final class Definition
                     Tools::readableImplode(', ', ' ou ', $this->getValidValues()),
                 ],
                 [
-                    'data' => [
-                        'testedValue' => $value,
-                    ]
+                    'testedValue' => $value,
                 ]
             );
         }
@@ -342,9 +334,7 @@ final class Definition
                         $value,
                     ],
                     [
-                        'data' => [
-                            'testedValue' => $value,
-                        ]
+                        'testedValue' => $value,
                     ]
                 );
             }
@@ -358,9 +348,7 @@ final class Definition
                         $this->getValidRegex(),
                     ],
                     [
-                        'data' => [
-                            'testedValue' => $value,
-                        ]
+                        'testedValue' => $value,
                     ]
                 );
             }

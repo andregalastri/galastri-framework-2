@@ -22,9 +22,13 @@ trait EmptyValidation
     public function denyEmpty(): self
     {
         $this->validationChain[] = function () {
-            $value = trim($this->value);
+            $value = $this->value;
 
-            if ($value === null || $value === '' || (is_array($value) && count($value) === 0)) {
+            if (is_string($value)) {
+                $value = trim($value);
+            }
+
+            if ($value === null || $value === false || $value === '' || $value === []) {
                 $this->throwError();
             }
         };

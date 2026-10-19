@@ -30,7 +30,7 @@ final class NumericValidation
     {
         $this->validationChain[] = function () use ($maxValue) {
             $value = $this->value;
-            
+
             if ($value > $maxValue) {
                 $this->messageFlagValues = [$value, $maxValue];
                 $this->throwError();
@@ -40,11 +40,11 @@ final class NumericValidation
         return $this;
     }
 
-    public function valueRange(int $minValue, int $maxValue): self
+    public function valueRange(int|float $minValue, int|float $maxValue): self
     {
         $this->validationChain[] = function () use ($minValue, $maxValue) {
             $value = $this->value;
-            
+
             if ($value < $minValue || $value > $maxValue) {
                 $this->messageFlagValues = [$value, $minValue, $maxValue];
                 $this->throwError();
@@ -92,7 +92,7 @@ final class NumericValidation
                 $this->throwError();
             }
         };
-        
+
         return $this;
     }
 }

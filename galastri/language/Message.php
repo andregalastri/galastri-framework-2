@@ -72,6 +72,15 @@ final class Message
     private const EXCEPTION_INVALID_CODE = 'Erro no lançamento de exceção: O código informado não é válido.';
 
     /**
+     * HttpData
+     */
+    private const HTTP_DATA_READ_FAILED = 'Não foi possível ler o corpo da requisição.';
+
+    private const HTTP_DATA_INVALID_JSON = 'O corpo JSON da requisição é inválido.';
+
+    private const HTTP_DATA_INVALID_JSON_STRUCTURE = 'O corpo JSON deve conter um objeto ou uma lista.';
+
+    /**
      * Ferramentas / Tools.
      */
     private const TOOLS_PLACEHOLDER_ANALYSIS_FAILED = 'Não foi possível analisar os placeholders.';

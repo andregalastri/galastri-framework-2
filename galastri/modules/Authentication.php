@@ -39,6 +39,11 @@ final class Authentication
 
         self::startSession();
 
+        if ($regenerateIdSession && !session_regenerate_id(true)) {
+            session_write_close();
+            throw new Exception(Message::get('AUTHENTICATION_SESSION_REGENERATION_FAILED'));
+        }
+
         $_SESSION[$authTag]['token'] = self::$tagList[$authTag]['token'];
         $_SESSION[$authTag]['ip'] = self::$tagList[$authTag]['ip'];
         $_SESSION[$authTag]['cookieExpiration'] = self::$tagList[$authTag]['cookieExpiration'];
@@ -56,10 +61,6 @@ final class Authentication
                 'domain' => parse_url('http://'.$_SERVER['HTTP_HOST'], PHP_URL_HOST),
             ]
         );
-
-        if ($regenerateIdSession) {
-            session_regenerate_id();
-        }
 
         session_write_close();
     }

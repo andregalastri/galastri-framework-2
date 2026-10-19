@@ -148,6 +148,8 @@ final class Message
 
     private const AUTHENTICATION_UNCONFIGURED_SECRET_KEY = 'Erro de autenticação: A chave secreta não foi configurada. Configure-a usando o método "configure" antes de usar o método "create".';
 
+    private const AUTHENTICATION_SESSION_REGENERATION_FAILED = 'Não foi possível renovar a sessão de autenticação.';
+
     /**
      * Validation
      */

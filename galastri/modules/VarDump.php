@@ -46,6 +46,8 @@ final class VarDump
     {
         $debug = debug_backtrace()[self::getBacktraceLevel(RESET_BACKTRACE_LEVEL)];
 
+        $varDump = [];
+
         foreach (self::getValues(...$values) as $varDumpValue) {
             $varDumpValue = preg_replace(self::OBJECT_REGEX, self::OBJECT_HTML, $varDumpValue);
             $varDumpValue = preg_replace(self::VISIBILITY_REGEX, self::VISIBILITY_HTML, $varDumpValue);
@@ -87,6 +89,7 @@ final class VarDump
 
     private static function getValues(mixed ...$values): array
     {
+        $contents = [];
         ob_start();
 
         try {

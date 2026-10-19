@@ -70,7 +70,7 @@ final class StringValidation
     {
         $this->validationChain[] = function () use ($length) {
             $value = $this->value;
-            
+
             if (mb_strlen($value) > $length) {
                 $this->messageFlagValues = [$value, $length, mb_strlen($value)];
                 $this->throwError();
@@ -84,7 +84,7 @@ final class StringValidation
     {
         $this->validationChain[] = function () use ($minLength, $maxLength) {
             $value = $this->value;
-            
+
             if (mb_strlen($value) < $minLength || mb_strlen($value) > $maxLength) {
                 $this->messageFlagValues = [$value, $minLength, $maxLength, mb_strlen($value)];
                 $this->throwError();
@@ -329,7 +329,7 @@ final class StringValidation
             $value = $this->value;
 
             foreach ($datasets as &$data) {
-                $data = self::CHAR_FLAGS[$data] ?? preg_quote($data);
+                $data = self::CHAR_FLAGS[$data] ?? preg_quote($data, '/');
             }
             unset($data);
 
@@ -339,9 +339,9 @@ final class StringValidation
                 'allowWords' => '/^(?:'.implode('|', $datasets).')$/u',
                 'denyWords'  => '/(?:'.implode('|', $datasets).')/u',
             ];
-            
+
             $matchCount = preg_match_all($modeList[$mode], $value, $matches);
-            
+
             if ($matchCount === false) {
                 $this->messageFlagValues = [$value, ''];
                 $this->throwError();
@@ -380,9 +380,9 @@ final class StringValidation
 
         $this->validationChain[] = function () use ($mode, $modeList) {
             $value = $this->value;
-            
+
             $matchCount = preg_match_all('/[\p{L}]/u', $value, $allLetters);
-            
+
             if ($matchCount === false) {
                 $this->messageFlagValues = [$value, ''];
                 $this->throwError();

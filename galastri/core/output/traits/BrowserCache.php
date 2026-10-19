@@ -30,6 +30,12 @@ trait BrowserCache
             return false;
         }
 
+        $status = http_response_code();
+
+        if ($status !== false && $status !== 200) {
+            return false;
+        }
+
         $browserCache = Config::get('browserCache');
 
         if (is_array($browserCache) && !empty($browserCache)) {

@@ -15,10 +15,10 @@ final class Config
 {
     private const GALASTRI_DEFINITIONS = PROJECT_DIR.'/galastri/core/config/definitions/*.php';
     private const APP_DEFINITIONS = PROJECT_DIR.'/app/config/definitions/*.php';
-    
+
     private const REQUIRED_PROPERTIES = ['defaultValue', 'validTypes', 'invalidTypes', 'validValues', 'invalidValues', 'validRegex', 'invalidRegex', 'context'];
-    
-    
+
+
     private static array $config = [];
 
 
@@ -28,7 +28,7 @@ final class Config
     {
         foreach(array_merge(glob(self::GALASTRI_DEFINITIONS), glob(self::APP_DEFINITIONS)) as $definitionFile) {
             $definitions = require($definitionFile);
-        
+
             if (Tools::typeOf($definitions) !== 'array') {
                 throw new Exception(
                     Message::get("CONFIG_FILE_RETURNED_INVALID_DATA"),
@@ -37,7 +37,7 @@ final class Config
                     ]
                 );
             }
-        
+
             foreach ($definitions as $name => $definitions) {
                 if (Tools::typeOf($definitions) !== 'array') {
                     throw new Exception(
@@ -59,7 +59,7 @@ final class Config
                         );
                     }
                 }
-        
+
                 self::create(
                     $name,
                     $definitions,
@@ -92,15 +92,15 @@ final class Config
     {
         try {
             $name = $parameters[0];
-    
+
             self::exists($name, true);
             return self::$config[$name]->getValue();
-    
+
         } catch (Exception $e) {
-            if (isset($parameters[1])) {
+            if (array_key_exists(1, $parameters)) {
                 return $parameters[1];
             }
-    
+
             throw new Exception($e->getMessage());
         }
     }

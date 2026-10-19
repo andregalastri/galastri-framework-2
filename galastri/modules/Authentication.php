@@ -37,6 +37,14 @@ final class Authentication
     {
         $authTag = $authTag ?? self::$currentAuthTag;
 
+        if ($authTag === null) {
+            throw new Exception(Message::get('AUTHENTICATION_UNDEFINED_AUTH_TAG'));
+        }
+
+        if (!isset(self::$tagList[$authTag]['token'])) {
+            throw new Exception(Message::get('AUTHENTICATION_UNCONFIGURED_AUTH_TAG'), [$authTag]);
+        }
+
         self::startSession();
 
         if ($regenerateIdSession && !session_regenerate_id(true)) {
@@ -135,7 +143,11 @@ final class Authentication
     {
         self::startSession();
 
-        unset($_SESSION[$authTag]);
+        unset($_SESSION[$authTag], self::$tagList[$authTag]);
+
+        if (self::$currentAuthTag === $authTag) {
+            self::$currentAuthTag = null;
+        }
 
         setcookie(
             $authTag,
@@ -178,6 +190,8 @@ final class Authentication
 
         session_unset();
         session_destroy();
+        self::$tagList = [];
+        self::$currentAuthTag = null;
     }
 
     private static function startSession(): void

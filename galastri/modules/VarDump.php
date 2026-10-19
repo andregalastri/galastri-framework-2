@@ -77,31 +77,36 @@ final class VarDump
         }
         echo '</div>';
     }
-    
+
     public static function raw(mixed ...$values): void
     {
         echo '<pre>';
         echo implode("\n\n", self::getValues(...$values));
         echo '</pre>';
     }
-    
+
     private static function getValues(mixed ...$values): array
     {
         ob_start();
-        foreach ($values as $key => $value) {
-            var_dump($value);
-            $contents[] = htmlspecialchars(trim(ob_get_contents()));
-            ob_clean();
-        };
+
+        try {
+            foreach ($values as $value) {
+                var_dump($value);
+                $contents[] = htmlspecialchars(trim(ob_get_contents()), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                ob_clean();
+            }
+        } finally {
+            ob_end_clean();
+        }
 
         return $contents;
     }
-    
+
     public static function addBacktraceLevel(): void
     {
         self::$backTraceLevel++;
     }
-    
+
     public static function getBacktraceLevel(bool $reset = KEEP_BACKTRACE_LEVEL): int
     {
         $level = self::$backTraceLevel;

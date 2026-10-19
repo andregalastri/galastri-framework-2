@@ -101,7 +101,7 @@ final class Config
                 return $parameters[1];
             }
 
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 

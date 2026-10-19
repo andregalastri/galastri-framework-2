@@ -291,6 +291,10 @@ trait CoreDatabase
 
     private function establishConnection(callable $createPdo): void
     {
+        if ($this->connected) {
+            throw new Exception(Message::get('DATABASE_ALREADY_CONNECTED'));
+        }
+
         try {
             foreach ($this->requiredProperties as $property) {
                 if ($this->$property === '') {

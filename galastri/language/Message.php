@@ -173,6 +173,8 @@ final class Message
 
     private const DATABASE_DISCONNECTED = 'Erro de banco de dados: O banco de dados não está conectado.';
 
+    private const DATABASE_ALREADY_CONNECTED = 'Erro de banco de dados: Desconecte o banco atual antes de abrir outra conexão.';
+
     private const DATABASE_BIND_PARAMETER_TYPE = 'Erro de banco de dados: O tipo do parâmetro "{{}}" não é válido. Os tipos válidos são: "{{}}".';
 
     private const DATABASE_RESULT_DOESNT_EXIST = 'Erro de banco de dados: O nome "{{}}" para o resultado da consulta não existe.';

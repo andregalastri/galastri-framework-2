@@ -12,12 +12,21 @@ final class NumericValidation
     use traits\EmptyValidation;
     use traits\ListValidation;
 
+    private function isFiniteNumericValue(mixed $value): bool
+    {
+        if (!is_int($value) && !is_float($value) && !is_string($value)) {
+            return false;
+        }
+
+        return is_numeric($value) && is_finite((float) $value);
+    }
+
     public function minValue(int|float $minValue): self
     {
         $this->validationChain[] = function () use ($minValue) {
             $value = $this->value;
 
-            if ($value < $minValue) {
+            if (!$this->isFiniteNumericValue($value) || $value < $minValue) {
                 $this->messageFlagValues = [$value, $minValue];
                 $this->throwError();
             }
@@ -31,7 +40,7 @@ final class NumericValidation
         $this->validationChain[] = function () use ($maxValue) {
             $value = $this->value;
 
-            if ($value > $maxValue) {
+            if (!$this->isFiniteNumericValue($value) || $value > $maxValue) {
                 $this->messageFlagValues = [$value, $maxValue];
                 $this->throwError();
             }
@@ -45,7 +54,7 @@ final class NumericValidation
         $this->validationChain[] = function () use ($minValue, $maxValue) {
             $value = $this->value;
 
-            if ($value < $minValue || $value > $maxValue) {
+            if (!$this->isFiniteNumericValue($value) || $value < $minValue || $value > $maxValue) {
                 $this->messageFlagValues = [$value, $minValue, $maxValue];
                 $this->throwError();
             }

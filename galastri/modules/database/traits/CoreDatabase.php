@@ -186,7 +186,7 @@ trait CoreDatabase
         return $this;
     }
 
-    public function bind(array|int|string $bind, float|int|null|string $value = null): self
+    public function bind(array|int|string $bind, mixed $value = null): self
     {
         $this->isConnected();
 

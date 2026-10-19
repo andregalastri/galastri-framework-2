@@ -20,7 +20,7 @@ final class Tools
         if (!is_dir($path)){
             mkdir($path, self::validateChmodCode($chmod), true);
         }
-    
+
         return $path;
     }
 
@@ -85,7 +85,7 @@ final class Tools
             fclose($handle);
         }
     }
-    
+
     public static function typeOf(mixed $value, bool $getClassForObjects = false): string
     {
         $types = [
@@ -99,13 +99,13 @@ final class Tools
             'NULL' => 'null',
             'unknown type' => 'unknown',
         ];
-    
+
         $type = gettype($value);
-    
+
         if ($getClassForObjects && $type === 'object') {
             return get_class($value);
         }
-    
+
         return $types[$type];
     }
 
@@ -114,20 +114,20 @@ final class Tools
         if ($array === []) {
             return '';
         }
-        
+
         $array = array_map(function($value) {
             if (in_array(self::typeOf($value), ['null', 'bool'])) {
                 return '['.var_export($value, true).']';
             }
             return $value;
         }, $array);
-    
+
         $lastKey = array_pop($array);
-    
+
         if (empty($array)) {
             return $lastKey;
         }
-    
+
         return implode($separator, $array).$lastSeparator.$lastKey;
     }
 
@@ -236,7 +236,7 @@ final class Tools
         $string = preg_replace('/[^a-zA-Z0-9À-ÿ]+/', ' ', $string);
 
         $string = mb_convert_case($string, MB_CASE_TITLE, "UTF-8");
-        
+
         $string = lcfirst(str_replace(' ', '', $string));
 
         return $string;
@@ -246,12 +246,12 @@ final class Tools
     {
         return ucfirst(self::toCamelCase($string));
     }
-    
+
     public static function chmod(string $path, int|string $chmod): void
     {
         chmod($path, self::validateChmodCode($chmod));
     }
-    
+
     private static function validateChmodCode(int|string $chmod): int
     {
         if (!preg_match('/^0[0-7]{3}$/', '0'.decoct($chmod))) {
@@ -284,20 +284,20 @@ final class Tools
         if ($index < 0) {
             $index = count($array) + $index;
         }
-    
+
         $keys = array_keys($array);
-    
+
         if (isset($keys[$index])) {
             $key = $keys[$index];
             $value = $array[$key];
-    
+
             if ($remove) {
                 unset($array[$key]);
             }
-    
+
             return $value;
         }
-    
+
         return null;
     }
 
@@ -314,7 +314,13 @@ final class Tools
 
     public static function import(string $location, mixed $defaultValue): mixed
     {
-        return file_exists(PROJECT_DIR.'/'.$location) ? require $location : $defaultValue;
+        $path = PROJECT_DIR.'/'.ltrim($location, '/');
+
+        if (file_exists($path)) {
+            return require $path;
+        }
+
+        return $defaultValue;
     }
 
     public static function trimLeft(string $string, ...$replacementList): string

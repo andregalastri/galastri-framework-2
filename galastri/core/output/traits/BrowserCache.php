@@ -23,7 +23,13 @@ trait BrowserCache
 
             return false;
         }
-        
+
+        $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+
+        if ($requestMethod !== 'GET' && $requestMethod !== 'HEAD') {
+            return false;
+        }
+
         $browserCache = Config::get('browserCache');
 
         if (is_array($browserCache) && !empty($browserCache)) {
@@ -48,14 +54,14 @@ trait BrowserCache
             header('Cache-Control: ' . $cacheControl . ', max-age=' . $cacheDuration, true);
             header('Expires: ' . gmdate('D, d M Y H:i:s', $now + $cacheDuration) . ' GMT', true);
             header('ETag: "' . $etag . '"', true);
-            
+
             header_remove('Last-Modified');
 
             $ifNoneMatch = $_SERVER['HTTP_IF_NONE_MATCH'] ?? '';
             $clientEtag = trim(stripslashes($ifNoneMatch), '"');
 
             if ($clientEtag === $etag) {
-                header('HTTP/1.1 304 Not Modified');
+                http_response_code(304);
                 return true;
             }
         }

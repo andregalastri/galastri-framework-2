@@ -263,6 +263,10 @@ final class Tools
 
     public static function deleteLastKey(array $array, int $quantity = 1): array
     {
+        if ($quantity === 0) {
+            return $array;
+        }
+
         if ($quantity >= count($array)) {
             return [];
         }

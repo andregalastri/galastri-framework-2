@@ -131,6 +131,11 @@ trait CoreDatabase
         $this->isConnected();
 
         $this->queryChain[] = function () use ($queryString, $label) {
+            if ($label === null) {
+                $this->lastResult = [];
+            } else {
+                unset($this->namedResult[$label]);
+            }
 
             $pdoTypes = [
                 'string' => \PDO::PARAM_STR,

@@ -26,6 +26,10 @@ final class Tools
 
     public static function writeFile(string $path, string $content, int $mode = INSERT_CONTENT_AT_END, int $chmod = 0777): void
     {
+        if (!in_array($mode, [INSERT_CONTENT_AT_START, INSERT_CONTENT_AT_END, OVERWRITE_CONTENT], true)) {
+            throw new Exception(Message::get('TOOLS_INVALID_WRITE_MODE'), [$mode]);
+        }
+
         $isNewFile = !file_exists($path);
 
         if ($isNewFile) {

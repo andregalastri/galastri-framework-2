@@ -90,6 +90,8 @@ final class Message
 
     private const TOOLS_INVALID_CHMOD_CODE = 'Erro no método validateChmodCode: O código {{}} não é válido para o chmod().';
 
+    private const TOOLS_INVALID_WRITE_MODE = 'Erro no método writeFile: O modo de escrita {{}} é inválido.';
+
     /**
      * Router
      */

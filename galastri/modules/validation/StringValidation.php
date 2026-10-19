@@ -133,7 +133,7 @@ final class StringValidation
             $value = $this->value;
 
             foreach ($charGroups as $group) {
-                if (!is_array($group) || count($group) !== 2 || !is_string($group[0]) || !is_int($group[1])) {
+                if (!is_array($group) || count($group) !== 2 || !is_string($group[0]) || $group[0] === '' || !is_int($group[1])) {
                     throw new Exception(
                         Message::get("VALIDATION_WRONG_CONFIG"),
                         ['requiredChars']
@@ -142,10 +142,15 @@ final class StringValidation
 
                 [$dataset, $minimum] = $group;
 
-                $dataset = self::CHAR_FLAGS[$dataset] ?? $dataset;
+                $dataset = self::CHAR_FLAGS[$dataset] ?? preg_quote($dataset, '/');
 
                 $regex = '/['.$dataset.']/u';
-                preg_match_all($regex, $value, $matches);
+                $matchCount = preg_match_all($regex, $value, $matches);
+
+                if ($matchCount === false) {
+                    $this->messageFlagValues = [$value, $dataset, $minimum, 0];
+                    $this->throwError();
+                }
 
                 $count = count($matches[0] ?? []);
 

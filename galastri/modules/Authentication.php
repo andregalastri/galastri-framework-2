@@ -46,7 +46,7 @@ final class Authentication
 
         setcookie(
             $authTag,
-            json_encode(self::$tagList[$authTag]),
+            json_encode(self::$tagList[$authTag], JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR),
             [
                 'expires' => time() + self::$tagList[$authTag]['cookieExpiration'],
                 'path' => '/',

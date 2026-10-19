@@ -48,12 +48,13 @@ final class Authentication
         $_SESSION[$authTag]['ip'] = self::$tagList[$authTag]['ip'];
         $_SESSION[$authTag]['cookieExpiration'] = self::$tagList[$authTag]['cookieExpiration'];
         $_SESSION[$authTag]['fields'] = self::$tagList[$authTag]['fields'];
+        $_SESSION[$authTag]['expiresAt'] = time() + self::$tagList[$authTag]['cookieExpiration'];
 
         setcookie(
             $authTag,
             json_encode(['token' => self::$tagList[$authTag]['token']], JSON_THROW_ON_ERROR),
             [
-                'expires' => time() + self::$tagList[$authTag]['cookieExpiration'],
+                'expires' => $_SESSION[$authTag]['expiresAt'],
                 'path' => '/',
                 'secure' => true,
                 'httponly' => true,
@@ -70,6 +71,14 @@ final class Authentication
         self::startSession();
 
         if (!isset($_SESSION[$authTag], $_COOKIE[$authTag]) || !is_string($_COOKIE[$authTag])) {
+            session_write_close();
+            return false;
+        }
+
+        $expiresAt = $_SESSION[$authTag]['expiresAt'] ?? null;
+
+        if (!is_int($expiresAt) || $expiresAt <= time()) {
+            unset($_SESSION[$authTag]);
             session_write_close();
             return false;
         }

@@ -179,8 +179,8 @@ final class StringValidation
         $this->validationChain[] = function () {
             $value = $this->value;
 
-            $isFormatted = preg_match('/^\d{3}\.\d{3}\.\d{3}-\d{2}$/', $value);
-            $isNumericOnly = preg_match('/^\d{11}$/', $value);
+            $isFormatted = preg_match('/\A\d{3}\.\d{3}\.\d{3}-\d{2}\z/', $value);
+            $isNumericOnly = preg_match('/\A\d{11}\z/', $value);
 
             if (!$isFormatted && !$isNumericOnly) {
                 $this->messageFlagValues = [$value];
@@ -221,8 +221,8 @@ final class StringValidation
             $value = $this->value;
 
             // Verifica se está no formato pontuado ##.###.###/####-## ou apenas 14 dígitos
-            $isFormatted = preg_match('/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/', $value);
-            $isNumericOnly = preg_match('/^\d{14}$/', $value);
+            $isFormatted = preg_match('/\A\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}\z/', $value);
+            $isNumericOnly = preg_match('/\A\d{14}\z/', $value);
 
             if (!$isFormatted && !$isNumericOnly) {
                 $this->messageFlagValues = [$value];
@@ -286,9 +286,9 @@ final class StringValidation
             }
 
             $patternList = [
-                '/^(\+55\s?)?(\(?\d{2}\)?\s?)?9\d{4}[-\s]?\d{4}$/',
-                '/^(\+55\s?)?(\(?\d{2}\)?\s?)?[2-5]\d{3}[-\s]?\d{4}$/',
-                '/^0[3-9]00[-\s]?\d{3}[-\s]?\d{4}$/',
+                '/\A(\+55\s?)?(\(?\d{2}\)?\s?)?9\d{4}[-\s]?\d{4}\z/',
+                '/\A(\+55\s?)?(\(?\d{2}\)?\s?)?[2-5]\d{3}[-\s]?\d{4}\z/',
+                '/\A0[3-9]00[-\s]?\d{3}[-\s]?\d{4}\z/',
             ];
 
             $valid = false;
@@ -342,7 +342,7 @@ final class StringValidation
             $modeList = [
                 'allowChars' => '/[^'.implode($datasets).']/u',
                 'denyChars' => '/['.implode($datasets).']/u',
-                'allowWords' => '/^(?:'.implode('|', $datasets).')$/u',
+                'allowWords' => '/\A(?:'.implode('|', $datasets).')\z/u',
                 'denyWords'  => '/(?:'.implode('|', $datasets).')/u',
             ];
 

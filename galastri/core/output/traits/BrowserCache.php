@@ -63,10 +63,39 @@ trait BrowserCache
 
             header_remove('Last-Modified');
 
-            $ifNoneMatch = $_SERVER['HTTP_IF_NONE_MATCH'] ?? '';
-            $clientEtag = trim(stripslashes($ifNoneMatch), '"');
+            $ifNoneMatch = trim($_SERVER['HTTP_IF_NONE_MATCH'] ?? '');
+            $matched = $ifNoneMatch === '*';
 
-            if ($clientEtag === $etag) {
+            if (!$matched) {
+                $remaining = $ifNoneMatch;
+
+                while ($remaining !== '') {
+                    $remaining = ltrim($remaining, " \t,");
+
+                    if ($remaining === '') {
+                        break;
+                    }
+
+                    if (preg_match('~\A(?:W/)?"([\x21\x23-\x7E\x80-\xFF]*)"~', $remaining, $match) !== 1) {
+                        $matched = false;
+                        break;
+                    }
+
+                    if ($match[1] === $etag) {
+                        $matched = true;
+                    }
+
+                    $remaining = substr($remaining, strlen($match[0]));
+                    $remaining = ltrim($remaining, " \t");
+
+                    if ($remaining !== '' && $remaining[0] !== ',') {
+                        $matched = false;
+                        break;
+                    }
+                }
+            }
+
+            if ($matched) {
                 http_response_code(304);
                 return true;
             }

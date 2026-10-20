@@ -3,7 +3,7 @@
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 📁 Documentação:
-https://github.com/andregalastri/galastri-framework-2/docs/galastri-framework.txt
+https://github.com/andregalastri/galastri-framework-2/blob/main/docs/galastri-framework.txt
 
 
 O Galastri Framework é um microframework PHP 8 que comecei para desenvolver

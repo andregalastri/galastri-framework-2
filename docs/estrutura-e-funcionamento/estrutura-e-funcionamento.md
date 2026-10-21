@@ -1,8 +1,10 @@
+```md
 GALASTRI FRAMEWORK > ESTRUTURA E FUNCIONAMENTO
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                           ESTRUTURA E FUNCIONAMENTO                          ║
+#                           ESTRUTURA E FUNCIONAMENTO                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
+
 
 O Galastri Framework se organiza em uma estrutura divida entre múltiplas pastas
 com objetivos bem definidos, sendo as principais a pasta `app`, que é onde a
@@ -19,35 +21,36 @@ que torna o funcionamento do framework muito mais compreensível.
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                                  ARQUITETURA                                 ║
+#                                  ARQUITETURA                                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
+
 
 O framework utiliza uma organização chamada `Thin Model MVC`, uma variante do
 MVC em que `Controllers` e `Views` possuem estruturas e funcionalidades
 próprias, enquanto QUE a organização dos `Models` fica totalmente a cargo da
 aplicação.
 
-┌──────────────┬────────────────────────────────────────────────────────────────┐
-│ ► COMPONENTE │ ► RESPONSABILIDADE                                             │
-├──────────────┼────────────────────────────────────────────────────────────────┤
-│ Controller   │ Processa a requisição, utiliza os recursos necessários e reune │
-│              │ os dados da resposta.                                          │
-├──────────────┼────────────────────────────────────────────────────────────────┤
-│ View         │ Apresenta os dados em uma interface de saída, como HTML, JSON  │
-│              │ ou a renderização de um arquivo.                               │
-├──────────────┼────────────────────────────────────────────────────────────────┤
-│ Model        │ O framework não exige uma estrutura específica para Models.    │
-│              │ Você pode criar classes próprias para essas responsabilidades  │
-│              │ e utilizá-las através dos controllers                          │
-└──────────────┴────────────────────────────────────────────────────────────────┘
+┌──────────────┬───────────────────────────────────────────────────────────────┐
+│ ► COMPONENTE │ ► RESPONSABILIDADE                                            │
+├──────────────┼───────────────────────────────────────────────────────────────┤
+│ Controller   │ Processa a requisição, utiliza os recursos necessários e      │
+│              │ reune os dados da resposta.                                   │
+├──────────────┼───────────────────────────────────────────────────────────────┤
+│ View         │ Apresenta os dados em uma interface de saída, como HTML, JSON │
+│              │ ou a renderização de um arquivo.                              │
+├──────────────┼───────────────────────────────────────────────────────────────┤
+│ Model        │ O framework não exige uma estrutura específica para Models.   │
+│              │ Você pode criar classes próprias para essas responsabilidades │
+│              │ e utilizá-las através dos controllers                         │
+└──────────────┴───────────────────────────────────────────────────────────────┘
 
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                              ROTAS E CONTROLLERS                             ║
+#                              ROTAS E CONTROLLERS                             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 As rotas são organizadas através da divisão da URL em `nós` e `endpoints`. Cada
@@ -60,53 +63,60 @@ controller que será executada.
 
 
 💡
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Por exemplo:                                                                │
-│ Vamos imaginar uma URL `www.dominio.com/clientes/listar`. Esta rota é       │
-│ dividida em duas partes:                                                    │
-│                                                                             │
-│ ┌─────────────────┬───────────────────────────────────────────────────────┐ │
-│ │ ► PARTE DA ROTA │ ► CORRESPONDÊNCIA                                     │ │
-│ ├─────────────────┼───────────────────────────────────────────────────────┤ │
-│ │ clientes        │ O framework entende que se trata de um nó e relaciona │ │
-│ │                 │ esta parte à classe                                   │ │
-│ ├─────────────────┼───────────────────────────────────────────────────────┤ │
-│ │ listar          │ É um endpoint por ser o último trecho da rota, sendo  │ │
-│ │                 │ relacionado à um método dentro da classe `Clientes`.  │ │
-│ │                 │ nome do método, neste caso, é `listar()`.             │ │
-│ └─────────────────┴───────────────────────────────────────────────────────┘ │
-│ O domínio é sempre ignorado nesta composição.                               │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ *EXEMPLO*                                                                    │
+│                                                                              │
+│ Vamos imaginar uma URL `www.dominio.com/clientes/listar`. Esta rota é        │
+│ dividida em duas partes:                                                     │
+│                                                                              │
+│ ┌─────────────────┬────────────────────────────────────────────────────────┐ │
+│ │ ► PARTE DA ROTA │ ► CORRESPONDÊNCIA                                      │ │
+│ ├─────────────────┼────────────────────────────────────────────────────────┤ │
+│ │ clientes        │ O framework entende que se trata de um nó e relaciona  │ │
+│ │                 │ esta parte à classe                                    │ │
+│ ├─────────────────┼────────────────────────────────────────────────────────┤ │
+│ │ listar          │ É um endpoint por ser o último trecho da rota, sendo   │ │
+│ │                 │ relacionado à um método dentro da classe `Clientes`.   │ │
+│ │                 │ nome do método, neste caso, é `listar()`.              │ │
+│ └─────────────────┴────────────────────────────────────────────────────────┘ │
+│ O domínio é sempre ignorado nesta composição.                                │
+└──────────────────────────────────────────────────────────────────────────────┘
 >
 
 Dentro desta premissa, a estrutura pode tornar-se mais complexa conforme o
 caminho aumenta e vão existindo nós dentro de outros nós.
 
 
+
 💡
-┌────────────────────────────────────────────────────────────────────────────┐
-│ A organização das pastas dos controllers também segue a mesma estrutura da │
-│ rota. Detalharemos mais sobre isso na seção Rotas, com mais exemplos e     │
-│ explicações.                                                               │
-└────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ A organização das pastas dos controllers também segue a mesma estrutura da   │
+│ rota. Detalharemos mais sobre isso na seção Rotas, com mais exemplos e       │
+│ explicações.                                                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
 >
 
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                         PROCESSAMENTO DA REQUISIÇÃO                          ║
+#                         PROCESSAMENTO DA REQUISIÇÃO                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
+
 
 O método que representa o endpoint é o ponto inicial do processamento daquela
 rota. É nele que os dados são processados de acordo com o que se deseja
 responder na requisição. Pode-se processar qualquer coisa, ou simplesmente não
 fazer nada. Vai da necessidade da aplicação.
 
+
+
 💡
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ Por exemplo, voltando à rota `/clientes/listar`, poderíamos fazer com que o  │
-│ método `listar()` tenha um fluxo de processamento como:                      │
+│ *EXEMPLO*                                                                    │
+│                                                                              │
+│ Voltando à rota `/clientes/listar`, poderíamos fazer com que o método        │
+│ `listar()` tenha um fluxo deprocessamento como:                              │
 │                                                                              │
 │ 1. Recebimento dos dados consulta:                                           │
 │ Os dados são capturado via GET, POST, ou JSON.                               │
@@ -127,17 +137,18 @@ fazer nada. Vai da necessidade da aplicação.
 └──────────────────────────────────────────────────────────────────────────────┘
 >
   
-Em resumo:  
+*Em resumo*  
 Os controllers, portanto, recebem e organizam qual método deverá ser chamado
 e o método processa os dados para retornar ao controller, que prossegue com o
 fluxo.
 
 
+
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                          VIEWS E FORMATOS DE SAÍDA                           ║
+#                          VIEWS E FORMATOS DE SAÍDA                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 O resultado do processamento no controller é entregue a um formato de saída.
@@ -147,17 +158,17 @@ daquela rota.
 
 Atualmente, o framework conta com três tipos de saída possíveis:
 
-┌─────────┬──────────────────────────────────────────────────────────────┐
-│ ► SAÍDA │ ► FINALIDADE                                                 │
-├─────────┼──────────────────────────────────────────────────────────────┤
-│ View    │ Monta uma página HTML utilizando os arquivos de interface da │
-│         │ aplicação.                                                   │
-├─────────┼──────────────────────────────────────────────────────────────┤
-│ Json    │ Envia os dados em JSON. Ideal para responder uma chamada     │
-│         │ JavaScript ou uma API.                                       │
-├─────────┼──────────────────────────────────────────────────────────────┤
-│ File    │ Entrega um arquivo para exibição ou download.                │
-└─────────┴──────────────────────────────────────────────────────────────┘
+┌─────────┬────────────────────────────────────────────────────────────────────┐
+│ ► SAÍDA │ ► FINALIDADE                                                       │
+├─────────┼────────────────────────────────────────────────────────────────────┤
+│ View    │ Monta uma página HTML utilizando os arquivos de interface da       │
+│         │ aplicação.                                                         │
+├─────────┼────────────────────────────────────────────────────────────────────┤
+│ Json    │ Envia os dados em JSON. Ideal para responder uma chamada           │
+│         │ JavaScript ou uma API.                                             │
+├─────────┼────────────────────────────────────────────────────────────────────┤
+│ File    │ Entrega um arquivo para exibição ou download.                      │
+└─────────┴────────────────────────────────────────────────────────────────────┘
 
 
 ℹ️
@@ -174,9 +185,10 @@ Atualmente, o framework conta com três tipos de saída possíveis:
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                           PARADIGMA DE PROGRAMAÇÃO                           ║
+#                           PARADIGMA DE PROGRAMAÇÃO                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
+
 
 O código segue uma organização orientada a classes chamada `Class-Oriented
 Programming (COP)`.
@@ -192,7 +204,7 @@ dentro de uma classe.
 
 
 
->                  DIRETRIZES DE DESENVOLVIMENTO DO FRAMEWORK                  <
+#                  DIRETRIZES DE DESENVOLVIMENTO DO FRAMEWORK                  <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 - Organizar as funcionalidades em classes.  
 
@@ -205,7 +217,8 @@ framework, por exemplo, estende a classe `Exception` do PHP. Mas para
 desenvolver novos recursos, a preferência continua sendo a composição.
 
 
->                    DIRETRIZES PARA DESENVOLVER APLICAÇÕES                    <
+
+#                    DIRETRIZES PARA DESENVOLVER APLICAÇÕES                    <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 - Os controllers da aplicação devem estender a classe base
 `galastri\modules\Controller`.  
@@ -222,7 +235,8 @@ funcionalidades utilizadas pelos controllers.
 - Cada arquivo deve conter apenas uma classe.  
 
 
->               REFERÊNCIAS E CARREGAMENTO DE ARQUIVOS DE CLASSE               <
+
+#               REFERÊNCIAS E CARREGAMENTO DE ARQUIVOS DE CLASSE               <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 A prioridade na hora de importar/compartilhar código é usar a keywork `use` e
 isso é feito através de namespaces para navegação das pastas e dos nomes das
@@ -237,9 +251,10 @@ Evite chamadas de `require` e `include` para carregar arquivos que fazem parte
 do fluxo de processamento de dados que estão em classes.
 
 
+
 ✔️
 ┌──────────────────────────────────────────────────────────────────────────┐
-│ Exemplo correto:                                                         │
+│ *EXEPMLO VÁLIDO*                                                         │
 │                                                                          │
 │ Para importar o arquivo `/galastri/modules/Tools.php`, basta informar o  │
 │ caminho formado pelo namespace e o nome da classe (que é o mesmo nome do │
@@ -251,14 +266,14 @@ do fluxo de processamento de dados que estão em classes.
 │ │                              │                                         │
 │ │ use \galastri\modules\Tools; │                                         │
 │ └──────────────────────────────┘                                         │
-│ ```                                                                      │
+│ ``                                                                       │
 └──────────────────────────────────────────────────────────────────────────┘
->
+^
 
 
 ❌
 ┌─────────────────────────────────────────────────────────────────────┐
-│ Exemplo errado:                                                     │
+│ *EXEMPLO INVÁLIDO*                                                  │
 │                                                                     │
 │ Importar o arquivo `/galastri/modules/Tools.php` diretamente usando │
 │ `require` ou `include`                                              │
@@ -269,20 +284,17 @@ do fluxo de processamento de dados que estão em classes.
 │ │                                        │                          │
 │ │ require '/galastri/modules/Tools.php'; │                          │
 │ └────────────────────────────────────────┘                          │
-│ ```                                                                 │
+│ ``                                                                  │
 └─────────────────────────────────────────────────────────────────────┘
->
+^
 
 
 
 --------------------------------------------------------------------------------
-
-
-
 ▶️ PRÓXIMO TÓPICO
 
 Sobre ambientes Windows:
-LINK: /docs/estrutura-e-funcionamento/estrutura-de-pastas.txt
+LINK: /docs/estrutura-e-funcionamento/estrutura-de-pastas.md
 
 
 ---

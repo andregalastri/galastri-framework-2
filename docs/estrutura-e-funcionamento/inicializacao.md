@@ -1,8 +1,9 @@
+```md
 GALASTRI FRAMEWORK > ESTRUTURA E FUNCIONAMENTO
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                                 INICIALIZAÇÃO                                ║
+#                                 INICIALIZAÇÃO                                ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 Sempre que há uma requisição nova, antes de qualquer processamento de dados no
@@ -44,13 +45,15 @@ diferentes, conforme explicado adiante.
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                             ENTRADA DA REQUISIÇÃO                            ║
+#                             ENTRADA DA REQUISIÇÃO                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
+
 
 O arquivo `public/index.php` é o ponto de entrada do framework. As regras do
 servidor encaminham as requisições para esse arquivo, permitindo que o framework
 identifique a rota e execute o código correspondente.
+
 
 💡
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -69,7 +72,7 @@ identifique a rota e execute o código correspondente.
 >
 
 
->                          ENCAMINHAMENTO PELO APACHE                          <
+#                          ENCAMINHAMENTO PELO APACHE                          <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Na instalação com Apache, as regras dentro de `public/.htaccess` faz com que o
 servidor tenha um comportamento diferente do padrão.
@@ -88,11 +91,13 @@ Por isso, nem toda requisição recebida pelo servidor executa o código do
 Galastri Framework.
 
 
+
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                           Arquivo public/index.php                           ║
+#                           Arquivo public/index.php                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
+
 
 O arquivo de entrada contém o seguinte:
 
@@ -104,33 +109,33 @@ O arquivo de entrada contém o seguinte:
 │                                                          │
 │ require(__DIR__.'/../galastri/bootstrap/bootstrap.php'); │
 └──────────────────────────────────────────────────────────┘
-```
+``
 
 
->                        CONFIGURAÇÃO INICIAL DOS ERROS                        <
+#                        CONFIGURAÇÃO INICIAL DOS ERROS                        <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 As duas primeiras instruções possuem as seguintes funções:
 
-┌──────────────────────────────────┬────────────────────────────────────────┐
-│ ► INSTRUÇÃO                      │ ► FUNÇÃO                               │
-├──────────────────────────────────┼────────────────────────────────────────┤
-│ ini_set('display_errors', true); │ Ativa a exibição de erros pelo PHP     │
-│                                  │ durante a execução.                    │
-├──────────────────────────────────┼────────────────────────────────────────┤
-│ error_reporting(E_ALL)           │ Inclui todos os níveis de erro no      │
-│                                  │ conjunto de erros reportados pelo PHP. │
-└──────────────────────────────────┴────────────────────────────────────────┘
+┌────────────────────────────────────┬─────────────────────────────────────────┐
+│ ► INSTRUÇÃO                        │ ► FUNÇÃO                                │
+├────────────────────────────────────┼─────────────────────────────────────────┤
+│ `ini_set('display_errors', true);` │ Ativa a exibição de erros pelo PHP      │
+│                                    │ durante a execução.                     │
+├────────────────────────────────────┼─────────────────────────────────────────┤
+│ `error_reporting(E_ALL)`           │ Inclui todos os níveis de erro no       │
+│                                    │ conjunto de erros reportados pelo PHP.  │
+└────────────────────────────────────┴─────────────────────────────────────────┘
 
 ℹ️
-┌──────────────────────────────────────────────────────────────────────┐
-│ Essas configurações são aplicadas durante a requisição e não alteram │
-│ permanentemente o arquivo `php.ini`.                                 │
-└──────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Essas configurações são aplicadas durante a requisição e não alteram         │
+│ permanentemente o arquivo `php.ini`.                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
 >
 
 
 
->                           CARREGAMENTO DO BOOTSTRAP                          <
+#                           CARREGAMENTO DO BOOTSTRAP                          <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 A última instrução incorpora o arquivo:
 
@@ -138,7 +143,7 @@ A última instrução incorpora o arquivo:
 ┌──────────────────────────────────────────────────────────┐
 │ require(__DIR__.'/../galastri/bootstrap/bootstrap.php'); │
 └──────────────────────────────────────────────────────────┘
-```
+``
 
 O uso de `__DIR__` constrói o caminho a partir da pasta onde está o `index.php`.
 Nesse caso, `..` sobe da pasta `public` para a raiz do projeto, permitindo
@@ -151,9 +156,10 @@ carregado, a inicialização é interrompida.
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                                   BOOTSTRAP                                  ║
+#                                   BOOTSTRAP                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
+
 
 O bootstrap é a etapa que prepara os recursos básicos para a execução do
 framework. É nesse momento que ficam disponíveis as constantes, as funções
@@ -179,7 +185,7 @@ executado depois da preparação básica e antes do processamento das configura�
 e das rotas.
 
 
->                   ARQUIVO galastri/bootstrap/bootstrap.php                   <
+#                   ARQUIVO galastri/bootstrap/bootstrap.php                   <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 O arquivo é carregado por `public/index.php`. Suas instruções são executadas em
 sequência, preparando os recursos necessários para as etapas seguintes.
@@ -192,7 +198,7 @@ A ordem da execução é a seguinte
   ┌─────────────┐
   │ ob_start(); │
   └─────────────┘   
-   ```
+   ``
 
    Ela ativa um buffer de saída, ou seja, um armazenamento temporário para o
    conteúdo produzido pelo PHP.
@@ -220,7 +226,7 @@ A ordem da execução é a seguinte
    │ require('constants.php'); │
    │ require('functions.php'); │
    └───────────────────────────┘
-   ```
+   ``
 
    O primeiro arquivo define as constantes utilizadas pelo framework.
    O segundo declara e disponibiliza as funções auxiliares.
@@ -231,27 +237,27 @@ A ordem da execução é a seguinte
    ┌──────────────────────────────────────────────┐
    │ require(PROJECT_DIR.'/vendor/autoload.php'); │
    └──────────────────────────────────────────────┘
-   ```
+   ``
 
    A partir dessa instrução, o PHP passa a contar com o mecanismo que localiza
    os arquivos das classes conforme os namespaces configurados no projeto.
 
    💡
-   ┌────────────────────────────────────────────────────────────────────────────┐
-   │ Por exemplo, a classe `galastri\core\Galastri` fica localizada em          │
-   │ `galastri/core/Galastri.php`                                               │
-   │                                                                            │
-   │ O autoload basicamente procura o local do arquivo com base no caminho      │
-   │ informado através do namepace.                                             │
-   │                                                                            │
-   │ ┌────────────────────────────────────────────────────────────────────────┐ │
-   │ │ Uma observação importante a respeito de performance:                   │ │
-   │ │                                                                        │ │
-   │ │ O autoload não carrega todas as classes de uma vez. Ele carrega apenas │ │
-   │ │ uma classe quando ela é necessária. Portanto, não se trata de um       │ │
-   │ │ recurso problemático no sentido de performance.                        │ │
-   │ └────────────────────────────────────────────────────────────────────────┘ │
-   └────────────────────────────────────────────────────────────────────────────┘
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │ Por exemplo, a classe `galastri\core\Galastri` fica localizada em         │
+   │ `galastri/core/Galastri.php`                                              │
+   │                                                                           │
+   │ O autoload basicamente procura o local do arquivo com base no caminho     │
+   │ informado através do namepace.                                            │
+   │                                                                           │
+   │ ┌─────────────────────────────────────────────────────────────────────┐   │
+   │ │ Uma observação importante a respeito de performance:                │   │
+   │ │                                                                     │   │
+   │ │ O autoload não carrega todas as classes de uma vez. Ele carrega     │   │
+   │ │ apenas uma classe quando ela é necessária. Portanto, não se trata d │   │
+   │ │ um recurso problemático no sentido de performance.                  │   │
+   │ └─────────────────────────────────────────────────────────────────────┘   │
+   └───────────────────────────────────────────────────────────────────────────┘
    >
    
 4. Disponibiliza o alias \VarDump para facilitar o uso da classe de depuração:
@@ -260,7 +266,7 @@ A ordem da execução é a seguinte
    ┌────────────────────────────────────────────────────────────┐
    │ class_alias(\galastri\modules\VarDump::class, '\VarDump'); │
    └────────────────────────────────────────────────────────────┘
-   ```
+   ``
 
    Com isso, a classe pode ser referenciada por `\VarDump`, sem repetir seu
    namespace completo.
@@ -274,7 +280,7 @@ A ordem da execução é a seguinte
    ┌──────────────────────┐
    │ ErrorHandler::run(); │
    └──────────────────────┘
-   ```
+   ``
    
    A classe `ErrorHandler` do framework é a responsável pelo tratamento de erros
    e exceções. Essa chamada executa o método `run()` de e registra os mecanismos
@@ -300,7 +306,7 @@ A ordem da execução é a seguinte
    │     require(PROJECT_DIR.'/app/bootstrap.php');       │
    │ }                                                    │
    └──────────────────────────────────────────────────────┘
-   ```
+   ``
    
 7. Chama `Galastri::run()`.
 
@@ -308,13 +314,13 @@ A ordem da execução é a seguinte
    ┌──────────────────┐
    │ Galastri::run(); │
    └──────────────────┘
-   ```
+   ``
    
    Essa chamada inicia o processamento da requisição.
 
 
 
->                   ARQUIVO galastri/bootstrap/constants.php                   <
+#                   ARQUIVO galastri/bootstrap/constants.php                   <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Este arquivo define valores que podem ser utilizados em diferentes partes
 do framework e da aplicação.
@@ -322,11 +328,11 @@ do framework e da aplicação.
 
 - Caminho do projeto
 
-   ┌─────────────┬────────────────────────────────────────────────────────┐
-   │ ► CONSTANTE │ ► CONTEÚDO                                             │
-   ├─────────────┼────────────────────────────────────────────────────────┤
-   │ PROJECT_DIR │ Caminho absoluto da pasta raiz do projeto no servidor. │
-   └─────────────┴────────────────────────────────────────────────────────┘
+   ┌───────────────┬────────────────────────────────────────────────────────┐
+   │ ► CONSTANTE   │ ► CONTEÚDO                                             │
+   ├───────────────┼────────────────────────────────────────────────────────┤
+   │ `PROJECT_DIR` │ Caminho absoluto da pasta raiz do projeto no servidor. │
+   └───────────────┴────────────────────────────────────────────────────────┘
 
    No ambiente de instalação apresentado nesta documentação, o valor será:
 
@@ -364,7 +370,7 @@ do framework e da aplicação.
    ┌────────────────────────┐
    │ Version file not found │
    └────────────────────────┘
-   >
+   `>`
    
    Esses valores ficam disponíveis para consulta pelo código e podem integrar
    os metadados da resposta.
@@ -439,7 +445,7 @@ do framework e da aplicação.
 ▶️ PRÓXIMO TÓPICO
 
 Sobre ambientes Windows:
-LINK: /docs/estrutura-e-funcionamento/processamento-da-requisicao.txt
+LINK: /docs/estrutura-e-funcionamento/processamento-da-requisicao.md
 
 
 

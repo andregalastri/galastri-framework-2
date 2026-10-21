@@ -1,10 +1,8 @@
+```md
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                              GALASTRI FRAMEWORK                              ║
+#                              GALASTRI FRAMEWORK                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-📁 Documentação:
-https://github.com/andregalastri/galastri-framework-2/blob/main/docs/galastri-framework.txt
 
 
 O Galastri Framework é um microframework PHP 8 que comecei para desenvolver
@@ -28,65 +26,75 @@ começando a programar em PHP.
 
 
 --------------------------------------------------------------------------------
-
-
-
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                                   RECURSOS                                   ║
+#                                   RECURSOS                                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 
-✅ Roteamento De Urls  
+_✅ Roteamento De Urls_
 Organização das rotas em nós e endpoints, com suporte a parâmetros, nós
 dinâmicos e configurações por contexto!
->
 
 
-✅ Formatos De Saída  
+
+_✅ Formatos De Saída_
 Respostas em HTML, JSON e arquivos previsíveis e fáceisde configurar!
->
 
 
-✅ Banco De Dados  
+
+_✅ Banco De Dados_
 A classe `Database` permite acesso a bancos MySQL e SQLite com múltiplos
 recursos que facilitam consultas e operações!
->
 
 
-✅ Obtenção De Dados De Requisições facilitada  
+
+_✅ Obtenção De Dados De Requisições facilitada_
 A classe `HttpData` permite consultar dados recebidos pela URL, por formulários
 ou via JSON de forma centralizada, sem a necessidade de uso de múltiplas
 funções!
->
 
 
-✅ Autenticação  
+
+_✅ Autenticação_
 A classe `Authentication` já vem pronta para criar, verificar e encerrar
 autenticações baseadas em sessões e cookies!
->
 
 
-✅ Permissões  
+
+_✅ Permissões_
 A classe `Permission` possui o boilerplate preparado para verificar as
 permissões necessárias de acesso à recursos ou para executar operações!
->
 
 
-✅ Validação De Dados  
+
+_✅ Validação De Dados_
 A classe `Validation` é rica em ferramentas para verificar se textos, números,
 datas e horários atendem às regras definidas pela aplicação!
->
 
 
-✅ Envio De Dados Por Stream  
+
+_✅ Envio De Dados Por Stream_
 A classe `ResponseStream` facilita o envio de respostas ao frontend, como
 mensagens ou resultados parciais, em formato JSON, antes do término da
 requisição!
->
 
 
-✅ Tratamento De Erros  
+
+_✅ Tratamento De Erros_
 Múltiplos recursos para registrar falhas e controlar a apresentação das
 informações de erro conforme as configurações da aplicação.
->
 
+
+
+--------------------------------------------------------------------------------
+▶️ PRÓXIMO TÓPICO
+
+Sobre ambientes Windows:
+LINK: /docs/instalacao/sobre-ambientes-windows.md
+
+
+
+---
+
+👾 Esta documentação está sendo gerada com auxílio de IA...
+🙋‍♂️ ...mas revisada sempre por um humano!

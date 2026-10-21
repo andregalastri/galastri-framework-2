@@ -1,8 +1,9 @@
+```md
 GALASTRI FRAMEWORK > INSTALAÇÃO
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                            SOBRE AMBIENTES WINDOWS                           ║
+#                            SOBRE AMBIENTES WINDOWS                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 O Galastri Framework é desenvolvido para servidores Linux. É possível usá-lo em
@@ -31,9 +32,9 @@ framework.
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                                PRÉ-REQUISITOS                                ║
+#                                PRÉ-REQUISITOS                                ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 Para acompanhar este tutorial, seu PC precisa ter:
@@ -47,9 +48,9 @@ Para acompanhar este tutorial, seu PC precisa ter:
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                         INSTALANDO O WSL E O UBUNTU                          ║
+#                         INSTALANDO O WSL E O UBUNTU                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
@@ -62,7 +63,7 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
    ┌─────────────────────────┐
    │ wsl --install -d Ubuntu │
    └─────────────────────────┘
-   ```
+   ``
 
    Esse comando instala o WSL e o Ubuntu de uma vez. Em uma instalação nova, o
    WSL versão 2 será utilizado por padrão.
@@ -73,18 +74,18 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
    ele pode levar alguns instantes para terminar de preparar os arquivos.
 
    ⚠️
-   ┌──────────────────────────────────────────────────────────────────────────┐
-   │ Se o Ubuntu ainda não estiver disponível, repita o comando de instalação │
-   │ no PowerShell como administrador.                                        │
-   └──────────────────────────────────────────────────────────────────────────┘
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │ Se o Ubuntu ainda não estiver disponível, repita o comando de instalação  │
+   │ no PowerShell como administrador.                                         │
+   └───────────────────────────────────────────────────────────────────────────┘
    >
 
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                         CRIANDO SEU USUÁRIO NO UBUNTU                        ║
+#                         CRIANDO SEU USUÁRIO NO UBUNTU                        ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 1. Na primeira execução, o Ubuntu solicitará um nome de usuário e uma senha.
@@ -112,16 +113,16 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
    ┌─────────────────────────────────┐
    │ desenvolvedor@DESKTOP-123ABC:~$ │
    └─────────────────────────────────┘
-   ```
+   ``
 
    Essa linha indica que o terminal está pronto para receber comandos.
 
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                  CONFERINDO SE ESTAMOS USANDO O WSL VERSÃO 2                 ║
+#                  CONFERINDO SE ESTAMOS USANDO O WSL VERSÃO 2                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 1. Abra uma janela do `PowerShell` e execute:
@@ -130,16 +131,16 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
    ┌──────────────────────┐
    │ wsl --list --verbose │
    └──────────────────────┘
-   ```
+   ``
 
 2. O resultado deverá conter uma linha semelhante a esta:
 
    💻
-   ┌─────────────────────────────────────┐
-   │   NAME      STATE           VERSION │
-   │ * Ubuntu    Running         2       │
-   └─────────────────────────────────────┘
-   ```
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │   NAME      STATE           VERSION                                       │
+   │ * Ubuntu    Running         2                                             │
+   └───────────────────────────────────────────────────────────────────────────┘
+   ``
 
    Confira se a coluna VERSION mostra /2/ na linha do `Ubuntu`. Essa coluna
    informa a versão do WSL utilizada, e não a versão do Ubuntu.
@@ -151,7 +152,7 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
    ┌────────────────────────────┐
    │ wsl --set-version Ubuntu 2 │
    └────────────────────────────┘
-   ```
+   ``
 
    Aguarde a conversão e quando acabar, confira se ela foi aplicada rodando
    novamente o comando abaixo:
@@ -160,14 +161,14 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
    ┌──────────────────────┐
    │ wsl --list --verbose │
    └──────────────────────┘
-   ```
+   ``
 
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                             ATUALIZANDO O UBUNTU                             ║
+#                             ATUALIZANDO O UBUNTU                             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 -  Volte para o terminal do Ubuntu para atualizarmos os programas do sistema
@@ -180,7 +181,7 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
    │ sudo apt update  │
    │ sudo apt upgrade │
    └──────────────────┘
-   ```
+   ``
 
    Se for pedido uma senha, informe a que você criou anteriormente.
    Se aparecer uma pergunta de confirmação, responda `s` ou `y` e prossiga.
@@ -188,9 +189,9 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                 ACESSANDO OS ARQUIVOS DO UBUNTU PELO WINDOWS                 ║
+#                 ACESSANDO OS ARQUIVOS DO UBUNTU PELO WINDOWS                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 1. No terminal do **Ubuntu**, execute os comandos abaixo, um por vez:
@@ -200,25 +201,25 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
    │ cd ~           │
    │ explorer.exe . │ ⚠️ o ponto . faz parte do comando
    └────────────────┘
-   ```
+   ``
 
 2. Sua pasta do Ubuntu será aberta direto no Explorer, permitindo que você acesse
    os arquivos do Linux diretamente pelo Windows.
 
    ℹ️
-   ┌────────────────────────────────────────────────────────────────────────┐
-   │ Vamos manter os arquivos do projeto dentro dessa pasta. Isso costuma   │
-   │ oferecer melhor desempenho do que trabalhar em pastas do Windows, como │
-   │ `C:\Users\...`.                                                        │
-   └────────────────────────────────────────────────────────────────────────┘
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │ Vamos manter os arquivos do projeto dentro dessa pasta. Isso costuma      │
+   │ oferecer melhor desempenho do que trabalhar em pastas do Windows, como    │
+   │ `C:\Users\...`.                                                           │
+   └───────────────────────────────────────────────────────────────────────────┘
    >
 
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                            RESOLUÇÃO DE PROBLEMAS                            ║
+#                            RESOLUÇÃO DE PROBLEMAS                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 ┌─────────────────────────┬────────────────────────────────────────────────────┐
@@ -231,7 +232,7 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
 │                         │ ┌────────────────────────────────────────┐         │
 │                         │ │ wsl --install --web-download -d Ubuntu │         │
 │                         │ └────────────────────────────────────────┘         │
-│                         │ ```                                                │
+│                         │ ``                                                │
 │                         │                                                    │
 │                         │ Este comando utiliza uma forma alternativa de      │
 │                         │ download.                                          │
@@ -257,13 +258,10 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
 
 
 --------------------------------------------------------------------------------
-
-
-
 ▶️ PRÓXIMO TÓPICO
 
 Sobre ambientes Windows:
-LINK: /docs/instalacao/preparando-o-ambiente-de-desenvolvimento.txt
+LINK: /docs/instalacao/preparando-o-ambiente-de-desenvolvimento.md
 
 
 

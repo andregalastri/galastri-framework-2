@@ -1,58 +1,57 @@
-GALASTRI FRAMEWORK > INSTALAÇÃO
-
+```md
 ⚠️
-┌─────────────────────────────────────────────────────────────────────────┐
-│ ATENÇÃO, USUÁRIOS WINDOWS                                               │
-│ Este tutorial é voltado para ambientes Linux. Antes de prosseguir, veja │
-│ primeiro o passo a passo abaixo para montar um ambiente Linux dentro do │
-│ Windows com WSL.                                                        │
-│                                                                         │
-│ LINK: /docs/instalacao/sobre-ambientes-windows.txt                      │
-└─────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ ATENÇÃO, USUÁRIOS WINDOWS                                                    │
+│ Este tutorial é voltado para ambientes Linux. Antes de prosseguir, veja      │
+│ primeiro o passo a passo abaixo para montar um ambiente Linux dentro do      │
+│ Windows com WSL.                                                             │
+│                                                                              │
+│ LINK: /docs/instalacao/sobre-ambientes-windows.md                            │
+└──────────────────────────────────────────────────────────────────────────────┘
 >
 
 
---------------------------------------------------------------------------------
+GALASTRI FRAMEWORK > INSTALAÇÃO
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                   PREPARANDO O AMBIENTE DE DESENVOLVIMENTO                   ║
+#                   PREPARANDO O AMBIENTE DE DESENVOLVIMENTO                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 Vamos instalar e configurar os programas necessários. Abaixo uma breve descrição
 de cada um:
 
-📦 Apache:
+*📦 Apache:*
 É o servidor que recebe as requisições do navegador e entrega as respostas da
 aplicação.
 
-📦 PHP-FPM:
+*📦 PHP-FPM:*
 É o programa que executa o código PHP em conjunto com o Apache.
 
-📦 Git:
+*📦 Git:*
 É por onde vamos baixar o projeto e acompanhar as alterações no código.
 
-📦 Composer:
+*📦 Composer:*
 É o gerenciador de dependências do PHP que permite o carregamento das classes do
 projeto além de bibliotecas que a aplicação precisar.
 
 
 ⚠️
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ No Windows com WSL, lembre-se de executar os comandos desta seção no        │
-│ terminal do Ubuntu, não no CMD ou Powershell.                               │
-│                                                                             │
-│ Os passos consideram uma instalação nova do Ubuntu. Se você já possui um    │
-│ servidor configurado com outros sites e tal, vai precisar fazer adaptações. │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ No Windows com WSL, lembre-se de executar os comandos desta seção no         │
+│ terminal do Ubuntu, não no CMD ou Powershell.                                │
+│                                                                              │
+│ Os passos consideram uma instalação nova do Ubuntu. Se você já possui um     │
+│ servidor configurado com outros sites e tal, vai precisar fazer adaptações.  │
+└──────────────────────────────────────────────────────────────────────────────┘
 >
 
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                             INSTALANDO O APACHE                              ║
+#                             INSTALANDO O APACHE                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 -  Execute os comandos abaixo, um por vez:
@@ -62,7 +61,7 @@ projeto além de bibliotecas que a aplicação precisar.
    │ sudo apt update          │
    │ sudo apt install apache2 │
    └──────────────────────────┘
-   ```
+   ``
 
    Se aparecer uma pergunta para continuar, confirme.
 
@@ -70,9 +69,9 @@ projeto além de bibliotecas que a aplicação precisar.
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                      INSTALANDO O PHP E SUAS EXTENSÕES                       ║
+#                      INSTALANDO O PHP E SUAS EXTENSÕES                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
+
 
 
 1. Execute o comando abaixo:
@@ -83,7 +82,7 @@ projeto além de bibliotecas que a aplicação precisar.
    │   php-fpm php-cli php-gd php-mbstring \          │
    │   php-xml php-curl php-zip php-mysql php-sqlite3 │
    └──────────────────────────────────────────────────┘
-   ```
+   ``
 
    Esse comando instala o PHP e as extensões que o framework vai usar.
 
@@ -93,7 +92,7 @@ projeto além de bibliotecas que a aplicação precisar.
    ┌────────┐
    │ php -v │
    └────────┘
-   ```
+   ``
 
 
 --------------------------------------------------------------------------------
@@ -109,7 +108,7 @@ projeto além de bibliotecas que a aplicação precisar.
    ┌──────────────────────────────────────────┐
    │ sudo a2enmod proxy_fcgi setenvif rewrite │
    └──────────────────────────────────────────┘
-   ```
+   ``
 
    Este comando habilita os módulos do Apache que são necessários para a
    execução do PHP-FPM e framework
@@ -124,7 +123,7 @@ projeto além de bibliotecas que a aplicação precisar.
    │ sudo systemctl enable --now "php${PHP_V}-fpm"                   │
    │ sudo systemctl enable --now apache2                             │
    └─────────────────────────────────────────────────────────────────┘
-   ```
+   ``
 
    Isso habilita a configuração do PHP-FPM no Apache e ativa os serviços de
    ambos programas para que iniciam junto com o Ubuntu sempre que você iniciar
@@ -136,7 +135,7 @@ projeto além de bibliotecas que a aplicação precisar.
    ┌────────────────────────────────┐
    │ sudo systemctl restart apache2 │
    └────────────────────────────────┘
-   ```
+   ``
 
 
 
@@ -153,7 +152,7 @@ projeto além de bibliotecas que a aplicação precisar.
    ┌───────────────────────────────────────────────┐
    │ sudo apt install git composer curl unzip nano │
    └───────────────────────────────────────────────┘
-   ```
+   ``
   
    Isso instala o Git, o Composer e ferramentas auxiliares para baixar arquivos,
    descompactá-los e editar configurações pelo terminal.
@@ -175,7 +174,7 @@ commits, é necessário registrar um nome e um e-mail.
    │ git config --global user.name "Seu nome/nome_de_usuario" │
    │ git config --global user.email "seu-email@exemplo.com"   │
    └──────────────────────────────────────────────────────────┘
-   ```
+   ``
 
 2. Depois confira se os valores foram aplicados:
 
@@ -184,7 +183,7 @@ commits, é necessário registrar um nome e um e-mail.
    │ git config --global user.name  │
    │ git config --global user.email │
    └────────────────────────────────┘
-   ```
+   ``
 
 
 ⚠️
@@ -238,7 +237,7 @@ só pra pra ver se a integração está funcionando.
    ┌───────────────────────────────────┐
    │ sudo nano /var/www/html/teste.php │
    └───────────────────────────────────┘
-   ```
+   ``
 
 2. Copie e cole o conteúdo abaixo:
 
@@ -252,7 +251,7 @@ só pra pra ver se a integração está funcionando.
    │ echo "Versão do PHP: " . PHP_VERSION . "\n";       │
    │ echo "Modo de execução: " . PHP_SAPI . "\n";       │
    └────────────────────────────────────────────────────┘
-   ```
+   ``
 
    Salve o arquivo (Ctrl + O), confirme com (Enter) e saia (Ctrl + X).
 
@@ -266,7 +265,7 @@ só pra pra ver se a integração está funcionando.
    │ Versão do PHP: 8.3.6       │
    │ Modo de execução: fpm-fcgi │
    └────────────────────────────┘
-   ```
+   ``
 
 4. Se o resultado apareceu, remova o arquivo temporário:
 
@@ -274,7 +273,7 @@ só pra pra ver se a integração está funcionando.
    ┌─────────────────────────────────┐
    │ sudo rm /var/www/html/teste.php │
    └─────────────────────────────────┘
-   ```
+   ``
 
 
 --------------------------------------------------------------------------------
@@ -291,14 +290,14 @@ só pra pra ver se a integração está funcionando.
 │ abrir a página           │ ┌──────────────────────────────────────────┐      │
 │                          │ │ sudo systemctl status apache2 --no-pager │      │
 │                          │ └──────────────────────────────────────────┘      │
-│                          │ ```                                               │
+│                          │ ``                                                │
 │                          │                                                   │
 │                          │ O comando deverá mostrar `active (running)`.      │
 │                          │ Caso não, inicie o Apache com o comando abaixo:   │
 │                          │ ┌──────────────────────────────┐                  │
 │                          │ │ sudo systemctl start apache2 │                  │
 │                          │ └──────────────────────────────┘                  │
-│                          │ ```                                               │
+│                          │ ``                                                │
 │                          │                                                   │
 │                          │ Se este comando falhar, aí será necessário que    │
 │                          │ você investigue a causa (pode ser muita coisa pra │
@@ -314,7 +313,7 @@ só pra pra ver se a integração está funcionando.
 │                          │ │ sudo systemctl restart "php${PHP_V}-fpm"  │     │
 │                          │ │ sudo systemctl restart apache2            │     │
 │                          │ └───────────────────────────────────────────┘     │
-│                          │ ```                                               │
+│                          │ ``                                                │
 │                          │                                                   │
 │                          │ Depois, acesse novamente o endereço do teste.     │
 ├──────────────────────────┼───────────────────────────────────────────────────┤
@@ -325,7 +324,7 @@ só pra pra ver se a integração está funcionando.
 │                          │ ┌───────────────────────────┐                     │
 │                          │ |  sudo nano /etc/wsl.conf  |                     │
 │                          │ └───────────────────────────┘                     │
-│                          │ ```                                               │
+│                          │ ``                                                │
 │                          │                                                   │
 │                          │ Adicione isso abaixo da seção `[boot]` do         │
 │                          │ arquivo:                                          │
@@ -333,7 +332,7 @@ só pra pra ver se a integração está funcionando.
 │                          │ │ [boot]       │                                  │
 │                          │ │ systemd=true │                                  │
 │                          │ └──────────────┘                                  │
-│                          │ ```                                               │
+│                          │ ``                                                │
 │                          │                                                   │
 │                          │ > IMPORTANTE!                                     │
 │                          │ > Se não existir uma seção `[boot]`, basta        │
@@ -347,7 +346,7 @@ só pra pra ver se a integração está funcionando.
 │                          │ ┌────────────────────────┐                        │
 │                          │ │ wsl --terminate Ubuntu │                        │
 │                          │ └────────────────────────┘                        │
-│                          │ ```                                               │
+│                          │ ``                                                │
 │                          │                                                   │
 │                          │ Reabra novamente o Ubuntu e repita os comandos    │
 │                          │ de ativação dos serviços:                         │
@@ -357,7 +356,7 @@ só pra pra ver se a integração está funcionando.
 │                          │ │ sudo systemctl restart "php${PHP_V}-fpm"  │     │
 │                          │ │ sudo systemctl restart apache2            │     │
 │                          │ └───────────────────────────────────────────┘     │
-│                          │ ```                                               │
+│                          │ ``                                                │
 └──────────────────────────┴───────────────────────────────────────────────────┘
 %
 

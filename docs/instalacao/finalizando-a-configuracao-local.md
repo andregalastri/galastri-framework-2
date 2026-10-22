@@ -21,42 +21,36 @@ e é a porta de entrada do projeto.
 O Apache e o PHP-FPM precisam acessar o projeto dentro da sua pasta pessoal.
 Também precisamos permitir que o PHP-FPM grave os registros de erro em `logs`.
 
-1. Instale a ferramenta para conceder acesso a um usuário específico:
+⚠️
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ Troque o termo `desenvolvedor` nos comandos a seguir caso seu usuário tiver │
+│ outro nome.                                                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+>
+
+1. No terminal, execute o seguinte comando:
 
    💻
-   ┌──────────────────────┐
-   │ sudo apt install acl │
-   └──────────────────────┘
+   ┌────────────────────────────────────┐
+   │ sudo chmod o+x /home/desenvolvedor │
+   └────────────────────────────────────┘
    ``
 
-2. Permita que o usuário `www-data`, usado pelo Apache e pelo PHP-FPM no Ubuntu,
-   atravesse sua pasta pessoal para chegar ao projeto:
+   Esse comando permite que outros usuários do sistema atravessem a pasta,
+   sem acrescentar permissão para listar seu conteúdo.
 
-   💻
-   ┌────────────────────────────────────────────────────┐
-   │ sudo setfacl -m u:www-data:--x /home/desenvolvedor │
-   └────────────────────────────────────────────────────┘
-   ``
-
-   Essa permissão permite atravessar a pasta, sem dar permissão para listar seu
-   conteúdo. As pastas e os arquivos do projeto devem continuar legíveis pelo
-   servidor, como ocorre nas permissões padrão de uma clonagem.
-
-3. Prepare a escrita na pasta de logs:
+2. Prepare a escrita na pasta de logs:
 
    💻
    ┌─────────────────────────────────────────────┐
    │ cd /home/desenvolvedor/galastri-framework-2 │
-   │ sudo chgrp -R www-data logs                 │
-   │ sudo chmod -R g+rwX logs                    │
+   │ sudo chgrp www-data logs                    │
    │ sudo chmod 2770 logs                        │
    └─────────────────────────────────────────────┘
    ``
 
-   O grupo `www-data` poderá gravar nessa pasta. O bit `2` mantém esse grupo nos
-   novos arquivos criados dentro dela.
-
-   Ajuste `desenvolvedor` nos comandos se o seu usuário tiver outro nome.
+   O grupo `www-data`, usado pelo Apache e pelo PHP-FPM no Ubuntu, poderá
+   gravar nessa pasta.
 
 
 

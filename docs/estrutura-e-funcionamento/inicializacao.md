@@ -70,18 +70,18 @@ identifique a rota e execute o código correspondente.
 
 #                          ENCAMINHAMENTO PELO APACHE                          <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Na instalação com Apache, as regras dentro de `public/.htaccess` faz com que o
+Na instalação com Apache, as regras dentro de `public/.htaccess` fazem com que o
 servidor tenha um comportamento diferente do padrão.
 
-- A regra principal encaminha para `index.php` todas as requisições que não
-correspondem a um diretório existente
+*  A regra principal encaminha para `index.php` todas as requisições que não
+   correspondem a um diretório existente.
 
-- URLs com barra no final são redirecionadas para a versão sem essa barra,
-exceto quando correspondem a diretórios existentes.
+*  URLs com barra no final são redirecionadas para a versão sem essa barra,
+   exceto quando correspondem a diretórios existentes.
 
-- Requisições para `/favicon.ico` são atendidas diretamente pelo Apache, sem
-iniciar o framework. Se o arquivo não existir na pasta pública, o Apache retorna
-uma resposta 404.
+*  Requisições para `/favicon.ico` são atendidas diretamente pelo Apache, sem
+   iniciar o framework. Se o arquivo não existir na pasta pública, o Apache
+   retorna uma resposta 404.
 
 Por isso, nem toda requisição recebida pelo servidor executa o código do
 Galastri Framework.
@@ -280,16 +280,17 @@ A ordem da execução é a seguinte
    e exceções. Essa chamada executa o método `run()` e registra os mecanismos
    responsáveis por:
 
-   * Tratar os erros do PHP abrangidos pelo manipulador de erros.
+   *  Tratar os erros do PHP abrangidos pelo manipulador de erros.
    
-   * Tratar exceções que não foram capturadas pela aplicação.
+   *  Tratar exceções que não foram capturadas pela aplicação.
    
-   * Verificar determinados erros fatais no encerramento da execução.
+   *  Verificar determinados erros fatais no encerramento da execução.
 
    ⚠️
    ┌───────────────────────────────────────────────────────────────────────────┐
    │ Erros ocorridos antes da ativação do `ErrorHandler`, como uma falha ao    │
-   │ carregar o próprio bootstrap, ainda aparecerem no formato padrão do PHP.  │
+   │ carregar o próprio bootstrap, ainda podem aparecer no formato padrão      │
+   │ do PHP.                                                                   │
    └───────────────────────────────────────────────────────────────────────────┘
    >
    
@@ -331,9 +332,9 @@ do framework e da aplicação.
    No ambiente de instalação apresentado nesta documentação, o valor será:
 
    🧾
-   ┌──────────────────────────────────────────────────────────────────────────────┐
-   │ /home/desenvolvedor/galastri-framework-2                                     │
-   └──────────────────────────────────────────────────────────────────────────────┘
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │ /home/desenvolvedor/galastri-framework-2                                │
+   └─────────────────────────────────────────────────────────────────────────┘
    @
    
    Esse caminho é calculado a partir da localização de `constants.php`, sem
@@ -354,9 +355,9 @@ do framework e da aplicação.
    ┌────────────────────┬──────────────────────────────────────────────────────┐
    │ _CONSTANTE_        │ _CONTEÚDO_                                           │
    ├────────────────────┼──────────────────────────────────────────────────────┤
-   │ `GALASTRI_VERSION` │ Conteúdo do arquivo`galastri/VERSION`.               │
+   │ `GALASTRI_VERSION` │ Conteúdo do arquivo `galastri/VERSION`.              │
    ├────────────────────┼──────────────────────────────────────────────────────┤
-   │ `APP_VERSION`      │ Conteúdo do arquivo`app/VERSION`.                    │
+   │ `APP_VERSION`      │ Conteúdo do arquivo `app/VERSION`.                   │
    └────────────────────┴──────────────────────────────────────────────────────┘
 
    Se um dos arquivos não existir, a constante correspondente recebe o texto:
@@ -375,7 +376,7 @@ do framework e da aplicação.
    ┌──────────────────┬────────────────────────────────────────────────────────┐
    │ _CONSTANTE_      │ _CONTEÚDO_                                             │
    ├──────────────────┼────────────────────────────────────────────────────────┤
-   │ `MIME_TYPE_LIST` │ Dados retornados por`app/config/mime-types.php`.       │
+   │ `MIME_TYPE_LIST` │ Dados retornados por `app/config/mime-types.php`.      │
    └──────────────────┴────────────────────────────────────────────────────────┘
 
    O arquivo é carregado durante a definição da constante. Se ele não

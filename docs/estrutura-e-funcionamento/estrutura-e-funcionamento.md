@@ -5,9 +5,9 @@ GALASTRI FRAMEWORK > ESTRUTURA E FUNCIONAMENTO
 #                           ESTRUTURA E FUNCIONAMENTO                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-O Galastri Framework se organiza em uma estrutura divida entre múltiplas pastas
-com objetivos bem definidos, sendo as principais a pasta `app`, que é onde a
-aplicação será desenvolvida, e a pasta `galastri` que é onde estão os arquivos do
+O Galastri Framework se organiza em múltiplas pastas com objetivos bem
+definidos, sendo as principais a pasta `app`, que é onde a
+aplicação será desenvolvida, e a pasta `galastri`, onde estão os arquivos do
 framework em si.
 
 A pasta `galastri` reúne o núcleo e todas as ferramentas e funcionalidades que
@@ -26,14 +26,14 @@ que torna o funcionamento do framework muito mais compreensível.
 
 O framework utiliza uma organização chamada `Thin Model MVC`, uma variante do
 MVC em que `Controllers` e `Views` possuem estruturas e funcionalidades
-próprias, enquanto QUE a organização dos `Models` fica totalmente a cargo da
+próprias, enquanto que a organização dos `Models` fica totalmente a cargo da
 aplicação.
 
 ┌──────────────┬───────────────────────────────────────────────────────────────┐
 │ _COMPONENTE_ │ _RESPONSABILIDADE_                                            │
 ├──────────────┼───────────────────────────────────────────────────────────────┤
 │ `Controller` │ Processa a requisição, utiliza os recursos necessários e      │
-│              │ reune os dados da resposta.                                   │
+│              │ reúne os dados da resposta.                                   │
 ├──────────────┼───────────────────────────────────────────────────────────────┤
 │ `View`       │ Apresenta os dados em uma interface de saída, como HTML, JSON │
 │              │ ou a renderização de um arquivo.                              │
@@ -50,8 +50,8 @@ As rotas são organizadas através da divisão da URL em `nós` e `endpoints`. C
 `/` da URL representa o local de quebra, separando os termos do caminho.
 
 O `nó` é a parte desse caminho que representa uma classe controller, enquanto
-que um endpoint é a parte do caminho que representa o nome do será o método da
-controller que será executada.
+que um endpoint é a parte do caminho que representa o método do controller que
+será executado.
 
 ✔️
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -64,11 +64,11 @@ controller que será executada.
 │ │ _PARTE DA ROTA_ │ _CORRESPONDÊNCIA_                                     │  │
 │ ├─────────────────┼───────────────────────────────────────────────────────┤  │
 │ │ `clientes`      │ O framework entende que se trata de um nó e relaciona │  │
-│ │                 │ esta parte à classe                                   │  │
+│ │                 │ esta parte à classe `Clientes`.                       │  │
 │ ├─────────────────┼───────────────────────────────────────────────────────┤  │
 │ │ `listar`        │ É um endpoint por ser o último trecho da rota, sendo  │  │
-│ │                 │ relacionado à um método dentro da classe `Clientes`.  │  │
-│ │                 │ nome do método, neste caso, é `listar()`.             │  │
+│ │                 │ relacionado a um método dentro da classe `Clientes`.  │  │
+│ │                 │ O nome do método, neste caso, é `listar()`.           │  │
 │ └─────────────────┴───────────────────────────────────────────────────────┘  │
 │                                                                              │
 │ O domínio é sempre ignorado nesta composição.                                │
@@ -101,18 +101,18 @@ fazer nada. Vai da necessidade da aplicação.
 │ Voltando à rota `/clientes/listar`, poderíamos fazer com que o método       │
 │ `listar()` tenha um fluxo de processamento como:                            │
 │                                                                             │
-│ 1. Recebimento dos dados consulta:                                          │
-│    Os dados são capturado via GET, POST, ou JSON.                           │
+│ 1. Recebimento dos dados da consulta:                                       │
+│    Os dados são capturados via GET, POST, ou JSON.                          │
 │                                                                             │
 │ 2. Validação destes dados:                                                  │
-│    Testa-se se os dados (como termo de busca, ordenação da lista, etc.) é   │
-│    válido.                                                                  │
+│    Testa-se se os dados (como termo de busca e ordenação da lista) são      │
+│    válidos.                                                                 │
 │                                                                             │
 │ 3. Acesso ao banco de dados:                                                │
 │    Faz a consulta no banco de dados para trazer o resultado.                │
 │                                                                             │
 │ 4. Organização do resultado:                                                │
-│    Organiza como os dados em formato de lista que vão retornar ao frontend. │
+│    Organiza os dados em formato de lista que vão retornar ao frontend.      │
 │                                                                             │
 │ 5. Retorna:                                                                 │
 │    Conclui retornando o resultado para o controller que prosseguirá com o   │
@@ -180,11 +180,11 @@ dentro de uma classe.
 
 #                  DIRETRIZES DE DESENVOLVIMENTO DO FRAMEWORK                  <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-* Organizar as funcionalidades em classes.  
+*  Organizar as funcionalidades em classes.  
 
-* Manter cada classe em seu próprio arquivo.  
+*  Manter cada classe em seu próprio arquivo.  
 
-* Priorizar a _composição_ ao invés de herança.  
+*  Priorizar a _composição_ ao invés de herança.  
 
 A herança pode ser utilizada em casos específicos. A classe `Exception` do
 framework, por exemplo, estende a classe `Exception` do PHP. Mas para
@@ -193,31 +193,32 @@ desenvolver novos recursos, a preferência continua sendo a composição.
 
 #                    DIRETRIZES PARA DESENVOLVER APLICAÇÕES                    <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-* Os controllers da aplicação devem estender a classe base
-  `galastri\modules\Controller`.  
+*  Os controllers da aplicação devem estender a classe base
+   `galastri\modules\Controller`.  
 
-* Os métodos que representam endpoints devem coordenar o processamento das
-  operações correspondentes.  
+*  Os métodos que representam endpoints devem coordenar o processamento das
+   operações correspondentes.  
 
-* Classes auxiliares podem organizar o acesso aos dados, regras e outras
-  funcionalidades utilizadas pelos controllers. 
+*  Classes auxiliares podem organizar o acesso aos dados, regras e outras
+   funcionalidades utilizadas pelos controllers. 
  
-* Essas classes auxiliares devem ficar em pastas próprias, separadas de
-  `app/controllers`.  
+*  Essas classes auxiliares devem ficar em pastas próprias, separadas de
+   `app/controllers`.  
 
-* Cada arquivo deve conter apenas uma classe.  
+*  Cada arquivo deve conter apenas uma classe.  
 
 
 #               REFERÊNCIAS E CARREGAMENTO DE ARQUIVOS DE CLASSE               <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-A prioridade na hora de importar/compartilhar código é usar a keywork `use` e
-isso é feito através de namespaces para navegação das pastas e dos nomes das
-classes para o nome do arquivo.
+Para referenciar uma classe de outro namespace por um nome mais curto, use a
+palavra-chave `use`. Ela permite escrever, por exemplo, `Tools` em vez de
+`\galastri\modules\Tools`.
+
+Quem localiza e carrega o arquivo da classe é o `autoload` do Composer, já
+configurado no projeto. O `use` define a referência ao nome da classe, mas não
+carrega seu arquivo.
 
 Este é um dos motivos para se encapsular todos os códigos em classes.
-
-O recurso de importação por `use` já fica configurado através do `autoload` do
-Composer, sendo um padrão já configurado e pronto para usar no projeto.
 
 Evite chamadas de `require` e `include` para carregar arquivos que fazem parte
 do fluxo de processamento de dados que estão em classes.
@@ -226,9 +227,8 @@ do fluxo de processamento de dados que estão em classes.
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ _EXEMPLO VÁLIDO_                                                         │
 │                                                                          │
-│ Para importar o arquivo `/galastri/modules/Tools.php`, basta informar o  │
-│ caminho formado pelo namespace e o nome da classe (que é o mesmo nome do │
-│ arquivo).                                                                │
+│ Para referenciar `Tools`, informe seu namespace e nome da classe.       │
+│ O autoload carrega o arquivo da classe quando ela é utilizada.          │
 │                                                                          │
 │ ┌──────────────────────────────┐                                         │
 │ │ <?php                        │                                         │
@@ -249,7 +249,7 @@ do fluxo de processamento de dados que estão em classes.
 │                                                                     │
 │ ┌────────────────────────────────────────┐                          │
 │ │ <?php                                  │                          │
-│ │ namespace \app;                        │                          │
+│ │ namespace app;                         │                          │
 │ │                                        │                          │
 │ │ require '/galastri/modules/Tools.php'; │                          │
 │ └────────────────────────────────────────┘                          │

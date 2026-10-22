@@ -55,12 +55,12 @@ autenticações baseadas em sessões e cookies!
 
 _✅ Permissões_  
 A classe `Permission` possui o boilerplate preparado para validação de
-permissões de acesso à recursos ou para execução de operações!
+permissões de acesso a recursos ou para execução de operações!
 
 
 _✅ Validação de dados_  
-A classe `Validation` é rica em ferramentas para validar se textos, números,
-datas e horários para atenderem às regras de dados definidas pela aplicação!
+A classe `Validation` é rica em ferramentas para validar textos, números,
+datas e horários conforme as regras definidas pela aplicação!
 
 
 _✅ Envio de respostas por stream_  

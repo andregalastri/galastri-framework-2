@@ -104,9 +104,9 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
 2. Quando terminar, aparecerá uma linha parecida com esta:
 
    🧾
-   ┌──────────────────────────────────────────────────────────────────────────────┐
-   │ desenvolvedor@DESKTOP-123ABC:~$                                              │
-   └──────────────────────────────────────────────────────────────────────────────┘
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │ desenvolvedor@DESKTOP-123ABC:~$                                         │
+   └─────────────────────────────────────────────────────────────────────────┘
    @
    
    Essa linha indica que o terminal está pronto para receber comandos.
@@ -226,7 +226,7 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
 │                         │                                                    │
 ├─────────────────────────┼────────────────────────────────────────────────────┤
 │ Apareceu um erro sobre  │ Confira se a virtualização está habilitada na      │
-│ virtualização           │ BIOS/UEFI da placa-mãe. Senão estiver, é           │
+│ virtualização           │ BIOS/UEFI da placa-mãe. Se não estiver, é          │
 │                         │ necessário habilitar.                              │
 │                         │                                                    │
 │                         ├────────────────────────────────────────────────────┤

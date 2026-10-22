@@ -5,11 +5,11 @@ GALASTRI FRAMEWORK > ESTRUTURA E FUNCIONAMENTO
 #                          PROCESSAMENTO DA REQUISIÇÃO                         ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-Após a inicialização, a classe `Galastri`, localizado em
+Após a inicialização, a classe `Galastri`, localizada em
 `galastri/core/Galastri.php`, é iniciada através do método `run()`.
 
 Esta é a classe com a função de coordenar as etapas necessárias para atender a
-requisição dentro de uma ordem específica..
+requisição dentro de uma ordem específica.
 
 1. _Carregamento das Definições:_
    Primeiro, `Config::run()` carrega as definições presentes em
@@ -17,7 +17,7 @@ requisição dentro de uma ordem específica..
    opcional).
 
    Essas definições descrevem as configurações reconhecidas pelo
-   framework,incluindo seus valores padrão e as regras de validação dos valores
+   framework, incluindo seus valores padrão e as regras de validação dos valores
    recebidos.
 
 2. _Identificação da Rota:_
@@ -35,19 +35,19 @@ requisição dentro de uma ordem específica..
 3. _Aplicação das configurações_
    Com a rota identificada, a classe `Galastri` prossegue nesta ordem:
 
-   * Aplica o fuso horário configurado.
+   *  Aplica o fuso horário configurado.
    
-   * Seleciona a classe responsável pelo formato de saída.
+   *  Seleciona a classe responsável pelo formato de saída.
    
-   * Verifica se há um redirecionamento obrigatório.
+   *  Verifica se há um redirecionamento obrigatório.
    
-   * Verifica se a rota está marcada como indisponível.
+   *  Verifica se a rota está marcada como indisponível.
    
-   * Verifica a validade da rota, considerando se a saída exige um controller.
+   *  Verifica a validade da rota, considerando se a saída exige um controller.
    
-   * Verifica a autenticação, quando exigida.
+   *  Verifica a autenticação, quando exigida.
    
-   * Localiza o controller e os métodos correspondentes.
+   *  Localiza o controller e os métodos correspondentes.
 
    Essas verificações acontecem antes da execução das operações da aplicação. Um
    redirecionamento ou uma falha de autenticação, por exemplo, pode encerrar o
@@ -127,7 +127,7 @@ arquivos do projeto.
 2. Depois, o Router encontra a configuração da raiz `/` e o endpoint `@main` em
    `app/config/routes.php`.
 
-3. É identificado cada parte da estrutura interna que vai fazer parte do fluxo:
+3. É identificada cada parte da estrutura interna que vai fazer parte do fluxo:
 
    ┌────────────────────────────┬──────────────────────────────────────────────┐
    │ _PARTE_                    │ _ARQUIVO OU MÉTODO_                          │
@@ -137,7 +137,7 @@ arquivos do projeto.
    │ `Método do controller a`   │ Index::main()                                │
    │ `ser executado`            │                                              │
    ├────────────────────────────┼──────────────────────────────────────────────┤
-   │ `Classe de formato de`     │ galastri/core/output/View                    │
+   │ `Classe de formato de`     │ galastri\core\output\View                    │
    │ `saída`                    │                                              │
    ├────────────────────────────┼──────────────────────────────────────────────┤
    │ `Template HTML`            │ app/templates/template.php                   │

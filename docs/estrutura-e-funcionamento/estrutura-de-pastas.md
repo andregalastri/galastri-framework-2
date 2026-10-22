@@ -95,11 +95,11 @@ sendo exibida.
 
 A instalação inicial inclui estes dois arquivos de exemplo:
 
-* `app/templates/template.php`:  
-  Contém a estrutura HTML utilizada pela página de exemplo.
-  
-* `app/views/Index/main.php`:  
-  contém o conteúdo apresentado nessa página.
+*  `app/templates/template.php`:  
+   Contém a estrutura HTML utilizada pela página de exemplo.
+   
+*  `app/views/Index/main.php`:  
+   contém o conteúdo apresentado nessa página.
 
 O uso de templates é opcional, mas é uma convenção comum em aplicações web. A
 aplicação, porém, pode utilizar uma view sem compartilhar sua estrutura com
@@ -168,7 +168,7 @@ Contém os arquivos que preparam o framework para executar uma requisição:
 
 💡
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ A sequência de execução desses arquivos será detalhada no artigo,            │
+│ A sequência de execução desses arquivos será detalhada no artigo             │
 │ "Inicialização".                                                             │
 └──────────────────────────────────────────────────────────────────────────────┘
 >
@@ -219,7 +219,7 @@ Dentro dela há as pastas abaixo:
 ├────────────┼─────────────────────────────────────────────────────────────────┤
 │ `engines/` │ Reúne classes de template engines, responsáveis por renderizar  │
 │            │ os arquivos de views. Atualmente há suporte apenas para o       │
-│            │ templating do próprio PHP através da classe`PhpEngine`.         │
+│            │ templating do próprio PHP através da classe `PhpEngine`.        │
 ├────────────┼─────────────────────────────────────────────────────────────────┤
 │ `traits/`  │ Reúne as traits com funcionalidades adicionais que são          │
 │            │ compartilhadas entre as classes de formato.                     │
@@ -339,7 +339,7 @@ Ela contém três arquivos:
 │ um nome iniciado com ponto.                                                  │
 │                                                                              │
 │ Somente a pasta `public/` deve ficar exposta pelo servidor web. As demais    │
-│ pastas é onde ficará o código fonte da aplicação, contendo configurações e   │
+│ pastas contêm o código fonte da aplicação, as configurações e os             │
 │ registros que não devem ser acessados diretamente pelo navegador.            │
 │                                                                              │
 │ As regras do `.htaccess` fornecido encaminham para `index.php` as            │
@@ -359,7 +359,7 @@ Esta pasta contém os arquivos gerenciados pelo Composer, incluindo o carregador
 de classes `autoload.php`.
 
 Mesmo que a instalação atual não tenha bibliotecas externas para baixar, esse
-carregador é necessário. É ele permite encontrar as classes a partir dos
+carregador é necessário. É ele que permite encontrar as classes a partir dos
 namespaces configurados pelo projeto, conforme abaixo:
 
 ┌─────────────┬────────────────────────────────────────────────────────────────┐
@@ -391,7 +391,7 @@ Além das pastas, a raiz do projeto contém os seguintes arquivos:
 │                 │ necessidades da aplicação.                                 │
 ├─────────────────┼────────────────────────────────────────────────────────────┤
 │ `composer.lock` │ Registra as versões das dependências resolvidas pelo       │
-│                 │ Composer, utilizadas pelo comando`composer install`. É     │
+│                 │ Composer, utilizadas pelo comando `composer install`. É    │
 │                 │ gerenciado pelo Composer e não deve ser editado            │
 │                 │ manualmente.                                               │
 ├─────────────────┼────────────────────────────────────────────────────────────┤

@@ -82,7 +82,7 @@ projeto além de bibliotecas que a aplicação precisar.
    └───────────────────────────────────────────────────────────────────────┘
    ``
 
-   Esses comando instalam o PHP e as extensões que o framework vai usar.
+   Esses comandos instalam o PHP e as extensões que o framework vai usar.
 
 2. Ao final, confira se a versão instalada é `8.0` ou superior:
 
@@ -123,8 +123,8 @@ projeto além de bibliotecas que a aplicação precisar.
    ``
 
    Isso habilita a configuração do PHP-FPM no Apache e ativa os serviços de
-   ambos programas para que iniciam junto com o Ubuntu sempre que você iniciar o
-   ambiente.
+   ambos os programas para que iniciem junto com o Ubuntu sempre que você
+   iniciar o ambiente.
 
 3. Por fim, execute:
 
@@ -298,23 +298,23 @@ só pra ver se a integração está funcionando.
 │ com systemd              │                                                                        │
 │                          │ 1. Execute o comando abaixo no terminal do Ubuntu                      │
 │                          │    ┌───────────────────────────┐                                       │
-│                          │    |  sudo nano /etc/wsl.conf  |                                       │
+│                          │    │  sudo nano /etc/wsl.conf  │                                       │
 │                          │    └───────────────────────────┘                                       │
 │                          │    ``                                                                  │
 │                          │                                                                        │
-│                          │ 2. Adicione isso abaixo da seção `[boot]` do                           │
-│                          │    arquivo:                                                            │
+│                          │ 2. Na seção `[boot]`, acrescente ou ajuste                             │
+│                          │    a opção `systemd=true`, conforme abaixo:                            │
 │                          │    ┌──────────────┐                                                    │
 │                          │    │ [boot]       │                                                    │
 │                          │    │ systemd=true │                                                    │
 │                          │    └──────────────┘                                                    │
 │                          │    ``                                                                  │
 │                          │                                                                        │
-│                          │    Se não existir uma seção `[boot]`, basta                            │
-│                          │    inserir ela também junto com o comando do                           │
-│                          │    systemd.                                                            │
+│                          │    Se a seção `[boot]` já existir, não repita                          │
+│                          │    seu cabeçalho. Caso não exista, acrescente                          │
+│                          │    o bloco completo mostrado acima.                                    │
 │                          │                                                                        │
-│                          │    Salve o arquivo (CTRL + O, CTRL + X)                                │
+│                          │    Salve (Ctrl + O), confirme (Enter) e saia (Ctrl + X).               │
 │                          │                                                                        │
 │                          │ 3. Abra o PowerShell no Windows e execute o                            │
 │                          │    comando abaixo:                                                     │

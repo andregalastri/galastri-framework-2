@@ -26,7 +26,7 @@ Vamos guardar o framework em `/home/desenvolvedor/galastri-framework-2`.
    └─────────────────────────────────────────────────────────────────────┘
    ``
 
-   O projeto será baixado a pasta pessoal do seu usuário.
+   O projeto será baixado na pasta pessoal do seu usuário.
    
 2. Quando o download finalizar, confira os arquivos:
 
@@ -41,8 +41,6 @@ Vamos guardar o framework em `/home/desenvolvedor/galastri-framework-2`.
 
    📂
    ┌───────────────────────────────────────────────────────────────────────────┐
-   │ .                                                                         │
-   │ ..                                                                        │
    │ app                                                                       │
    │ docs                                                                      │
    │ galastri                                                                  │
@@ -64,7 +62,7 @@ Vamos guardar o framework em `/home/desenvolvedor/galastri-framework-2`.
 #                          PREPARANDO AS DEPENDÊNCIAS                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-1. Ainda na pasta `~/galastri-framework-2`, execute o comando abaixo:
+1. Entre na pasta do projeto e prepare as dependências:
 
    💻
    ┌───────────────────────────┐

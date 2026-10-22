@@ -15,6 +15,53 @@ e é a porta de entrada do projeto.
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
+#                     PREPARANDO AS PERMISSÕES DAS PASTAS                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+O Apache e o PHP-FPM precisam acessar o projeto dentro da sua pasta pessoal.
+Também precisamos permitir que o PHP-FPM grave os registros de erro em `logs`.
+
+1. Instale a ferramenta para conceder acesso a um usuário específico:
+
+   💻
+   ┌──────────────────────┐
+   │ sudo apt install acl │
+   └──────────────────────┘
+   ``
+
+2. Permita que o usuário `www-data`, usado pelo Apache e pelo PHP-FPM no Ubuntu,
+   atravesse sua pasta pessoal para chegar ao projeto:
+
+   💻
+   ┌────────────────────────────────────────────────────┐
+   │ sudo setfacl -m u:www-data:--x /home/desenvolvedor │
+   └────────────────────────────────────────────────────┘
+   ``
+
+   Essa permissão permite atravessar a pasta, sem dar permissão para listar seu
+   conteúdo. As pastas e os arquivos do projeto devem continuar legíveis pelo
+   servidor, como ocorre nas permissões padrão de uma clonagem.
+
+3. Prepare a escrita na pasta de logs:
+
+   💻
+   ┌─────────────────────────────────────────────┐
+   │ cd /home/desenvolvedor/galastri-framework-2 │
+   │ sudo chgrp -R www-data logs                 │
+   │ sudo chmod -R g+rwX logs                    │
+   │ sudo chmod 2770 logs                        │
+   └─────────────────────────────────────────────┘
+   ``
+
+   O grupo `www-data` poderá gravar nessa pasta. O bit `2` mantém esse grupo nos
+   novos arquivos criados dentro dela.
+
+   Ajuste `desenvolvedor` nos comandos se o seu usuário tiver outro nome.
+
+
+
+--------------------------------------------------------------------------------
+╔══════════════════════════════════════════════════════════════════════════════╗
 #                        CONFIGURANDO O SITE NO APACHE                         ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -41,6 +88,7 @@ e é a porta de entrada do projeto.
    💻
    ┌───────────────────────────────────────────────────────────────────────────┐
    │ <VirtualHost *:80>                                                        │
+   │     ServerName localhost                                                  │
    │                                                                           │
    │     DocumentRoot /home/desenvolvedor/galastri-framework-2/public          │
    │     DirectoryIndex index.php                                              │
@@ -68,16 +116,16 @@ e é a porta de entrada do projeto.
 
 ⚠️
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ * Mantenha o `DocumentRoot` apontando para a pasta `public`, evite           │
-│ apontar para outras pastas do projeto para evitar vazamento de arquivos e    │
-│ código fonte pelo navegador.                                                 │
+│ *  Mantenha o `DocumentRoot` apontando para a pasta `public`, evite          │
+│    apontar para outras pastas do projeto para evitar vazamento de arquivos e │
+│    código fonte pelo navegador.                                              │
 │                                                                              │
-│ * O `AllowOverride All` permite utilizar as regras do arquivo `.htaccess`    │
-│ que acompanha o projeto.                                                     │
+│ *  O `AllowOverride All` permite utilizar as regras do arquivo `.htaccess`   │
+│    que acompanha o projeto.                                                  │
 │                                                                              │
-│ * O `flushpackets=on` permite que o Apache encaminhe os dados parciais       │
-│ enviados pelo PHP-FPM durante o processamento, sendo útil para os recursos   │
-│ de streaming do framework.                                                   │
+│ *  O `flushpackets=on` permite que o Apache encaminhe os dados parciais      │
+│    enviados pelo PHP-FPM durante o processamento, sendo útil para os         │
+│    recursos de streaming do framework.                                       │
 └──────────────────────────────────────────────────────────────────────────────┘
 >
 
@@ -91,12 +139,14 @@ e é a porta de entrada do projeto.
 1. No terminal, execute o comando abaixo:
 
    💻
-   ┌─────────────────────────────┐
-   │ sudo a2ensite galastri.conf │
-   └─────────────────────────────┘
+   ┌─────────────────────────────────┐
+   │ sudo a2dissite 000-default.conf │
+   │ sudo a2ensite galastri.conf     │
+   └─────────────────────────────────┘
    ``
 
-   Isso vai ativar o arquivo de configuração que criamos
+   Isso desativa o site padrão e ativa a configuração do framework para atender
+   pelo endereço `localhost`.
 
 2. Teste se a configuração possui algum erro de configuração:
 
@@ -190,7 +240,6 @@ e é a porta de entrada do projeto.
 
 --------------------------------------------------------------------------------
 ▶️ PRÓXIMO TÓPICO: Estrutura e funcionamento
-
 LINK: /docs/estrutura-e-funcionamento/estrutura-e-funcionamento.md
 
 

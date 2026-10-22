@@ -1,10 +1,9 @@
 ```md
 GALASTRI FRAMEWORK > ESTRUTURA E FUNCIONAMENTO
+--------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                                 INICIALIZAÇÃO                                ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-
-
 
 Sempre que há uma requisição nova, antes de qualquer processamento de dados no
 controller, o framework precisa fazer uma série de preparações. Esse processo
@@ -15,7 +14,7 @@ A sequência abaixo apresenta as principais etapas, desde a entrada da requisiç
 até a preparação da resposta:
 
 ┌────────────────────────────────────┬─────────────────────────────────────────┐
-│ ► ETAPA                            │ ► RESPONSABILIDADE                      │
+│ _ETAPA_                            │ _RESPONSABILIDADE_                      │
 ├────────────────────────────────────┼─────────────────────────────────────────┤
 │ `public/index.php`                 │ Inicia a execução e carrega o           │
 │                                    │ bootstrap.                              │
@@ -30,10 +29,10 @@ até a preparação da resposta:
 │ `Router::run()`                    │ Identifica a rota e aplica suas         │
 │                                    │ configurações.                          │
 ├────────────────────────────────────┼─────────────────────────────────────────┤
-│ Controller                         │ Executa as operações da aplicação e     │
+│ `Controller`                       │ Executa as operações da aplicação e     │
 │                                    │ reúne os dados da resposta.             │
 ├────────────────────────────────────┼─────────────────────────────────────────┤
-│ Classe de saída                    │ Prepara e envia o resultado no formato  │
+│ `Classe de saída`                  │ Prepara e envia o resultado no formato  │
 │                                    │ configurado.                            │
 └────────────────────────────────────┴─────────────────────────────────────────┘
 
@@ -48,16 +47,13 @@ diferentes, conforme explicado adiante.
 #                             ENTRADA DA REQUISIÇÃO                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-
 O arquivo `public/index.php` é o ponto de entrada do framework. As regras do
 servidor encaminham as requisições para esse arquivo, permitindo que o framework
 identifique a rota e execute o código correspondente.
 
-
-💡
+✔️
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ Por exemplo:                                                                 │
+│ _EXEMPLO_                                                                    │
 │                                                                              │
 │ Considere uma requisição para a seguinte URL                                 │
 │ - https://galastri.test/clientes/listar                                      │
@@ -69,7 +65,8 @@ identifique a rota e execute o código correspondente.
 │ Esse encaminhamento interno é diferente de um redirecionamento HTTP, no qual │
 │ o navegador recebe uma instrução para acessar outro endereço.                │
 └──────────────────────────────────────────────────────────────────────────────┘
->
+\
+
 
 
 #                          ENCAMINHAMENTO PELO APACHE                          <
@@ -97,8 +94,6 @@ Galastri Framework.
 #                           Arquivo public/index.php                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-
 O arquivo de entrada contém o seguinte:
 
 💻
@@ -117,7 +112,7 @@ O arquivo de entrada contém o seguinte:
 As duas primeiras instruções possuem as seguintes funções:
 
 ┌────────────────────────────────────┬─────────────────────────────────────────┐
-│ ► INSTRUÇÃO                        │ ► FUNÇÃO                                │
+│ _INSTRUÇÃO_                        │ _FUNÇÃO_                                │
 ├────────────────────────────────────┼─────────────────────────────────────────┤
 │ `ini_set('display_errors', true);` │ Ativa a exibição de erros pelo PHP      │
 │                                    │ durante a execução.                     │
@@ -132,7 +127,6 @@ As duas primeiras instruções possuem as seguintes funções:
 │ permanentemente o arquivo `php.ini`.                                         │
 └──────────────────────────────────────────────────────────────────────────────┘
 >
-
 
 
 #                           CARREGAMENTO DO BOOTSTRAP                          <
@@ -159,8 +153,6 @@ carregado, a inicialização é interrompida.
 #                                   BOOTSTRAP                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-
 O bootstrap é a etapa que prepara os recursos básicos para a execução do
 framework. É nesse momento que ficam disponíveis as constantes, as funções
 auxiliares, o carregamento das classes e o gerenciador de erros.
@@ -168,17 +160,17 @@ auxiliares, o carregamento das classes e o gerenciador de erros.
 Atualmente essa preparação é organizada em três arquivos dentro da pasta
 `galastri/bootstrap`:
 
-┌───────────────┬─────────────────────────────────────────────────────────────┐
-│ ► ARQUIVO     │ ► RESPONSABILIDADE                                          │
-├───────────────┼─────────────────────────────────────────────────────────────┤
-│ bootstrap.php │ Coordena a preparação e inicia o processamento da           │
-│               │ requisição.                                                 │
-├───────────────┼─────────────────────────────────────────────────────────────┤
-│ constants.php │ Define caminhos, informações de versão e valores utilizados │
-│               │ pelo código.                                                │
-├───────────────┼─────────────────────────────────────────────────────────────┤
-│ functions.php │ Disponibiliza funções auxiliares.                           │
-└───────────────┴─────────────────────────────────────────────────────────────┘
+┌─────────────────┬────────────────────────────────────────────────────────────┐
+│ _ARQUIVO_       │ _RESPONSABILIDADE_                                         │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ `bootstrap.php` │ Coordena a preparação e inicia o processamento da          │
+│                 │ requisição.                                                │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ `constants.php` │ Define caminhos, informações de versão e valores           │
+│                 │ utilizados pelo código.                                    │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ `functions.php` │ Disponibiliza funções auxiliares.                          │
+└─────────────────┴────────────────────────────────────────────────────────────┘
 
 Além desses arquivos, a aplicação pode possuir seu próprio `app/bootstrap.php`,
 executado depois da preparação básica e antes do processamento das configurações
@@ -242,9 +234,11 @@ A ordem da execução é a seguinte
    A partir dessa instrução, o PHP passa a contar com o mecanismo que localiza
    os arquivos das classes conforme os namespaces configurados no projeto.
 
-   💡
+   ✔️
    ┌───────────────────────────────────────────────────────────────────────────┐
-   │ Por exemplo, a classe `galastri\core\Galastri` fica localizada em         │
+   │ _EXEMPLO_                                                                 │
+   │                                                                           │
+   │ A classe `galastri\core\Galastri` fica localizada em                      │
    │ `galastri/core/Galastri.php`                                              │
    │                                                                           │
    │ O autoload basicamente procura o local do arquivo com base no caminho     │
@@ -257,8 +251,9 @@ A ordem da execução é a seguinte
    │ │ apenas uma classe quando ela é necessária. Portanto, não se trata d │   │
    │ │ um recurso problemático no sentido de performance.                  │   │
    │ └─────────────────────────────────────────────────────────────────────┘   │
+   │ >                                                                         │
    └───────────────────────────────────────────────────────────────────────────┘
-   >
+   \
    
 4. Disponibiliza o alias \VarDump para facilitar o uso da classe de depuração:
 
@@ -286,15 +281,17 @@ A ordem da execução é a seguinte
    e exceções. Essa chamada executa o método `run()` de e registra os mecanismos
    responsáveis por:
 
-   - Tratar os erros do PHP abrangidos pelo manipulador de erros.
-   - Tratar exceções que não foram capturadas pela aplicação.
-   - Verificar determinados erros fatais no encerramento da execução.
+   * Tratar os erros do PHP abrangidos pelo manipulador de erros.
+   
+   * Tratar exceções que não foram capturadas pela aplicação.
+   
+   * Verificar determinados erros fatais no encerramento da execução.
 
    ⚠️
-   ┌──────────────────────────────────────────────────────────────────────────┐
-   │ Erros ocorridos antes da ativação do `ErrorHandler`, como uma falha ao   │
-   │ carregar o próprio bootstrap, ainda aparecerem no formato padrão do PHP. │
-   └──────────────────────────────────────────────────────────────────────────┘
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │ Erros ocorridos antes da ativação do `ErrorHandler`, como uma falha ao    │
+   │ carregar o próprio bootstrap, ainda aparecerem no formato padrão do PHP.  │
+   └───────────────────────────────────────────────────────────────────────────┘
    >
    
 6. Executa `app/bootstrap.php`, o arquivo de inicialização próprio da aplicação,
@@ -319,20 +316,19 @@ A ordem da execução é a seguinte
    Essa chamada inicia o processamento da requisição.
 
 
-
 #                   ARQUIVO galastri/bootstrap/constants.php                   <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Este arquivo define valores que podem ser utilizados em diferentes partes
 do framework e da aplicação.
 
 
-- Caminho do projeto
+*  Caminho do projeto
 
-   ┌───────────────┬────────────────────────────────────────────────────────┐
-   │ ► CONSTANTE   │ ► CONTEÚDO                                             │
-   ├───────────────┼────────────────────────────────────────────────────────┤
-   │ `PROJECT_DIR` │ Caminho absoluto da pasta raiz do projeto no servidor. │
-   └───────────────┴────────────────────────────────────────────────────────┘
+   ┌───────────────┬───────────────────────────────────────────────────────────┐
+   │ _CONSTANTE_   │ _CONTEÚDO_                                                │
+   ├───────────────┼───────────────────────────────────────────────────────────┤
+   │ `PROJECT_DIR` │ Caminho absoluto da pasta raiz do projeto no servidor.    │
+   └───────────────┴───────────────────────────────────────────────────────────┘
 
    No ambiente de instalação apresentado nesta documentação, o valor será:
 
@@ -354,62 +350,62 @@ do framework e da aplicação.
    └──────────────────────────────────────┘
    >
    
-- Versões
+*  Versões
 
-   ┌──────────────────┬────────────────────────────────────────┐
-   │ ► CONSTANTE      │ ► CONTEÚDO                             │
-   ├──────────────────┼────────────────────────────────────────┤
-   │ GALASTRI_VERSION │ Conteúdo do arquivo`galastri/VERSION`. │
-   ├──────────────────┼────────────────────────────────────────┤
-   │ APP_VERSION      │ Conteúdo do arquivo`app/VERSION`.      │
-   └──────────────────┴────────────────────────────────────────┘
+   ┌────────────────────┬──────────────────────────────────────────────────────┐
+   │ _CONSTANTE_        │ _CONTEÚDO_                                           │
+   ├────────────────────┼──────────────────────────────────────────────────────┤
+   │ `GALASTRI_VERSION` │ Conteúdo do arquivo`galastri/VERSION`.               │
+   ├────────────────────┼──────────────────────────────────────────────────────┤
+   │ `APP_VERSION`      │ Conteúdo do arquivo`app/VERSION`.                    │
+   └────────────────────┴──────────────────────────────────────────────────────┘
 
    Se um dos arquivos não existir, a constante correspondente recebe o texto:
 
-   💻
-   ┌────────────────────────┐
-   │ Version file not found │
-   └────────────────────────┘
-   `>`
+   🧾
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │ Version file not found                                                    │
+   └───────────────────────────────────────────────────────────────────────────┘
+   @
    
    Esses valores ficam disponíveis para consulta pelo código e podem integrar
    os metadados da resposta.
 
-- Tipos MIME
+*  Tipos MIME
 
-   ┌────────────────┬──────────────────────────────────────────────────┐
-   │ ► CONSTANTE    │ ► CONTEÚDO                                       │
-   ├────────────────┼──────────────────────────────────────────────────┤
-   │ MIME_TYPE_LIST │ Dados retornados por`app/config/mime-types.php`. │
-   └────────────────┴──────────────────────────────────────────────────┘
+   ┌──────────────────┬────────────────────────────────────────────────────────┐
+   │ _CONSTANTE_      │ _CONTEÚDO_                                             │
+   ├──────────────────┼────────────────────────────────────────────────────────┤
+   │ `MIME_TYPE_LIST` │ Dados retornados por`app/config/mime-types.php`.       │
+   └──────────────────┴────────────────────────────────────────────────────────┘
 
    O arquivo é carregado durante a definição da constante. Se ele não
    existir, o valor utilizado será um array vazio.
 
    Essa lista participa do tratamento dos tipos de arquivo pelo framework.
 
-- Identificador para análise de desempenho
+*  Identificador para análise de desempenho
 
-   ┌────────────────────────────┬───────────────────────────────────────┐
-   │ ► CONSTANTE                │ ► CONTEÚDO                            │
-   ├────────────────────────────┼───────────────────────────────────────┤
-   │ PERFORMANCE_ANALYSIS_TAG   │ Identificador gerado com 10 bytes     │
-   │                            │ aleatórios, convertidos em uma string │
-   │                            │ hexadecimal de 20 caracteres.         │
-   └────────────────────────────┴───────────────────────────────────────┘
+   ┌────────────────────────────┬──────────────────────────────────────────────┐
+   │ _CONSTANTE_                │ _CONTEÚDO_                                   │
+   ├────────────────────────────┼──────────────────────────────────────────────┤
+   │ `PERFORMANCE_ANALYSIS_TAG` │ Identificador gerado com 10 bytes            │
+   │                            │ aleatórios, convertidos em uma string        │
+   │                            │ hexadecimal de 20 caracteres.                │
+   └────────────────────────────┴──────────────────────────────────────────────┘
 
    Atualmente, a constante está definida, mas o módulo de análise de
    desempenho ainda não foi desenvolvido.
 
-- Controle da referência de chamada
+*  Controle da referência de chamada
 
-   ┌───────────────────────┬────────────┐
-   │ ► CONSTANTE           │ ► CONTEÚDO │
-   ├───────────────────────┼────────────┤
-   │ RESET_BACKTRACE_LEVEL │ `true`     │
-   ├───────────────────────┼────────────┤
-   │ KEEP_BACKTRACE_LEVEL  │ `false`    │
-   └───────────────────────┴────────────┘
+   ┌─────────────────────────┬─────────────────────────────────────────────────┐
+   │ _CONSTANTE_             │ _CONTEÚDO_                                      │
+   ├─────────────────────────┼─────────────────────────────────────────────────┤
+   │ `RESET_BACKTRACE_LEVEL` │ true                                            │
+   ├─────────────────────────┼─────────────────────────────────────────────────┤
+   │ `KEEP_BACKTRACE_LEVEL`  │ false                                           │
+   └─────────────────────────┴─────────────────────────────────────────────────┘
 
    Esses nomes representam opções usadas no controle da referência de chamada
    pelo `VarDump`.
@@ -418,19 +414,19 @@ do framework e da aplicação.
    depuração foi solicitada. Seu funcionamento será detalhado na documentação
    desse módulo.
 
-- Modos de escrita em arquivos
+*  Modos de escrita em arquivos
 
-   ┌─────────────────────────┬────────────┬───────────────────────────────────┐
-   │ ► CONSTANTE             │ ► CONTEÚDO │ ► FINALIDADE                      │
-   ├─────────────────────────┼────────────┼───────────────────────────────────┤
-   │ INSERT_CONTENT_AT_START │ 1          │ Inserir conteúdo no início do     │
-   │                         │            │ arquivo.                          │
-   ├─────────────────────────┼────────────┼───────────────────────────────────┤
-   │ INSERT_CONTENT_AT_END   │ 2          │ Inserir conteúdo no final do      │
-   │                         │            │ arquivo.                          │
-   ├─────────────────────────┼────────────┼───────────────────────────────────┤
-   │ OVERWRITE_CONTENT       │ 3          │ Substituir o conteúdo do arquivo. │
-   └─────────────────────────┴────────────┴───────────────────────────────────┘
+   ┌───────────────────────────┬─────────┬─────────────────────────────────────┐
+   │ _CONSTANTE_               │ _VALOR_ │ _FINALIDADE_                        │
+   ├───────────────────────────┼─────────┼─────────────────────────────────────┤
+   │ `INSERT_CONTENT_AT_START` │ 1       │ Inserir conteúdo no início do       │
+   │                           │         │ arquivo.                            │
+   ├───────────────────────────┼─────────┼─────────────────────────────────────┤
+   │ `INSERT_CONTENT_AT_END`   │ 2       │ Inserir conteúdo no final do        │
+   │                           │         │ arquivo.                            │
+   ├───────────────────────────┼─────────┼─────────────────────────────────────┤
+   │ `OVERWRITE_CONTENT`       │ 3       │ Substituir o conteúdo do arquivo.   │
+   └───────────────────────────┴─────────┴─────────────────────────────────────┘
 
    Essas constantes são utilizadas por `Tools::writeFile()`. Os nomes
    permitem indicar a operação desejada sem depender da interpretação dos
@@ -442,9 +438,7 @@ do framework e da aplicação.
 
 
 
-▶️ PRÓXIMO TÓPICO
-
-Sobre ambientes Windows:
+▶️ PRÓXIMO TÓPICO: Processamento da requisição
 LINK: /docs/estrutura-e-funcionamento/processamento-da-requisicao.md
 
 

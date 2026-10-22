@@ -1,25 +1,14 @@
 ```md
 GALASTRI FRAMEWORK > INSTALAÇÃO
+--------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                       INSTALANDO O GALASTRI FRAMEWORK                        ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
- 
-
 
 Com o ambiente preparado, vamos baixar o Galastri Framework e preparar seus
 arquivos com o Composer!
 
-
-
---------------------------------------------------------------------------------
-╔══════════════════════════════════════════════════════════════════════════════╗
-#                             BAIXANDO O FRAMEWORK                             ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-
-
 Vamos guardar o framework em `/home/desenvolvedor/galastri-framework-2`.
-
 
 💡
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -69,12 +58,11 @@ Vamos guardar o framework em `/home/desenvolvedor/galastri-framework-2`.
    @
 
 
+
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                          PREPARANDO AS DEPENDÊNCIAS                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-
- 
 
 1. Ainda na pasta `~/galastri-framework-2`, execute o comando abaixo:
 
@@ -90,8 +78,7 @@ Vamos guardar o framework em `/home/desenvolvedor/galastri-framework-2`.
    ℹ️
    ┌───────────────────────────────────────────────────────────────────────────┐
    │ Atualmente, o framework não possui bibliotecas externas para baixar pelo  │
-   │ Composer, então é normal aparecer uma mensagem como `Nothing to           │
-   │ install, update or remove`.                                               │
+   │ Composer, então é normal aparecer uma mensagem como `Nothing to install`. │
    └───────────────────────────────────────────────────────────────────────────┘
    >
    
@@ -103,8 +90,8 @@ Vamos guardar o framework em `/home/desenvolvedor/galastri-framework-2`.
    └──────────────────────────────┘
    ``
 
-   Esse comando verifica se o PHP utilizado no terminal e suas extensões atendem
-   aos requisitos declarados pelo projeto.
+   Esse comando é só uma verificação para confirmar se o PHP e suas extensões
+   atendem aos requisitos declarados pelo projeto.
 
    Os itens verificados devem aparecer com o resultado `success`.
 
@@ -112,13 +99,11 @@ Vamos guardar o framework em `/home/desenvolvedor/galastri-framework-2`.
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                            RESOLUÇÃO DE PROBLEMAS                            ║
+#                            RESOLUÇÃO DE PROBLEMAS                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
-
 
 ┌───────────────────────────┬──────────────────────────────────────────────────┐
-│ ► PROBLEMA                │ ► POSSÍVEL SOLUÇÃO                               │
+│ _PROBLEMA_                │ _POSSÍVEL SOLUÇÃO_                               │
 ├───────────────────────────┼──────────────────────────────────────────────────┤
 │ A pasta do projeto já     │ Confira se ela já contém uma instalação do       │
 │ existe                    │ framework. Se contiver, entre nela e continue    │
@@ -127,48 +112,51 @@ Vamos guardar o framework em `/home/desenvolvedor/galastri-framework-2`.
 │                           │ Se pertencer a outro projeto, então escolha      │
 │                           │ outra pasta e ajuste os caminhos do tutorial.    │
 ├───────────────────────────┼──────────────────────────────────────────────────┤
-│ O Composer não encontra   │ Entre na pasta do projeto:                       │
-│ o arquivo `composer.json` │ ┌────────────────────────────┐                   │
-│                           │ │ cd ~/galastri-framework-2  │                   │
-│                           │ └────────────────────────────┘                   │
-│                           │ ``                                               │
+│ O Composer não encontra   │ 1. No terminal, execute o comando para acessar a │
+│ o arquivo `composer.json` │    pasta do framework:                           │
 │                           │                                                  │
-│                           │ Execute o Composer novamente:                    │
-│                           │ ┌──────────────────┐                             │
-│                           │ │ composer install │                             │
-│                           │ └──────────────────┘                             │
-│                           │ ``                                               │
+│                           │    ┌────────────────────────────┐                │
+│                           │    │ cd ~/galastri-framework-2  │                │
+│                           │    └────────────────────────────┘                │
+│                           │    ``                                            │
+│                           │                                                  │
+│                           │ 2. Execute o Composer novamente:                 │
+│                           │                                                  │
+│                           │   ┌──────────────────┐                           │
+│                           │   │ composer install │                           │
+│                           │   └──────────────────┘                           │
+│                           │   ``                                             │
 ├───────────────────────────┼──────────────────────────────────────────────────┤
-│ O Composer informa que a  │ Instale a extensão executando o comando abaixo:  │
-│ extensão `ext-gd` está    │ ┌──────────────────────────┐                     │
-│ ausente                   │ │ sudo apt install php-gd  │                     │
-│                           │ └──────────────────────────┘                     │
-│                           │ ``                                               │
+│ O Composer informa que a  │ 1. Execute o comando abaixo:                     │
+│ extensão `ext-gd` está    │                                                  │
+│ ausente                   │   ┌──────────────────────────┐                   │
+│                           │   │ sudo apt install php-gd  │                   │
+│                           │   └──────────────────────────┘                   │
+│                           │   ``                                             │
 │                           │                                                  │
-│                           │ Execute o Composer novamente:                    │
-│                           │ ┌───────────────────────────┐                    │
-│                           │ │ cd ~/galastri-framework-2 │                    │
-│                           │ │ composer install          │                    │
-│                           │ └───────────────────────────┘                    │
-│                           │ ``                                               │
+│                           │ 2. Execute o Composer novamente:                 │
+│                           │                                                  │
+│                           │   ┌───────────────────────────┐                  │
+│                           │   │ cd ~/galastri-framework-2 │                  │
+│                           │   │ composer install          │                  │
+│                           │   └───────────────────────────┘                  │
+│                           │   ``                                             │
 ├───────────────────────────┼──────────────────────────────────────────────────┤
-│ Aparece `Permission       │ Confira se você está executando os comandos      │
-│ denied`ao tentar baixar   │ dentro da sua pasta pessoal                      │
-│ ou preparar os arquivos   │ `/home/desenvolvedor`, ou se está o usuário      │
-│                           │ correto.                                         │
+│ Aparece Permission        │ Confira se você está executando os comandos      │
+│ denied ao tentar baixar   │ dentro da sua pasta pessoal                      │
+│ ou preparar os arquivos   │ `/home/desenvolvedor`, ou se você está logado    │
+│                           │ com o usuário desenvolvedor.                     │
 │                           │                                                  │
-│                           │ ! Atente-se que os comandos do Git e do          │
+│                           │ Atente-se que os comandos do Git e do            │
 │                           │ Composer não usam `sudo`.                        │
+│                           │ >                                                │
 └───────────────────────────┴──────────────────────────────────────────────────┘
-%
 
 
 
 --------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO
-
-Sobre ambientes Windows:
-LINK: /docs/instalacao/finalizando-a-configuracao-do-acesso-local.md
+▶️ PRÓXIMO TÓPICO: Finalizando a configuração local
+LINK: /docs/instalacao/finalizando-a-configuracao-local.md
 
 
 

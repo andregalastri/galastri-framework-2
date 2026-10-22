@@ -1,10 +1,9 @@
 ```md
 GALASTRI FRAMEWORK > ESTRUTURA E FUNCIONAMENTO
+--------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                             ESTRUTURA DE PASTAS                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-
-
 
 O framework é subdividido em pastas, cada uma com uma função específica. A
 estrutura da instalação segue o seguinte padrão:
@@ -44,8 +43,6 @@ estrutura da instalação segue o seguinte padrão:
 #                                  PASTA app/                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-
 Esta é a pasta da aplicação do usuário. É nela que ele trabalhará para criar
 páginas, configurar rotas e implementar as operações do seu projeto.
 
@@ -54,16 +51,16 @@ páginas, configurar rotas e implementar as operações do seu projeto.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Contém os arquivos de configuração da aplicação. Os arquivos principais são:
 
-┌────────────────┬─────────────────────────────────────────────────────────────┐
-│ ► ARQUIVO      │ ► FINALIDADE                                                │
-├────────────────┼─────────────────────────────────────────────────────────────┤
-│ database.php   │ Configuração das conexões com bancos de dados.              │
-├────────────────┼─────────────────────────────────────────────────────────────┤
-│ mime-types.php │ Configuração dos tipos MIME, que identificam formatos de    │
-│                │ conteúdo, como HTML, imagens e arquivos.                    │
-├────────────────┼─────────────────────────────────────────────────────────────┤
-│ routes.php     │ Configuração das rotas e seus comportamentos.               │
-└────────────────┴─────────────────────────────────────────────────────────────┘
+┌──────────────────┬───────────────────────────────────────────────────────────┐
+│ _ARQUIVO_        │ _FINALIDADE_                                              │
+├──────────────────┼───────────────────────────────────────────────────────────┤
+│ `database.php`   │ Configuração das conexões com bancos de dados.            │
+├──────────────────┼───────────────────────────────────────────────────────────┤
+│ `mime-types.php` │ Configuração dos tipos MIME, que identificam formatos de  │
+│                  │ conteúdo, como HTML, imagens e arquivos.                  │
+├──────────────────┼───────────────────────────────────────────────────────────┤
+│ `routes.php`     │ Configuração das rotas e seus comportamentos.             │
+└──────────────────┴───────────────────────────────────────────────────────────┘
 
 
 #                           SUBPASTA app/controllers                           <
@@ -79,11 +76,11 @@ Por exemplo, a classe `Index`, no namespace `app\controllers`, corresponde ao
 arquivo `app/controllers/Index.php`.
 
 ⚠️
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Letras maiúsculas e minúsculas fazem diferença nos nomes dos arquivos e das │
-│ pastas. Os nomes dos namespaces e das classes devem corresponder aos        │
-│ respectivos caminhos.                                                       │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Letras maiúsculas e minúsculas fazem diferença nos nomes dos arquivos e das  │
+│ pastas. Os nomes dos namespaces e das classes devem corresponder aos         │
+│ respectivos caminhos.                                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
 >
 
 
@@ -98,10 +95,10 @@ sendo exibida.
 
 A instalação inicial inclui estes dois arquivos de exemplo:
 
-- `app/templates/template.php`:  
+* `app/templates/template.php`:  
   Contém a estrutura HTML utilizada pela página de exemplo.
   
-- `app/views/Index/main.php`:  
+* `app/views/Index/main.php`:  
   contém o conteúdo apresentado nessa página.
 
 
@@ -126,26 +123,25 @@ recuperado dentro da aplicação sempre que necessário.
 
 Também existem dois caminhos opcionais reconhecidos pelo framework:
 
-┌─────────────────────────┬────────────────────────────────────────────────────┐
-│ ► ARQUIVO/PASTA         │ ► FINALIDADE                                       │
-├─────────────────────────┼────────────────────────────────────────────────────┤
-│ app/bootstrap.php       │ Executa uma preparação específica da aplicação     │
-│                         │ durante a inicialização.                           │
-├─────────────────────────┼────────────────────────────────────────────────────┤
-│ app/config/definitions/ │ Permite acrescentar definições de configuração     │
-│ e seus arquivos.        │ próprias da aplicação.                             │
-└─────────────────────────┴────────────────────────────────────────────────────┘
+┌───────────────────────────┬──────────────────────────────────────────────────┐
+│ _ARQUIVO/PASTA_           │ _FINALIDADE_                                     │
+├───────────────────────────┼──────────────────────────────────────────────────┤
+│ `app/bootstrap.php`       │ Executa uma preparação específica da aplicação   │
+│                           │ durante a inicialização.                         │
+├───────────────────────────┼──────────────────────────────────────────────────┤
+│ `app/config/definitions/` │ Permite acrescentar definições de configuração   │
+│ e seus arquivos.          │ próprias da aplicação.                           │
+└───────────────────────────┴──────────────────────────────────────────────────┘
 
 Esses caminhos não vêm na instalação inicial. Seu funcionamento será explicado
 nos artigos correspondentes.
+
 
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                               PASTA galastri/                                ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-
-
 
 Enquanto a pasta `app` contém a aplicação, a pasta `galastri` reúne a
 implementação do framework em si. É nesta pasta que estão os arquivos
@@ -161,16 +157,15 @@ preservadas ou conciliadas em caso de atualização de versão.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Contém os arquivos que preparam o framework para executar uma requisição:
 
-┌───────────────┬──────────────────────────────────────────────────────────────┐
-│ ► ARQUIVO     │ ► FINALIDADE                                                 │
-├───────────────┼──────────────────────────────────────────────────────────────┤
-│ bootstrap.php │ Coordena a inicialização do framework.                       │
-├───────────────┼──────────────────────────────────────────────────────────────┤
-│ constants.php │ Define as constantes utilizadas pelo framework.              │
-├───────────────┼──────────────────────────────────────────────────────────────┤
-│ functions.php │ Disponibiliza funções auxiliares.                            │
-└───────────────┴──────────────────────────────────────────────────────────────┘
-
+┌─────────────────┬────────────────────────────────────────────────────────────┐
+│ _ARQUIVO_       │ _FINALIDADE_                                               │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ `bootstrap.php` │ Coordena a inicialização do framework.                     │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ `constants.php` │ Define as constantes utilizadas pelo framework.            │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ `functions.php` │ Disponibiliza funções auxiliares.                          │
+└─────────────────┴────────────────────────────────────────────────────────────┘
 
 💡
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -180,24 +175,22 @@ Contém os arquivos que preparam o framework para executar uma requisição:
 >
 
 
-
 #                            SUBPASTA galastri/core                            <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Reúne as classes centrais do funcionamento do framework:
 
-┌──────────────────┬───────────────────────────────────────────────────────────┐
-│ ► ARQUIVO        │ ► FINALIDADE                                              │
-├──────────────────┼───────────────────────────────────────────────────────────┤
-│ Galastri.php     │ Coordena a execução do framework.                         │
-├──────────────────┼───────────────────────────────────────────────────────────┤
-│ Router.php       │ Realiza o processamento das rotas.                        │
-├──────────────────┼───────────────────────────────────────────────────────────┤
-│ ErrorHandler.php │ Realiza o tratamento e o registro de erros.               │
-└──────────────────┴───────────────────────────────────────────────────────────┘
+┌────────────────────┬─────────────────────────────────────────────────────────┐
+│ _ARQUIVO_          │ _FINALIDADE_                                            │
+├────────────────────┼─────────────────────────────────────────────────────────┤
+│ `Galastri.php`     │ Coordena a execução do framework.                       │
+├────────────────────┼─────────────────────────────────────────────────────────┤
+│ `Router.php`       │ Realiza o processamento das rotas.                      │
+├────────────────────┼─────────────────────────────────────────────────────────┤
+│ `ErrorHandler.php` │ Realiza o tratamento e o registro de erros.             │
+└────────────────────┴─────────────────────────────────────────────────────────┘
 
 Dentro de `galastri/core`, há outras duas subdivisões: `galastri/core/config` e
 `galastri/core/output`.
-
 
 
 #                        SUBPASTA galastri/core/config                         <
@@ -215,7 +208,6 @@ definições descrevem o que pode ser configurado enquanto que os arquivos da
 aplicação utilizam estas definições.
 
 
-
 #                        SUBPASTA galastri/core/output                         <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Contém as classes responsáveis pelos três formatos de saída: `View`, `Json` e
@@ -224,13 +216,13 @@ Contém as classes responsáveis pelos três formatos de saída: `View`, `Json` 
 Dentro dela há as pastas abaixo:
 
 ┌────────────┬─────────────────────────────────────────────────────────────────┐
-│ ► SUBPASTA │ ► FINALIDADE                                                    │
+│ _SUBPASTA_ │ _FINALIDADE_                                                    │
 ├────────────┼─────────────────────────────────────────────────────────────────┤
-│ engines/   │ Reúne classes de template engines, responsáveis por renderizar  │
+│ `engines/` │ Reúne classes de template engines, responsáveis por renderizar  │
 │            │ os arquivos de views. Atualmente há suporte apenas para o       │
 │            │ templating do próprio PHP através da classe`PhpEngine`.         │
 ├────────────┼─────────────────────────────────────────────────────────────────┤
-│ traits/    │ Reúne as traits com funcionalidades adicionais que são          │
+│ `traits/`  │ Reúne as traits com funcionalidades adicionais que são          │
 │            │ compartilhadas entre as classes de formato.                     │
 └────────────┴─────────────────────────────────────────────────────────────────┘
 
@@ -241,12 +233,10 @@ Contém extensões de classes existentes. Atualmente, inclui a classe Exception 
 framework, que estende a classe Exception do próprio PHP.
 
 
-
 #                          SUBPASTA galastri/language                          <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Contém o arquivo Message.php, que centraliza as mensagens do framework,
 atualmente em português.
-
 
 
 #                            SUBPASTA galastri/misc                            <
@@ -260,7 +250,6 @@ logotipo da tela de erros e o arquivo de estilos vardump.css.
 Reúne os recursos que podem ser utilizados pela aplicação, como acesso ao banco
 de dados, autenticação, permissões e validação entre outros.
 
-
 💡
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ Esta documentação irá detalhar cada uma dessas classes mais adiante.         │
@@ -269,21 +258,21 @@ de dados, autenticação, permissões e validação entre outros.
 
 Alguns módulos dividem sua implementação em arquivos adicionais:
 
-┌───────────────────┬──────────────────────────────────────────────────────────┐
-│ ► SUBPASTA        │ ► FINALIDADE                                             │
-├───────────────────┼──────────────────────────────────────────────────────────┤
-│ database          │ Contém as implementações de acesso ao MySQL e ao SQLite. │
-├───────────────────┼──────────────────────────────────────────────────────────┤
-│ database/traits   │ Reúne trechos de implementação que podem ser             │
-│                   │ reutilizados pelas variações do módulo Database.         │
-├───────────────────┼──────────────────────────────────────────────────────────┤
-│ validation        │ Contém as implementações de validação de textos,         │
-│                   │ números, datas e horários.                               │
-├───────────────────┼──────────────────────────────────────────────────────────┤
-│ validation/traits │ Reúne trechos de implementação que podem ser             │
-│                   │ reutilizados pelas variações do módulo Validation.       │
-└───────────────────┴──────────────────────────────────────────────────────────┘
-
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ _SUBPASTA_          │ _FINALIDADE_                                           │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ `database`          │ Contém as implementações de acesso ao MySQL e ao       │
+│                     │ SQLite.                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ `database/traits`   │ Reúne trechos de implementação que podem ser           │
+│                     │ reutilizados pelas variações do módulo Database.       │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ `validation`        │ Contém as implementações de validação de textos,       │
+│                     │ números, datas e horários.                             │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ `validation/traits` │ Reúne trechos de implementação que podem ser           │
+│                     │ reutilizados pelas variações do módulo Validation.     │
+└─────────────────────┴────────────────────────────────────────────────────────┘
 
 
 #                               ARQUIVOS VERSION                               <
@@ -297,8 +286,6 @@ app/VERSION porque a aplicação e o framework possuem versões independentes.
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                                  PASTA logs/                                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-
-
 
 Esta pasta recebe os registros de erros produzidos pelo `ErrorHandler`. Esses
 registros ajudam a investigar falhas durante o desenvolvimento e a execução da
@@ -314,8 +301,6 @@ configurada durante o tutorial de instalação.
 #                                  PASTA misc/                                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-
 A pasta `misc/` da raiz guarda materiais de apoio do projeto, como o arquivo
 `Galastri Framework Logo.svg`.
 
@@ -328,29 +313,27 @@ Não confundir com a pasta `galastri/misc/`.
 #                                 PASTA public/                                ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-
 Esta é a pasta configurada como raiz do site no servidor web. No ambiente que
 preparamos, ao acessar https://localhost, o Apache utiliza o caminho
 `/home/desenvolvedor/galastri-framework-2/public`.
 
 Ela contém três arquivos:
 
-┌────────────┬─────────────────────────────────────────────────────────────────┐
-│ ► ARQUIVO  │ ► FINALIDADE                                                    │
-├────────────┼─────────────────────────────────────────────────────────────────┤
-│ index.php  │ Recebe as requisições e inicia a execução do framework.         │
-├────────────┼─────────────────────────────────────────────────────────────────┤
-│ .htaccess  │ Configura as regras de encaminhamento das requisições no        │
-│            │ Apache.                                                         │
-├────────────┼─────────────────────────────────────────────────────────────────┤
-│ nginx.conf │ Fornece regras para ambientes que utilizam Nginx no lugar do    │
-│            │ Apache.                                                         │
-│            │                                                                 │
-│            │ Essas regras precisam ser incorporadas à configuração           │
-│            │ do servidor, junto das demais configurações do site e do        │
-│            │ PHP-FPM.                                                        │
-└────────────┴─────────────────────────────────────────────────────────────────┘
+┌──────────────┬───────────────────────────────────────────────────────────────┐
+│ _ARQUIVO_    │ _FINALIDADE_                                                  │
+├──────────────┼───────────────────────────────────────────────────────────────┤
+│ `index.php`  │ Recebe as requisições e inicia a execução do framework.       │
+├──────────────┼───────────────────────────────────────────────────────────────┤
+│ `.htaccess`  │ Configura as regras de encaminhamento das requisições no      │
+│              │ Apache.                                                       │
+├──────────────┼───────────────────────────────────────────────────────────────┤
+│ `nginx.conf` │ Fornece regras para ambientes que utilizam Nginx no lugar do  │
+│              │ Apache.                                                       │
+│              │                                                               │
+│              │ Essas regras precisam ser incorporadas à configuração         │
+│              │ do servidor, junto das demais configurações do site e do      │
+│              │ PHP-FPM.                                                      │
+└──────────────┴───────────────────────────────────────────────────────────────┘
 
 ⚠️
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -374,8 +357,6 @@ Ela contém três arquivos:
 #                                 PASTA vendor/                                ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-
 Esta pasta contém os arquivos gerenciados pelo Composer, incluindo o carregador
 de classes `autoload.php`.
 
@@ -384,11 +365,11 @@ carregador é necessário. É ele permite encontrar as classes a partir dos
 namespaces configurados pelo projeto, conforme abaixo:
 
 ┌─────────────┬────────────────────────────────────────────────────────────────┐
-│ ► NAMESPACE │ ► FINALIDADE                                                   │
+│ _NAMESPACE_ │ _FINALIDADE_                                                   │
 ├─────────────┼────────────────────────────────────────────────────────────────┤
-│ app\        │ Permite buscar classes dentro de `app/`                        │
+│ `app\`      │ Permite buscar classes dentro de `app/`                        │
 ├─────────────┼────────────────────────────────────────────────────────────────┤
-│ galastri\   │ Permite buscar classes dentro de `galastri/`                   │
+│ `galastri\` │ Permite buscar classes dentro de `galastri/`                   │
 └─────────────┴────────────────────────────────────────────────────────────────┘
 
 Os arquivos de vendor/ devem ser preparados pelos comandos do Composer.
@@ -402,12 +383,10 @@ novamente.
 #                               ARQUIVOS DA RAIZ                               ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-
 Além das pastas, a raiz do projeto contém os seguintes arquivos:
 
 ┌─────────────────┬────────────────────────────────────────────────────────────┐
-│ ► ARQUIVO       │ ► FINALIDADE                                               │
+│ _ARQUIVO_       │ _FINALIDADE_                                               │
 ├─────────────────┼────────────────────────────────────────────────────────────┤
 │ `composer.json` │ Declara os requisitos do projeto e configura o             │
 │                 │ carregamento das classes. Pode ser alterado conforme as    │

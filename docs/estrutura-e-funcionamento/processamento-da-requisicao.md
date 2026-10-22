@@ -1,17 +1,15 @@
 ```md
 GALASTRI FRAMEWORK > ESTRUTURA E FUNCIONAMENTO
+--------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                          PROCESSAMENTO DA REQUISIÇÃO                         ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-
-
 
 Após a inicialização, a classe `Galastri`, localizado em
 `galastri/core/Galastri.php`, é iniciada através do método `run()`.
 
 Esta é a classe com a função de coordenar as etapas necessárias para atender a
 requisição dentro de uma ordem específica..
-
 
 1. _Carregamento das Definições:_
    Primeiro, `Config::run()` carrega as definições presentes em
@@ -37,25 +35,30 @@ requisição dentro de uma ordem específica..
 3. _Aplicação das configurações_
    Com a rota identificada, a classe `Galastri` prossegue nesta ordem:
 
-   1. Aplica o fuso horário configurado.
-   2. Seleciona a classe responsável pelo formato de saída.
-   3. Verifica se há um redirecionamento obrigatório.
-   4. Verifica se a rota está marcada como indisponível.
-   5. Verifica a validade da rota, considerando se a saída exige um controller.
-   6. Verifica a autenticação, quando exigida.
-   7. Localiza o controller e os métodos correspondentes.
+   * Aplica o fuso horário configurado.
+   
+   * Seleciona a classe responsável pelo formato de saída.
+   
+   * Verifica se há um redirecionamento obrigatório.
+   
+   * Verifica se a rota está marcada como indisponível.
+   
+   * Verifica a validade da rota, considerando se a saída exige um controller.
+   
+   * Verifica a autenticação, quando exigida.
+   
+   * Localiza o controller e os métodos correspondentes.
 
    Essas verificações acontecem antes da execução das operações da aplicação. Um
    redirecionamento ou uma falha de autenticação, por exemplo, pode encerrar o
    atendimento sem executar o controller.
 
 
+
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                            EXECUÇÃO DO CONTROLLER                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-
-
 
 Quando há uma claase controller, `Galastri` cria uma instância dela. Essa
 criação executa o construtor herdado de `galastri\modules\Controller`, que
@@ -79,11 +82,11 @@ não ocorre antes nem substitui a execução desse primeiro.
 Os dados reunidos ficam disponíveis para a classe de saída preparar a resposta.
 
 
+
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                            PREPARAÇÃO DA RESPOSTA                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-
 
 Após a execução do controller, o framework chama o método `run()` da classe de
 saída definida pela rota.
@@ -91,7 +94,7 @@ saída definida pela rota.
 As classes de saída atuais são:
 
 ┌──────────┬───────────────────────────────────────────────────────────────────┐
-│ ► CLASSE │ ► RESULTADO                                                       │
+│ _CLASSE_ │ _RESULTADO_                                                       │
 ├──────────┼───────────────────────────────────────────────────────────────────┤
 │ `View`   │ Monta a página utilizando os arquivos de interface.               │
 ├──────────┼───────────────────────────────────────────────────────────────────┤
@@ -109,12 +112,11 @@ As classes de saída atuais são:
 >
 
 
+
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                       EXEMPLO DIDÁTICO: PÁGINA INICIAL                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-
-
 
 A página que acompanha a instalação permite relacionar essa sequência aos
 arquivos do projeto.
@@ -127,22 +129,22 @@ arquivos do projeto.
 
 3. É identificado cada parte da estrutura interna que vai fazer parte do fluxo:
 
-   ┌──────────────────────────┬────────────────────────────────────────────────┐
-   │ ► PARTE                  │ ► ARQUIVO OU MÉTODO                            │
-   ├──────────────────────────┼────────────────────────────────────────────────┤
-   │ Controller a ser chamado │ `app/controllers/Index.php`                    │
-   ├──────────────────────────┼────────────────────────────────────────────────┤
-   │ Método do controller a   │ `Index::main()`                                │
-   │ ser executado            │                                                │
-   ├──────────────────────────┼────────────────────────────────────────────────┤
-   │ Classe de fomato de      │ `galastri/core/output/View`                    │
-   │ saída                    │                                                │
-   ├──────────────────────────┼────────────────────────────────────────────────┤
-   │ Template HMTL            │ `app/templates/template.php`                   │
-   ├──────────────────────────┼────────────────────────────────────────────────┤
-   │ View HTML                │ `app/views/Index/main.php`                     │
-   └──────────────────────────┴────────────────────────────────────────────────┘
-   
+   ┌────────────────────────────┬──────────────────────────────────────────────┐
+   │ _PARTE_                    │ _ARQUIVO OU MÉTODO_                          │
+   ├────────────────────────────┼──────────────────────────────────────────────┤
+   │ `Controller a ser chamado` │ app/controllers/Index.php                    │
+   ├────────────────────────────┼──────────────────────────────────────────────┤
+   │ `Método do controller a`   │ Index::main()                                │
+   │ `ser executado`            │                                              │
+   ├────────────────────────────┼──────────────────────────────────────────────┤
+   │ `Classe de fomato de`      │ galastri/core/output/View                    │
+   │ `saída`                    │                                              │
+   ├────────────────────────────┼──────────────────────────────────────────────┤
+   │ `Template HMTL`            │ app/templates/template.php                   │
+   ├────────────────────────────┼──────────────────────────────────────────────┤
+   │ `View HTML`                │ app/views/Index/main.php                     │
+   └────────────────────────────┴──────────────────────────────────────────────┘
+
 💡
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ Note que o método `main()` do exemplo retorna um array vazio, o que é        │
@@ -153,10 +155,9 @@ arquivos do projeto.
 >
 
 
---------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO
 
-Sobre ambientes Windows:
+--------------------------------------------------------------------------------
+▶️ PRÓXIMO TÓPICO:
 LINK: 
 
 

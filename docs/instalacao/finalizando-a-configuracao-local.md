@@ -1,16 +1,16 @@
 ```md
 GALASTRI FRAMEWORK > INSTALAÇÃO
+--------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-#                  FINALIZANDO A CONFIGURAÇÃO DO ACESSO LOCAL                  ║
+#                       FINALIZANDO A CONFIGURAÇÃO LOCAL                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-
-
 
 Com tudo preparado, agora precisamos apontar o Apache para a pasta `public` do
 framework.
 
-A pasta fica localizada em `/home/desenvolvedor/galastri-framework-2/public` e é
-a porta de entrada do projeto.
+Esta pasta fica localizada em `/home/desenvolvedor/galastri-framework-2/public`
+e é a porta de entrada do projeto.
+
 
 
 --------------------------------------------------------------------------------
@@ -18,9 +18,7 @@ a porta de entrada do projeto.
 #                        CONFIGURANDO O SITE NO APACHE                         ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-
-1. Execute os comandos no terminal:
+1. Execute o comando no terminal:
 
    💻
    ┌──────────────────────────────────────────────┐
@@ -40,7 +38,7 @@ a porta de entrada do projeto.
 
 3. Copie e cole o conteúdo do arquivo a seguir:
 
-   📜
+   💻
    ┌───────────────────────────────────────────────────────────────────────────┐
    │ <VirtualHost *:80>                                                        │
    │                                                                           │
@@ -61,36 +59,34 @@ a porta de entrada do projeto.
    │     CustomLog ${APACHE_LOG_DIR}/galastri-access.log combined              │
    │ </VirtualHost>                                                            │
    └───────────────────────────────────────────────────────────────────────────┘
-   @
+   ``
 
    Essa configuração define o caminho do projeto, apontando para a pasta
-   `public`
+   `public`.
 
 4. Salve (Ctrl + O), confirme (Enter) e saia (Ctrl + X).
 
-
 ⚠️
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ - Mantenha o `DocumentRoot` apontando para a pasta `public`, evite           │
+│ * Mantenha o `DocumentRoot` apontando para a pasta `public`, evite           │
 │ apontar para outras pastas do projeto para evitar vazamento de arquivos e    │
 │ código fonte pelo navegador.                                                 │
 │                                                                              │
-│ - O `AllowOverride All` permite utilizar as regras do arquivo `.htaccess`    │
+│ * O `AllowOverride All` permite utilizar as regras do arquivo `.htaccess`    │
 │ que acompanha o projeto.                                                     │
 │                                                                              │
-│ - O `flushpackets=on` permite que o Apache encaminhe os dados parciais       │
+│ * O `flushpackets=on` permite que o Apache encaminhe os dados parciais       │
 │ enviados pelo PHP-FPM durante o processamento, sendo útil para os recursos   │
 │ de streaming do framework.                                                   │
 └──────────────────────────────────────────────────────────────────────────────┘
 >
 
 
+
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                            ATIVANDO A CONFIGURAÇÃO                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-
-
 
 1. No terminal, execute o comando abaixo:
 
@@ -112,10 +108,10 @@ a porta de entrada do projeto.
 
    O resultado deste teste deve terminar com:
 
-   📜
-   ┌───────────┐
-   │ Syntax OK │
-   └───────────┘
+   🧾
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │ Syntax OK                                                                 │
+   └───────────────────────────────────────────────────────────────────────────┘
    @
 
    Se aparecer um erro, será necessário investigar e corrigir o problema
@@ -136,25 +132,20 @@ a porta de entrada do projeto.
 #                             ACESSANDO O FRAMEWORK                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
+*  Abra o navegador e acesse: http://localhost
 
-
-- Abra o navegador e acesse: http://localhost
-
-  Você deverá ver a página inicial do framework, o que indicará que o ambiente
-  está pronto!
+   Você deverá ver a página inicial do framework, o que indicará que o ambiente
+   está pronto!
 
 
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                            RESOLUÇÃO DE PROBLEMAS                            ║
+#                            RESOLUÇÃO DE PROBLEMAS                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
-
-
 
 ┌─────────────────────────┬────────────────────────────────────────────────────┐
-│ ► PROBLEMA              │ ► POSSÍVEL SOLUÇÃO                                 │
+│ _PROBLEMA_              │ _POSSÍVEL SOLUÇÃO_                                 │
 ├─────────────────────────┼────────────────────────────────────────────────────┤
 │ Aparece a página padrão │ Confira se você ativou o site executando o         │
 │ do Apache               │ comando:                                           │
@@ -169,37 +160,37 @@ a porta de entrada do projeto.
 │ Aparece erro 500 ou uma │ Você vai precisar rever a configuração como um     │
 │ página em branco        │ todo.                                              │
 │                         │                                                    │
-│                         │ Consulte o registro do Apache e verifique o que    │
-│                         │ os erros estão dizendo:                            │
+│                         │ 1. Consulte o registro do Apache e verifique o que │
+│                         │    os erros estão dizendo:                         │
 │                         │                                                    │
-│                         │ ┌───────────────────────────────────────┐          │
-│                         │ │ sudo tail -n 50 \                     │          │
-│                         │ │   /var/log/apache2/galastri-error.log │          │
-│                         │ └───────────────────────────────────────┘          │
-│                         │ ``                                                 │
+│                         │    ┌───────────────────────────────────────┐       │
+│                         │    │ sudo tail -n 50 \                     │       │
+│                         │    │   /var/log/apache2/galastri-error.log │       │
+│                         │    └───────────────────────────────────────┘       │
+│                         │    ``                                              │
 │                         │                                                    │
-│                         │ Confira também as permissões das pastas do         │
-│                         │ framework se executou `composer install` no        │
-│                         │ projeto.                                           │
+│                         │ 2. Confira também as permissões das pastas do      │
+│                         │    framework se executou `composer install` no     │
+│                         │    projeto.                                        │
+│                         │                                                    │
 ├─────────────────────────┼────────────────────────────────────────────────────┤
 │ O Apache não inicia     │ Você vai precisar rever a configuração do Apache.  │
 │ depois da configuração  │                                                    │
-│                         │ Veja o que o teste responde ao executar o comando  │
-│                         │ abaixo:                                            │
+│                         │ Confira o que o teste responde ao executar o       │
+│                         │ comando abaixo:                                    │
 │                         │                                                    │
 │                         │ ┌────────────────────────────┐                     │
 │                         │ │ sudo apache2ctl configtest │                     │
 │                         │ └────────────────────────────┘                     │
 │                         │ ``                                                 │
+│                         │                                                    │
 └─────────────────────────┴────────────────────────────────────────────────────┘
-%
 
 
 
 --------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO
+▶️ PRÓXIMO TÓPICO: Estrutura e funcionamento
 
-Sobre ambientes Windows:
 LINK: /docs/estrutura-e-funcionamento/estrutura-e-funcionamento.md
 
 

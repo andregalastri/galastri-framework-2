@@ -1,7 +1,10 @@
 ```md
+GALASTRI FRAMEWORK > INSTALAÇÃO
+--------------------------------------------------------------------------------
+
 ⚠️
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ATENÇÃO, USUÁRIOS WINDOWS                                                    │
+│ _ATENÇÃO, USUÁRIOS WINDOWS_                                                  │
 │ Este tutorial é voltado para ambientes Linux. Antes de prosseguir, veja      │
 │ primeiro o passo a passo abaixo para montar um ambiente Linux dentro do      │
 │ Windows com WSL.                                                             │
@@ -11,33 +14,32 @@
 >
 
 
-GALASTRI FRAMEWORK > INSTALAÇÃO
+
+--------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                   PREPARANDO O AMBIENTE DE DESENVOLVIMENTO                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-
 Vamos instalar e configurar os programas necessários. Abaixo uma breve descrição
 de cada um:
 
-*📦 Apache:*
+_📦 Apache:_
 É o servidor que recebe as requisições do navegador e entrega as respostas da
 aplicação.
 
-*📦 PHP-FPM:*
+_📦 PHP-FPM:_
 É o programa que executa o código PHP em conjunto com o Apache.
 
-*📦 Git:*
+_📦 Git:_
 É por onde vamos baixar o projeto e acompanhar as alterações no código.
 
-*📦 Composer:*
+_📦 Composer:_
 É o gerenciador de dependências do PHP que permite o carregamento das classes do
 projeto além de bibliotecas que a aplicação precisar.
 
-
 ⚠️
 ┌──────────────────────────────────────────────────────────────────────────────┐
+│ _ATENÇÃO, USUÁRIOS WINDOWS_                                                  │
 │ No Windows com WSL, lembre-se de executar os comandos desta seção no         │
 │ terminal do Ubuntu, não no CMD ou Powershell.                                │
 │                                                                              │
@@ -47,14 +49,13 @@ projeto além de bibliotecas que a aplicação precisar.
 >
 
 
+
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
 #                             INSTALANDO O APACHE                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-
--  Execute os comandos abaixo, um por vez:
+*  Execute os comandos abaixo, um por vez:
 
    💻
    ┌──────────────────────────┐
@@ -72,19 +73,16 @@ projeto além de bibliotecas que a aplicação precisar.
 #                      INSTALANDO O PHP E SUAS EXTENSÕES                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-
-
-1. Execute o comando abaixo:
+1. Execute os comandos abaixo, um por vez:
 
    💻
-   ┌──────────────────────────────────────────────────┐
-   │ sudo apt install \                               │
-   │   php-fpm php-cli php-gd php-mbstring \          │
-   │   php-xml php-curl php-zip php-mysql php-sqlite3 │
-   └──────────────────────────────────────────────────┘
+   ┌───────────────────────────────────────────────────────────────────────┐
+   │ sudo apt install php-fpm php-cli php-gd php-mbstring php-xml php-curl │
+   │ sudo apt install php-zip php-mysql php-sqlite3                        │
+   └───────────────────────────────────────────────────────────────────────┘
    ``
 
-   Esse comando instala o PHP e as extensões que o framework vai usar.
+   Esses comando instalam o PHP e as extensões que o framework vai usar.
 
 2. Ao final, confira se a versão instalada é `8.0` ou superior:
 
@@ -95,12 +93,11 @@ projeto além de bibliotecas que a aplicação precisar.
    ``
 
 
+
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                  CONFIGURANDO O APACHE PARA USAR O PHP-FPM                   ║
+#                  CONFIGURANDO O APACHE PARA USAR O PHP-FPM                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
-
 
 1. Execute o comando abaixo:
 
@@ -111,9 +108,9 @@ projeto além de bibliotecas que a aplicação precisar.
    ``
 
    Este comando habilita os módulos do Apache que são necessários para a
-   execução do PHP-FPM e framework
+   execução do PHP-FPM e framework.
 
-2. Agora execute:
+2. Agora execute, um por vez:
 
    💻
    ┌─────────────────────────────────────────────────────────────────┐
@@ -126,27 +123,27 @@ projeto além de bibliotecas que a aplicação precisar.
    ``
 
    Isso habilita a configuração do PHP-FPM no Apache e ativa os serviços de
-   ambos programas para que iniciam junto com o Ubuntu sempre que você iniciar
-   o ambiente.
+   ambos programas para que iniciam junto com o Ubuntu sempre que você iniciar o
+   ambiente.
 
-3. Depois, reinicie o Apache para aplicar as configurações:
+3. Por fim, execute:
 
    💻
    ┌────────────────────────────────┐
    │ sudo systemctl restart apache2 │
    └────────────────────────────────┘
    ``
+   
+   Isso reinicia o Apache para aplicar as configurações.
 
 
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                        INSTALANDO O GIT E O COMPOSER                         ║
+#                        INSTALANDO O GIT E O COMPOSER                         ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
 
-
--  Execute o comando abaixo:
+*  Execute o comando abaixo:
 
    💻
    ┌───────────────────────────────────────────────┐
@@ -158,13 +155,11 @@ projeto além de bibliotecas que a aplicação precisar.
    descompactá-los e editar configurações pelo terminal.
 
 
-
->                    CONFIGURANDO SUA IDENTIFICAÇÃO NO GIT                     <
+#                    CONFIGURANDO SUA IDENTIFICAÇÃO NO GIT                     <
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Usaremos o Git apenas para baixar e atualizar o framework quando necessário, mas
 se você pretende contribuir com o desenvolvimento do framework em si e fazer
 commits, é necessário registrar um nome e um e-mail.
-
 
 1. Execute os comandos abaixo, um por vez, substituindo os exemplos pelos seus
    dados:
@@ -184,13 +179,14 @@ commits, é necessário registrar um nome e um e-mail.
    │ git config --global user.email │
    └────────────────────────────────┘
    ``
-
-
+   
 ⚠️
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ Essa identificação será utilizada nos commits, mas não faz login na sua      │
-│ conta do GitHub. Caso vá usar o Git pra subir os commits ao Github também, é │
-│ melhor usar seu nome de usuário e o e-mail cadastrado na plataforma.         │
+│ Essa identificação será utilizada nos commits, mas _não faz login_ na sua    │
+│ conta do GitHub.                                                             │
+│                                                                              │
+│ Caso vá usar o Git pra subir os commits ao Github também, é melhor informar  │
+│ seu nome de usuário e e-mail cadastrado na plataforma.                       │
 └──────────────────────────────────────────────────────────────────────────────┘
 >
 
@@ -198,38 +194,14 @@ commits, é necessário registrar um nome e um e-mail.
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                      CONFERINDO O APACHE PELO NAVEGADOR                      ║
+#                      CONFERINDO O APACHE PELO NAVEGADOR                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
 
-
--  Abra seu navegador e acesse http://localhost
-
-   Você deverá ver a página padrão do Apache, normalmente com o título "Apache2
-   Ubuntu Default Page" e bla bla bla.
-
-   ℹ️
-   ┌─────────────────────────────────────────────────────────────────────┐
-   │ Se você instalou o ambiente em outro computador/servidor, substitua │
-   │ `localhost` pelo endereço IP da máquina.                            │
-   └─────────────────────────────────────────────────────────────────────┘
-   >
-
-
-
---------------------------------------------------------------------------------
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                          TESTANDO A EXECUÇÃO DO PHP                          ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-#
-
-
-Com o Apache funcionando, precisamos ver se ele está conseguindo executar
+Com o Apache funcionando, precisamos confirmar se ele está conseguindo executar
 arquivos `.php`.
 
 Vamos criar um arquivo temporário chamado `teste.php` na pasta padrão do Apache,
 só pra pra ver se a integração está funcionando.
-
 
 1. Execute o comando abaixo:
 
@@ -260,14 +232,14 @@ só pra pra ver se a integração está funcionando.
    O resultado deverá ser parecido com este:
    
    🧾
-   ┌────────────────────────────┐
-   │ Apache e PHP funcionando!  │
-   │ Versão do PHP: 8.3.6       │
-   │ Modo de execução: fpm-fcgi │
-   └────────────────────────────┘
-   ``
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │ Apache e PHP funcionando!                                                 │
+   │ Versão do PHP: 8.3.6                                                      │
+   │ Modo de execução: fpm-fcgi                                                │
+   └───────────────────────────────────────────────────────────────────────────┘
+   @
 
-4. Se o resultado apareceu, remova o arquivo temporário:
+4. Estando tudo certo, remova o arquivo temporário:
 
    💻
    ┌─────────────────────────────────┐
@@ -276,100 +248,99 @@ só pra pra ver se a integração está funcionando.
    ``
 
 
+
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                            RESOLUÇÃO DE PROBLEMAS                            ║
+#                            RESOLUÇÃO DE PROBLEMAS                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-#
-
 
 ┌──────────────────────────┬───────────────────────────────────────────────────┐
-│ ► PROBLEMA               │ ► POSSÍVEL SOLUÇÃO                                │
+│ _PROBLEMA_               │ _POSSÍVEL SOLUÇÃO_                                │
 ├──────────────────────────┼───────────────────────────────────────────────────┤
-│ O navegador não consegue │ No terminal do Ubuntu, execute o comando abaixo:  │
-│ abrir a página           │ ┌──────────────────────────────────────────┐      │
-│                          │ │ sudo systemctl status apache2 --no-pager │      │
-│                          │ └──────────────────────────────────────────┘      │
-│                          │ ``                                                │
+│ O navegador não consegue │ 1. No terminal do Ubuntu, execute o comando       │
+│ abrir a página           │    abaixo:                                        │
 │                          │                                                   │
-│                          │ O comando deverá mostrar `active (running)`.      │
-│                          │ Caso não, inicie o Apache com o comando abaixo:   │
-│                          │ ┌──────────────────────────────┐                  │
-│                          │ │ sudo systemctl start apache2 │                  │
-│                          │ └──────────────────────────────┘                  │
-│                          │ ``                                                │
+│                          │    ┌──────────────────────────────────────────┐   │
+│                          │    │ sudo systemctl status apache2 --no-pager │   │
+│                          │    └──────────────────────────────────────────┘   │
+│                          │    ``                                             │
 │                          │                                                   │
-│                          │ Se este comando falhar, aí será necessário que    │
-│                          │ você investigue a causa (pode ser muita coisa pra │
-│                          │ eu explicar aqui).                                │
+│                          │    O comando deverá mostrar `active (running)`.   │
+│                          │                                                   │
+│                          │ 2. Caso não, inicie o Apache com o comando        │
+│                          │    abaixo:                                        │
+│                          │                                                   │
+│                          │    ┌──────────────────────────────┐               │
+│                          │    │ sudo systemctl start apache2 │               │
+│                          │    └──────────────────────────────┘               │
+│                          │    ``                                             │
+│                          │                                                   │
+│                          │    Se este comando falhar, aí será necessário que │
+│                          │    você investigue a causa (pode ser muita coisa  │
+│                          │    pra eu explicar aqui).                         │
 ├──────────────────────────┼───────────────────────────────────────────────────┤
-│ O arquivo PHP é baixado  │ Reinicie o PHP-FPM e o Apache para garantir que   │
-│ ou aparece como código   │ estejam rodando.                                  │
+│ O arquivo PHP é baixado  │ 1. Reinicie o PHP-FPM e o Apache para garantirque │
+│ ou aparece como código   │    estejam rodando.                               │
 │                          │                                                   │
-│                          │ Execute a sequência de comandos abaixo:           │
-│                          │ ┌───────────────────────────────────────────┐     │
-│                          │ │ PHP_V=$(php -r 'echo PHP_MAJOR_VERSION.". │     │
-│                          │ │ sudo a2enconf "php${PHP_V}-fpm"           │     │
-│                          │ │ sudo systemctl restart "php${PHP_V}-fpm"  │     │
-│                          │ │ sudo systemctl restart apache2            │     │
-│                          │ └───────────────────────────────────────────┘     │
-│                          │ ``                                                │
+│                          │ 2. Execute a sequência de comandos abaixo:        │
+│                          │    ┌───────────────────────────────────────────┐  │
+│                          │    │ PHP_V=$(php -r 'echo PHP_MAJOR_VERSION.". │  │
+│                          │    │ sudo a2enconf "php${PHP_V}-fpm"           │  │
+│                          │    │ sudo systemctl restart "php${PHP_V}-fpm"  │  │
+│                          │    │ sudo systemctl restart apache2            │  │
+│                          │    └───────────────────────────────────────────┘  │
+│                          │    ``                                             │
 │                          │                                                   │
-│                          │ Depois, acesse novamente o endereço do teste.     │
+│                          │ 3. Acesse novamente o endereço do teste.          │
 ├──────────────────────────┼───────────────────────────────────────────────────┤
 │ O comando informa que o  │ Este problema tende a acontecer mais no Windows   │
 │ sistema não foi iniciado │ com WSL.                                          │
 │ com systemd              │                                                   │
-│                          │ Execute o comando abaixo no terminal do Ubuntu    │
-│                          │ ┌───────────────────────────┐                     │
-│                          │ |  sudo nano /etc/wsl.conf  |                     │
-│                          │ └───────────────────────────┘                     │
-│                          │ ``                                                │
+│                          │ 1. Execute o comando abaixo no terminal do Ubuntu │
+│                          │    ┌───────────────────────────┐                  │
+│                          │    |  sudo nano /etc/wsl.conf  |                  │
+│                          │    └───────────────────────────┘                  │
+│                          │    ``                                             │
 │                          │                                                   │
-│                          │ Adicione isso abaixo da seção `[boot]` do         │
-│                          │ arquivo:                                          │
-│                          │ ┌──────────────┐                                  │
-│                          │ │ [boot]       │                                  │
-│                          │ │ systemd=true │                                  │
-│                          │ └──────────────┘                                  │
-│                          │ ``                                                │
+│                          │ 2. Adicione isso abaixo da seção `[boot]` do      │
+│                          │    arquivo:                                       │
+│                          │    ┌──────────────┐                               │
+│                          │    │ [boot]       │                               │
+│                          │    │ systemd=true │                               │
+│                          │    └──────────────┘                               │
+│                          │    ``                                             │
 │                          │                                                   │
-│                          │ > IMPORTANTE!                                     │
-│                          │ > Se não existir uma seção `[boot]`, basta        │
-│                          │ > inserir ela também junto com o comando do       │
-│                          │ > systemd.                                        │
+│                          │    Se não existir uma seção `[boot]`, basta       │
+│                          │    inserir ela também junto com o comando do      │
+│                          │    systemd.                                       │
 │                          │                                                   │
-│                          │ Salve o arquivo (CTRL + O, CTRL + X)              │
+│                          │    Salve o arquivo (CTRL + O, CTRL + X)           │
 │                          │                                                   │
-│                          │ Abra o PowerShell no Windows e execute o comando  │
-│                          │ abaixo:                                           │
-│                          │ ┌────────────────────────┐                        │
-│                          │ │ wsl --terminate Ubuntu │                        │
-│                          │ └────────────────────────┘                        │
-│                          │ ``                                                │
+│                          │ 3. Abra o PowerShell no Windows e execute o       │
+│                          │    comando abaixo:                                │
 │                          │                                                   │
-│                          │ Reabra novamente o Ubuntu e repita os comandos    │
-│                          │ de ativação dos serviços:                         │
-│                          │ ┌───────────────────────────────────────────┐     │
-│                          │ │ PHP_V=$(php -r 'echo PHP_MAJOR_VERSION.". │     │
-│                          │ │ sudo a2enconf "php${PHP_V}-fpm"           │     │
-│                          │ │ sudo systemctl restart "php${PHP_V}-fpm"  │     │
-│                          │ │ sudo systemctl restart apache2            │     │
-│                          │ └───────────────────────────────────────────┘     │
-│                          │ ``                                                │
+│                          │    ┌────────────────────────┐                     │
+│                          │    │ wsl --terminate Ubuntu │                     │
+│                          │    └────────────────────────┘                     │
+│                          │    ``                                             │
+│                          │                                                   │
+│                          │ 4. Reabra novamente o Ubuntu e repita os comandos │
+│                          │    de ativação dos serviços:                      │
+│                          │                                                   │
+│                          │    ┌───────────────────────────────────────────┐  │
+│                          │    │ PHP_V=$(php -r 'echo PHP_MAJOR_VERSION.". │  │
+│                          │    │ sudo a2enconf "php${PHP_V}-fpm"           │  │
+│                          │    │ sudo systemctl restart "php${PHP_V}-fpm"  │  │
+│                          │    │ sudo systemctl restart apache2            │  │
+│                          │    └───────────────────────────────────────────┘  │
+│                          │    ``                                             │
 └──────────────────────────┴───────────────────────────────────────────────────┘
-%
 
 
 
 --------------------------------------------------------------------------------
-
-
-
-▶️ PRÓXIMO TÓPICO
-
-Sobre ambientes Windows:
-LINK: /docs/instalacao/instalando-o-galastri-framework.txt
+▶️ PRÓXIMO TÓPICO: Instalando o Galastri Framework
+LINK: /docs/instalacao/instalando-o-galastri-framework.md
 
 
 

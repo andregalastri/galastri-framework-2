@@ -34,7 +34,7 @@ contexto!
 
 
 _✅ Formatos de saída_  
-Respostas em HTML, JSON e arquivos previsíveis e fáceisde configurar!
+Respostas em HTML, JSON e arquivos previsíveis e fáceis de configurar!
 
 
 _✅ Banco de dados_  

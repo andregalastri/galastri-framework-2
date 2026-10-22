@@ -201,7 +201,7 @@ Com o Apache funcionando, precisamos confirmar se ele está conseguindo executar
 arquivos `.php`.
 
 Vamos criar um arquivo temporário chamado `teste.php` na pasta padrão do Apache,
-só pra pra ver se a integração está funcionando.
+só pra ver se a integração está funcionando.
 
 1. Execute o comando abaixo:
 
@@ -254,87 +254,87 @@ só pra pra ver se a integração está funcionando.
 #                            RESOLUÇÃO DE PROBLEMAS                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-┌──────────────────────────┬───────────────────────────────────────────────────┐
-│ _PROBLEMA_               │ _POSSÍVEL SOLUÇÃO_                                │
-├──────────────────────────┼───────────────────────────────────────────────────┤
-│ O navegador não consegue │ 1. No terminal do Ubuntu, execute o comando       │
-│ abrir a página           │    abaixo:                                        │
-│                          │                                                   │
-│                          │    ┌──────────────────────────────────────────┐   │
-│                          │    │ sudo systemctl status apache2 --no-pager │   │
-│                          │    └──────────────────────────────────────────┘   │
-│                          │    ``                                             │
-│                          │                                                   │
-│                          │    O comando deverá mostrar `active (running)`.   │
-│                          │                                                   │
-│                          │ 2. Caso não, inicie o Apache com o comando        │
-│                          │    abaixo:                                        │
-│                          │                                                   │
-│                          │    ┌──────────────────────────────┐               │
-│                          │    │ sudo systemctl start apache2 │               │
-│                          │    └──────────────────────────────┘               │
-│                          │    ``                                             │
-│                          │                                                   │
-│                          │    Se este comando falhar, aí será necessário que │
-│                          │    você investigue a causa (pode ser muita coisa  │
-│                          │    pra eu explicar aqui).                         │
-├──────────────────────────┼───────────────────────────────────────────────────┤
-│ O arquivo PHP é baixado  │ 1. Reinicie o PHP-FPM e o Apache para garantirque │
-│ ou aparece como código   │    estejam rodando.                               │
-│                          │                                                   │
-│                          │ 2. Execute a sequência de comandos abaixo:        │
-│                          │    ┌───────────────────────────────────────────┐  │
-│                          │    │ PHP_V=$(php -r 'echo PHP_MAJOR_VERSION.". │  │
-│                          │    │ sudo a2enconf "php${PHP_V}-fpm"           │  │
-│                          │    │ sudo systemctl restart "php${PHP_V}-fpm"  │  │
-│                          │    │ sudo systemctl restart apache2            │  │
-│                          │    └───────────────────────────────────────────┘  │
-│                          │    ``                                             │
-│                          │                                                   │
-│                          │ 3. Acesse novamente o endereço do teste.          │
-├──────────────────────────┼───────────────────────────────────────────────────┤
-│ O comando informa que o  │ Este problema tende a acontecer mais no Windows   │
-│ sistema não foi iniciado │ com WSL.                                          │
-│ com systemd              │                                                   │
-│                          │ 1. Execute o comando abaixo no terminal do Ubuntu │
-│                          │    ┌───────────────────────────┐                  │
-│                          │    |  sudo nano /etc/wsl.conf  |                  │
-│                          │    └───────────────────────────┘                  │
-│                          │    ``                                             │
-│                          │                                                   │
-│                          │ 2. Adicione isso abaixo da seção `[boot]` do      │
-│                          │    arquivo:                                       │
-│                          │    ┌──────────────┐                               │
-│                          │    │ [boot]       │                               │
-│                          │    │ systemd=true │                               │
-│                          │    └──────────────┘                               │
-│                          │    ``                                             │
-│                          │                                                   │
-│                          │    Se não existir uma seção `[boot]`, basta       │
-│                          │    inserir ela também junto com o comando do      │
-│                          │    systemd.                                       │
-│                          │                                                   │
-│                          │    Salve o arquivo (CTRL + O, CTRL + X)           │
-│                          │                                                   │
-│                          │ 3. Abra o PowerShell no Windows e execute o       │
-│                          │    comando abaixo:                                │
-│                          │                                                   │
-│                          │    ┌────────────────────────┐                     │
-│                          │    │ wsl --terminate Ubuntu │                     │
-│                          │    └────────────────────────┘                     │
-│                          │    ``                                             │
-│                          │                                                   │
-│                          │ 4. Reabra novamente o Ubuntu e repita os comandos │
-│                          │    de ativação dos serviços:                      │
-│                          │                                                   │
-│                          │    ┌───────────────────────────────────────────┐  │
-│                          │    │ PHP_V=$(php -r 'echo PHP_MAJOR_VERSION.". │  │
-│                          │    │ sudo a2enconf "php${PHP_V}-fpm"           │  │
-│                          │    │ sudo systemctl restart "php${PHP_V}-fpm"  │  │
-│                          │    │ sudo systemctl restart apache2            │  │
-│                          │    └───────────────────────────────────────────┘  │
-│                          │    ``                                             │
-└──────────────────────────┴───────────────────────────────────────────────────┘
+┌──────────────────────────┬────────────────────────────────────────────────────────────────────────┐
+│ _PROBLEMA_               │ _POSSÍVEL SOLUÇÃO_                                                     │
+├──────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+│ O navegador não consegue │ 1. No terminal do Ubuntu, execute o comando                            │
+│ abrir a página           │    abaixo:                                                             │
+│                          │                                                                        │
+│                          │    ┌──────────────────────────────────────────┐                        │
+│                          │    │ sudo systemctl status apache2 --no-pager │                        │
+│                          │    └──────────────────────────────────────────┘                        │
+│                          │    ``                                                                  │
+│                          │                                                                        │
+│                          │    O comando deverá mostrar `active (running)`.                        │
+│                          │                                                                        │
+│                          │ 2. Caso não, inicie o Apache com o comando                             │
+│                          │    abaixo:                                                             │
+│                          │                                                                        │
+│                          │    ┌──────────────────────────────┐                                    │
+│                          │    │ sudo systemctl start apache2 │                                    │
+│                          │    └──────────────────────────────┘                                    │
+│                          │    ``                                                                  │
+│                          │                                                                        │
+│                          │    Se este comando falhar, aí será necessário que                      │
+│                          │    você investigue a causa (pode ser muita coisa                       │
+│                          │    pra eu explicar aqui).                                              │
+├──────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+│ O arquivo PHP é baixado  │ 1. Reinicie o PHP-FPM e o Apache para garantir que                     │
+│ ou aparece como código   │    estejam rodando.                                                    │
+│                          │                                                                        │
+│                          │ 2. Execute a sequência de comandos abaixo:                             │
+│                          │    ┌─────────────────────────────────────────────────────────────────┐ │
+│                          │    │ PHP_V=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;') │ │
+│                          │    │ sudo a2enconf "php${PHP_V}-fpm"                                 │ │
+│                          │    │ sudo systemctl restart "php${PHP_V}-fpm"                        │ │
+│                          │    │ sudo systemctl restart apache2                                  │ │
+│                          │    └─────────────────────────────────────────────────────────────────┘ │
+│                          │    ``                                                                  │
+│                          │                                                                        │
+│                          │ 3. Acesse novamente o endereço do teste.                               │
+├──────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+│ O comando informa que o  │ Este problema tende a acontecer mais no Windows                        │
+│ sistema não foi iniciado │ com WSL.                                                               │
+│ com systemd              │                                                                        │
+│                          │ 1. Execute o comando abaixo no terminal do Ubuntu                      │
+│                          │    ┌───────────────────────────┐                                       │
+│                          │    |  sudo nano /etc/wsl.conf  |                                       │
+│                          │    └───────────────────────────┘                                       │
+│                          │    ``                                                                  │
+│                          │                                                                        │
+│                          │ 2. Adicione isso abaixo da seção `[boot]` do                           │
+│                          │    arquivo:                                                            │
+│                          │    ┌──────────────┐                                                    │
+│                          │    │ [boot]       │                                                    │
+│                          │    │ systemd=true │                                                    │
+│                          │    └──────────────┘                                                    │
+│                          │    ``                                                                  │
+│                          │                                                                        │
+│                          │    Se não existir uma seção `[boot]`, basta                            │
+│                          │    inserir ela também junto com o comando do                           │
+│                          │    systemd.                                                            │
+│                          │                                                                        │
+│                          │    Salve o arquivo (CTRL + O, CTRL + X)                                │
+│                          │                                                                        │
+│                          │ 3. Abra o PowerShell no Windows e execute o                            │
+│                          │    comando abaixo:                                                     │
+│                          │                                                                        │
+│                          │    ┌────────────────────────┐                                          │
+│                          │    │ wsl --terminate Ubuntu │                                          │
+│                          │    └────────────────────────┘                                          │
+│                          │    ``                                                                  │
+│                          │                                                                        │
+│                          │ 4. Reabra novamente o Ubuntu e repita os comandos                      │
+│                          │    de ativação dos serviços:                                           │
+│                          │                                                                        │
+│                          │    ┌─────────────────────────────────────────────────────────────────┐ │
+│                          │    │ PHP_V=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;') │ │
+│                          │    │ sudo a2enconf "php${PHP_V}-fpm"                                 │ │
+│                          │    │ sudo systemctl restart "php${PHP_V}-fpm"                        │ │
+│                          │    │ sudo systemctl restart apache2                                  │ │
+│                          │    └─────────────────────────────────────────────────────────────────┘ │
+│                          │    ``                                                                  │
+└──────────────────────────┴────────────────────────────────────────────────────────────────────────┘
 
 
 

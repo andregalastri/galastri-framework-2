@@ -42,10 +42,10 @@ e é a porta de entrada do projeto.
    ┌───────────────────────────────────────────────────────────────────────────┐
    │ <VirtualHost *:80>                                                        │
    │                                                                           │
-   │     DocumentRoot /var/www/galastri-framework-2/public                     │
+   │     DocumentRoot /home/desenvolvedor/galastri-framework-2/public          │
    │     DirectoryIndex index.php                                              │
    │                                                                           │
-   │     <Directory /var/www/galastri-framework-2/public>                      │
+   │     <Directory /home/desenvolvedor/galastri-framework-2/public>           │
    │         Options -Indexes +FollowSymLinks                                  │
    │         AllowOverride All                                                 │
    │         Require all granted                                               │

@@ -34,7 +34,7 @@ contexto!
 
 
 _✅ Formatos de saída_  
-Respostas em HTML, JSON e arquivos previsíveis e fáceisde configurar!
+Respostas em HTML, JSON e arquivos previsíveis e fáceis de configurar!
 
 
 _✅ Banco de dados_  
@@ -77,6 +77,7 @@ Múltiplos recursos para registrar falhas e apresentar informações de erro.
 --------------------------------------------------------------------------------
 📁 DOCUMENTAÇÃO:
 https://github.com/andregalastri/galastri-framework-2/blob/main/docs/galastri-framework.md
+
 
 
 ---

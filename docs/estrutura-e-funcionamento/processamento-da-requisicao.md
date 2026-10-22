@@ -60,7 +60,7 @@ requisição dentro de uma ordem específica..
 #                            EXECUÇÃO DO CONTROLLER                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-Quando há uma claase controller, `Galastri` cria uma instância dela. Essa
+Quando há uma classe controller, `Galastri` cria uma instância dela. Essa
 criação executa o construtor herdado de `galastri\modules\Controller`, que
 coordena as chamadas aos métodos da aplicação.
 
@@ -76,7 +76,7 @@ A sequência é:
 4. Acrescentar os metadados do projeto, caso a configuração
    `includeProjectMetadata` esteja habilitada.  
 
-O método associado ao verbo HTTP é executado **depois** do método do endpoint,
+O método associado ao verbo HTTP é executado _depois_ do método do endpoint,
 não ocorre antes nem substitui a execução desse primeiro.
 
 Os dados reunidos ficam disponíveis para a classe de saída preparar a resposta.
@@ -137,21 +137,21 @@ arquivos do projeto.
    │ `Método do controller a`   │ Index::main()                                │
    │ `ser executado`            │                                              │
    ├────────────────────────────┼──────────────────────────────────────────────┤
-   │ `Classe de fomato de`      │ galastri/core/output/View                    │
+   │ `Classe de formato de`     │ galastri/core/output/View                    │
    │ `saída`                    │                                              │
    ├────────────────────────────┼──────────────────────────────────────────────┤
-   │ `Template HMTL`            │ app/templates/template.php                   │
+   │ `Template HTML`            │ app/templates/template.php                   │
    ├────────────────────────────┼──────────────────────────────────────────────┤
    │ `View HTML`                │ app/views/Index/main.php                     │
    └────────────────────────────┴──────────────────────────────────────────────┘
 
 💡
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ Note que o método `main()` do exemplo retorna um array vazio, o que é        │
-│ permitido. Neste caso específico, nenhum dado adicional é utilizado,         │
-│ portanto, a página é montada normalmente pois nem o template, nem a view,    │
-│ socilitam dados do retorno.                                                  │
-└──────────────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────┐
+│ Note que o método `main()` do exemplo retorna um array vazio, o que é     │
+│ permitido. Neste caso específico, nenhum dado adicional é utilizado,      │
+│ portanto, a página é montada normalmente pois nem o template, nem a view, │
+│ solicitam dados do retorno.                                               │
+└───────────────────────────────────────────────────────────────────────────┘
 >
 
 

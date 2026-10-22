@@ -28,7 +28,7 @@ Vamos guardar o framework em `/home/desenvolvedor/galastri-framework-2`.
 
    O projeto será baixado a pasta pessoal do seu usuário.
    
-2. Quando o download finalizarr, confira os arquivos:
+2. Quando o download finalizar, confira os arquivos:
 
    💻
    ┌──────────────────────────┐
@@ -67,9 +67,10 @@ Vamos guardar o framework em `/home/desenvolvedor/galastri-framework-2`.
 1. Ainda na pasta `~/galastri-framework-2`, execute o comando abaixo:
 
    💻
-   ┌──────────────────┐
-   │ composer install │
-   └──────────────────┘
+   ┌───────────────────────────┐
+   │ cd ~/galastri-framework-2 │
+   │ composer install          │
+   └───────────────────────────┘
    ``
 
    O Composer utiliza as configurações do projeto para preparar as dependências

@@ -14,17 +14,17 @@ substituir seu sistema, criar uma partição nova ou configurar manualmente uma
 máquina virtual para Linux.
 
 Você continua usando normalmente os programas do Windows, como editor de código
-e navegadores, enquanto o WLS com Linux roda o ambiente do servidor web com o
+e navegadores, enquanto o WSL com Linux roda o ambiente do servidor web com o
 framework.
 
 ⚠️
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ Se você já utiliza Linux no seu computador ou possui um servidor ou máquina  │
-│ virtual com Linux já instalado, você não precisa seguir este tutorial.       │
-│                                                                              │
-│ Vá direto para a seção seguinte:                                             │
-│ LINK: /docs/instalacao/preparando-o-ambiente-de-desenvolvimento.txt          │
-└──────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ Se você já utiliza Linux no seu computador ou possui um servidor ou máquina │
+│ virtual com Linux já instalado, você não precisa seguir este tutorial.      │
+│                                                                             │
+│ Vá direto para a seção seguinte:                                            │
+│ LINK: /docs/instalacao/preparando-o-ambiente-de-desenvolvimento.md          │
+└─────────────────────────────────────────────────────────────────────────────┘
 >
 
 
@@ -55,7 +55,7 @@ Para acompanhar este tutorial, seu PC precisa ter:
 
 Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
 
-1. Abra o `PowerShell` como Adminstrador.
+1. Abra o `PowerShell` como Administrador.
 
 2. Na janela que abrir, execute o seguinte comando:
 
@@ -68,7 +68,7 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
    Esse comando instala o WSL e o Ubuntu de uma vez. Em uma instalação nova, o
    WSL versão 2 será instalado por padrão.
    
-3. Após a conclusão da instalação e reinicie o computador.
+3. Após a conclusão da instalação, reinicie o computador.
 
 4. Procure por `Ubuntu` no menu Iniciar e abra-o. Nesta primeira execução, ele
    pode levar alguns instantes para terminar de preparar os arquivos.
@@ -103,14 +103,13 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
 
 2. Quando terminar, aparecerá uma linha parecida com esta:
 
-   💻
-   ┌─────────────────────────────────┐
-   │ desenvolvedor@DESKTOP-123ABC:~$ │
-   └─────────────────────────────────┘
-   ``
+   🧾
+   ┌──────────────────────────────────────────────────────────────────────────────┐
+   │ desenvolvedor@DESKTOP-123ABC:~$                                              │
+   └──────────────────────────────────────────────────────────────────────────────┘
+   @
    
    Essa linha indica que o terminal está pronto para receber comandos.
-
 
 
 #                  CONFERINDO SE ESTAMOS USANDO O WSL VERSÃO 2                 <

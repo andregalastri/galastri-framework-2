@@ -7,7 +7,7 @@ GALASTRI FRAMEWORK > ESTRUTURA E FUNCIONAMENTO
 
 O Galastri Framework se organiza em uma estrutura divida entre múltiplas pastas
 com objetivos bem definidos, sendo as principais a pasta `app`, que é onde a
-aplicação será desenvolvida, e a pasta `galstri` que é onde estão os arquivos do
+aplicação será desenvolvida, e a pasta `galastri` que é onde estão os arquivos do
 framework em si.
 
 A pasta `galastri` reúne o núcleo e todas as ferramentas e funcionalidades que
@@ -95,29 +95,29 @@ responder na requisição. Pode-se processar qualquer coisa, ou simplesmente nã
 fazer nada. Vai da necessidade da aplicação.
 
 ✔️
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ _EXEMPLO_                                                                    │
-│                                                                              │
-│ Voltando à rota `/clientes/listar`, poderíamos fazer com que o método        │
-│ `listar()` tenha um fluxo deprocessamento como:                              │
-│                                                                              │
-│ 1. Recebimento dos dados consulta:                                           │
-│    Os dados são capturado via GET, POST, ou JSON.                            │
-│                                                                              │
-│ 2. Validação destes dados:                                                   │
-│    Testa-se se os dados (como termo de busca, ordenação da lista, etc.) é    │
-│    válido.                                                                   │
-│                                                                              │
-│ 3. Acesso ao banco de dados:                                                 │
-│    Faz a consulta no banco de dados para trazer o resultado.                 │
-│                                                                              │
-│ 4. Organização do resultado:                                                 │
-│    Organiza como os dados em formato de lista que vão retornar ao frontend.  │
-│                                                                              │
-│ 5. Retorna:                                                                  │
-│    Conclui retornando o resultado para o controller que prosseguirá com o    │
-│    fluxo até a resposta para o frontend.                                     │
-└──────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ _EXEMPLO_                                                                   │
+│                                                                             │
+│ Voltando à rota `/clientes/listar`, poderíamos fazer com que o método       │
+│ `listar()` tenha um fluxo de processamento como:                            │
+│                                                                             │
+│ 1. Recebimento dos dados consulta:                                          │
+│    Os dados são capturado via GET, POST, ou JSON.                           │
+│                                                                             │
+│ 2. Validação destes dados:                                                  │
+│    Testa-se se os dados (como termo de busca, ordenação da lista, etc.) é   │
+│    válido.                                                                  │
+│                                                                             │
+│ 3. Acesso ao banco de dados:                                                │
+│    Faz a consulta no banco de dados para trazer o resultado.                │
+│                                                                             │
+│ 4. Organização do resultado:                                                │
+│    Organiza como os dados em formato de lista que vão retornar ao frontend. │
+│                                                                             │
+│ 5. Retorna:                                                                 │
+│    Conclui retornando o resultado para o controller que prosseguirá com o   │
+│    fluxo até a resposta para o frontend.                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
 \
   
 Os controllers, portanto, recebem e organizam qual método deverá ser chamado
@@ -184,7 +184,7 @@ dentro de uma classe.
 
 * Manter cada classe em seu próprio arquivo.  
 
-* Priorizar a **composição** ao invés de herança.  
+* Priorizar a _composição_ ao invés de herança.  
 
 A herança pode ser utilizada em casos específicos. A classe `Exception` do
 framework, por exemplo, estende a classe `Exception` do PHP. Mas para
@@ -223,38 +223,38 @@ Evite chamadas de `require` e `include` para carregar arquivos que fazem parte
 do fluxo de processamento de dados que estão em classes.
 
 ✔️
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ *EXEPMLO VÁLIDO*                                                             │
-│                                                                              │
-│ Para importar o arquivo `/galastri/modules/Tools.php`, basta informar o      │
-│ caminho formado pelo namespace e o nome da classe (que é o mesmo nome do     │
-│ arquivo).                                                                    │
-│                                                                              │
-│ ┌──────────────────────────────┐                                             │
-│ │ <?php                        │                                             │
-│ │ namespace \app;              │                                             │
-│ │                              │                                             │
-│ │ use \galastri\modules\Tools; │                                             │
-│ └──────────────────────────────┘                                             │
-│ ``                                                                           │
-└──────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│ _EXEMPLO VÁLIDO_                                                         │
+│                                                                          │
+│ Para importar o arquivo `/galastri/modules/Tools.php`, basta informar o  │
+│ caminho formado pelo namespace e o nome da classe (que é o mesmo nome do │
+│ arquivo).                                                                │
+│                                                                          │
+│ ┌──────────────────────────────┐                                         │
+│ │ <?php                        │                                         │
+│ │ namespace app;               │                                         │
+│ │                              │                                         │
+│ │ use \galastri\modules\Tools; │                                         │
+│ └──────────────────────────────┘                                         │
+│ ``                                                                       │
+└──────────────────────────────────────────────────────────────────────────┘
 \
 
 ❌
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ *EXEMPLO INVÁLIDO*                                                           │
-│                                                                              │
-│ Importar o arquivo `/galastri/modules/Tools.php` diretamente usando          │
-│ `require` ou `include`                                                       │
-│                                                                              │
-│ ┌────────────────────────────────────────┐                                   │
-│ │ <?php                                  │                                   │
-│ │ namespace \app;                        │                                   │
-│ │                                        │                                   │
-│ │ require '/galastri/modules/Tools.php'; │                                   │
-│ └────────────────────────────────────────┘                                   │
-│ ``                                                                           │
-└──────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│ _EXEMPLO INVÁLIDO_                                                  │
+│                                                                     │
+│ Importar o arquivo `/galastri/modules/Tools.php` diretamente usando │
+│ `require` ou `include`                                              │
+│                                                                     │
+│ ┌────────────────────────────────────────┐                          │
+│ │ <?php                                  │                          │
+│ │ namespace \app;                        │                          │
+│ │                                        │                          │
+│ │ require '/galastri/modules/Tools.php'; │                          │
+│ └────────────────────────────────────────┘                          │
+│ ``                                                                  │
+└─────────────────────────────────────────────────────────────────────┘
 \
 
 

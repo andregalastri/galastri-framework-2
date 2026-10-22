@@ -56,7 +56,7 @@ identifique a rota e execute o código correspondente.
 │ _EXEMPLO_                                                                    │
 │                                                                              │
 │ Considere uma requisição para a seguinte URL                                 │
-│ - https://galastri.test/clientes/listar                                      │
+│ http://localhost/clientes/listar                                             │
 │                                                                              │
 │ Internamente, o servidor encaminha essa requisição para `public/index.php`.  │
 │ O endereço continua sendo `/clientes/listar` no navegador, e o framework     │
@@ -66,7 +66,6 @@ identifique a rota e execute o código correspondente.
 │ o navegador recebe uma instrução para acessar outro endereço.                │
 └──────────────────────────────────────────────────────────────────────────────┘
 \
-
 
 
 #                          ENCAMINHAMENTO PELO APACHE                          <
@@ -91,7 +90,7 @@ Galastri Framework.
 
 --------------------------------------------------------------------------------
 ╔══════════════════════════════════════════════════════════════════════════════╗
-#                           Arquivo public/index.php                           ║
+#                           ARQUIVO public/index.php                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 O arquivo de entrada contém o seguinte:
@@ -242,15 +241,15 @@ A ordem da execução é a seguinte
    │ `galastri/core/Galastri.php`                                              │
    │                                                                           │
    │ O autoload basicamente procura o local do arquivo com base no caminho     │
-   │ informado através do namepace.                                            │
+   │ informado através do namespace.                                           │
    │                                                                           │
-   │ ┌─────────────────────────────────────────────────────────────────────┐   │
-   │ │ Uma observação importante a respeito de performance:                │   │
-   │ │                                                                     │   │
-   │ │ O autoload não carrega todas as classes de uma vez. Ele carrega     │   │
-   │ │ apenas uma classe quando ela é necessária. Portanto, não se trata d │   │
-   │ │ um recurso problemático no sentido de performance.                  │   │
-   │ └─────────────────────────────────────────────────────────────────────┘   │
+   │ ┌──────────────────────────────────────────────────────────────────────┐  │
+   │ │ Uma observação importante a respeito de performance:                 │  │
+   │ │                                                                      │  │
+   │ │ O autoload não carrega todas as classes de uma vez. Ele carrega      │  │
+   │ │ apenas uma classe quando ela é necessária. Portanto, não se trata de │  │
+   │ │ um recurso problemático no sentido de performance.                   │  │
+   │ └──────────────────────────────────────────────────────────────────────┘  │
    │ >                                                                         │
    └───────────────────────────────────────────────────────────────────────────┘
    \
@@ -278,7 +277,7 @@ A ordem da execução é a seguinte
    ``
    
    A classe `ErrorHandler` do framework é a responsável pelo tratamento de erros
-   e exceções. Essa chamada executa o método `run()` de e registra os mecanismos
+   e exceções. Essa chamada executa o método `run()` e registra os mecanismos
    responsáveis por:
 
    * Tratar os erros do PHP abrangidos pelo manipulador de erros.
@@ -321,7 +320,6 @@ A ordem da execução é a seguinte
 Este arquivo define valores que podem ser utilizados em diferentes partes
 do framework e da aplicação.
 
-
 *  Caminho do projeto
 
    ┌───────────────┬───────────────────────────────────────────────────────────┐
@@ -332,23 +330,24 @@ do framework e da aplicação.
 
    No ambiente de instalação apresentado nesta documentação, o valor será:
 
-   💻
-   ┌──────────────────────────────────────────┐
-   │ /home/desenvolvedor/galastri-framework-2 │
-   └──────────────────────────────────────────┘
-   >
+   🧾
+   ┌──────────────────────────────────────────────────────────────────────────────┐
+   │ /home/desenvolvedor/galastri-framework-2                                     │
+   └──────────────────────────────────────────────────────────────────────────────┘
+   @
    
    Esse caminho é calculado a partir da localização de `constants.php`, sem
    depender do endereço utilizado no navegador.
 
    A constante permite construir caminhos para outros arquivos do projeto.
-   Por exemplo:
-
-   💻
-   ┌──────────────────────────────────────┐
-   │ PROJECT_DIR.'/app/config/routes.php' │
-   └──────────────────────────────────────┘
-   >
+   
+   ✔️
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │ _EXEMPLO_                                                                 │
+   │                                                                           │
+   │ PROJECT_DIR.'/app/config/routes.php'                                      │
+   └───────────────────────────────────────────────────────────────────────────┘
+   \
    
 *  Versões
 
@@ -435,9 +434,6 @@ do framework e da aplicação.
 
 
 --------------------------------------------------------------------------------
-
-
-
 ▶️ PRÓXIMO TÓPICO: Processamento da requisição
 LINK: /docs/estrutura-e-funcionamento/processamento-da-requisicao.md
 

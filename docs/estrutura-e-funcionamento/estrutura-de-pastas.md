@@ -101,7 +101,6 @@ A instalação inicial inclui estes dois arquivos de exemplo:
 * `app/views/Index/main.php`:  
   contém o conteúdo apresentado nessa página.
 
-
 O uso de templates é opcional, mas é uma convenção comum em aplicações web. A
 aplicação, porém, pode utilizar uma view sem compartilhar sua estrutura com
 outras páginas.
@@ -169,8 +168,8 @@ Contém os arquivos que preparam o framework para executar uma requisição:
 
 💡
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ A sequência de execução desses arquivos será detalhada nos artigos,          │
-│ "Inicialização" e "Bootstrap".                                               │
+│ A sequência de execução desses arquivos será detalhada no artigo,            │
+│ "Inicialização".                                                             │
 └──────────────────────────────────────────────────────────────────────────────┘
 >
 
@@ -291,8 +290,7 @@ Esta pasta recebe os registros de erros produzidos pelo `ErrorHandler`. Esses
 registros ajudam a investigar falhas durante o desenvolvimento e a execução da
 aplicação.
 
-O PHP-FPM precisa ter permissão de escrita nessa pasta. Essa permissão foi
-configurada durante o tutorial de instalação.
+O PHP-FPM precisa ter permissão de escrita nessa pasta.
 
 
 
@@ -314,7 +312,7 @@ Não confundir com a pasta `galastri/misc/`.
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 Esta é a pasta configurada como raiz do site no servidor web. No ambiente que
-preparamos, ao acessar https://localhost, o Apache utiliza o caminho
+preparamos, ao acessar http://localhost, o Apache utiliza o caminho
 `/home/desenvolvedor/galastri-framework-2/public`.
 
 Ela contém três arquivos:
@@ -401,14 +399,11 @@ Além das pastas, a raiz do projeto contém os seguintes arquivos:
 ├─────────────────┼────────────────────────────────────────────────────────────┤
 │ `LICENSE`       │ Informa a licença de uso.                                  │
 └─────────────────┴────────────────────────────────────────────────────────────┘
->
 
 
 
 --------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO
-
-Sobre ambientes Windows:
+▶️ PRÓXIMO TÓPICO: Inicialização
 LINK: /docs/estrutura-e-funcionamento/inicializacao.md
 
 

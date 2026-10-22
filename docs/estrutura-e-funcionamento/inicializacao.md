@@ -332,9 +332,9 @@ do framework e da aplicação.
    No ambiente de instalação apresentado nesta documentação, o valor será:
 
    🧾
-   ┌─────────────────────────────────────────────────────────────────────────┐
-   │ /home/desenvolvedor/galastri-framework-2                                │
-   └─────────────────────────────────────────────────────────────────────────┘
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │ /home/desenvolvedor/galastri-framework-2                                  │
+   └───────────────────────────────────────────────────────────────────────────┘
    @
    
    Esse caminho é calculado a partir da localização de `constants.php`, sem

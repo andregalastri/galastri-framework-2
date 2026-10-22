@@ -18,13 +18,13 @@ e navegadores, enquanto o WSL com Linux roda o ambiente do servidor web com o
 framework.
 
 ⚠️
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Se você já utiliza Linux no seu computador ou possui um servidor ou máquina │
-│ virtual com Linux já instalado, você não precisa seguir este tutorial.      │
-│                                                                             │
-│ Vá direto para a seção seguinte:                                            │
-│ LINK: /docs/instalacao/preparando-o-ambiente-de-desenvolvimento.md          │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Se você já utiliza Linux no seu computador ou possui um servidor ou máquina  │
+│ virtual com Linux já instalado, você não precisa seguir este tutorial.       │
+│                                                                              │
+│ Vá direto para a seção seguinte:                                             │
+│ LINK: /docs/instalacao/preparando-o-ambiente-de-desenvolvimento.md           │
+└──────────────────────────────────────────────────────────────────────────────┘
 >
 
 
@@ -104,9 +104,9 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
 2. Quando terminar, aparecerá uma linha parecida com esta:
 
    🧾
-   ┌─────────────────────────────────────────────────────────────────────────┐
-   │ desenvolvedor@DESKTOP-123ABC:~$                                         │
-   └─────────────────────────────────────────────────────────────────────────┘
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │ desenvolvedor@DESKTOP-123ABC:~$                                           │
+   └───────────────────────────────────────────────────────────────────────────┘
    @
    
    Essa linha indica que o terminal está pronto para receber comandos.

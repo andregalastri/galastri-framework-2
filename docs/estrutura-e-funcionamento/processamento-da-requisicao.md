@@ -146,12 +146,12 @@ arquivos do projeto.
    └────────────────────────────┴──────────────────────────────────────────────┘
 
 💡
-┌───────────────────────────────────────────────────────────────────────────┐
-│ Note que o método `main()` do exemplo retorna um array vazio, o que é     │
-│ permitido. Neste caso específico, nenhum dado adicional é utilizado,      │
-│ portanto, a página é montada normalmente pois nem o template, nem a view, │
-│ solicitam dados do retorno.                                               │
-└───────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Note que o método `main()` do exemplo retorna um array vazio, o que é        │
+│ permitido. Neste caso específico, nenhum dado adicional é utilizado,         │
+│ portanto, a página é montada normalmente pois nem o template, nem a view,    │
+│ solicitam dados do retorno.                                                  │
+└──────────────────────────────────────────────────────────────────────────────┘
 >
 
 

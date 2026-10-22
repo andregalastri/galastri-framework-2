@@ -95,29 +95,29 @@ responder na requisição. Pode-se processar qualquer coisa, ou simplesmente nã
 fazer nada. Vai da necessidade da aplicação.
 
 ✔️
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ _EXEMPLO_                                                                   │
-│                                                                             │
-│ Voltando à rota `/clientes/listar`, poderíamos fazer com que o método       │
-│ `listar()` tenha um fluxo de processamento como:                            │
-│                                                                             │
-│ 1. Recebimento dos dados da consulta:                                       │
-│    Os dados são capturados via GET, POST, ou JSON.                          │
-│                                                                             │
-│ 2. Validação destes dados:                                                  │
-│    Testa-se se os dados (como termo de busca e ordenação da lista) são      │
-│    válidos.                                                                 │
-│                                                                             │
-│ 3. Acesso ao banco de dados:                                                │
-│    Faz a consulta no banco de dados para trazer o resultado.                │
-│                                                                             │
-│ 4. Organização do resultado:                                                │
-│    Organiza os dados em formato de lista que vão retornar ao frontend.      │
-│                                                                             │
-│ 5. Retorna:                                                                 │
-│    Conclui retornando o resultado para o controller que prosseguirá com o   │
-│    fluxo até a resposta para o frontend.                                    │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ _EXEMPLO_                                                                    │
+│                                                                              │
+│ Voltando à rota `/clientes/listar`, poderíamos fazer com que o método        │
+│ `listar()` tenha um fluxo de processamento como:                             │
+│                                                                              │
+│ 1. Recebimento dos dados da consulta:                                        │
+│    Os dados são capturados via GET, POST, ou JSON.                           │
+│                                                                              │
+│ 2. Validação destes dados:                                                   │
+│    Testa-se se os dados (como termo de busca e ordenação da lista) são       │
+│    válidos.                                                                  │
+│                                                                              │
+│ 3. Acesso ao banco de dados:                                                 │
+│    Faz a consulta no banco de dados para trazer o resultado.                 │
+│                                                                              │
+│ 4. Organização do resultado:                                                 │
+│    Organiza os dados em formato de lista que vão retornar ao frontend.       │
+│                                                                              │
+│ 5. Retorna:                                                                  │
+│    Conclui retornando o resultado para o controller que prosseguirá com o    │
+│    fluxo até a resposta para o frontend.                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
 \
   
 Os controllers, portanto, recebem e organizam qual método deverá ser chamado
@@ -224,37 +224,37 @@ Evite chamadas de `require` e `include` para carregar arquivos que fazem parte
 do fluxo de processamento de dados que estão em classes.
 
 ✔️
-┌──────────────────────────────────────────────────────────────────────────┐
-│ _EXEMPLO VÁLIDO_                                                         │
-│                                                                          │
-│ Para referenciar `Tools`, informe seu namespace e nome da classe.       │
-│ O autoload carrega o arquivo da classe quando ela é utilizada.          │
-│                                                                          │
-│ ┌──────────────────────────────┐                                         │
-│ │ <?php                        │                                         │
-│ │ namespace app;               │                                         │
-│ │                              │                                         │
-│ │ use \galastri\modules\Tools; │                                         │
-│ └──────────────────────────────┘                                         │
-│ ``                                                                       │
-└──────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ _EXEMPLO VÁLIDO_                                                             │
+│                                                                              │
+│ Para referenciar `Tools`, informe seu namespace e nome da classe.            │
+│ O autoload carrega o arquivo da classe quando ela é utilizada.               │
+│                                                                              │
+│ ┌──────────────────────────────┐                                             │
+│ │ <?php                        │                                             │
+│ │ namespace app;               │                                             │
+│ │                              │                                             │
+│ │ use \galastri\modules\Tools; │                                             │
+│ └──────────────────────────────┘                                             │
+│ ``                                                                           │
+└──────────────────────────────────────────────────────────────────────────────┘
 \
 
 ❌
-┌─────────────────────────────────────────────────────────────────────┐
-│ _EXEMPLO INVÁLIDO_                                                  │
-│                                                                     │
-│ Importar o arquivo `/galastri/modules/Tools.php` diretamente usando │
-│ `require` ou `include`                                              │
-│                                                                     │
-│ ┌────────────────────────────────────────┐                          │
-│ │ <?php                                  │                          │
-│ │ namespace app;                         │                          │
-│ │                                        │                          │
-│ │ require '/galastri/modules/Tools.php'; │                          │
-│ └────────────────────────────────────────┘                          │
-│ ``                                                                  │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ _EXEMPLO INVÁLIDO_                                                           │
+│                                                                              │
+│ Importar o arquivo `/galastri/modules/Tools.php` diretamente usando          │
+│ `require` ou `include`                                                       │
+│                                                                              │
+│ ┌────────────────────────────────────────┐                                   │
+│ │ <?php                                  │                                   │
+│ │ namespace app;                         │                                   │
+│ │                                        │                                   │
+│ │ require '/galastri/modules/Tools.php'; │                                   │
+│ └────────────────────────────────────────┘                                   │
+│ ``                                                                           │
+└──────────────────────────────────────────────────────────────────────────────┘
 \
 
 

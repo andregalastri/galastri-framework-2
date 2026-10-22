@@ -22,10 +22,10 @@ O Apache e o PHP-FPM precisam acessar o projeto dentro da sua pasta pessoal.
 Também precisamos permitir que o PHP-FPM grave os registros de erro em `logs`.
 
 ⚠️
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Troque o termo `desenvolvedor` nos comandos a seguir caso seu usuário tiver │
-│ outro nome.                                                                 │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Troque o termo `desenvolvedor` nos comandos a seguir caso seu usuário tenha  │
+│ outro nome.                                                                  │
+└──────────────────────────────────────────────────────────────────────────────┘
 >
 
 1. No terminal, execute o seguinte comando:

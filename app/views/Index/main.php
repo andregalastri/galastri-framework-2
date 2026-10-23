@@ -19,4 +19,4 @@
     </nav>
 </div>
 
-<div class='version'><?php $g->print('version');?></div>
+<div class='version'><?php $g->print('meta', 'galastriVersion');?></div>

@@ -231,7 +231,3 @@
     <script>load();</script>
 </body>
 </html>
-
-
-
-

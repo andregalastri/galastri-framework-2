@@ -7,253 +7,330 @@ final class VarDump
     const MAX_FORMAT_DEPTH = 128;
 
     private static int $backTraceLevel = 0;
+    private static int $dumpPointerPosition = 0;
+    private static string $refMarker = '';
+    private static int $currentDepth = 0;
 
     private function __construct() {}
 
-    public static function print(mixed ...$values): void
+    public static function print(mixed ...$valueList): void
     {
-        $level = self::getBacktraceLevel(RESET_BACKTRACE_LEVEL);
-        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $level + 1);
-        $debug = $trace[$level] ?? [];
-        $contents = self::getValues(...$values);
+        $backtraceLevel = self::getBacktraceLevel();
+        self::resetBacktraceLevel();
+        
+        $debugBacktrace = debug_backtrace(
+            DEBUG_BACKTRACE_IGNORE_ARGS, $backtraceLevel + 1
+        );
+        
+        $debugFile = $debugBacktrace[$backtraceLevel]['file'] ?? 'Desconhecido';
+        $debugLine = $debugBacktrace[$backtraceLevel]['line'] ?? 0;
+        
+        $varDumpOutput = self::getVarDumpOutput(...$valueList);
 
-        if (is_readable(self::STYLESHEET_FILE)) {
-            $stylesheet = file_get_contents(self::STYLESHEET_FILE);
+        $varDumpCss = file_get_contents(self::STYLESHEET_FILE);
 
-            if ($stylesheet !== false) {
-                echo '<style>'.$stylesheet.'</style>';
-            }
-        }
+        echo '<style>'.$varDumpCss.'</style>';
 
-        $file = self::escape($debug['file'] ?? 'Desconhecido');
-        $line = self::escape((string) ($debug['line'] ?? 0));
+        $currentFile = self::escapeHtml($debugFile);
+        $currentLine = self::escapeHtml($debugLine);
 
-        echo '<div class="dump">';
+        echo '<div class="vardump">';
         echo '<h2><b>var_dump</b></h2>';
-        echo '<div><b>ORIGIN: </b>'.str_replace('/', '<wbr>/', $file).'</div>';
-        echo '<div><b>LINE: </b>'.$line.'</div>';
+        echo '<div><b>ORIGIN: </b>'.str_replace('/', '<wbr>/', $currentFile).'</div>';
+        echo '<div><b>LINE: </b>'.$currentLine.'</div>';
         echo '<br>';
         echo '<div><b>VALUES: </b></div>';
 
-        foreach ($contents as $key => $dump) {
+        foreach ($varDumpOutput as $key => $currentOutput) {
+            
+            self::resetDumpPointerPosition();
+            
+            $formattedDump = self::applyFormats($currentOutput, 0);
+            
+            $isFormattedDumpNull = $formattedDump === null;
+            $doesPointerDiff = self::$dumpPointerPosition !== strlen($currentOutput);
+
+            // Se a leitura falhar ou ficar incompleta, exibir o dump original.
+            if ($formattedDump === null || self::$dumpPointerPosition !== strlen($currentOutput)) {
+                $formattedDump = self::escapeHtml($currentOutput);
+            }
+
             echo '<div class="division">RESULT '.($key + 1).'</div>';
-            echo '<pre>'.self::format($dump).'</pre>';
+            echo '<pre>'.$formattedDump.'</pre>';
         }
 
         echo '</div>';
     }
 
-    public static function raw(mixed ...$values): void
+    public static function raw(mixed ...$valueList): void
     {
         echo '<pre>';
-        echo self::escape(implode("\n", self::getValues(...$values)));
+        echo self::escapeHtml(implode("\n", self::getVarDumpOutput(...$valueList)));
         echo '</pre>';
     }
 
-    private static function getValues(mixed ...$values): array
+    private static function getVarDumpOutput(mixed ...$valueList): array
     {
-        $contents = [];
+        $varDumpOutput = [];
         ob_start();
 
         try {
-            foreach ($values as $value) {
-                \var_dump($value);
-                $contents[] = ob_get_contents();
+            foreach ($valueList as $value) {
+                var_dump($value);
+                $varDumpOutput[] = ob_get_contents();
                 ob_clean();
             }
         } finally {
             ob_end_clean();
         }
 
-        return $contents;
+        return $varDumpOutput;
     }
-
-    private static function format(string $dump): string
+    
+    private static function getMatches(string $regex, string $currentOutput): array | bool
     {
-        $position = 0;
-        $html = self::readValue($dump, $position, 0);
-
-        // Não aproveitar uma interpretação incompleta da saída.
-        if ($html === null || $position !== strlen($dump)) {
-            return self::escape($dump);
+        $hasMatch = preg_match($regex, $currentOutput, $matches, 0, self::$dumpPointerPosition) === 1;
+        
+        if ($hasMatch) {
+            return $matches;
         }
-
-        return $html;
+        
+        return false;
     }
-
-    private static function readValue(string $dump, int &$position, int $depth ): ?string
+    
+    private static function applyFormats(string $dump): ?string
     {
-        if ($depth > self::MAX_FORMAT_DEPTH) {
+        if (self::$currentDepth > self::MAX_FORMAT_DEPTH) {
             return null;
         }
 
-        $reference = '';
+        self::$refMarker = '';
 
-        if (substr($dump, $position, 1) === '&') {
-            $reference = '&amp;';
-            $position++;
+        if (substr($dump, self::$dumpPointerPosition, 1) === '&') {
+            self::$refMarker = '&amp;';
+            self::moveDumpPointerForward(1);
         }
 
-        if (preg_match('/\G(string\((\d+)\)) "/', $dump, $matches, 0, $position) === 1) {
-            $position += strlen($matches[0]);
-            $length = (int) $matches[2];
+        $regex = [
+            'string'        => '/\G(string\((\d+)\)) "/',
+            'array'         => '/\G(array\((\d+)\)) \{\n/',
+            'object'        => '/\G((?:lazy (?:ghost|proxy) )?object\([^\r\n]*\)#\d+ \((\d+)\)) \{\n/',
+            'numeric'       => '/\G(int|float)\(([^()\r\n]*)\)\n/',
+            'boolean'       => '/\Gbool\((true|false)\)\n/',
+            'recursion'     => '/\G\*RECURSION\*\n/',
+            'uninitialized' => '/\Guninitialized\(([^\r\n]*)\)\n/',
+            'resource'      => '/\Gresource\((\d+)\) of type \(([^\r\n]*)\)\n/',
+            'enum'          => '/\Genum\(([^\r\n]*)\)\n/',
+            'unknown'       => '/\GUNKNOWN:0\n/',
+        ];
 
-            // string(N) informa bytes. Não converter para HTML antes da leitura.
-            if ($length > strlen($dump) - $position - 2) {
-                return null;
-            }
-
-            $value = substr($dump, $position, $length);
-            $position += $length;
-
-            if (substr($dump, $position, 2) !== "\"\n") {
-                return null;
-            }
-
-            $position += 2;
-
-            return $reference.self::span('string-value', '"'.$value.'"')
-                .' '.self::span('string-type', $matches[1])."\n";
-        }
-
-        if (preg_match('/\G(array\((\d+)\)) \{\n/', $dump, $matches, 0, $position) === 1) {
-            $position += strlen($matches[0]);
-
-            $html = self::readContainer(
-                $dump,
-                $position,
-                $depth,
-                $matches[1],
-                (int) $matches[2],
-                false
-            );
-
-            if ($html === null) {
-                return null;
-            }
-
-            return $reference.$html;
-        }
-
-        $objectRegex = '/\G((?:lazy (?:ghost|proxy) )?object\([^\r\n]*\)#\d+ \((\d+)\)) \{\n/';
-
-        if (preg_match($objectRegex, $dump, $matches, 0, $position) === 1) {
-            $position += strlen($matches[0]);
-
-            $html = self::readContainer(
-                $dump,
-                $position,
-                $depth,
-                $matches[1],
-                (int) $matches[2],
-                true
-            );
-
-            if ($html === null) {
-                return null;
-            }
-
-            return $reference.$html;
-        }
-
-        if (preg_match('/\G(int|float)\(([^()\r\n]*)\)\n/', $dump, $matches, 0, $position) === 1) {
-            $position += strlen($matches[0]);
-
-            return $reference.self::span('numeric-value', $matches[2])
-                .' '.self::span('numeric-type', $matches[1])."\n";
-        }
-
-        if (preg_match('/\Gbool\((true|false)\)\n/', $dump, $matches, 0, $position) === 1) {
-            $position += strlen($matches[0]);
-            $type = $matches[1];
-
-            return $reference.self::span($type.'-value', '('.$type.')')
-                .' '.self::span($type.'-type', 'bool')."\n";
-        }
-
-        if (substr($dump, $position, 5) === "NULL\n") {
-            $position += 5;
-
-            return $reference.self::span('null', 'NULL')."\n";
+        if ($matches = self::getMatches($regex['string'], $dump)) {
+            return self::stringFormatting($dump, $matches);
         }
         
-        if (preg_match('/\G\*RECURSION\*\n/', $dump, $matches, 0, $position) === 1) {
-            $position += strlen($matches[0]);
-
-            return $reference.self::span('recursion', '*RECURSION*')."\n";
+        if ($matches = self::getMatches($regex['array'], $dump)) {
+            return self::arrayFormatting($dump, $matches);
         }
 
-        if (preg_match('/\Guninitialized\(([^\r\n]*)\)\n/', $dump, $matches, 0, $position) === 1) {
-            $position += strlen($matches[0]);
-
-            return $reference.self::span('uninitialized', 'uninitialized')
-                .' '.self::formatType($matches[1])."\n";
+        if ($matches = self::getMatches($regex['object'], $dump)) {
+            return self::objectFormatting($dump, $matches);
         }
         
-        if (preg_match('/\Gresource\((\d+)\) of type \(([^\r\n]*)\)\n/', $dump, $matches, 0, $position) === 1) {
-            $position += strlen($matches[0]);
-
-            return $reference.self::span('resource-value', $matches[1])
-                .' '.self::span('resource-type', 'resource')
-                .' '.self::span('resource-kind', '('.$matches[2].')')."\n";
+        if ($matches = self::getMatches($regex['numeric'], $dump)) {
+            return self::numericFormatting($matches);
         }
 
-        if (preg_match('/\Genum\(([^\r\n]*)\)\n/', $dump, $matches, 0, $position) === 1) {
-            $position += strlen($matches[0]);
-
-            return $reference.self::span('enum-value', $matches[1])
-                .' '.self::span('enum-type', 'enum')."\n";
+        if ($matches = self::getMatches($regex['boolean'], $dump)) {
+            return self::booleanFormatting($matches);
         }
 
-        if (preg_match('/\GUNKNOWN:0\n/', $dump, $matches, 0, $position) === 1) {
-            $position += strlen($matches[0]);
-
-            return $reference.self::span('unknown', 'UNKNOWN:0')."\n";
+        if ($matches = self::getMatches($regex['recursion'], $dump)) {
+            return self::recursionFormatting($matches);
         }
 
-        if (preg_match($otherRegex, $dump, $matches, 0, $position) === 1) {
-            $position += strlen($matches[0]);
-
-            return $reference.self::escape($matches[0]);
+        if ($matches = self::getMatches($regex['uninitialized'], $dump)) {
+            return self::uninitializedFormatting($matches);
         }
 
+        if ($matches = self::getMatches($regex['resource'], $dump)) {
+            return self::resourceFormatting($matches);
+        }
+
+        if ($matches = self::getMatches($regex['enum'], $dump)) {
+            return self::enumFormatting($matches);
+        }
+
+        if ($matches = self::getMatches($regex['unknown'], $dump)) {
+            return self::unknownFormatting($matches);
+        }
+        
+        $nullMatches = substr($dump, self::$dumpPointerPosition, 5) === "NULL\n";
+
+        if ($nullMatches) {
+            return self::nullFormatting();
+        }
+        
         return null;
     }
+    
+    private static function stringFormatting(string $currentoutput, array $matches): ?string
+    {
+        $matchLength = strlen($matches[0]);
+        $outputlength = $matches[2];
 
-    private static function readContainer(
-        string $dump,
-        int &$position,
-        int $depth,
-        string $header,
-        int $count,
-        bool $isObject
-    ): ?string {
-        $indent = str_repeat(' ', $depth * 2);
-        $childIndent = $indent.'  ';
+        self::moveDumpPointerForward($matchLength);
 
-        if ($isObject) {
-            $headerClass = 'object-header';
-        } else {
-            $headerClass = 'array-type';
+        if ($outputlength > strlen($currentoutput) - self::$dumpPointerPosition - 2) {
+            return null;
         }
 
-        $html = self::span($headerClass, $header)." {\n";
+        $value = substr($currentoutput, self::$dumpPointerPosition, $outputlength);
+
+        self::moveDumpPointerForward($outputlength);
+
+        if (substr($currentoutput, self::$dumpPointerPosition, 2) !== "\"\n") {
+            return null;
+        }
+
+        self::moveDumpPointerForward(2);
+
+        return self::$refMarker.self::applyHtml('string-value', '"'.$value.'"').' '.self::applyHtml('string-type', $matches[1])."\n";
+    }
+
+    private static function arrayFormatting(string $currentoutput, array $matches): ?string
+    {
+        $matchLength = strlen($matches[0]);
+        $outputlength = $matches[2];
+
+        self::moveDumpPointerForward($matchLength);
+
+        $html = self::readContainer($currentoutput, $matches[1], $outputlength, false);
+
+        if ($html === null) {
+            return null;
+        }
+
+        return self::$refMarker.$html;
+    }
+
+    private static function objectFormatting(string $currentoutput, array $matches): ?string
+    {
+        $matchLength = strlen($matches[0]);
+        $outputlength = $matches[2];
+
+        self::moveDumpPointerForward($matchLength);
+
+        $html = self::readContainer($currentoutput, $matches[1], $outputlength, true);
+
+        if ($html === null) {
+            return null;
+        }
+
+        return self::$refMarker.$html;
+    }
+
+    private static function numericFormatting(array $matches): ?string
+    {
+        $matchLength = strlen($matches[0]);
+        $outputlength = $matches[2];
+
+        self::moveDumpPointerForward($matchLength);
+
+        return self::$refMarker.self::applyHtml('numeric-value', $outputlength).' '.self::applyHtml('numeric-type', $matches[1])."\n";
+    }
+
+    private static function booleanFormatting(array $matches): ?string
+    {
+        $matchLength = strlen($matches[0]);
+        $boolType = $matches[1];
+
+        self::moveDumpPointerForward($matchLength);
+
+
+        return self::$refMarker.self::applyHtml($boolType.'-value', '('.$boolType.')').' '.self::applyHtml($boolType.'-type', 'bool')."\n";
+    }
+
+    private static function recursionFormatting(array $matches): ?string
+    {
+        $matchLength = strlen($matches[0]);
+
+        self::moveDumpPointerForward($matchLength);
+
+        return self::$refMarker.self::applyHtml('recursion', '*RECURSION*')."\n";
+    }
+
+    private static function uninitializedFormatting(array $matches): ?string
+    {
+        $matchLength = strlen($matches[0]);
+
+        self::moveDumpPointerForward($matchLength);
+
+        return self::$refMarker.self::applyHtml('uninitialized', 'uninitialized').' '.self::formatType($matches[1])."\n";
+    }
+
+    private static function resourceFormatting(array $matches): ?string
+    {
+        $matchLength = strlen($matches[0]);
+
+        self::moveDumpPointerForward($matchLength);
+
+        return self::$refMarker.self::applyHtml('resource-value', $matches[1]).' '.self::applyHtml('resource-type', 'resource').' '.self::applyHtml('resource-kind', '('.$matches[2].')')."\n";
+    }
+
+    private static function enumFormatting(array $matches): ?string
+    {
+        $matchLength = strlen($matches[0]);
+
+        self::moveDumpPointerForward($matchLength);
+
+        return self::$refMarker.self::applyHtml('enum-value', $matches[1]).' '.self::applyHtml('enum-type', 'enum')."\n";
+    }
+
+    private static function unknownFormatting(array $matches): ?string
+    {
+        $matchLength = strlen($matches[0]);
+
+        self::moveDumpPointerForward($matchLength);
+
+        return self::$refMarker.self::applyHtml('unknown', 'UNKNOWN:0')."\n";
+    }
+
+    private static function nullFormatting(): ?string
+    {
+        self::moveDumpPointerForward(5);
+
+        return self::$refMarker.self::applyHtml('null', 'NULL')."\n";
+    }
+
+    
+    
+    
+    
+    
+    private static function readContainer(string $dump, string $header, int $count, bool $isObject): ?string {
+        $indent = str_repeat(' ', self::$currentDepth * 2);
+        $childIndent = $indent.'  ';
+
+        $headerClass = $isObject ? 'object-header' : 'array-type';
+
+        $html = self::applyHtml($headerClass, $header)." {\n";
 
         $keyRegex = '/\G'.$childIndent.'(\[(?:-?\d+|"[\s\S]*?"(?::(?:private|protected))?)\])=>\n'.$childIndent.'/';
 
         for ($index = 0; $isObject || $index < $count; $index++) {
             // Objetos podem exibir propriedades não incluídas na contagem do cabeçalho.
-            if ($isObject && substr($dump, $position, strlen($indent) + 2) === ($indent."}\n")) {
+            if ($isObject && substr($dump, self::$dumpPointerPosition, strlen($indent) + 2) === ($indent."}\n")) {
                 break;
             }
             
-            if (preg_match($keyRegex, $dump, $matches, 0, $position) !== 1) {
+            if (preg_match($keyRegex, $dump, $matches, 0, self::$dumpPointerPosition) !== 1) {
                 return null;
             }
-
-            $position += strlen($matches[0]);
+            
+            self::moveDumpPointerForward(strlen($matches[0]));
+            
             $key = $matches[1];
-            $value = self::readValue($dump, $position, $depth + 1);
+            $value = self::applyFormats($dump, self::$currentDepth + 1);
 
             if ($value === null) {
                 return null;
@@ -271,16 +348,16 @@ final class VarDump
             }
 
             // Preservar a chave inteira, incluindo a classe declaradora e a visibilidade.
-            $html .= $childIndent.self::span($keyClass, $key).' =&gt; '.$value;
+            $html .= $childIndent.self::applyHtml($keyClass, $key).' =&gt; '.$value;
         }
 
         $closing = $indent."}\n";
 
-        if (substr($dump, $position, strlen($closing)) !== $closing) {
+        if (substr($dump, self::$dumpPointerPosition, strlen($closing)) !== $closing) {
             return null;
         }
 
-        $position += strlen($closing);
+        self::moveDumpPointerForward(strlen($closing));
 
         return $html.$closing;
     }
@@ -302,55 +379,64 @@ final class VarDump
         ];
 
         // Separar os tipos, preservando os operadores e os parênteses.
-        $parts = preg_split(
-            '/([?&|()])/',
-            $type,
-            -1,
-            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
-        );
+        $parts = preg_split('/([?&|()])/', $type, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
         if ($parts === false) {
-            return self::escape($type);
+            return self::escapeHtml($type);
         }
 
         $html = [];
 
         foreach ($parts as $part) {
             if (in_array($part, ['?', '&', '|', '(', ')'], true)) {
-                $html[] = self::escape($part);
+                $html[] = self::escapeHtml($part);
             } else {
                 // Nomes de classes e interfaces recebem o estilo de objeto.
                 $class = $classes[$part] ?? 'object-header';
-                $html[] = self::span($class, $part);
+                $html[] = self::applyHtml($class, $part);
             }
         }
 
         return implode('', $html);
     }
 
-    private static function span(string $class, string $value): string
+    private static function applyHtml(string $class, string $value): string
     {
-        return '<span class="'.$class.'">'.self::escape($value).'</span>';
+        return '<span class="'.$class.'">'.self::escapeHtml($value).'</span>';
     }
 
-    private static function escape(string $value): string
+    private static function escapeHtml(string $value): string
     {
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
+    public static function addDepth(int $quantity): void
+    {
+        self::$currentDepth += $quantity;
     }
 
     public static function addBacktraceLevel(): void
     {
         self::$backTraceLevel++;
     }
-
-    public static function getBacktraceLevel(bool $reset = KEEP_BACKTRACE_LEVEL): int
+    
+    private static function moveDumpPointerForward(int $moves): void
     {
-        $level = self::$backTraceLevel;
+        self::$dumpPointerPosition += $moves;
+    }
 
-        if ($reset) {
-            self::$backTraceLevel = 0;
-        }
+    private static function resetDumpPointerPosition(): void
+    {
+        self::$dumpPointerPosition = 0;
+    }
 
-        return $level;
+    public static function getBacktraceLevel(): int
+    {
+        return self::$backTraceLevel;
+    }
+
+    public static function resetBacktraceLevel(): void
+    {
+        self::$backTraceLevel = 0;
     }
 }

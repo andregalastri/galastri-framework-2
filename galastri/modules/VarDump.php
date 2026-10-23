@@ -15,7 +15,7 @@ final class VarDump
 
     public static function print(mixed ...$valueList): void
     {
-        $backtraceLevel = self::getBacktraceLevel();
+        $backtraceLevel = self::$backTraceLevel;
         self::resetBacktraceLevel();
         
         $debugBacktrace = debug_backtrace(
@@ -43,9 +43,10 @@ final class VarDump
 
         foreach ($varDumpOutput as $key => $currentOutput) {
             
+            self::$currentDepth = 0;
             self::resetDumpPointerPosition();
             
-            $formattedDump = self::applyFormats($currentOutput, 0);
+            $formattedDump = self::applyFormats($currentOutput);
             
             $isFormattedDumpNull = $formattedDump === null;
             $doesPointerDiff = self::$dumpPointerPosition !== strlen($currentOutput);
@@ -330,7 +331,14 @@ final class VarDump
             self::moveDumpPointerForward(strlen($matches[0]));
             
             $key = $matches[1];
-            $value = self::applyFormats($dump, self::$currentDepth + 1);
+            
+            self::$currentDepth++;
+
+            try {
+                $value = self::applyFormats($dump);
+            } finally {
+                self::$currentDepth--;
+            }
 
             if ($value === null) {
                 return null;
@@ -410,11 +418,6 @@ final class VarDump
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
-    public static function addDepth(int $quantity): void
-    {
-        self::$currentDepth += $quantity;
-    }
-
     public static function addBacktraceLevel(): void
     {
         self::$backTraceLevel++;
@@ -428,11 +431,6 @@ final class VarDump
     private static function resetDumpPointerPosition(): void
     {
         self::$dumpPointerPosition = 0;
-    }
-
-    public static function getBacktraceLevel(): int
-    {
-        return self::$backTraceLevel;
     }
 
     public static function resetBacktraceLevel(): void

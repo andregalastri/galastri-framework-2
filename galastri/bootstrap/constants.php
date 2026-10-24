@@ -50,56 +50,6 @@ define('PERFORMANCE_ANALYSIS_TAG', bin2hex(random_bytes(10)));
 
 
 /**
- * 🟢 VERSÕES
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Armazena o conteúdo dos arquivos de versão.
- *
- * Se um dos arquivos não existir, a constante correspondente armazenará a
- * string "Version file not found"
- *
- * ┌──────────────────┬──────────────────────────────────────────┐
- * │ GALASTRI_VERSION │ Conteúdo do arquivo `/galastri/VERSION`. │
- * ├──────────────────┼──────────────────────────────────────────┤
- * │ APP_VERSION      │ Conteúdo do arquivo `/app/VERSION`.      │
- * └──────────────────┴──────────────────────────────────────────┘
- *
- * Esses valores ficam disponíveis para consulta pelo código e podem integrar
- * os metadados da resposta.
- */
-
-$galastriVersion = 'Version file not found';
-$appVersion = 'Version file not found';
-
-if (file_exists(PROJECT_DIR.'/galastri/VERSION')) {
-    $galastriVersion = trim(file_get_contents(PROJECT_DIR.'/galastri/VERSION'));
-}
-
-define('GALASTRI_VERSION', $galastriVersion);
-
-if (file_exists(PROJECT_DIR.'/app/VERSION')) {
-    $appVersion = trim(file_get_contents(PROJECT_DIR.'/app/VERSION'));
-}
-
-define('APP_VERSION', $appVersion);
-
-
-
-/**
- * 🟢 TIPOS MIME
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Armazena os tipos MIME da aplicação. Se ele não existir, o valor utilizado
- * será um array vazio.
- */
-
-$mimeTypeList = [];
-
-if (file_exists(PROJECT_DIR.'/app/config/mime-types.php')) {
-    $mimeTypeList = require(PROJECT_DIR.'/app/config/mime-types.php');
-}
-
-
-
-/**
  * 🟢 MODOS DE ESCRITA EM ARQUIVOS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Permitem indicar qual a operação será usada para escrever em arquivos, sem
@@ -134,19 +84,100 @@ const OVERWRITE_CONTENT = 3;
  * interpretação dos valores `true` e `false` no código, que tornaria a leitura
  * pouco autoexplicativa, como em chamadas de função.
  *
- * ┌──────────────────┬───────┬──────────────────────────────────────────────────┐
- * │ CONSTANTE        │ VALOR │ FINALIDADE                                       │
- * ├──────────────────┼───────┼──────────────────────────────────────────────────┤
- * │ IS_AN_OBJECT     │ true  │ Indicar literalmente que um elemento é um        │
- * │                  │       │ objeto.                                          │
- * ├──────────────────┼───────┼──────────────────────────────────────────────────┤
- * │ IS_NOT_AN_OBJECT │ false │ Indicar literalmente que um elemento NÃO É um    │
- * │                  │       │ objeto.                                          │
- * └──────────────────┴───────┴──────────────────────────────────────────────────┘
+ * ┌──────────────────┬───────┬────────────────────────────────────────────────┐
+ * │ CONSTANTE        │ VALOR │ FINALIDADE                                     │
+ * ├──────────────────┼───────┼────────────────────────────────────────────────┤
+ * │ IS_AN_OBJECT     │ true  │ Indicar literalmente que um elemento é um      │
+ * │                  │       │ objeto.                                        │
+ * ├──────────────────┼───────┼────────────────────────────────────────────────┤
+ * │ IS_NOT_AN_OBJECT │ false │ Indicar literalmente que um elemento NÃO É um  │
+ * │                  │       │ objeto.                                        │
+ * └──────────────────┴───────┴────────────────────────────────────────────────┘
  */
 
 const IS_AN_OBJECT = true;
 const IS_NOT_AN_OBJECT = false;
+
+
+
+/**
+ * 🟢 LOCAL DE ARQUIVOS DO FRAMEWORK
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * Armazena a localização dos arquivos usados pelo framework.
+ *
+ * ┌────────────────────────────┬──────────────────────────────────────────────┐
+ * │ GALASTRI_VERSION_FILE_PATH │ Caminho para o arquivo VERSION da aplicação. │
+ * ├────────────────────────────┼──────────────────────────────────────────────┤
+ * │ APP_VERSION_FILE_PATH      │ Caminho para o arquivo VERSION da aplicação. │
+ * ├────────────────────────────┼──────────────────────────────────────────────┤
+ * │ APP_BOOTSTRAP_FILE_PATH    │ Caminho para o arquivo de bootstrap da       │
+ * │                            │ aplicação, para executar códigos antes da    │
+ * │                            │ inicialização do framework.                  │
+ * ├────────────────────────────┼──────────────────────────────────────────────┤
+ * │ MIME_TYPES_FILE_PATH       │ Caminho para o arquivo de tipos MIME da      │
+ * │                            │ aplicação.                                   │
+ * ├────────────────────────────┼──────────────────────────────────────────────┤
+ * │ AUTOLOADER_FILE_PATH       │ Caminho para o arquivo de autoloader do      │
+ * │                            │ Composer.                                    │
+ * └────────────────────────────┴──────────────────────────────────────────────┘
+ */
+
+define('GALASTRI_VERSION_FILE_PATH', PROJECT_DIR . '/galastri/VERSION');
+define('APP_VERSION_FILE_PATH',      PROJECT_DIR . '/app/VERSION');
+define('APP_BOOTSTRAP_FILE_PATH',    PROJECT_DIR . '/app/bootstrap.php');
+define('MIME_TYPES_FILE_PATH',       PROJECT_DIR . '/app/config/mime-types.php');
+define('AUTOLOADER_FILE_PATH',       PROJECT_DIR . '/vendor/autoload.php');
+
+
+
+/**
+ * 🟢 VERSÕES
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * Armazena o conteúdo dos arquivos de versão.
+ *
+ * Se um dos arquivos não existir, a constante correspondente armazenará a
+ * string "Version file not found"
+ *
+ * ┌──────────────────┬────────────────────────────────────────────────────────┐
+ * │ GALASTRI_VERSION │ Conteúdo do arquivo `/galastri/VERSION`.               │
+ * ├──────────────────┼────────────────────────────────────────────────────────┤
+ * │ APP_VERSION      │ Conteúdo do arquivo `/app/VERSION`.                    │
+ * └──────────────────┴────────────────────────────────────────────────────────┘
+ *
+ * Esses valores ficam disponíveis para consulta pelo código e podem integrar
+ * os metadados da resposta.
+ */
+
+$galastriVersion = 'Version file not found';
+$appVersion = 'Version file not found';
+
+if (file_exists(GALASTRI_VERSION_FILE_PATH)) {
+    $galastriVersion = trim(file_get_contents(GALASTRI_VERSION_FILE_PATH));
+}
+
+define('GALASTRI_VERSION', $appVersion);
+
+if (file_exists(APP_VERSION_FILE_PATH)) {
+    $appVersion = trim(file_get_contents(APP_VERSION_FILE_PATH));
+}
+
+define('APP_VERSION', $appVersion);
+
+
+
+/**
+ * 🟢 TIPOS MIME
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * Armazena os tipos MIME da aplicação. Se ele não existir, o valor utilizado
+ * será um array vazio.
+ */
+
+$mimeTypeList = [];
+
+if (file_exists(MIME_TYPES_FILE_PATH)) {
+    $mimeTypeList = require(MIME_TYPES_FILE_PATH);
+}
+
 
 
 // -----------------------------------------------------------------------------

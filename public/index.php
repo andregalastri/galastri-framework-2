@@ -85,7 +85,7 @@ error_reporting(E_ALL);
  * O `require` executa o conteúdo do `bootstrap.php`. Se o arquivo não puder ser
  * carregado, a inicialização é interrompida.
  */ 
-require(__DIR__.'/../galastri/bootstrap/bootstrap.php');
+require(__DIR__ . '/../galastri/bootstrap/bootstrap.php');
 
 
 

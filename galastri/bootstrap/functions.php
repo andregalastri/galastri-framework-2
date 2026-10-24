@@ -5,6 +5,16 @@ function vardump(mixed ...$values): void
     \VarDump::print(...$values);
 }
 
+function requireIfExists(string $filePath): mixed
+{
+    if (!is_file($filePath)) {
+        return false;
+    }
+
+    return require($filePath);
+}
+
+
 
 
 // -----------------------------------------------------------------------------

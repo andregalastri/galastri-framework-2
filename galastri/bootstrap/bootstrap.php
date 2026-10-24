@@ -112,30 +112,30 @@ require('functions.php');
  * os arquivos das classes conforme os namespaces configurados no projeto.
  *
  * ✔️ EXEMPLO
- * ┌───────────────────────────────────────────────────────────────────────────┐
- * │ Para referenciar o arquivo localizad em `galastri/core/Galastri.php`,     │
- * │ pode-se simplesmente informar o caminho através de namespaces             │
- * │                                                                           │
- * │ * `use galastri\core\Galastri;`                                           │
- * │   Referencia a classe dentro de outra.                                    │
- * │                                                                           │
- * │ * `galastri\core\Galastri::run();`                                        │
- * │   Executa o método `run()` da classe Galastri.                            │
- * │                                                                           │
- * │ O autoload basicamente procura o local do arquivo com base no caminho     │
- * │ informado no namespace.                                                   │
- * │                                                                           │
- * │ ┌──────────────────────────────────────────────────────────────────────┐  │
- * │ │ Isso afeta a performance?                                            │  │
- * │ │                                                                      │  │
- * │ │ O autoload não carrega todas as classes de uma vez. Ele carrega      │  │
- * │ │ apenas uma classe quando ela é necessária. Portanto, não se trata de │  │
- * │ │ um recurso problemático no sentido de performance.                   │  │
- * │ └──────────────────────────────────────────────────────────────────────┘  │
- * └───────────────────────────────────────────────────────────────────────────┘
+ * ┌──────────────────────────────────────────────────────────────────────────┐
+ * │ Para referenciar o arquivo localizad em `galastri/core/Galastri.php`,    │
+ * │ pode-se simplesmente informar o caminho através de namespaces            │
+ * │                                                                          │
+ * │ ◆ `use galastri\core\Galastri;`                                          │
+ * │   Referencia a classe dentro de outra.                                   │
+ * │                                                                          │
+ * │ ◆ `galastri\core\Galastri::run();`                                       │
+ * │   Executa o método `run()` da classe Galastri.                           │
+ * │                                                                          │
+ * │ O autoload basicamente procura o local do arquivo com base no caminho    │
+ * │ informado no namespace.                                                  │
+ * │                                                                          │
+ * │ ┌──────────────────────────────────────────────────────────────────────┐ │
+ * │ │ Isso afeta a performance?                                            │ │
+ * │ │                                                                      │ │
+ * │ │ O autoload não carrega todas as classes de uma vez. Ele carrega      │ │
+ * │ │ apenas uma classe quando ela é necessária. Portanto, não se trata de │ │
+ * │ │ um recurso problemático no sentido de performance.                   │ │
+ * │ └──────────────────────────────────────────────────────────────────────┘ │
+ * └──────────────────────────────────────────────────────────────────────────┘
  */
 
-require(PROJECT_DIR.'/vendor/autoload.php');
+require(AUTOLOADER_FILE_PATH);
 
 
 
@@ -208,8 +208,8 @@ ErrorHandler::run();
  * Se existir, ele carrega neste momento.
  */
 
-if (file_exists(PROJECT_DIR.'/app/bootstrap.php')) {
-    require(PROJECT_DIR.'/app/bootstrap.php');
+if (file_exists(APP_BOOTSTRAP_FILE_PATH)) {
+    require(APP_BOOTSTRAP_FILE_PATH);
 }
 
 

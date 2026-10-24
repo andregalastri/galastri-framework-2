@@ -33,11 +33,13 @@ final class VarDump
 
         $currentFile = self::escapeHtml($debugFile);
         $currentLine = self::escapeHtml($debugLine);
+        
+        $origin = str_replace('/', '<wbr>/', $currentFile);
 
         echo '<div class="vardump">';
         echo '<h2><b>var_dump</b></h2>';
-        echo '<div><b>ORIGIN: </b>'.str_replace('/', '<wbr>/', $currentFile).'</div>';
-        echo '<div><b>LINE: </b>'.$currentLine.'</div>';
+        echo '<div><b>ORIGIN: </b>' . $origin . '</div>';
+        echo '<div><b>LINE: </b>'.$currentLine. '</div>';
         echo '<br>';
         echo '<div><b>VALUES: </b></div>';
 
@@ -52,7 +54,8 @@ final class VarDump
             $doesPointerDiff = self::$dumpPointerPosition !== strlen($currentOutput);
 
             // Se a leitura falhar ou ficar incompleta, exibir o dump original.
-            if ($formattedDump === null || self::$dumpPointerPosition !== strlen($currentOutput)) {
+            if (
+                $formattedDump === null || self::$dumpPointerPosition !== strlen($currentOutput)) {
                 $formattedDump = self::escapeHtml($currentOutput);
             }
 

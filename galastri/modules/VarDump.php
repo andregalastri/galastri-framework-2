@@ -333,12 +333,8 @@ final class VarDump
             $key = $matches[1];
             
             self::$currentDepth++;
-
-            try {
-                $value = self::applyFormats($dump);
-            } finally {
-                self::$currentDepth--;
-            }
+            $value = self::applyFormats($dump);
+            self::$currentDepth--;
 
             if ($value === null) {
                 return null;

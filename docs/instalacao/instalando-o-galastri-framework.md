@@ -148,18 +148,10 @@ Vamos guardar o framework em `/home/desenvolvedor/galastri-framework-2`.
 │                           │                                                  │
 │                           │ Atente-se que os comandos do Git e do            │
 │                           │ Composer não usam `sudo`.                        │
-│                           │ >                                                │
 └───────────────────────────┴──────────────────────────────────────────────────┘
 
 
 
 --------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO: Finalizando a configuração local
+▶️ PRÓXIMO TÓPICO:
 LINK: /docs/instalacao/finalizando-a-configuracao-local.md
-
-
-
----
-
-👾 Esta documentação está sendo gerada com auxílio de IA...
-🙋‍♂️ ...mas revisada sempre por um humano!

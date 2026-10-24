@@ -1,6 +1,5 @@
 <?php
-/**
- * 📂
+/** -----------------------------------------------------------------------------
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║                                 BOOTSTRAP                                 ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -25,9 +24,10 @@
  *
  * Além desses arquivos, a aplicação pode possuir seu próprio bootstrap em
  * `app/bootstrap.php`, que é executado depois desta preparação básica.
- */
-
-/**
+ * 
+ * 
+ * 
+ * -----------------------------------------------------------------------------
  * 📂
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║                 ARQUIVO /galastri/bootstrap/bootstrap.php                 ║
@@ -37,24 +37,32 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
+
+
 /**
- * 🚩 FALTANDO DOCUMENTAÇÃO
+ * 🟢 FALTANDO DOCUMENTAÇÃO
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Texto
  */ 
+
 namespace galastri\bootstrap;
 
+
+
 /**
- * 🚩 FALTANDO DOCUMENTAÇÃO
+ * 🟢 FALTANDO DOCUMENTAÇÃO
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Texto
  */
+
 use galastri\core\ErrorHandler;
 use galastri\extensions\Exception;
 use galastri\core\Galastri;
 
+
+
 /**
- * 🚩 ATIVANDO O BUFFER DE SAÍDA DO PHP
+ * 🟢 ATIVANDO O BUFFER DE SAÍDA DO PHP
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * O buffer de saída do PHP é um armazenamento temporário para o conteúdo
  * produzido pelo PHP.
@@ -63,7 +71,7 @@ use galastri\core\Galastri;
  * enviado ao navegador. Isso permite que o código manipule a saída durante o
  * processamento, ANTES de enviar ao navegador.
  *
- * ℹ️
+ * ℹ️ OBSERVAÇÃO
  * ┌───────────────────────────────────────────────────────────────────────────┐
  * │ Sua ativação, porém, não significa que uma saída anterior será descartada │
  * │ automaticamente quando ocorrer um erro.                                   │
@@ -73,10 +81,13 @@ use galastri\core\Galastri;
  * │ pode aparecer junto da mensagem de erro.                                  │
  * └───────────────────────────────────────────────────────────────────────────┘
  */
+
 ob_start();
 
+
+
 /**
- * 🚩 CARREGAMENTO DAS CONSTANTES E AS FUNÇÕES AUXILIARES
+ * 🟢 CARREGAMENTO DAS CONSTANTES E AS FUNÇÕES AUXILIARES
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * 1. O primeiro arquivo define as constantes utilizadas pelo framework.
  *
@@ -88,19 +99,20 @@ ob_start();
  *    Aproveite para ver sobre funções auxiliáres agora e depois volte aqui:
  *    LINK: /galastri/bootstrap/functions.php  
  */
+
 require('constants.php');
 require('functions.php');
 
+
+
 /**
- * 🚩 CARREGAMENTO DO AUTOLOAD DO COMPOSER
+ * 🟢 CARREGAMENTO DO AUTOLOAD DO COMPOSER
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * A partir dessa instrução, o PHP passa a contar com o mecanismo que localiza
  * os arquivos das classes conforme os namespaces configurados no projeto.
  *
- * ✔️
+ * ✔️ EXEMPLO
  * ┌───────────────────────────────────────────────────────────────────────────┐
- * │ EXEMPLO                                                                   │
- * │                                                                           │
  * │ Para referenciar o arquivo localizad em `galastri/core/Galastri.php`,     │
  * │ pode-se simplesmente informar o caminho através de namespaces             │
  * │                                                                           │
@@ -122,10 +134,13 @@ require('functions.php');
  * │ └──────────────────────────────────────────────────────────────────────┘  │
  * └───────────────────────────────────────────────────────────────────────────┘
  */
+
 require(PROJECT_DIR.'/vendor/autoload.php');
 
+
+
 /**
- * 🚩 DISPONIBILIZANDO O ALIAS \VarDump
+ * 🟢 DISPONIBILIZANDO O ALIAS \VarDump
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Certas classes podem ser referenciadas com apelidos. Aqui usamos para
  * encurtar o namespace de `\galastri\modules\VarDump`, reduzindo-o apenas para
@@ -133,7 +148,7 @@ require(PROJECT_DIR.'/vendor/autoload.php');
  *
  * Isso facilita chamar a classe.
  *
- * ℹ️
+ * ℹ️ OBSERVAÇÃO
  * ┌───────────────────────────────────────────────────────────────────────────┐
  * │ Por que não fazer isso com todas as classes?                              │
  * │ Porque precisamos manter o código auto explicativo. Se encurtarmos todas  │
@@ -151,10 +166,13 @@ require(PROJECT_DIR.'/vendor/autoload.php');
  * Aproveite para ver sobre a classe VarDump agora e depois volte aqui:  
  * LINK: /galastri/modules/VarDump.php  
  */
+
 class_alias(\galastri\modules\VarDump::class, '\VarDump');
 
+
+
 /**
- * 🚩 ATIVANDO O GERENCIADOR DE ERROS
+ * 🟢 ATIVANDO O GERENCIADOR DE ERROS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * A classe `ErrorHandler` do framework é a responsável pelo tratamento de erros
  * e exceções. Essa chamada executa o método `run()` e registra os mecanismos
@@ -166,7 +184,7 @@ class_alias(\galastri\modules\VarDump::class, '\VarDump');
  *
  * > Verificar determinados erros fatais no encerramento da execução.
  *
- * ⚠️
+ * ⚠️ AVISO
  * ┌───────────────────────────────────────────────────────────────────────────┐
  * │ Erros ocorridos antes da ativação do `ErrorHandler`, como uma falha ao    │
  * │ carregar o próprio bootstrap, ainda podem aparecer no formato padrão      │
@@ -176,39 +194,37 @@ class_alias(\galastri\modules\VarDump::class, '\VarDump');
  * Aproveite para ver sobre a classe ErrorHandler agora e depois volte aqui:
  * LINK: /galastri/core/ErrorHandler.php 
  */ 
+
 ErrorHandler::run();
 
+
+
 /**
- * 🚩 EXECUTANDO O BOOTSTRAP DA APLICAÇÃO, SE EXISTIR
+ * 🟢 EXECUTANDO O BOOTSTRAP DA APLICAÇÃO, SE EXISTIR
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Verifica se o arquivo de inicialização próprio da aplicação localizado em
  * `/app/bootstrap.php` existe.
  *
  * Se existir, ele carrega neste momento.
  */
+
 if (file_exists(PROJECT_DIR.'/app/bootstrap.php')) {
     require(PROJECT_DIR.'/app/bootstrap.php');
 }
 
+
+
 /**
- * 🚩 INICIA O PROCESSAMENTO DA REQUISIÇÃO
+ * 🟢 INICIA O PROCESSAMENTO DA REQUISIÇÃO
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * O método `run()` da classe `Galastri` é executado para iniciar o
  * processamento da requisição.
  */
+
 Galastri::run();
 
 
 
-/**
- * -----------------------------------------------------------------------------
- * ▶️ PRÓXIMO TÓPICO: Classe Galastri
- * LINK: /galastri/core/Galastri.php
- *
- *
- *
- * ---
- *
- * 👾 Esta documentação está sendo gerada com auxílio de IA...
- * 🙋‍♂️ ...mas revisada sempre por um humano!
- */
+//  ----------------------------------------------------------------------------
+//  ▶️ PRÓXIMO TÓPICO
+//  LINK: /galastri/core/Galastri.php

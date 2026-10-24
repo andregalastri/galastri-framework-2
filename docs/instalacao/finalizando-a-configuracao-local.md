@@ -199,7 +199,6 @@ Também precisamos permitir que o PHP-FPM grave os registros de erro em `logs`.
 │                         │ │ sudo systemctl restart apache2 │                 │
 │                         │ └────────────────────────────────┘                 │
 │                         │ ``                                                 │
-│                         │                                                    │
 ├─────────────────────────┼────────────────────────────────────────────────────┤
 │ Aparece erro 500 ou uma │ Você vai precisar rever a configuração como um     │
 │ página em branco        │ todo.                                              │
@@ -216,7 +215,6 @@ Também precisamos permitir que o PHP-FPM grave os registros de erro em `logs`.
 │                         │ 2. Confira também as permissões das pastas do      │
 │                         │    framework se executou `composer install` no     │
 │                         │    projeto.                                        │
-│                         │                                                    │
 ├─────────────────────────┼────────────────────────────────────────────────────┤
 │ O Apache não inicia     │ Você vai precisar rever a configuração do Apache.  │
 │ depois da configuração  │                                                    │
@@ -227,18 +225,10 @@ Também precisamos permitir que o PHP-FPM grave os registros de erro em `logs`.
 │                         │ │ sudo apache2ctl configtest │                     │
 │                         │ └────────────────────────────┘                     │
 │                         │ ``                                                 │
-│                         │                                                    │
 └─────────────────────────┴────────────────────────────────────────────────────┘
 
 
 
 --------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO: Estrutura e funcionamento
+▶️ PRÓXIMO TÓPICO:
 LINK: /docs/estrutura-e-funcionamento/estrutura-e-funcionamento.md
-
-
-
----
-
-👾 Esta documentação está sendo gerada com auxílio de IA...
-🙋‍♂️ ...mas revisada sempre por um humano!

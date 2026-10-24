@@ -339,12 +339,5 @@ só pra ver se a integração está funcionando.
 
 
 --------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO: Instalando o Galastri Framework
+▶️ PRÓXIMO TÓPICO:
 LINK: /docs/instalacao/instalando-o-galastri-framework.md
-
-
-
----
-
-👾 Esta documentação está sendo gerada com auxílio de IA...
-🙋‍♂️ ...mas revisada sempre por um humano!

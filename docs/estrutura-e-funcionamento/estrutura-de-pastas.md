@@ -403,12 +403,5 @@ Além das pastas, a raiz do projeto contém os seguintes arquivos:
 
 
 --------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO: Inicialização
+▶️ PRÓXIMO TÓPICO:
 LINK: /docs/estrutura-e-funcionamento/inicializacao.md
-
-
-
----
-
-👾 Esta documentação está sendo gerada com auxílio de IA...
-🙋‍♂️ ...mas revisada sempre por um humano!

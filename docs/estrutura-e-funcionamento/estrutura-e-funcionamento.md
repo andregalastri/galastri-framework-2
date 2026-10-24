@@ -260,12 +260,5 @@ do fluxo de processamento de dados que estão em classes.
 
 
 --------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO: Estrutura de pastas
+▶️ PRÓXIMO TÓPICO:
 LINK: /docs/estrutura-e-funcionamento/estrutura-de-pastas.md
-
-
-
----
-
-👾 Esta documentação está sendo gerada com auxílio de IA...
-🙋‍♂️ ...mas revisada sempre por um humano!

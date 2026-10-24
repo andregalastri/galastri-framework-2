@@ -1,7 +1,7 @@
 <?php
 /** -----------------------------------------------------------------------------
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * #                    SEJA BEM VINDO AO GALASTRI FRAMEWORK!                  ║
+ * ║                    SEJA BEM VINDO AO GALASTRI FRAMEWORK!                  ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  *
  * Decidi colocar toda a documentação do framework dentro do próprio projeto.
@@ -21,9 +21,9 @@
  * Preparando o ambiente de desenvolvimento:
  * LINK: /docs/instalacao/preparando-o-ambiente-de-desenvolvimento.md
  *
- */
-
-/**
+ * 
+ * 
+ * -----------------------------------------------------------------------------
  * 📂
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║                         ARQUIVO public/index.php                          ║
@@ -33,8 +33,10 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
+
+
 /**
- * 🚩 ATIVANDO A EXIBIÇÃO DE ERROS PELO PHP DURANTE A EXECUÇÃO
+ * 🟢 ATIVANDO A EXIBIÇÃO DE ERROS PELO PHP DURANTE A EXECUÇÃO
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * O motivo disso é que será o próprio framework que fará o tratamento e
  * exibição de mensagens de erro e isso exige que elas estejam visíveis para o
@@ -43,26 +45,30 @@
  * Isso não significa que as mensagens vão ser exibidas ao usuário, pois o
  * framework possui uma opção chamada `displayErrors` que servirá justamente
  * para controlar este comportamento.
+ * 
+ * ℹ️ OBSERVAÇÃO
+ * ┌───────────────────────────────────────────────────────────────────────┐
+ * │ Estas configurações abaixo não alteram o arquivo `php.ini`, elas são  │
+ * │ aplicadas apenas durante a requisição.                                │
+ * └───────────────────────────────────────────────────────────────────────┘
  */
+
 ini_set('display_errors', true);
 
+
+
 /**
- * 🚩 INCLUINDO TODOS OS NÍVEIS DE ERRO NO CONJUNTO DE ERROS REPORTADOS PELO PHP
+ * 🟢 INCLUINDO TODOS OS NÍVEIS DE ERRO REPORTADOS PELO PHP
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Mesmo motivo acima.
- */ 
-error_reporting(E_ALL);
-
-/**
- * ℹ️
- * ┌───────────────────────────────────────────────────────────────────────────┐
- * │ As configurações acima não alteram o arquivo permanentemente o arquivo    │
- * │ `php.ini`, elas são aplicadas apenas durante a requisição                 │
- * └───────────────────────────────────────────────────────────────────────────┘
  */
 
+error_reporting(E_ALL);
+
+
+
 /**
- * 🚩 CARREGAMENTO DO BOOTSTRAP
+ * 🟢 CARREGAMENTO DO BOOTSTRAP
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * O arquivo bootstrap.php é importado e executado aqui. Ele é o responsável
  * pela inicializa. A construção do caminho até o bootstrap se dá da seguinte
@@ -83,15 +89,6 @@ require(__DIR__.'/../galastri/bootstrap/bootstrap.php');
 
 
 
-/**
- * -----------------------------------------------------------------------------
- * ▶️ PRÓXIMO TÓPICO: bootstrap.php
- * LINK: /galastri/bootstrap/bootstrap.php
- *
- *
- *
- * ---
- *
- * 👾 Esta documentação está sendo gerada com auxílio de IA...
- * 🙋‍♂️ ...mas revisada sempre por um humano!
- */
+// -----------------------------------------------------------------------------
+// ▶️ PRÓXIMO TÓPICO:
+// LINK: /galastri/bootstrap/bootstrap.php

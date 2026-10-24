@@ -157,12 +157,5 @@ arquivos do projeto.
 
 
 --------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO: index.php
+▶️ PRÓXIMO TÓPICO:
 LINK: /public/index.php
-
-
-
----
-
-👾 Esta documentação está sendo gerada com auxílio de IA...
-🙋‍♂️ ...mas revisada sempre por um humano!

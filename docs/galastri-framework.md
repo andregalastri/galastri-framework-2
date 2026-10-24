@@ -75,12 +75,5 @@ Múltiplos recursos para registrar falhas e apresentar informações de erro.
 
 
 --------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO: Sobre ambientes Windows
+▶️ PRÓXIMO TÓPICO:
 LINK: /docs/instalacao/sobre-ambientes-windows.md
-
-
-
----
-
-👾 Esta documentação está sendo gerada com auxílio de IA...
-🙋‍♂️ ...mas revisada sempre por um humano!

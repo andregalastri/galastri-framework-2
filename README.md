@@ -77,10 +77,3 @@ Múltiplos recursos para registrar falhas e apresentar informações de erro.
 --------------------------------------------------------------------------------
 📁 DOCUMENTAÇÃO:
 https://github.com/andregalastri/galastri-framework-2/blob/main/docs/galastri-framework.md
-
-
-
----
-
-👾 Esta documentação está sendo gerada com auxílio de IA...
-🙋‍♂️ ...mas revisada sempre por um humano!

@@ -223,7 +223,6 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
 │                         │                                                    │
 │                         │ Este comando utiliza uma forma alternativa de      │
 │                         │ download.                                          │
-│                         │                                                    │
 ├─────────────────────────┼────────────────────────────────────────────────────┤
 │ Apareceu um erro sobre  │ Confira se a virtualização está habilitada na      │
 │ virtualização           │ BIOS/UEFI da placa-mãe. Se não estiver, é          │
@@ -244,18 +243,10 @@ Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
 │                         │                                                    │
 │                         │ 4. Reinicie o computador assim que a instalação    │
 │                         │ terminar.                                          │
-│                         │                                                    │
 └─────────────────────────┴────────────────────────────────────────────────────┘
 
 
 
 --------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO: Preparando o ambiente de desenvolvimento
+▶️ PRÓXIMO TÓPICO:
 LINK: /docs/instalacao/preparando-o-ambiente-de-desenvolvimento.md
-
-
-
----
-
-👾 Esta documentação está sendo gerada com auxílio de IA...
-🙋‍♂️ ...mas revisada sempre por um humano!

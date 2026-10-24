@@ -119,12 +119,5 @@ e das rotas.
 
 
 --------------------------------------------------------------------------------
-▶️ PRÓXIMO TÓPICO: Processamento da requisição
+▶️ PRÓXIMO TÓPICO:
 LINK: /docs/estrutura-e-funcionamento/processamento-da-requisicao.md
-
-
-
----
-
-👾 Esta documentação está sendo gerada com auxílio de IA...
-🙋‍♂️ ...mas revisada sempre por um humano!

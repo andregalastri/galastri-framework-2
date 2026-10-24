@@ -10,16 +10,18 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
+
+
 /**
- * 🚩 CAMINHO DO PROJETO
+ * 🟢 CAMINHO DO PROJETO
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Define o caminho absoluto da pasta raiz onde o framework está no servidor,
  * padronizando a localização e facilitando a recuperação deste dado em qualquer
  * outra parte do projeto.
+ *
  * 
- * ✔️
+ * ✔️ EXEMPLO
  * ┌───────────────────────────────────────────────────────────────────────────┐
- * │ EXEMPLO                                                                   │
  * │ Supondo que o projeto esteja em '/home/desenvolvedor/projeto'             │
  * │                                                                           │
  * │ A expressão...                                                            │
@@ -32,17 +34,23 @@
  * │ └─────────────────────────────────────────────────────┘                   │
  * └───────────────────────────────────────────────────────────────────────────┘
  */
+
 define('PROJECT_DIR', realpath(__DIR__.'/../../'));
 
-/**
- * 🚩 AINDA NÃO IMPLEMENTADO
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Texto
- */
-define('PERFORMANCE_ANALYSIS_TAG', bin2hex(random_bytes(10)));
+
 
 /**
- * 🚩 VERSÕES
+ * 🟢 AINDA NÃO IMPLEMENTADO
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * Ainda não implementado.
+ */
+
+define('PERFORMANCE_ANALYSIS_TAG', bin2hex(random_bytes(10)));
+
+
+
+/**
+ * 🟢 VERSÕES
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Armazena o conteúdo dos arquivos de versão.
  *
@@ -54,64 +62,50 @@ define('PERFORMANCE_ANALYSIS_TAG', bin2hex(random_bytes(10)));
  * ├──────────────────┼──────────────────────────────────────────┤
  * │ APP_VERSION      │ Conteúdo do arquivo `/app/VERSION`.      │
  * └──────────────────┴──────────────────────────────────────────┘
- * 
+ *
  * Esses valores ficam disponíveis para consulta pelo código e podem integrar
- * os metadados da resposta
+ * os metadados da resposta.
  */
-define(
-    'GALASTRI_VERSION',
-    file_exists(PROJECT_DIR.'/galastri/VERSION')
-    ? trim(file_get_contents(PROJECT_DIR.'/galastri/VERSION'))
-    : 'Version file not found'
-);
 
-define(
-    'APP_VERSION',
-    file_exists(PROJECT_DIR.'/app/VERSION')
-    ? trim(file_get_contents(PROJECT_DIR.'/app/VERSION'))
-    : 'Version file not found'
-);
+$galastriVersion = 'Version file not found';
+$appVersion = 'Version file not found';
+
+if (file_exists(PROJECT_DIR.'/galastri/VERSION')) {
+    $galastriVersion = trim(file_get_contents(PROJECT_DIR.'/galastri/VERSION'));
+}
+
+define('GALASTRI_VERSION', $galastriVersion);
+
+if (file_exists(PROJECT_DIR.'/app/VERSION')) {
+    $appVersion = trim(file_get_contents(PROJECT_DIR.'/app/VERSION'));
+}
+
+define('APP_VERSION', $appVersion);
+
+
 
 /**
- * 🚩 TIPOS MIME
+ * 🟢 TIPOS MIME
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Armazena os tipos MIME da aplicação. Se ele não existir, o valor utilizado
  * será um array vazio.
  */
-define(
-    'MIME_TYPE_LIST',
-    file_exists(PROJECT_DIR.'/app/config/mime-types.php')
-    ? require(PROJECT_DIR.'/app/config/mime-types.php')
-    : []
-);
+
+$mimeTypeList = [];
+
+if (file_exists(PROJECT_DIR.'/app/config/mime-types.php')) {
+    $mimeTypeList = require(PROJECT_DIR.'/app/config/mime-types.php');
+}
+
+
 
 /**
- * 🚩 CONTROLES DE REFERÊNCIA DE CHAMADA
+ * 🟢 MODOS DE ESCRITA EM ARQUIVOS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Utilizadas no `VarDump`. Os nomes permitem indicar a operaçao desejada sem
- * depender da interpretação dos valores `true` e `false` no código.
- * 
- * ┌───────────────────────┬───────┬───────────────────────────────────────────┐
- * │ CONSTANTE             │ VALOR │ FINALIDADE                                │
- * ├───────────────────────┼───────┼───────────────────────────────────────────┤
- * │ RESET_BACKTRACE_LEVEL │ true  │ <falta descrever>                         │
- * ├───────────────────────┼───────┼───────────────────────────────────────────┤
- * │ KEEP_BACKTRACE_LEVEL  │ false │ <falta descrever>                         │
- * └───────────────────────┴───────┴───────────────────────────────────────────┘
+ * Permitem indicar qual a operação será usada para escrever em arquivos, sem
+ * depender da interpretação dos números `1`, `2` e `3` no código, que tornaria
+ * a leitura pouco autoexplicativa, como em chamadas de função.
  *
- * Aproveite para ver sobre a classe VarDump agora, se ainda não viu, e depois
- * volte aqui:  
- * LINK: /galastri/modules/VarDump.php  
- */
-const RESET_BACKTRACE_LEVEL = true;
-const KEEP_BACKTRACE_LEVEL = false;
-
-/**
- * 🚩 MODOS DE ESCRITA EM ARQUIVOS
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Utilizadas por `Tools::writeFile()`. Os nomes permitem indicar a operação
- * desejada sem depender da interpretação dos números `1`, `2` e `3` no código.
- * 
  * ┌─────────────────────────┬───────┬────────────────────────────────────────┐
  * │ CONSTANTE               │ VALOR │ FINALIDADE                             │
  * ├─────────────────────────┼───────┼────────────────────────────────────────┤
@@ -124,8 +118,9 @@ const KEEP_BACKTRACE_LEVEL = false;
  *
  * Aproveite para ver sobre a classe VarDump agora, se ainda não viu, e depois
  * volte aqui:  
- * LINK: /galastri/modules/VarDump.php  
+ * LINK: /galastri/modules/VarDump.php
  */
+
 const INSERT_CONTENT_AT_START = 1;
 const INSERT_CONTENT_AT_END = 2;
 const OVERWRITE_CONTENT = 3;
@@ -133,14 +128,27 @@ const OVERWRITE_CONTENT = 3;
 
 
 /**
- * -----------------------------------------------------------------------------
- * ◀️ TÓPICO ANTERIOR: bootstrap.php
- * LINK: /galastri/bootstrap/bootstrap.php
+ * 🟢 É UM OBJETO?
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * Permitem indicar se um elemento é um objeto ou não, sem depender da
+ * interpretação dos valores `true` e `false` no código, que tornaria a leitura
+ * pouco autoexplicativa, como em chamadas de função.
  *
- *
- *
- * ---
- *
- * 👾 Esta documentação está sendo gerada com auxílio de IA...
- * 🙋‍♂️ ...mas revisada sempre por um humano!
+ * ┌──────────────────┬───────┬──────────────────────────────────────────────────┐
+ * │ CONSTANTE        │ VALOR │ FINALIDADE                                       │
+ * ├──────────────────┼───────┼──────────────────────────────────────────────────┤
+ * │ IS_AN_OBJECT     │ true  │ Indicar literalmente que um elemento é um        │
+ * │                  │       │ objeto.                                          │
+ * ├──────────────────┼───────┼──────────────────────────────────────────────────┤
+ * │ IS_NOT_AN_OBJECT │ false │ Indicar literalmente que um elemento NÃO É um    │
+ * │                  │       │ objeto.                                          │
+ * └──────────────────┴───────┴──────────────────────────────────────────────────┘
  */
+
+const IS_AN_OBJECT = true;
+const IS_NOT_AN_OBJECT = false;
+
+
+// -----------------------------------------------------------------------------
+// ◀️ VOLTAR AO TÓPICO ANTERIOR:
+// LINK: /galastri/bootstrap/bootstrap.php

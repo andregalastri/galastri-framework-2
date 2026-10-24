@@ -69,6 +69,11 @@ final class VarDump
         echo self::escapeHtml(implode("\n", self::getVarDumpOutput(...$valueList)));
         echo '</pre>';
     }
+    
+    public static function addBacktraceLevel(): void
+    {
+        self::$backTraceLevel++;
+    }
 
     private static function getVarDumpOutput(mixed ...$valueList): array
     {
@@ -176,6 +181,8 @@ final class VarDump
     
     private static function stringFormatting(string $currentoutput, array $matches): ?string
     {
+        $refMarker = self::$refMarker;
+
         $matchLength = strlen($matches[0]);
         $outputlength = $matches[2];
 
@@ -195,11 +202,13 @@ final class VarDump
 
         self::moveDumpPointerForward(2);
 
-        return self::$refMarker.self::applyHtml('string-value', '"'.$value.'"').' '.self::applyHtml('string-type', $matches[1])."\n";
+        return $refMarker.self::applyHtml('string-value', '"'.$value.'"').' '.self::applyHtml('string-type', $matches[1])."\n";
     }
 
     private static function arrayFormatting(string $currentOutput, array $matches): ?string 
     {
+        $refMarker = self::$refMarker;
+        
         $matchLength = strlen($matches[0]);
         $arrayHeader = $matches[1];
         $keyCount = $matches[2];
@@ -245,11 +254,13 @@ final class VarDump
         $htmlClosingLength = strlen($htmlClosing);
         self::moveDumpPointerForward($htmlClosingLength);
 
-        return self::$refMarker.$htmlHeader.$htmlMiddle.$htmlClosing;
+        return $refMarker.$htmlHeader.$htmlMiddle.$htmlClosing;
     }
 
     private static function objectFormatting(string $currentOutput, array $matches): ?string
     {
+        $refMarker = self::$refMarker;
+
         $matchLength = strlen($matches[0]);
         $objectHeader = $matches[1];
 
@@ -300,45 +311,53 @@ final class VarDump
 
         self::moveDumpPointerForward(strlen($htmlClosing));
 
-        return self::$refMarker.$htmlHeader.$htmlMiddle.$htmlClosing;
+        return $refMarker.$htmlHeader.$htmlMiddle.$htmlClosing;
     }
 
     private static function numericFormatting(array $matches): ?string
     {
+        $refMarker = self::$refMarker;
+
         $matchLength = strlen($matches[0]);
         $numericType = $matches[1];
         $outputlength = $matches[2];
 
         self::moveDumpPointerForward($matchLength);
 
-        return self::$refMarker.self::applyHtml('numeric-value', $outputlength).' '.self::applyHtml('numeric-type', $numericType)."\n";
+        return $refMarker.self::applyHtml('numeric-value', $outputlength).' '.self::applyHtml('numeric-type', $numericType)."\n";
     }
 
     private static function booleanFormatting(array $matches): ?string
     {
+        $refMarker = self::$refMarker;
+
         $matchLength = strlen($matches[0]);
         $booleanValue = $matches[1];
 
         self::moveDumpPointerForward($matchLength);
 
-        return self::$refMarker.self::applyHtml($booleanValue.'-value', '('.$booleanValue.')').' '.self::applyHtml($booleanValue.'-type', 'bool')."\n";
+        return $refMarker.self::applyHtml($booleanValue.'-value', '('.$booleanValue.')').' '.self::applyHtml($booleanValue.'-type', 'bool')."\n";
     }
 
     private static function recursionFormatting(array $matches): ?string
     {
+        $refMarker = self::$refMarker;
+
         $matchLength = strlen($matches[0]);
 
         self::moveDumpPointerForward($matchLength);
 
-        return self::$refMarker.self::applyHtml('recursion', '*RECURSION*')."\n";
+        return $refMarker.self::applyHtml('recursion', '*RECURSION*')."\n";
     }
 
     private static function uninitializedFormatting(array $matches): ?string
     {
+        $refMarker = self::$refMarker;
+
         $matchLength = strlen($matches[0]);
         $declaredType = $matches[1];
         
-        $html = [];
+        $partListAsHtml = [];
         $classes = [
             'int' => 'numeric-type',
             'float' => 'numeric-type',
@@ -359,7 +378,7 @@ final class VarDump
         $partList = preg_split('/([?&|()])/', $declaredType, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
         if ($partList === false) {
-            return self::escapeHtml($declaredType);
+            return null;
         }
 
         foreach ($partList as $part) {
@@ -372,44 +391,52 @@ final class VarDump
             }
         }
 
-        return self::$refMarker.self::applyHtml('uninitialized', 'uninitialized').' '.implode($partListAsHtml)."\n";
+        return $refMarker.self::applyHtml('uninitialized', 'uninitialized').' '.implode($partListAsHtml)."\n";
     }
 
     private static function resourceFormatting(array $matches): ?string
     {
+        $refMarker = self::$refMarker;
+
         $matchLength = strlen($matches[0]);
         $resourceId = $matches[1];
         $resourceKind = $matches[2];
 
         self::moveDumpPointerForward($matchLength);
 
-        return self::$refMarker.self::applyHtml('resource-value', $resourceId).' '.self::applyHtml('resource-type', 'resource').' '.self::applyHtml('resource-kind', '('.$resourceKind.')')."\n";
+        return $refMarker.self::applyHtml('resource-value', $resourceId).' '.self::applyHtml('resource-type', 'resource').' '.self::applyHtml('resource-kind', '('.$resourceKind.')')."\n";
     }
 
     private static function enumFormatting(array $matches): ?string
     {
+        $refMarker = self::$refMarker;
+
         $matchLength = strlen($matches[0]);
         $enumCase = $matches[1];
 
         self::moveDumpPointerForward($matchLength);
 
-        return self::$refMarker.self::applyHtml('enum-value', $enumCase).' '.self::applyHtml('enum-type', 'enum')."\n";
+        return $refMarker.self::applyHtml('enum-value', $enumCase).' '.self::applyHtml('enum-type', 'enum')."\n";
     }
 
     private static function unknownFormatting(array $matches): ?string
     {
+        $refMarker = self::$refMarker;
+
         $matchLength = strlen($matches[0]);
 
         self::moveDumpPointerForward($matchLength);
 
-        return self::$refMarker.self::applyHtml('unknown', 'UNKNOWN:0')."\n";
+        return $refMarker.self::applyHtml('unknown', 'UNKNOWN:0')."\n";
     }
 
     private static function nullFormatting(): ?string
     {
+        $refMarker = self::$refMarker;
+
         self::moveDumpPointerForward(5);
 
-        return self::$refMarker.self::applyHtml('null', 'NULL')."\n";
+        return $refMarker.self::applyHtml('null', 'NULL')."\n";
     }
 
     private static function applyHtml(string $class, string $value): string
@@ -420,11 +447,6 @@ final class VarDump
     private static function escapeHtml(string $value): string
     {
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    }
-
-    public static function addBacktraceLevel(): void
-    {
-        self::$backTraceLevel++;
     }
     
     private static function moveDumpPointerForward(int $moves): void
@@ -437,7 +459,7 @@ final class VarDump
         self::$dumpPointerPosition = 0;
     }
 
-    public static function resetBacktraceLevel(): void
+    private static function resetBacktraceLevel(): void
     {
         self::$backTraceLevel = 0;
     }

@@ -40,19 +40,22 @@
 
 
 /**
- * 🟢 FALTANDO DOCUMENTAÇÃO
+ * 🟢 REFERENCIAÇÃO AOS NOMES DAS CLASSES USADOS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Texto
- */ 
-
-namespace galastri\bootstrap;
-
-
-
-/**
- * 🟢 FALTANDO DOCUMENTAÇÃO
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Texto
+ * As declarações `use`, aqui, permitem referenciarmos as classes que usaremos
+ * neste arquivo. Isso permite que usemos seus nomes ou até mesmo apelidos (com
+ * `use X as Y`), sem precisar informar o namespace completo em cada utilização.
+ *
+ * Por convenção, no framework sempre declaramos `use` para todas as classes que
+ * usarmos no arquivo, mesmo as que estejam no mesmo namespace, pra manter um
+ * padrão consistente.
+ * 
+ * ℹ️ OBSERVAÇÃO
+ * ┌────────────────────────────────────────────────────────────────────────┐
+ * │ Os `use` não carregam os arquivos. O autoloader realiza o carregamento │
+ * │ quando o PHP precisa de uma classe que ainda não foi carregada, como   │
+ * │ ao criar um objeto ou executar um método estático.                     │
+ * └────────────────────────────────────────────────────────────────────────┘
  */
 
 use galastri\core\ErrorHandler;

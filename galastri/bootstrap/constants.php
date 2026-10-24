@@ -56,15 +56,15 @@ define('PERFORMANCE_ANALYSIS_TAG', bin2hex(random_bytes(10)));
  * depender da interpretação dos números `1`, `2` e `3` no código, que tornaria
  * a leitura pouco autoexplicativa, como em chamadas de função.
  *
- * ┌─────────────────────────┬───────┬────────────────────────────────────────┐
- * │ CONSTANTE               │ VALOR │ FINALIDADE                             │
- * ├─────────────────────────┼───────┼────────────────────────────────────────┤
- * │ INSERT_CONTENT_AT_START │ 1     │ Inserir conteúdo no início do arquivo. │
- * ├─────────────────────────┼───────┼────────────────────────────────────────┤
- * │ INSERT_CONTENT_AT_END   │ 2     │ Inserir conteúdo no final do arquivo.  │
- * ├─────────────────────────┼───────┼────────────────────────────────────────┤
- * │ OVERWRITE_CONTENT       │ 3     │ Substituir o conteúdo do arquivo.      │
- * └─────────────────────────┴───────┴────────────────────────────────────────┘
+ * ┌─────────────────────────┬───────┬─────────────────────────────────────────┐
+ * │ CONSTANTE               │ VALOR │ FINALIDADE                              │
+ * ├─────────────────────────┼───────┼─────────────────────────────────────────┤
+ * │ INSERT_CONTENT_AT_START │ 1     │ Inserir conteúdo no início do arquivo.  │
+ * ├─────────────────────────┼───────┼─────────────────────────────────────────┤
+ * │ INSERT_CONTENT_AT_END   │ 2     │ Inserir conteúdo no final do arquivo.   │
+ * ├─────────────────────────┼───────┼─────────────────────────────────────────┤
+ * │ OVERWRITE_CONTENT       │ 3     │ Substituir o conteúdo do arquivo.       │
+ * └─────────────────────────┴───────┴─────────────────────────────────────────┘
  *
  * Aproveite para ver sobre a classe VarDump agora, se ainda não viu, e depois
  * volte aqui:  

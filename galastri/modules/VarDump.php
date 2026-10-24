@@ -198,7 +198,7 @@ final class VarDump
         return self::$refMarker.self::applyHtml('string-value', '"'.$value.'"').' '.self::applyHtml('string-type', $matches[1])."\n";
     }
 
-    private static function arrayFormatting(string $currentoutput, array $matches): ?string
+    private static function arrayFormatting(string $currentOutput, array $matches): ?string 
     {
         $matchLength = strlen($matches[0]);
         $arrayHeader = $matches[1];
@@ -206,30 +206,101 @@ final class VarDump
 
         self::moveDumpPointerForward($matchLength);
 
-        $html = self::compoundDataFormatting($currentoutput, $arrayHeader, $keyCount, IS_AN_OBJECT);
+        $parentIndent = str_repeat(' ', self::$currentDepth * 2);
+        $childIndent = $parentIndent.'  ';
 
-        if ($html === null) {
-            return null;
+        $htmlHeader = self::applyHtml('array-type', $arrayHeader)." {\n";
+        $htmlMiddle = '';
+        $htmlClosing = $parentIndent."}\n";
+        
+        $keyRegex = '/\G'.$childIndent.'(\[(?:-?\d+|"[\s\S]*?")\])=>\n'.$childIndent.'/';
+
+        for ($index = 0; $index < $keyCount; $index++) {
+            if (!($keyMatches = self::getMatches($keyRegex, $currentOutput))) {
+                return null;
+            }
+
+            $keyMatchLength = strlen($keyMatches[0]);
+            $keyValue = $keyMatches[1];
+
+            self::moveDumpPointerForward($keyMatchLength);
+
+            self::$currentDepth++;
+            $nextKeyContent = self::applyFormats($currentOutput);
+            self::$currentDepth--;
+
+            if ($nextKeyContent === null) {
+                return null;
+            }
+
+            $htmlMiddle .= ($childIndent. self::applyHtml('array-key', $keyValue). ' =&gt; '.$nextKeyContent);
         }
 
-        return self::$refMarker.$html;
+        $currentText = substr($currentOutput, self::$dumpPointerPosition, strlen($htmlClosing));
+
+        if ($currentText !== $htmlClosing) {
+            return null;
+        }
+        
+        $htmlClosingLength = strlen($htmlClosing);
+        self::moveDumpPointerForward($htmlClosingLength);
+
+        return self::$refMarker.$htmlHeader.$htmlMiddle.$htmlClosing;
     }
 
-    private static function objectFormatting(string $currentoutput, array $matches): ?string
+    private static function objectFormatting(string $currentOutput, array $matches): ?string
     {
         $matchLength = strlen($matches[0]);
         $objectHeader = $matches[1];
-        $propertyCount = $matches[2];
 
         self::moveDumpPointerForward($matchLength);
 
-        $html = self::compoundDataFormatting($currentoutput, $objectHeader, $propertyCount, IS_NOT_AN_OBJECT);
+        $parentIndent = str_repeat(' ', self::$currentDepth * 2);
+        $childIndent = $parentIndent.'  ';
 
-        if ($html === null) {
-            return null;
+        $htmlHeader = self::applyHtml('object-header', $objectHeader)." {\n";
+        $htmlMiddle = '';
+        $htmlClosing = $parentIndent."}\n";
+
+        $keyRegex = '/\G'.$childIndent.'(\[(?:-?\d+|"[\s\S]*?"(?::(?:private|protected))?)\])=>\n'.$childIndent.'/';
+        $propertyRegex = '/:(private|protected)\]$/';
+
+        while (true) {
+            $currentText = substr($currentOutput, self::$dumpPointerPosition, strlen($htmlClosing));
+
+            if ($currentText === $htmlClosing) {
+                break;
+            }
+
+            if (!($matches = self::getMatches($keyRegex, $currentOutput))) {
+                return null;
+            }
+
+            $keyMatchLength = strlen($matches[0]);
+            $propertyValue = $matches[1];
+
+            self::moveDumpPointerForward($keyMatchLength);
+
+            self::$currentDepth++;
+            $nextKeyContent = self::applyFormats($currentOutput);
+            self::$currentDepth--;
+
+            if ($nextKeyContent === null) {
+                return null;
+            }
+
+            $cssKeyClassName = 'object-key';
+
+            if (preg_match($propertyRegex, $propertyValue, $visibility) === 1) {
+                $cssKeyClassName .= ' '.$visibility[1];
+            }
+
+            $htmlMiddle .= $childIndent.self::applyHtml($cssKeyClassName, $propertyValue).' =&gt; '.$nextKeyContent;
         }
 
-        return self::$refMarker.$html;
+        self::moveDumpPointerForward(strlen($htmlClosing));
+
+        return self::$refMarker.$htmlHeader.$htmlMiddle.$htmlClosing;
     }
 
     private static function numericFormatting(array $matches): ?string
@@ -266,10 +337,42 @@ final class VarDump
     {
         $matchLength = strlen($matches[0]);
         $declaredType = $matches[1];
+        
+        $html = [];
+        $classes = [
+            'int' => 'numeric-type',
+            'float' => 'numeric-type',
+            'string' => 'string-type',
+            'bool' => 'boolean-type',
+            'true' => 'true-type',
+            'false' => 'false-type',
+            'null' => 'null-type',
+            'array' => 'array-type',
+            'object' => 'object-header',
+            'mixed' => 'generic-type',
+            'iterable' => 'generic-type'
+        ];
 
         self::moveDumpPointerForward($matchLength);
 
-        return self::$refMarker.self::applyHtml('uninitialized', 'uninitialized').' '.self::formatType($declaredType)."\n";
+        // Separar os tipos, preservando os operadores e os parênteses.
+        $partList = preg_split('/([?&|()])/', $declaredType, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
+        if ($partList === false) {
+            return self::escapeHtml($declaredType);
+        }
+
+        foreach ($partList as $part) {
+            if (in_array($part, ['?', '&', '|', '(', ')'], true)) {
+                $partListAsHtml[] = self::escapeHtml($part);
+            } else {
+                // Nomes de classes e interfaces recebem o estilo de objeto.
+                $class = $classes[$part] ?? 'object-header';
+                $partListAsHtml[] = self::applyHtml($class, $part);
+            }
+        }
+
+        return self::$refMarker.self::applyHtml('uninitialized', 'uninitialized').' '.implode($partListAsHtml)."\n";
     }
 
     private static function resourceFormatting(array $matches): ?string
@@ -307,103 +410,6 @@ final class VarDump
         self::moveDumpPointerForward(5);
 
         return self::$refMarker.self::applyHtml('null', 'NULL')."\n";
-    }
-    
-    private static function compoundDataFormatting(string $dump, string $header, int $count, bool $isObject): ?string {
-        $parentIndent = str_repeat(' ', self::$currentDepth * 2);
-        $childIndent = $parentIndent.'  ';
-
-        $headerClass = $isObject ? 'object-header' : 'array-type';
-
-        $html = self::applyHtml($headerClass, $header)." {\n";
-
-        $keyRegex = '/\G'.$childIndent.'(\[(?:-?\d+|"[\s\S]*?"(?::(?:private|protected))?)\])=>\n'.$childIndent.'/';
-
-        for ($index = 0; $isObject || $index < $count; $index++) {
-            
-            if ($isObject && substr($dump, self::$dumpPointerPosition, strlen($parentIndent) + 2) === ($parentIndent."}\n")) {
-                break;
-            }
-            
-            if (!($matches = self::getMatches($keyRegex, $dump))) {
-                return null;
-            }
-            
-            $matchLength = strlen($matches[0]);
-            $key = $matches[1];
-
-            
-            self::moveDumpPointerForward($matchLength);
-            
-            self::$currentDepth++;
-            $value = self::applyFormats($dump);
-            self::$currentDepth--;
-
-            if ($value === null) {
-                return null;
-            }
-
-            $cssKeyClassName = 'array-key';
-
-            if ($isObject) {
-                $cssKeyClassName = 'object-key';
-
-                if (preg_match('/:(private|protected)\]$/', $key, $visibility) === 1) {
-                    $cssKeyClassName .= ' '.$visibility[1];
-                }
-            }
-
-            // Preservar a chave inteira, incluindo a classe declaradora e a visibilidade.
-            $html .= $childIndent.self::applyHtml($cssKeyClassName, $key).' =&gt; '.$value;
-        }
-
-        $closing = $parentIndent."}\n";
-
-        if (substr($dump, self::$dumpPointerPosition, strlen($closing)) !== $closing) {
-            return null;
-        }
-
-        self::moveDumpPointerForward(strlen($closing));
-
-        return $html.$closing;
-    }
-    
-    private static function formatType(string $type): string
-    {
-        $classes = [
-            'int' => 'numeric-type',
-            'float' => 'numeric-type',
-            'string' => 'string-type',
-            'bool' => 'boolean-type',
-            'true' => 'true-type',
-            'false' => 'false-type',
-            'null' => 'null-type',
-            'array' => 'array-type',
-            'object' => 'object-header',
-            'mixed' => 'generic-type',
-            'iterable' => 'generic-type'
-        ];
-
-        // Separar os tipos, preservando os operadores e os parênteses.
-        $parts = preg_split('/([?&|()])/', $type, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-
-        if ($parts === false) {
-            return self::escapeHtml($type);
-        }
-
-        $html = [];
-
-        foreach ($parts as $part) {
-            if (in_array($part, ['?', '&', '|', '(', ')'], true)) {
-                $html[] = self::escapeHtml($part);
-            } else {
-                // Nomes de classes e interfaces recebem o estilo de objeto.
-                $class = $classes[$part] ?? 'object-header';
-                $html[] = self::applyHtml($class, $part);
-            }
-        }
-
-        return implode('', $html);
     }
 
     private static function applyHtml(string $class, string $value): string

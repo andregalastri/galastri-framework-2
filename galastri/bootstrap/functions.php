@@ -47,9 +47,12 @@
  * │ facilitar a depuração dos resultados.                                     │
  * └───────────────────────────────────────────────────────────────────────────┘
  *
- * Aproveite para ver sobre a classe VarDump agora, se ainda não viu, e depois
- * volte aqui:
+ * Aproveite para ver sobre a classe VarDump agora, se ainda não viu:
  * LINK: /galastri/modules/VarDump.php
+ *
+ * ---
+ * @param mixed ...$values Valores que serão exibidos para depuração.
+ * @return void
  */
 
 function vardump(mixed ...$values): void

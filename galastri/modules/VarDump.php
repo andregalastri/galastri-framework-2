@@ -558,46 +558,184 @@ final class VarDump
     
     
     
+    /**
+     * 🟢 AJUSTANDO A ORIGEM DA CHAMADA
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * A função auxiliar `vardump()` chama `print()` por dentro. Se consultarmos
+     * a origem sem nenhum ajuste, o cabeçalho vai apontar para essa chamada
+     * interna, em vez do trecho que o desenvolvedor quer depurar.
+     *
+     * Este método aumenta o nível consultado no histórico para passar por essa
+     * chamada intermediária e encontrar quem chamou a função auxiliar.
+     *
+     * Cada chamada acrescenta um nível. O próximo `print()` usa esse ajuste e
+     * depois reinicia a propriedade para não afetar as chamadas seguintes.
+     *
+     * @return void
+     */
+    
     public static function addBacktraceLevel(): void
     {
         self::$backTraceLevel++;
     }
 
+
+
+    /**
+     * 🟢 CAPTURANDO O TEXTO DO var_dump()
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * O var_dump() normalmente escreve seu resultado diretamente na saída.
+     * Aqui precisamos guardar esse texto primeiro, pois `print()` ainda vai
+     * trabalhar na formatação antes de exibi-lo.
+     *
+     * Para isso, abrimos um buffer de saída, que segura temporariamente o que o
+     * var_dump() produzir. Depois, recolhemos esse conteúdo e devolvemos um
+     * array com um texto separado para cada valor recebido.
+     *
+     * O método também é usado por `raw()`, que aproveita esses mesmos textos
+     * para montar sua apresentação.
+     *
+     * @param mixed ...$valueList Valores que serão depurados pelo var_dump().
+     * @return string[] Textos produzidos, na ordem dos valores recebidos.
+     */
+    
     private static function getVarDumpOutput(mixed ...$valueList): array
     {
+        /**
+         * Preparamos o array que vai receber os resultados e abrimos nosso
+         * buffer. A partir daqui, a saída do var_dump() fica guardada nele
+         * enquanto não encerrarmos essa captura.
+         */
         $varDumpOutput = [];
         ob_start();
 
+        /**
+         * Colocamos a captura dentro de um try/finally para garantir que o
+         * buffer seja encerrado mesmo se alguma exceção interromper o
+         * processamento. Isso evita deixar essa captura aberta para o restante
+         * da aplicação.
+         */
         try {
             foreach ($valueList as $value) {
+                /**
+                 * Executamos o var_dump() para este valor e copiamos o texto do
+                 * buffer para o array. Depois, limpamos o buffer para que o
+                 * próximo resultado não venha misturado com o anterior.
+                 *
+                 * O ob_clean() apaga o conteúdo, mas mantém o buffer aberto
+                 * para a próxima passagem do laço.
+                 */
                 var_dump($value);
                 $varDumpOutput[] = ob_get_contents();
                 ob_clean();
             }
         } finally {
+            /**
+             * Encerramos o buffer que abrimos aqui, sem enviar seu conteúdo à
+             * saída. Os textos que precisamos já foram copiados para o array.
+             */
             ob_end_clean();
         }
 
+        /**
+         * Devolvemos os resultados para quem chamou o método decidir como
+         * exibi-los.
+         */
         return $varDumpOutput;
     }
     
+
+
+    /**
+     * 🟢 RECONHECENDO UM TRECHO DO DUMP
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Durante a leitura, precisamos descobrir o que começa na posição atual:
+     * uma string, um array, um número ou algum outro conteúdo conhecido.
+     *
+     * Recebemos uma expressão regular, que descreve o formato procurado, e
+     * testamos se o texto combina com ela. Se combinar, devolvemos os trechos
+     * encontrados para que o método de formatação possa usá-los.
+     *
+     * Por exemplo, ao reconhecer `string(5)`, podemos separar a indicação do
+     * tipo e o tamanho `5`, que será necessário para ler o valor da string.
+     *
+     * @param string $regex Expressão que descreve o trecho procurado.
+     * @param string $currentOutput Texto do dump que estamos lendo.
+     * @return array<int, string>|false Trechos encontrados ou false.
+     */
+    
     private static function getMatches(string $regex, string $currentOutput): array | bool
     {
+        /**
+         * Pedimos ao preg_match() para começar na posição em que paramos a
+         * leitura. As expressões usadas aqui começam com `\G`, que exige
+         * encontrar o trecho exatamente nessa posição. Assim, não pulamos um
+         * pedaço desconhecido para reconhecer outro mais adiante.
+         *
+         * O retorno 1 indica que houve correspondência. O texto encontrado e
+         * suas partes ficam no array $matches.
+         */
         $hasMatch = preg_match($regex, $currentOutput, $matches, 0, self::$dumpPointerPosition) === 1;
         
+        /**
+         * Se encontramos o trecho, devolvemos as capturas. Na posição zero fica
+         * a correspondência completa; nas seguintes ficam as partes separadas
+         * pelos grupos da expressão.
+         */
         if ($hasMatch) {
             return $matches;
         }
         
+        /**
+         * Sem uma correspondência, devolvemos false para que a leitura possa
+         * tentar outro formato. A posição do dump ainda não foi alterada aqui.
+         */
         return false;
     }
     
+
+
+    /**
+     * 🟢 IDENTIFICANDO O PRÓXIMO VALOR
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Este método decide como ler o próximo valor do dump. Ele olha o texto
+     * na posição atual, reconhece seu tipo e chama o método que sabe formatá-lo.
+     *
+     * Se encontrar `string(...)`, por exemplo, passa a leitura para
+     * `stringFormatting()`. Se encontrar `array(...)`, chama
+     * `arrayFormatting()`.
+     *
+     * Isso também acontece dentro de arrays e objetos. Ao chegar no valor de
+     * uma entrada, chamamos este método novamente para descobrir como lê-lo.
+     * Todos acompanham a mesma posição no texto, então cada leitura continua de
+     * onde a anterior parou.
+     *
+     * Quando não conseguimos reconhecer o conteúdo ou ultrapassamos o limite de
+     * profundidade, retornamos null. Essa falha chega até `print()`, que mostra
+     * o dump original completo daquele valor.
+     *
+     * @param string $dump Texto completo do dump que estamos lendo.
+     * @return string|null HTML do valor lido ou null se não pudermos
+     *     formatá-lo.
+     */
+    
     private static function applyFormats(string $dump): ?string
     {
+        /**
+         * Antes de entrar em mais uma leitura, conferimos até onde já fomos. Se
+         * ultrapassamos o limite, devolvemos null para interromper a tentativa
+         * de formatação, inclusive nos arrays e objetos que contêm esse valor.
+         */
         if (self::$currentDepth > self::MAX_FORMAT_DEPTH) {
             return null;
         }
 
+        /**
+         * Limpamos o marcador da leitura anterior. Se o próximo valor começar
+         * com &, guardamos sua representação em HTML e avançamos uma posição.
+         * Assim, o marcador será preservado na apresentação e a identificação
+         * do tipo poderá começar logo depois dele.
+         */
         self::$refMarker = '';
 
         if (substr($dump, self::$dumpPointerPosition, 1) === '&') {
@@ -605,6 +743,16 @@ final class VarDump
             self::moveDumpPointerForward(1);
         }
 
+        /**
+         * Cada expressão descreve como um tipo aparece no texto do var_dump().
+         * Além de reconhecer o tipo, elas separam as informações de que os
+         * formatadores precisam, como o tamanho da string ou o valor numérico.
+         *
+         * O `\G` no começo exige que o conteúdo esteja na posição atual. Nos
+         * tipos simples, a expressão já lê o valor inteiro. Em strings, arrays
+         * e objetos, ela lê apenas o cabeçalho; o restante será lido pelo
+         * método responsável por aquele tipo.
+         */
         $regex = [
             'string'        => '/\G(string\((\d+)\)) "/',
             'array'         => '/\G(array\((\d+)\)) \{\n/',
@@ -618,6 +766,14 @@ final class VarDump
             'unknown'       => '/\GUNKNOWN:0\n/',
         ];
 
+        /**
+         * Tentamos os formatos abaixo até encontrar um que combine com o texto.
+         * Quando encontramos, passamos as capturas para o método correspondente
+         * e devolvemos o resultado que ele produzir.
+         *
+         * Strings, arrays e objetos também recebem o dump completo porque ainda
+         * precisam continuar a leitura depois do cabeçalho reconhecido.
+         */
         if ($matches = self::getMatches($regex['string'], $dump)) {
             return self::stringFormatting($dump, $matches);
         }
@@ -658,43 +814,134 @@ final class VarDump
             return self::unknownFormatting($matches);
         }
         
+        /**
+         * O null tem uma representação fixa: NULL seguido de uma quebra de
+         * linha. Podemos conferir esse trecho diretamente, sem uma expressão
+         * regular.
+         */
         $nullMatches = substr($dump, self::$dumpPointerPosition, 5) === "NULL\n";
 
         if ($nullMatches) {
             return self::nullFormatting();
         }
         
+        /**
+         * Nenhum formato conhecido combinou com o texto nessa posição. Avisamos
+         * a falha em vez de pular o trecho e correr o risco de ocultar algum
+         * dado.
+         */
         return null;
     }
     
+
+
+    /**
+     * 🟢 LENDO E FORMATANDO UMA STRING
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Quando chegamos aqui, já reconhecemos o cabeçalho da string, como
+     * `string(5) "Texto"`. O número informado pelo PHP diz quantos bytes
+     * precisamos ler para recuperar seu conteúdo.
+     *
+     * Usamos esse tamanho porque uma string pode conter aspas e quebras de
+     * linha. Se tentássemos encontrar o fim procurando apenas a próxima aspa,
+     * poderíamos encerrar a leitura no meio do valor.
+     *
+     * Depois de ler o conteúdo, confirmamos seu fechamento e montamos o HTML
+     * com estilos separados para o valor e para a indicação do tipo.
+     *
+     * @param string $currentoutput Texto completo do dump que estamos lendo.
+     * @param array<int, string> $matches Capturas do cabeçalho da string.
+     * @return string|null HTML da string ou null se a leitura não conferir.
+     */
+    
     private static function stringFormatting(string $currentoutput, array $matches): ?string
     {
+        /**
+         * Guardamos o marcador de referência e recuperamos o tamanho do
+         * cabeçalho e o tamanho da string. A posição zero das capturas contém
+         * todo o cabeçalho reconhecido; a posição dois contém o tamanho
+         * informado pelo PHP.
+         */
         $refMarker = self::$refMarker;
 
         $matchLength = strlen($matches[0]);
         $outputlength = $matches[2];
 
+        /**
+         * Pulamos o cabeçalho, incluindo a aspa de abertura, para chegar ao
+         * primeiro byte do conteúdo. Antes de ler, conferimos se o tamanho
+         * anunciado cabe no texto restante, reservando dois bytes para a aspa
+         * final e a quebra de linha. Se não couber, essa leitura não é
+         * confiável.
+         */
         self::moveDumpPointerForward($matchLength);
 
         if ($outputlength > strlen($currentoutput) - self::$dumpPointerPosition - 2) {
             return null;
         }
 
+        /**
+         * Lemos exatamente o tamanho informado e avançamos até o ponto em que
+         * esperamos encontrar o fechamento. Os bytes correspondem ao tamanho
+         * informado pelo var_dump(), inclusive em textos com acentos e emojis.
+         */
         $value = substr($currentoutput, self::$dumpPointerPosition, $outputlength);
 
         self::moveDumpPointerForward($outputlength);
 
+        /**
+         * Depois do conteúdo, precisam existir uma aspa e uma quebra de linha.
+         * Se não encontramos esse fechamento, retornamos null. Se encontramos,
+         * avançamos sobre ele para deixar a leitura pronta para o próximo
+         * trecho.
+         */
         if (substr($currentoutput, self::$dumpPointerPosition, 2) !== "\"\n") {
             return null;
         }
 
         self::moveDumpPointerForward(2);
 
+        /**
+         * Montamos o valor entre aspas e a indicação de tipo e tamanho. O
+         * marcador de referência, quando existir, fica antes do valor. O
+         * applyHtml() cuida de exibir o conteúdo como texto, mesmo que ele
+         * contenha tags HTML.
+         */
         return $refMarker.self::applyHtml('string-value', '"'.$value.'"').' '.self::applyHtml('string-type', $matches[1])."\n";
     }
 
+
+
+    /**
+     * 🟢 LENDO E FORMATANDO UM ARRAY
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * O dump de um array começa informando quantas entradas ele possui. Usamos
+     * essa quantidade para percorrer suas chaves e os valores de cada uma.
+     *
+     * Cada valor pode ser de um tipo diferente, inclusive outro array ou um
+     * objeto. Por isso, depois de ler a chave, chamamos `applyFormats()` para
+     * descobrir como continuar a leitura daquele valor.
+     *
+     * Ao terminar as entradas, conferimos o fechamento do array. Se alguma
+     * parte não puder ser lida como esperado, devolvemos null para que
+     * `print()` possa apresentar o dump original.
+     *
+     * @param string $currentOutput Texto completo do dump que estamos lendo.
+     * @param array<int, string> $matches Capturas do cabeçalho do array.
+     * @return string|null HTML do array ou null se a leitura falhar.
+     */
+    
     private static function arrayFormatting(string $currentOutput, array $matches): ?string 
     {
+        /**
+         * Guardamos o marcador de referência em uma variável local porque a
+         * leitura dos valores internos pode alterar a propriedade $refMarker da
+         * classe. Assim, preservamos o marcador deste array até a montagem do
+         * resultado.
+         *
+         * Também recuperamos o cabeçalho e a quantidade de entradas. Depois,
+         * avançamos para começar a leitura do conteúdo do array.
+         */
         $refMarker = self::$refMarker;
         
         $matchLength = strlen($matches[0]);
@@ -703,25 +950,60 @@ final class VarDump
 
         self::moveDumpPointerForward($matchLength);
 
+        /**
+         * O var_dump() acrescenta dois espaços de recuo por nível. Calculamos o
+         * recuo deste array e o de suas entradas para reconhecer o texto e
+         * manter essa mesma organização na apresentação.
+         */
         $parentIndent = str_repeat(' ', self::$currentDepth * 2);
         $childIndent = $parentIndent.'  ';
 
+        /**
+         * Separamos a montagem em cabeçalho, conteúdo e fechamento. O
+         * fechamento também serve para conferir se encontramos o fim do array
+         * no recuo certo.
+         */
         $htmlHeader = self::applyHtml('array-type', $arrayHeader)." {\n";
         $htmlMiddle = '';
         $htmlClosing = $parentIndent."}\n";
         
+        /**
+         * Esta expressão reconhece a chave da próxima entrada, seguida de => e
+         * dos recuos que vêm antes do valor. A chave pode ser numérica ou
+         * textual; o conteúdo do valor ainda será lido separadamente.
+         */
         $keyRegex = '/\G'.$childIndent.'(\[(?:-?\d+|"[\s\S]*?")\])=>\n'.$childIndent.'/';
 
+        /**
+         * Percorremos a quantidade de entradas anunciada no cabeçalho. Em cada
+         * passagem, precisamos encontrar a próxima chave onde a leitura parou.
+         * Se isso não acontecer, interrompemos a formatação deste array.
+         */
         for ($index = 0; $index < $keyCount; $index++) {
             if (!($keyMatches = self::getMatches($keyRegex, $currentOutput))) {
                 return null;
             }
 
+            /**
+             * Guardamos a chave e avançamos sobre o trecho reconhecido. Agora a
+             * posição de leitura está no começo do valor que pertence a essa
+             * chave.
+             */
             $keyMatchLength = strlen($keyMatches[0]);
             $keyValue = $keyMatches[1];
 
             self::moveDumpPointerForward($keyMatchLength);
 
+            /**
+             * Entramos um nível para ler esse valor. O applyFormats() continua
+             * na mesma posição do dump e pode chamar outros formatadores,
+             * conforme o tipo que encontrar. Quando ele termina, voltamos à
+             * profundidade deste array.
+             *
+             * Se a leitura interna falhar, também precisamos desistir da
+             * formatação do array inteiro, pois não conseguimos montar seu
+             * conteúdo completo.
+             */
             self::$currentDepth++;
             $nextKeyContent = self::applyFormats($currentOutput);
             self::$currentDepth--;
@@ -730,23 +1012,64 @@ final class VarDump
                 return null;
             }
 
+            /**
+             * Acrescentamos a entrada ao resultado, com a chave formatada, o
+             * sinal => e o valor que acabamos de ler. A posição já foi avançada
+             * pelo formatador desse valor, ficando pronta para a próxima chave.
+             */
             $htmlMiddle .= ($childIndent. self::applyHtml('array-key', $keyValue). ' =&gt; '.$nextKeyContent);
         }
 
+        /**
+         * Todas as entradas foram lidas. Conferimos se o próximo trecho é o
+         * sinal } que fecha este array, no recuo esperado e com uma quebra de
+         * linha.
+         */
         $currentText = substr($currentOutput, self::$dumpPointerPosition, strlen($htmlClosing));
 
         if ($currentText !== $htmlClosing) {
             return null;
         }
         
+        /**
+         * Como o fechamento conferiu, avançamos sobre ele e reunimos as partes.
+         * Quem chamou este método poderá continuar a leitura depois do array.
+         */
         $htmlClosingLength = strlen($htmlClosing);
         self::moveDumpPointerForward($htmlClosingLength);
 
         return $refMarker.$htmlHeader.$htmlMiddle.$htmlClosing;
     }
 
+
+
+    /**
+     * 🟢 LENDO E FORMATANDO UM OBJETO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Lemos o cabeçalho do objeto e percorremos as entradas que o var_dump()
+     * apresentou para ele. Cada valor é passado para `applyFormats()`, que
+     * descobre como lê-lo, inclusive quando há outros objetos ou arrays dentro.
+     *
+     * Continuamos até encontrar o fechamento deste objeto no recuo esperado. Se
+     * alguma entrada não puder ser lida, retornamos null para que o resultado
+     * original seja exibido por `print()`.
+     *
+     * Também aproveitamos as indicações de propriedades privadas e protegidas
+     * para aplicar os estilos que ajudam a diferenciá-las na apresentação.
+     *
+     * @param string $currentOutput Texto completo do dump que estamos lendo.
+     * @param array<int, string> $matches Capturas do cabeçalho do objeto.
+     * @return string|null HTML do objeto ou null se a leitura falhar.
+     */
+    
     private static function objectFormatting(string $currentOutput, array $matches): ?string
     {
+        /**
+         * Preservamos o marcador de referência deste objeto em uma variável
+         * local, pois a leitura dos valores internos pode modificar a
+         * propriedade da classe. Também guardamos o cabeçalho e avançamos para
+         * depois dele.
+         */
         $refMarker = self::$refMarker;
 
         $matchLength = strlen($matches[0]);
@@ -754,16 +1077,39 @@ final class VarDump
 
         self::moveDumpPointerForward($matchLength);
 
+        /**
+         * Calculamos os recuos do objeto e de suas entradas. Isso ajuda a
+         * distinguir o fechamento deste objeto dos fechamentos que possam
+         * existir dentro dele.
+         */
         $parentIndent = str_repeat(' ', self::$currentDepth * 2);
         $childIndent = $parentIndent.'  ';
 
+        /**
+         * Preparamos o cabeçalho, o espaço onde vamos juntar as entradas e o
+         * fechamento esperado para este nível.
+         */
         $htmlHeader = self::applyHtml('object-header', $objectHeader)." {\n";
         $htmlMiddle = '';
         $htmlClosing = $parentIndent."}\n";
 
+        /**
+         * A primeira expressão reconhece o nome da próxima entrada e os recuos
+         * até o começo de seu valor. Ela também aceita as indicações de acesso
+         * private e protected que podem acompanhar os nomes das propriedades.
+         *
+         * A segunda expressão será usada depois para identificar qual dessas
+         * indicações apareceu e escolher seu estilo.
+         */
         $keyRegex = '/\G'.$childIndent.'(\[(?:-?\d+|"[\s\S]*?"(?::(?:private|protected))?)\])=>\n'.$childIndent.'/';
         $propertyRegex = '/:(private|protected)\]$/';
 
+        /**
+         * Antes de procurar outra entrada, verificamos se chegamos ao
+         * fechamento deste objeto. Se chegamos, encerramos o laço. Caso
+         * contrário, precisamos reconhecer uma entrada nessa posição para poder
+         * continuar.
+         */
         while (true) {
             $currentText = substr($currentOutput, self::$dumpPointerPosition, strlen($htmlClosing));
 
@@ -775,11 +1121,21 @@ final class VarDump
                 return null;
             }
 
+            /**
+             * Guardamos o nome encontrado e avançamos a leitura até o valor da
+             * entrada.
+             */
             $keyMatchLength = strlen($matches[0]);
             $propertyValue = $matches[1];
 
             self::moveDumpPointerForward($keyMatchLength);
 
+            /**
+             * Aumentamos a profundidade para ler o valor e a reduzimos quando
+             * voltamos. O próprio applyFormats() encaminha essa leitura para o
+             * tipo encontrado. Se ele falhar, não temos como apresentar o
+             * objeto completo formatado.
+             */
             self::$currentDepth++;
             $nextKeyContent = self::applyFormats($currentOutput);
             self::$currentDepth--;
@@ -788,6 +1144,12 @@ final class VarDump
                 return null;
             }
 
+            /**
+             * Começamos com o estilo comum das entradas de objetos. Se o nome
+             * trouxer private ou protected, acrescentamos essa indicação às
+             * classes CSS. Depois, juntamos o nome, o sinal => e o valor já
+             * formatado.
+             */
             $cssKeyClassName = 'object-key';
 
             if (preg_match($propertyRegex, $propertyValue, $visibility) === 1) {
@@ -797,26 +1159,76 @@ final class VarDump
             $htmlMiddle .= $childIndent.self::applyHtml($cssKeyClassName, $propertyValue).' =&gt; '.$nextKeyContent;
         }
 
+        /**
+         * O fechamento já foi reconhecido no laço. Avançamos sobre ele e
+         * devolvemos o objeto completo, com seu marcador de referência quando
+         * houver.
+         */
         self::moveDumpPointerForward(strlen($htmlClosing));
 
         return $refMarker.$htmlHeader.$htmlMiddle.$htmlClosing;
     }
 
+
+
+    /**
+     * 🟢 FORMATANDO NÚMEROS
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Recebemos o tipo e o valor numérico que já foram reconhecidos no dump.
+     * Montamos a apresentação com estilos separados para o número e para a
+     * indicação de `int` ou `float`.
+     *
+     * Mantemos o valor escrito pelo PHP. Isso também preserva representações
+     * como `INF`, `-INF` e `NAN`, sem tentar convertê-las em outro número.
+     *
+     * @param array<int, string> $matches Capturas do tipo e do valor numérico.
+     * @return string HTML do valor numérico.
+     */
+    
     private static function numericFormatting(array $matches): ?string
     {
+        /**
+         * Guardamos o marcador de referência e separamos as capturas: o tipo
+         * está na posição um e o valor na posição dois. O tamanho da
+         * correspondência completa indica quanto precisamos avançar no dump.
+         */
         $refMarker = self::$refMarker;
 
         $matchLength = strlen($matches[0]);
         $numericType = $matches[1];
         $outputlength = $matches[2];
 
+        /**
+         * Como a expressão já leu o número inteiro, avançamos sobre todo esse
+         * trecho. Depois, montamos o HTML com o valor seguido de seu tipo.
+         */
         self::moveDumpPointerForward($matchLength);
 
         return $refMarker.self::applyHtml('numeric-value', $outputlength).' '.self::applyHtml('numeric-type', $numericType)."\n";
     }
 
+
+
+    /**
+     * 🟢 FORMATANDO BOOLEANOS
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Apresenta o valor true ou false e a indicação do tipo bool.
+     *
+     * Usamos o próprio valor nos nomes das classes CSS para que true e false
+     * possam ter aparências diferentes. Isso facilita distinguir os dois ao
+     * conferir os resultados da depuração.
+     *
+     * @param array<int, string> $matches Capturas do valor booleano.
+     * @return string HTML do valor booleano.
+     */
+    
     private static function booleanFormatting(array $matches): ?string
     {
+        /**
+         * Recuperamos o valor reconhecido e guardamos o marcador de referência.
+         * A correspondência completa inclui o tipo, o valor e a quebra de
+         * linha, então seu tamanho já permite avançar até o próximo trecho.
+         */
         $refMarker = self::$refMarker;
 
         $matchLength = strlen($matches[0]);
@@ -824,27 +1236,84 @@ final class VarDump
 
         self::moveDumpPointerForward($matchLength);
 
+        /**
+         * Colocamos o valor entre parênteses e acrescentamos o tipo bool.
+         * Conforme o valor recebido, os estilos serão true-value e true-type,
+         * ou false-value e false-type.
+         */
         return $refMarker.self::applyHtml($booleanValue.'-value', '('.$booleanValue.')').' '.self::applyHtml($booleanValue.'-type', 'bool')."\n";
     }
 
+
+
+    /**
+     * 🟢 MOSTRANDO UMA REFERÊNCIA RECURSIVA
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Um array ou objeto pode ter uma ligação que leve de volta a ele mesmo.
+     * Se continuássemos seguindo esse caminho, visitaríamos os mesmos dados
+     * repetidamente.
+     *
+     * O próprio var_dump() identifica essa situação e escreve *RECURSION* no
+     * lugar de repetir o conteúdo. Aqui apenas preservamos esse aviso e
+     * aplicamos seu estilo para deixá-lo visível na depuração.
+     *
+     * @param array<int, string> $matches Capturas do aviso de recursão.
+     * @return string HTML do aviso de recursão.
+     */
+    
     private static function recursionFormatting(array $matches): ?string
     {
+        /**
+         * A expressão já reconheceu todo o aviso. Guardamos o marcador de
+         * referência, quando houver, e avançamos pelo tamanho do trecho lido.
+         */
         $refMarker = self::$refMarker;
 
         $matchLength = strlen($matches[0]);
 
         self::moveDumpPointerForward($matchLength);
 
+        /**
+         * Exibimos o aviso com seu estilo, sem tentar entrar novamente na
+         * estrutura que o var_dump() indicou como recursiva.
+         */
         return $refMarker.self::applyHtml('recursion', '*RECURSION*')."\n";
     }
 
+
+
+    /**
+     * 🟢 MOSTRANDO UMA PROPRIEDADE AINDA NÃO INICIALIZADA
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Uma propriedade pode ter um tipo declarado e ainda não ter recebido um
+     * valor. Nesse caso, o var_dump() apresenta algo como uninitialized(string).
+     * Isso permite distinguir uma propriedade não inicializada de uma que já
+     * recebeu um valor, inclusive null quando seu tipo permite.
+     *
+     * Aqui formatamos esse aviso junto do tipo declarado. O tipo pode ter mais
+     * de uma parte, como string|int, então também precisamos preservar os
+     * sinais que ligam essas partes.
+     *
+     * @param array<int, string> $matches Capturas do aviso e do tipo declarado.
+     * @return string|null HTML do aviso ou null se a separação do tipo falhar.
+     */
+    
     private static function uninitializedFormatting(array $matches): ?string
     {
+        /**
+         * Guardamos o marcador de referência, o tamanho do trecho reconhecido e
+         * o tipo que aparece entre os parênteses do aviso.
+         */
         $refMarker = self::$refMarker;
 
         $matchLength = strlen($matches[0]);
         $declaredType = $matches[1];
         
+        /**
+         * Vamos montar o tipo em partes. A lista abaixo associa os tipos
+         * conhecidos aos estilos que já usamos na apresentação dos demais
+         * valores.
+         */
         $partListAsHtml = [];
         $classes = [
             'int' => 'numeric-type',
@@ -860,15 +1329,34 @@ final class VarDump
             'iterable' => 'generic-type'
         ];
 
+        /**
+         * A leitura já reconheceu o aviso completo, então podemos avançar no
+         * dump. O restante do trabalho será apenas montar sua apresentação.
+         */
         self::moveDumpPointerForward($matchLength);
 
+        /**
+         * Separamos o tipo nos sinais ?, &, | e nos parênteses, mantendo esses
+         * sinais na lista. Por exemplo, string|int fica em três partes: string,
+         * | e int. Assim, podemos aplicar um estilo a cada tipo sem perder a
+         * forma como eles foram declarados.
+         */
         // Separar os tipos, preservando os operadores e os parênteses.
         $partList = preg_split('/([?&|()])/', $declaredType, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
+        /**
+         * Se a separação falhar, avisamos quem chamou o método para que a
+         * tentativa de formatação seja abandonada.
+         */
         if ($partList === false) {
             return null;
         }
 
+        /**
+         * Os sinais entram como texto, preservando a declaração. Para cada
+         * nome, procuramos um estilo na lista. Os nomes que não estão nela,
+         * como os de classes e interfaces, recebem o estilo de objeto.
+         */
         foreach ($partList as $part) {
             if (in_array($part, ['?', '&', '|', '(', ')'], true)) {
                 $partListAsHtml[] = self::escapeHtml($part);
@@ -879,24 +1367,74 @@ final class VarDump
             }
         }
 
+        /**
+         * Reunimos as partes e colocamos o aviso uninitialized antes do tipo.
+         */
         return $refMarker.self::applyHtml('uninitialized', 'uninitialized').' '.implode($partListAsHtml)."\n";
     }
 
+
+
+    /**
+     * 🟢 FORMATANDO RECURSOS
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Algumas operações do PHP devolvem recursos para representar algo que está
+     * em uso, como um arquivo aberto. No dump, eles aparecem com um identificador
+     * e uma indicação do tipo de recurso.
+     *
+     * Em resource(5) of type (stream), por exemplo, 5 é o identificador e
+     * stream é o tipo informado pelo PHP. Separamos essas informações para
+     * apresentá-las com seus próprios estilos.
+     *
+     * @param array<int, string> $matches Capturas das informações do recurso.
+     * @return string HTML do recurso.
+     */
+    
     private static function resourceFormatting(array $matches): ?string
     {
+        /**
+         * Recuperamos o identificador e o tipo de recurso das capturas. Também
+         * guardamos o marcador de referência e o tamanho total do trecho lido.
+         */
         $refMarker = self::$refMarker;
 
         $matchLength = strlen($matches[0]);
         $resourceId = $matches[1];
         $resourceKind = $matches[2];
 
+        /**
+         * Avançamos sobre o recurso reconhecido e montamos a apresentação com o
+         * identificador, o rótulo resource e o tipo do recurso entre
+         * parênteses.
+         */
         self::moveDumpPointerForward($matchLength);
 
         return $refMarker.self::applyHtml('resource-value', $resourceId).' '.self::applyHtml('resource-type', 'resource').' '.self::applyHtml('resource-kind', '('.$resourceKind.')')."\n";
     }
 
+
+
+    /**
+     * 🟢 FORMATANDO UM CASO DE ENUM
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Um enum reúne opções nomeadas, como os estados de um cadastro. Quando
+     * depuramos uma dessas opções, o var_dump() informa o nome do enum e o caso
+     * selecionado, como enum(Status::Ativo).
+     *
+     * Aqui preservamos essa identificação e acrescentamos o rótulo enum,
+     * aplicando os estilos próprios dessa apresentação.
+     *
+     * @param array<int, string> $matches Capturas da identificação do caso.
+     * @return string HTML do caso de enum.
+     */
+    
     private static function enumFormatting(array $matches): ?string
     {
+        /**
+         * Guardamos o marcador de referência e recuperamos a identificação do
+         * caso. Depois, avançamos pelo trecho completo que a expressão já
+         * reconheceu.
+         */
         $refMarker = self::$refMarker;
 
         $matchLength = strlen($matches[0]);
@@ -904,51 +1442,190 @@ final class VarDump
 
         self::moveDumpPointerForward($matchLength);
 
+        /**
+         * Exibimos a identificação recebida seguida do rótulo enum.
+         */
         return $refMarker.self::applyHtml('enum-value', $enumCase).' '.self::applyHtml('enum-type', 'enum')."\n";
     }
 
+
+
+    /**
+     * 🟢 PRESERVANDO A INDICAÇÃO DE VALOR DESCONHECIDO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Se o var_dump() produzir o marcador UNKNOWN:0, mantemos essa informação
+     * na saída e aplicamos um estilo próprio para destacá-la.
+     *
+     * Não tentamos adivinhar o valor que ele representa. A depuração precisa
+     * continuar mostrando a indicação que veio do PHP.
+     *
+     * @param array<int, string> $matches Capturas do marcador UNKNOWN:0.
+     * @return string HTML do marcador de valor desconhecido.
+     */
+    
     private static function unknownFormatting(array $matches): ?string
     {
+        /**
+         * Guardamos o marcador de referência e avançamos pelo tamanho do aviso
+         * reconhecido, deixando a leitura pronta para continuar depois dele.
+         */
         $refMarker = self::$refMarker;
 
         $matchLength = strlen($matches[0]);
 
         self::moveDumpPointerForward($matchLength);
 
+        /**
+         * Mantemos o texto UNKNOWN:0 na apresentação com o estilo unknown.
+         */
         return $refMarker.self::applyHtml('unknown', 'UNKNOWN:0')."\n";
     }
 
+
+
+    /**
+     * 🟢 FORMATANDO O VALOR null
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Apresenta o NULL que já foi reconhecido por `applyFormats()` com seu
+     * próprio estilo, preservando o marcador de referência quando houver.
+     *
+     * O texto desse valor é sempre o mesmo, então não precisamos receber
+     * capturas de uma expressão regular para montar sua apresentação.
+     *
+     * @return string HTML do valor null.
+     */
+    
     private static function nullFormatting(): ?string
     {
+        /**
+         * Guardamos o marcador e avançamos cinco bytes: quatro correspondem a
+         * NULL e o último à quebra de linha que acompanha o valor no dump.
+         */
         $refMarker = self::$refMarker;
 
         self::moveDumpPointerForward(5);
 
+        /**
+         * Devolvemos o texto NULL com o estilo definido para esse tipo.
+         */
         return $refMarker.self::applyHtml('null', 'NULL')."\n";
     }
 
+
+
+    /**
+     * 🟢 APLICANDO O ESTILO A UM TRECHO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Os formatadores precisam destacar várias partes do dump, como um número,
+     * o nome de uma propriedade ou a indicação de um tipo. Este método monta
+     * o elemento <span> usado para aplicar o estilo a cada uma dessas partes.
+     *
+     * Recebemos o texto e as classes CSS escolhidas pelo formatador. Antes de
+     * colocar o texto no HTML, passamos por `escapeHtml()` para que o próprio
+     * conteúdo depurado não seja interpretado como marcação da página.
+     *
+     * @param string $class Classes CSS que serão aplicadas ao trecho.
+     * @param string $value Texto que será exibido dentro do elemento.
+     * @return string Elemento span com as classes e o texto preparado.
+     */
+    
     private static function applyHtml(string $class, string $value): string
     {
+        /**
+         * Montamos o elemento com as classes fornecidas internamente e o
+         * conteúdo escapado. O HTML devolvido será juntado ao restante da
+         * apresentação.
+         */
         return '<span class="'.$class.'">'.self::escapeHtml($value).'</span>';
     }
 
+
+
+    /**
+     * 🟢 PREPARANDO O CONTEÚDO PARA APARECER COMO TEXTO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Um valor depurado pode conter tags HTML. Se colocarmos esse conteúdo
+     * diretamente na página, o navegador poderá interpretá-lo e mudar a
+     * apresentação, em vez de mostrar o que realmente está no valor.
+     *
+     * Este método converte os caracteres especiais para suas representações em
+     * HTML. Por exemplo, < vira &lt;. O navegador exibe o caractere original,
+     * mas passa a tratá-lo como texto. Assim, conseguimos ler até as próprias
+     * tags que estejam dentro do conteúdo depurado.
+     *
+     * @param string $value Texto que será preparado para exibição.
+     * @return string Texto com os caracteres especiais convertidos.
+     */
+    
     private static function escapeHtml(string $value): string
     {
+        /**
+         * ENT_QUOTES inclui as aspas simples e duplas nessa conversão.
+         * ENT_SUBSTITUTE pede um caractere de substituição para trechos
+         * inválidos em UTF-8, permitindo apresentar o restante do texto mesmo
+         * nesse caso.
+         */
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
+    
+
+
+    /**
+     * 🟢 AVANÇANDO A LEITURA DO DUMP
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Depois de ler um trecho, precisamos continuar logo após ele. Este método
+     * soma à posição atual a quantidade de bytes que acabamos de consumir.
+     *
+     * Como todos os formatadores usam essa mesma posição, a leitura de um valor
+     * interno também deixa o caminho pronto para quem continuar depois dele.
+     *
+     * @param int $moves Quantidade de bytes que será acrescentada à posição
+     *     atual.
+     * @return void
+     */
     
     private static function moveDumpPointerForward(int $moves): void
     {
         self::$dumpPointerPosition += $moves;
     }
 
+
+
+    /**
+     * 🟢 VOLTANDO AO INÍCIO DO DUMP
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Coloca a posição de leitura em zero para começarmos um novo dump.
+     *
+     * O método `print()` pode receber vários valores. Cada um gera seu próprio
+     * texto, então a leitura seguinte precisa começar do início, sem aproveitar
+     * a posição em que terminamos o resultado anterior.
+     *
+     * @return void
+     */
+    
     private static function resetDumpPointerPosition(): void
     {
         self::$dumpPointerPosition = 0;
     }
 
+
+
+    /**
+     * 🟢 REINICIANDO O NÍVEL DE CONSULTA DA ORIGEM
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Zera o ajuste feito para localizar a origem de uma chamada intermediária,
+     * como a que acontece quando usamos a função auxiliar `vardump()`.
+     *
+     * O método `print()` guarda o nível em uma variável local antes de chamar
+     * este reset. Assim, continua usando o ajuste de que precisa agora, mas
+     * deixa a propriedade pronta para as próximas chamadas.
+     *
+     * @return void
+     */
+    
     private static function resetBacktraceLevel(): void
     {
         self::$backTraceLevel = 0;
     }
 }
+

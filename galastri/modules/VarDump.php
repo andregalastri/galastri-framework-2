@@ -110,8 +110,8 @@ final class VarDump
      * Indica quantos níveis devem ser avançados na pilha de chamadas para
      * localizar o arquivo e a linha apresentados pelo método `print()`.
      *
-     * O valor inicial, mas quando funções auxiliares, como `vardump()` chamam,
-     * esta classe como uma forma de abstração ao `\VarDump::print()`, é
+     * O valor inicial é zero, mas quando funções auxiliares, como `vardump()`
+     * chamam esta classe como uma forma de abstração ao `\VarDump::print()`, é
      * necessário incrementar esse nível, para mostrar a origem da chamada feita
      * pelo desenvolvedor e não pelo `vardump()`.
      *
@@ -129,7 +129,7 @@ final class VarDump
      *
      * O método `print()` vai processando a saída do `var_dump()` original em
      * trechos. Antes dele avançar para o próximo trecho, temos que armazenar em
-     * qual caractere ele parou, para que, quando ele prosseguir com o
+     * qual byte ele parou, para que, quando ele prosseguir com o
      * processamento, ele continue a partir da posição armazenada aqui.
      *
      * @var int
@@ -154,7 +154,7 @@ final class VarDump
      * │ as duas compartilham as alterações de uma pra outra.                  │
      * │                                                                       │
      * │ Então, neste caso, se definirmos `$outroNumero = 20;`,                │
-     * │ automáticamente, a variável `$numero` também passa a armazenar o      │
+     * │ automaticamente, a variável `$numero` também passa a armazenar o      │
      * │ valor `20`.                                                           │
      * │                                                                       │
      * │ E o inverso também, se `$numero = 30;`, $outroNumero também retornará │
@@ -163,7 +163,7 @@ final class VarDump
      * │ E isso é importante pra depuração com `var_dump()`.                   │
      * └───────────────────────────────────────────────────────────────────────┘
      *
-     * Esta propriedade, portanto, armazena o `&` para ser exibida junto com um
+     * Esta propriedade, portanto, armazena o `&` para ser exibido junto com um
      * valor quando ele for de referência.
      *
      * Como a saída é em HTML, usamos `&amp;` para representar o `&` e garantir
@@ -630,8 +630,8 @@ final class VarDump
     private static function getVarDumpOutput(mixed ...$valueList): array
     {
         /**
-         * Preparamos o array que armazenar os resultados e abrimos nosso
-         * buffer. A partir daqui, cada a saída do `var_dump()` vai sendo
+         * Preparamos o array que vai armazenar os resultados e abrimos nosso
+         * buffer. A partir daqui, a saída do `var_dump()` vai sendo
          * guardada neste buffer, enquanto não encerrarmos essa captura.
          */
         
@@ -652,10 +652,9 @@ final class VarDump
             foreach ($valueList as $value) {
                 
                 /**
-                 * Para cada valor a ser depurado, executamos um `var_dump()` e
-                 * que é armazenado do buffer. Em seguida, pegamos o valor
-                 * armazenado no buffer com `ob_get_contents()` e armazenamos
-                 * dentro do array.
+                 * Para cada valor a ser depurado, executamos um `var_dump()`.
+                 * O texto produzido fica no buffer. Em seguida, pegamos esse
+                 * conteúdo com `ob_get_contents()` e guardamos dentro do array.
                  *
                  * Em seguida limpamos o buffer com `ob_clean()` para que o
                  * próximo resultado não venha misturado com o anterior.
@@ -718,7 +717,7 @@ final class VarDump
      * @param string $currentOutput  
      * :: Texto do dump que estamos lendo.
      * 
-     * @return array(int, string)|false Trechos encontrados ou false.
+     * @return array<int, string>|false Trechos encontrados ou false.
      */
     
     private static function getMatches(string $regex, string $currentOutput): array|bool
@@ -748,9 +747,9 @@ final class VarDump
          * array `$matches`, que é formada da seguinte forma:
          * 
          * ┌──────────────────────┬───────────────────────────────────────────┐
-         * │ `$match[0]`          │ Fica a correspondência completa           │
+         * │ `$matches[0]`          │ Fica a correspondência completa           │
          * ├──────────────────────┼───────────────────────────────────────────┤
-         * │ `$match[1]` e demais │ Ficam as partes separadas pelos grupos da │
+         * │ `$matches[1]` e demais │ Ficam as partes separadas pelos grupos da │
          * │                      │ expressão regular.                        │
          * └──────────────────────┴───────────────────────────────────────────┘
          */
@@ -950,9 +949,12 @@ final class VarDump
      * 🟢 FORMATANDO STRINGS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Quando chegamos aqui, já reconhecemos o cabeçalho da string, como
-     * `string(5) "Texto"`, por exemplo. O número entre parênteses informado
-     * pelo `var_dump()` diz quantos caracteres precisamos ler para recuperar
-     * seu conteúdo.
+     * `string(5)`, por exemplo. Esse número informa o tamanho do conteúdo
+     * em bytes, que é a medida usada pelo PHP para percorrer esse texto.
+     *
+     * Isso importa porque uma letra com acento ou um emoji pode ocupar mais
+     * de um byte. Usando o tamanho informado pelo próprio var_dump(),
+     * conseguimos ler todo o conteúdo sem precisar contar essas letras.
      *
      * Usamos esse tamanho porque uma string pode conter aspas e quebras de
      * linha. Se tentássemos encontrar o fim procurando apenas a próxima aspa,
@@ -966,7 +968,7 @@ final class VarDump
      * @param string $currentoutput  
      * :: Texto completo do dump que estamos lendo.
      *
-     * @param array(<int, string>) $matches  
+     * @param array<int, string> $matches  
      * :: Capturas do cabeçalho da string.
      *
      * @return string|null HTML da string ou null se a leitura não conferir.
@@ -992,7 +994,7 @@ final class VarDump
          * Movemos o ponteiro para depois do cabeçalho, incluindo a aspa de
          * abertura, para chegar ao primeiro caractere do conteúdo. Antes de
          * ler, conferimos se o tamanho anunciado cabe no texto restante,
-         * reservando dois caracteres para a aspa final e a quebra de linha. Se
+         * reservando dois bytes para a aspa final e a quebra de linha. Se
          * não couber, essa leitura não será considerada confiável e retornará
          * `null`.
          */
@@ -1008,10 +1010,9 @@ final class VarDump
         
         
         /**
-         * Lemos exatamente o comprimento informado e avançamos até o ponto em
-         * que esperamos encontrar o fechamento. Os caracteres correspondem ao
-         * tamanho informado pelo `var_dump()`, inclusive em textos com acentos
-         * e emojis.
+         * Lemos exatamente a quantidade de bytes informada e avançamos até o
+         * ponto em que esperamos encontrar o fechamento. Esse tamanho também
+         * funciona quando o texto contém acentos e emojis.
          */
         
         $value = substr($currentoutput, self::$dumpPointerPosition, $outputlength);
@@ -1071,7 +1072,7 @@ final class VarDump
      * @param string $currentOutput  
      * :: Texto completo do dump que estamos lendo.
      *
-     * @param array(<int, string>) $matches  
+     * @param array<int, string> $matches  
      * :: Capturas do cabeçalho do array.
      *
      * @return string|null HTML do array ou null se a leitura falhar.
@@ -1245,7 +1246,7 @@ final class VarDump
      * @param string $currentOutput  
      * :: Texto completo do dump que estamos lendo.
      * 
-     * @param array(<int, string>) $matches  
+     * @param array<int, string> $matches  
      * :: Capturas do cabeçalho do objeto.
      * 
      * @return string|null HTML do objeto ou null se a leitura falhar.
@@ -1428,7 +1429,7 @@ final class VarDump
      *
      * 
      * ---
-     * @param array(<int, string>) $matches
+     * @param array<int, string> $matches
      * :: Capturas do tipo e do valor numérico.
      * 
      * @return string HTML do valor numérico.
@@ -1437,9 +1438,10 @@ final class VarDump
     private static function numericFormatting(array $matches): ?string
     {
         /**
-         * Não seria necessário armazenar o marcador de referência aqui, mas foi
-         * colocado pra manter um padrão. Todos os métodos de formatação vão
-         * declarar esta variável mesmo sem precisar.
+         * Guardamos o marcador numa variável local para seguir o mesmo padrão
+         * dos formatadores de arrays e objetos. Aqui, também poderíamos usar
+         * a propriedade diretamente, pois não lemos valores internos que
+         * possam alterar seu conteúdo.
          */
         
         $refMarker = self::$refMarker;
@@ -1452,7 +1454,7 @@ final class VarDump
         
         $matchLength = strlen($matches[0]);
         $numericType = $matches[1];
-        $outputlength = $matches[2];
+        $numericValue = $matches[2];
 
         
         
@@ -1464,7 +1466,7 @@ final class VarDump
         
         self::moveDumpPointerForward($matchLength);
         
-        $numericValueHtml = self::applyHtml('numeric-value', $outputlength);
+        $numericValueHtml = self::applyHtml('numeric-value', $numericValue);
         $numericTypeHtml = self::applyHtml('numeric-type', $numericType);
 
         return $refMarker.$numericValueHtml.' '.$numericTypeHtml."\n";
@@ -1483,7 +1485,7 @@ final class VarDump
      *
      *
      * ---
-     * @param array(<int, string>) $matches  
+     * @param array<int, string> $matches  
      * :: Capturas do valor booleano.
      *
      * @return string HTML do valor booleano.
@@ -1492,9 +1494,10 @@ final class VarDump
     private static function booleanFormatting(array $matches): ?string
     {
         /**
-         * Não seria necessário armazenar o marcador de referência aqui, mas foi
-         * colocado pra manter um padrão. Todos os métodos de formatação vão
-         * declarar esta variável mesmo sem precisar.
+         * Guardamos o marcador numa variável local para seguir o mesmo padrão
+         * dos formatadores de arrays e objetos. Aqui, também poderíamos usar
+         * a propriedade diretamente, pois não lemos valores internos que
+         * possam alterar seu conteúdo.
          */
         
         $refMarker = self::$refMarker;
@@ -1548,7 +1551,7 @@ final class VarDump
      *
      *
      * ---
-     * @param array(<int, string>) $matches  
+     * @param array<int, string> $matches  
      * :: Capturas do aviso de recursão.
      *
      * @return string HTML do aviso de recursão.
@@ -1566,8 +1569,8 @@ final class VarDump
         
         
         /**
-         * A expressão já reconheceu todo o aviso. Guardamos o marcador de
-         * referência, quando houver, e avançamos pelo tamanho do trecho lido.
+         * A expressão já reconheceu todo o aviso, então avançamos pelo
+         * tamanho do trecho lido.
          */
         
         self::moveDumpPointerForward($matchLength);
@@ -1604,7 +1607,7 @@ final class VarDump
      *
      *
      * ---
-     * @param array(<int, string>) $matches  
+     * @param array<int, string> $matches  
      * :: Capturas do aviso e do tipo declarado.
      *
      * @return string|null HTML do aviso ou null se a separação do tipo falhar.
@@ -1736,7 +1739,7 @@ final class VarDump
      *
      *
      * ---
-     * @param array(<int, string>) $matches  
+     * @param array<int, string> $matches  
      * :: Capturas das informações do recurso.
      *
      * @return string HTML do recurso.
@@ -1789,7 +1792,7 @@ final class VarDump
      *
      * 
      * ---
-     * @param array(<int, string>) $matches
+     * @param array<int, string> $matches
      * :: Capturas da identificação do caso.
      * 
      * @return string HTML do caso de enum.
@@ -1798,9 +1801,10 @@ final class VarDump
     private static function enumFormatting(array $matches): ?string
     {
         /**
-         * Não seria necessário armazenar o marcador de referência aqui, mas foi
-         * colocado pra manter um padrão. Todos os métodos de formatação vão
-         * declarar esta variável mesmo sem precisar.
+         * Guardamos o marcador numa variável local para seguir o mesmo padrão
+         * dos formatadores de arrays e objetos. Aqui, também poderíamos usar
+         * a propriedade diretamente, pois não lemos valores internos que
+         * possam alterar seu conteúdo.
          */
         
         $refMarker = self::$refMarker;
@@ -1848,7 +1852,7 @@ final class VarDump
      *
      * 
      * ---
-     * @param array(<int, string>) $matches  
+     * @param array<int, string> $matches  
      * :: Capturas do marcador UNKNOWN:0.
      * 
      * @return string HTML do marcador de valor desconhecido.
@@ -1857,9 +1861,10 @@ final class VarDump
     private static function unknownFormatting(array $matches): ?string
     {
         /**
-         * Não seria necessário armazenar o marcador de referência aqui, mas foi
-         * colocado pra manter um padrão. Todos os métodos de formatação vão
-         * declarar esta variável mesmo sem precisar.
+         * Guardamos o marcador numa variável local para seguir o mesmo padrão
+         * dos formatadores de arrays e objetos. Aqui, também poderíamos usar
+         * a propriedade diretamente, pois não lemos valores internos que
+         * possam alterar seu conteúdo.
          */
         
         $refMarker = self::$refMarker;
@@ -1911,17 +1916,18 @@ final class VarDump
     private static function nullFormatting(): ?string
     {
         /**
-         * Não seria necessário armazenar o marcador de referência aqui, mas foi
-         * colocado pra manter um padrão. Todos os métodos de formatação vão
-         * declarar esta variável mesmo sem precisar.
+         * Guardamos o marcador numa variável local para seguir o mesmo padrão
+         * dos formatadores de arrays e objetos. Aqui, também poderíamos usar
+         * a propriedade diretamente, pois não lemos valores internos que
+         * possam alterar seu conteúdo.
          */
         $refMarker = self::$refMarker;
         
         
         
         /**
-         * Guardamos o marcador e avançamos cinco caracteres: quatro correspondem a
-         * NULL e o último à quebra de linha que acompanha o valor no dump.
+         * Avançamos cinco bytes: quatro correspondem a NULL e o último à
+         * quebra de linha que acompanha o valor no dump.
          */
         
         self::moveDumpPointerForward(5);
@@ -2020,7 +2026,7 @@ final class VarDump
      * 🟢 AVANÇANDO A LEITURA DO DUMP
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Depois de ler um trecho, precisamos continuar logo após ele. Este método
-     * soma a quantidade de caracteres à posição atual que acabamos de consumir.
+     * soma à posição atual a quantidade de bytes que acabamos de consumir.
      *
      * Como todos os formatadores usam essa mesma posição, a leitura de um valor
      * interno também deixa o caminho pronto para quem continuar depois dele.
@@ -2028,7 +2034,7 @@ final class VarDump
      *
      * ---
      * @param int $moves  
-     * :: Quantidade de caracteres que será acrescentada à posição atual.
+     * :: Quantidade de bytes que será acrescentada à posição atual.
      *
      * @return void
      */

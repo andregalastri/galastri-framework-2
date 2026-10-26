@@ -95,12 +95,12 @@ ob_start();
  * 1. O primeiro arquivo define as constantes utilizadas pelo framework.
  *
  *    Aproveite para ver sobre as constantes agora e depois volte aqui: 
- *    LINK: /galastri/bootstrap/constants.php  
+ *    🔗 LINK: /galastri/bootstrap/constants.php  
  *
  * 2. O segundo declara e disponibiliza as funções auxiliares.
  *
  *    Aproveite para ver sobre funções auxiliáres agora e depois volte aqui:
- *    LINK: /galastri/bootstrap/functions.php  
+ *    🔗 LINK: /galastri/bootstrap/functions.php  
  */
 
 require('constants.php');
@@ -115,27 +115,27 @@ require('functions.php');
  * os arquivos das classes conforme os namespaces configurados no projeto.
  *
  * ✔️ EXEMPLO
- * ┌──────────────────────────────────────────────────────────────────────────┐
- * │ Para referenciar o arquivo localizad em `galastri/core/Galastri.php`,    │
- * │ pode-se simplesmente informar o caminho através de namespaces            │
- * │                                                                          │
- * │ ◆ `use galastri\core\Galastri;`                                          │
- * │   Referencia a classe dentro de outra.                                   │
- * │                                                                          │
- * │ ◆ `galastri\core\Galastri::run();`                                       │
- * │   Executa o método `run()` da classe Galastri.                           │
- * │                                                                          │
- * │ O autoload basicamente procura o local do arquivo com base no caminho    │
- * │ informado no namespace.                                                  │
- * │                                                                          │
- * │ ┌──────────────────────────────────────────────────────────────────────┐ │
- * │ │ Isso afeta a performance?                                            │ │
- * │ │                                                                      │ │
- * │ │ O autoload não carrega todas as classes de uma vez. Ele carrega      │ │
- * │ │ apenas uma classe quando ela é necessária. Portanto, não se trata de │ │
- * │ │ um recurso problemático no sentido de performance.                   │ │
- * │ └──────────────────────────────────────────────────────────────────────┘ │
- * └──────────────────────────────────────────────────────────────────────────┘
+ * ┌───────────────────────────────────────────────────────────────────────────┐
+ * │ Para referenciar o arquivo localizad em `galastri/core/Galastri.php`,     │
+ * │ pode-se simplesmente informar o caminho através de namespaces             │
+ * │                                                                           │
+ * │ ◆ `use galastri\core\Galastri;`                                           │
+ * │   Referencia a classe dentro de outra.                                    │
+ * │                                                                           │
+ * │ ◆ `galastri\core\Galastri::run();`                                        │
+ * │   Executa o método `run()` da classe Galastri.                            │
+ * │                                                                           │
+ * │ O autoload basicamente procura o local do arquivo com base no caminho     │
+ * │ informado no namespace.                                                   │
+ * │                                                                           │
+ * │ ┌──────────────────────────────────────────────────────────────────────┐  │
+ * │ │ Isso afeta a performance?                                            │  │
+ * │ │                                                                      │  │
+ * │ │ O autoload não carrega todas as classes de uma vez. Ele carrega      │  │
+ * │ │ apenas uma classe quando ela é necessária. Portanto, não se trata de │  │
+ * │ │ um recurso problemático no sentido de performance.                   │  │
+ * │ └──────────────────────────────────────────────────────────────────────┘  │
+ * └───────────────────────────────────────────────────────────────────────────┘
  */
 
 require(AUTOLOADER_FILE_PATH);
@@ -167,7 +167,7 @@ require(AUTOLOADER_FILE_PATH);
  * └───────────────────────────────────────────────────────────────────────────┘
  *
  * Aproveite para ver sobre a classe VarDump agora e depois volte aqui:  
- * LINK: /galastri/modules/VarDump.php  
+ * 🔗 LINK: /galastri/modules/VarDump.php  
  */
 
 class_alias(\galastri\modules\VarDump::class, '\VarDump');
@@ -195,9 +195,9 @@ class_alias(\galastri\modules\VarDump::class, '\VarDump');
  * └───────────────────────────────────────────────────────────────────────────┘
  *
  * Aproveite para ver sobre a classe ErrorHandler agora e depois volte aqui:
- * LINK: /galastri/core/ErrorHandler.php 
- */ 
-
+ * 🔗 LINK: /galastri/core/ErrorHandler.php 
+ */
+ 
 ErrorHandler::run();
 
 
@@ -230,4 +230,4 @@ Galastri::run();
 
 //  ----------------------------------------------------------------------------
 //  ▶️ PRÓXIMO TÓPICO
-//  LINK: /galastri/core/Galastri.php
+//  🔗 LINK: /galastri/core/Galastri.php

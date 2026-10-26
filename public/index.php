@@ -16,10 +16,10 @@
  * aqui:
  *
  * Introdução ao Galastri Framwork:
- * LINK: /docs/galastri-framework.md  
+ * 🔗 LINK: /docs/galastri-framework.md  
  *
  * Preparando o ambiente de desenvolvimento:
- * LINK: /docs/instalacao/preparando-o-ambiente-de-desenvolvimento.md
+ * 🔗 LINK: /docs/instalacao/preparando-o-ambiente-de-desenvolvimento.md
  *
  * 
  * 
@@ -85,10 +85,11 @@ error_reporting(E_ALL);
  * O `require` executa o conteúdo do `bootstrap.php`. Se o arquivo não puder ser
  * carregado, a inicialização é interrompida.
  */ 
-require(__DIR__ . '/../galastri/bootstrap/bootstrap.php');
+
+require(__DIR__.'/../galastri/bootstrap/bootstrap.php');
 
 
 
 // -----------------------------------------------------------------------------
 // ▶️ PRÓXIMO TÓPICO:
-// LINK: /galastri/bootstrap/bootstrap.php
+// 🔗 LINK: /galastri/bootstrap/bootstrap.php

@@ -68,7 +68,7 @@ define('PERFORMANCE_ANALYSIS_TAG', bin2hex(random_bytes(10)));
  *
  * Aproveite para ver sobre a classe VarDump agora, se ainda não viu, e depois
  * volte aqui:  
- * LINK: /galastri/modules/VarDump.php
+ * 🔗 LINK: /galastri/modules/VarDump.php
  */
 
 const INSERT_CONTENT_AT_START = 1;
@@ -122,11 +122,11 @@ const IS_NOT_AN_OBJECT = false;
  * └────────────────────────────┴──────────────────────────────────────────────┘
  */
 
-define('GALASTRI_VERSION_FILE_PATH', PROJECT_DIR . '/galastri/VERSION');
-define('APP_VERSION_FILE_PATH',      PROJECT_DIR . '/app/VERSION');
-define('APP_BOOTSTRAP_FILE_PATH',    PROJECT_DIR . '/app/bootstrap.php');
-define('MIME_TYPES_FILE_PATH',       PROJECT_DIR . '/app/config/mime-types.php');
-define('AUTOLOADER_FILE_PATH',       PROJECT_DIR . '/vendor/autoload.php');
+define('GALASTRI_VERSION_FILE_PATH', PROJECT_DIR.'/galastri/VERSION');
+define('APP_VERSION_FILE_PATH',      PROJECT_DIR.'/app/VERSION');
+define('APP_BOOTSTRAP_FILE_PATH',    PROJECT_DIR.'/app/bootstrap.php');
+define('MIME_TYPES_FILE_PATH',       PROJECT_DIR.'/app/config/mime-types.php');
+define('AUTOLOADER_FILE_PATH',       PROJECT_DIR.'/vendor/autoload.php');
 
 
 
@@ -151,13 +151,13 @@ define('AUTOLOADER_FILE_PATH',       PROJECT_DIR . '/vendor/autoload.php');
 $galastriVersion = 'Version file not found';
 $appVersion = 'Version file not found';
 
-if (file_exists(GALASTRI_VERSION_FILE_PATH)) {
+if (is_file(GALASTRI_VERSION_FILE_PATH)) {
     $galastriVersion = trim(file_get_contents(GALASTRI_VERSION_FILE_PATH));
 }
 
-define('GALASTRI_VERSION', $appVersion);
+define('GALASTRI_VERSION', $galastriVersion);
 
-if (file_exists(APP_VERSION_FILE_PATH)) {
+if (is_file(APP_VERSION_FILE_PATH)) {
     $appVersion = trim(file_get_contents(APP_VERSION_FILE_PATH));
 }
 
@@ -174,7 +174,7 @@ define('APP_VERSION', $appVersion);
 
 $mimeTypeList = [];
 
-if (file_exists(MIME_TYPES_FILE_PATH)) {
+if (is_file(MIME_TYPES_FILE_PATH)) {
     $mimeTypeList = require(MIME_TYPES_FILE_PATH);
 }
 
@@ -182,4 +182,4 @@ if (file_exists(MIME_TYPES_FILE_PATH)) {
 
 // -----------------------------------------------------------------------------
 // ◀️ VOLTAR AO TÓPICO ANTERIOR:
-// LINK: /galastri/bootstrap/bootstrap.php
+// 🔗 LINK: /galastri/bootstrap/bootstrap.php

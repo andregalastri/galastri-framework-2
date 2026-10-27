@@ -46,9 +46,10 @@ namespace galastri\core;
  * │ `Json`      │ Identifica se a resposta já está em streaming e permite     │
  * │             │ enviar o erro como uma nova linha JSON nesse mesmo fluxo.   │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤
- * │ `Exception` │ Representa a exceção própria do framework. Aqui verificamos │
- * │             │ se a falha pertence a essa classe e se sua propriedade      │
- * │             │ displayError autoriza mostrar a mensagem original.          │
+ * │ `Exception` │ Representa a exceção própria do framework. Sua propriedade  │
+ * │             │ `displayValidationError` pode autorizar a exibição da       │
+ * │             │ mensagem de validação, enquanto `errorSource` informa a     │
+ * │             │ classificação usada para escolher o status HTTP.            │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤
  * │ `Message`   │ Busca a mensagem genérica que mostramos quando os detalhes  │
  * │             │ da falha não podem ser exibidos.                            │
@@ -435,11 +436,10 @@ final class ErrorHandler
                 $line = $e->getLine();
                 
                 /**
-                 * Esta última expressão é um teste que verifica duas condições.
-                 *
-                 * 1. Se o objeto `$e` é uma instância da classe
-                 *    galastri\extensions\Exception (uma classe própria do
-                 *    framework que é uma extensão do \Exception nativo do PHP).
+                 * Neste ponto fazemos um teste que verifica se o objeto `$e` é
+                 * uma instância da classe galastri\extensions\Exception (uma
+                 * classe própria do framework que é uma extensão do \Exception
+                 * nativo do PHP).
                  *
                  * 2. Se for e o objeto `$e` possui a propriedade
                  *    `displayValidationError` com valor `true`.
@@ -471,6 +471,44 @@ final class ErrorHandler
                  * configurações verificadas pelos métodos que preparam esses
                  * campos.
                  */
+                
+                
+                /**
+                 * Neste ponto fazemos um teste que verifica se o objeto `$e` é
+                 * uma instância da classe galastri\extensions\Exception (uma
+                 * classe própria do framework que é uma extensão do \Exception
+                 * nativo do PHP).
+                 *
+                 * Caso seja, então precisamos atribuir dois valores que vão
+                 * incrementar a saída de erro.
+                 * 
+                 * ┌──────────────────────────┬────────────────────────────────┐
+                 * │ `$errorSource`           │ Trás a origem da exceção,      │
+                 * │                          │ podendo vir da classe          │
+                 * │                          │ Validation, Permission ou      │
+                 * │                          │ Authentication. Esta           │
+                 * │                          │ informação é importante pois   │
+                 * │                          │ permite maior precisão no      │
+                 * │                          │ código de retorno HTTP à       │
+                 * │                          │ requisição.                    │
+                 * │                          │                                │
+                 * │                          │ Por padrão ela é `null`, o que │
+                 * │                          │ inevitavelmente vai gerar      │
+                 * │                          │ código 500 de retorno HTTP     │
+                 * ├──────────────────────────┼────────────────────────────────┤
+                 * │ `displayValidationError` │ trás uma autorização           │
+                 * │                          │ alternativa para mostrar a     │
+                 * │                          │ mensagem de erro de validação  │
+                 * │                          │ mesmo com a configuração de    │
+                 * │                          │ rota `displayErrors`           │
+                 * │                          │ desativada.                    │
+                 * │                          │                                │
+                 * │                          │ Por padrão ela é `false`,      │
+                 * │                          │ garantindo que a configuração  │
+                 * │                          │ de rota seja levada em conta.  │
+                 * └──────────────────────────┴────────────────────────────────┘
+                 */
+                
                 $errorSource = null;
                 $displayValidationError = false;
 
@@ -479,8 +517,6 @@ final class ErrorHandler
                     $displayValidationError = $e->displayValidationError;
                 }
                 
-                $displayValidationError = $e instanceof Exception && $e->displayValidationError;
-
                 self::printError(
                     $code, $message, $file, $line, $trace,
                     $displayValidationError, $errorSource
@@ -946,6 +982,11 @@ final class ErrorHandler
      * :: Autorizador da classe `Validation` que opera como autorização
      *    alternativa ao da configuração de rota `displayErrors`.
      *
+     * @param string|null $errorSource  
+     * :: Classificação da origem da falha. Será usada para escolher o status
+     *    HTTP. Pode receber 'validation', 'authentication', 'permission' ou
+     *    `null` quando não houver uma origem específica.
+     *
      * @return void
      */
     
@@ -994,14 +1035,13 @@ final class ErrorHandler
 
         /**
          * O status HTTP faz parte dos cabeçalhos da resposta. Só tentamos
-         * ajustá-lo se eles ainda não foram enviados.
+         * ajustá-lo se eles ainda não foram enviados. Deve ser assim pois
+         * falhas podem ocorrer durante um streaming iniciado pela classe
+         * `ResponseStream`, usada para enviar dados antes do fim da requisição,
+         * por exemplo.
          *
-         * Isso é importante pois falhas podem ocorrer durante um streaming
-         * iniciado pela classe `ResponseStream`, usada para enviar dados antes
-         * do fim da requisição.
-         *
-         * Esta classe já envia um cabeçalho com o conteúdo e não podemos
-         * reenviar um cabeçalho novamente nestes casos.
+         * Passamos `$errorSource` para getHttpStatusCode(), que escolhe o status
+         * conforme a classificação da falha.
          */
         
         if (!headers_sent()) {
@@ -1011,8 +1051,9 @@ final class ErrorHandler
 
 
         /**
-         * Escolhemos a apresentação conforme output. Se a configuração ainda
-         * não estiver disponível, usamos view, que mostra os campos como texto
+         * Escolhemos a apresentação do erro conforme a saída definida na
+         * configuração de rota `output`. Se a configuração ainda não estiver
+         * disponível, usamos `view` por padrão, que mostra os campos como texto
          * em HTML.
          */
         
@@ -1032,13 +1073,14 @@ final class ErrorHandler
 
 
         /**
-         * Depois da apresentação, conferimos se devemos registrar a falha.
-         * Usamos true como alternativa se createLogsOnError ainda não estiver
+         * Depois da apresentação do erro, conferimos se devemos registrar a
+         * falha no arquivo de log. Usamos `true` como fallback se a
+         * configuração de rota `createLogsOnError` ainda não estiver
          * disponível.
          *
-         * Passamos os parâmetros originais para o log. Assim, ocultar um
-         * detalhe na resposta não elimina a informação que será usada para
-         * investigar o problema.
+         * Neste caso, passamos os parâmetros originais para o log, sem ocultar
+         * dados, já que este é um arquivo de relatório acessível apenas pelo
+         * desenvolvedor e deve conter o máximo de detalhes possível.
          */
         
         if (Config::get('createLogsOnError', true)) {
@@ -1048,23 +1090,46 @@ final class ErrorHandler
 
 
         /**
-         * Identificamos os quatro códigos que esta classe considera avisos
-         * para a decisão de continuar. A comparação é estrita: o código
-         * precisa corresponder a um dos nomes da lista.
+         * Para finalizar, é necessário decidir se o código prossegue em caso de
+         * avisos, ou se ele para como se fosse um erro fatal.
+         *
+         * Este comportamento é definido na configuração de rota
+         * `stopOnWarnings`. Se for `true`, ele encerra a execução mesmo sendo
+         * apenas um aviso.
+         *
+         * Existem quatro códigos que o framework considera como sendo um aviso
+         * e tomar a decisão de parar ou continuar. A comparação é estrita: o
+         * código precisa corresponder a um dos nomes da lista.
          */
         
-        $isWarning = in_array($code, ['E_WARNING', 'E_CORE_WARNING', 'E_COMPILE_WARNING', 'E_USER_WARNING'], true);
+        $warningList = [
+            'E_WARNING',
+            'E_CORE_WARNING',
+            'E_COMPILE_WARNING',
+            'E_USER_WARNING'
+        ];
+        
+        $isWarning = in_array($code, $warningList, true);
 
 
 
         /**
-         * Se stopOnWarnings estiver habilitado, encerramos mesmo nos avisos.
-         * Se estiver desabilitado, só os avisos da lista anterior podem seguir
-         * sem exit.
+         * Se `stopOnWarnings` estiver `true`, o código é encerrado e a execução
+         * não prossegue até mesmo para avisos ().
          *
-         * Um E_NOTICE, por exemplo, não está nessa lista e também encerra a
-         * execução. Além disso, sair deste método não retoma um código que o
-         * próprio PHP já interrompeu, como uma exceção não capturada.
+         * Se estiver desabilitado e ocorrerem os avisos da lista, o código
+         * prossegue.
+         *
+         * ⚠️ IMPORTANTE
+         * ┌──────────────────────────────────────────────────────────────────┐
+         * │ Aqui estamos tratando apenas do comportamento de avisos. No PHP, │
+         * │ por padrão, a execução prossegue mesmo havendo avisos            │
+         * │                                                                  │
+         * │ Este trecho NÃO trata de casos em que o próprio PHP encerra a    │
+         * │ execução, como no caso e E_NOTICE ou lançamento de exceções não  │
+         * │ capturadas.Nestes casos, o comportamento do PHP de encerrar a    │
+         * │ execução não tem como ser controlada.                            │
+         * └──────────────────────────────────────────────────────────────────┘
          */
         
         if (Config::get('stopOnWarnings', true) || !$isWarning) {
@@ -1474,30 +1539,40 @@ final class ErrorHandler
     /**
      * 🟢 ESCOLHENDO O STATUS HTTP DA FALHA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Escolhe o status HTTP que acompanha a resposta de erro. Esse número
-     * informa a quem fez a requisição se o servidor respondeu com sucesso ou
-     * encontrou um problema.
+     * Aqui escolhemos o status HTTP que acompanhará a resposta de erro,
+     * começando pela origem recebida de `$errorSource`.
      *
-     * Antes de escolher outro status, conferimos se já existe um código entre
-     * 400 e 599. Se existir, mantemos esse valor para preservar uma decisão
-     * que já foi tomada, como uma resposta 404.
+     * Se a origem estiver ausente ou não for reconhecida, consultamos o status
+     * já definido para a resposta. Caso esteja entre 400 e 599, mantemos esse
+     * valor para preservar uma decisão anterior, como uma respostas 404.
      *
-     * Quando ainda precisamos escolher, os códigos E_WARNING, E_USER_WARNING,
-     * E_NOTICE e E_USER_NOTICE recebem 400. Os demais recebem 500.
+     * Sem uma origem reconhecida e sem um status de erro anterior, usamos 500
+     * como padrão para a falha.
      *
-     * Essas regras usam a lista deste método. A lista de avisos que podem
-     * continuar a execução fica em printError() e é uma verificação separada.
+     * ⚠️ IMPORTANTE
+     * ┌───────────────────────────────────────────────────────────────────────┐
+     * │ A escolha do status HTTP não decide se dados podem aparecer ou não    │
+     * │ nas informações da falha, nem se a execução pode prosseguir. Essas    │
+     * │ verificações são feitas separadamente.                                │
+     * └───────────────────────────────────────────────────────────────────────┘
      *
      *
      * ---
-     * @param int|string $code
-     * :: Código que identifica a falha.
+     * @param string|null $errorSource  
+     * :: Classificação da falha: 'validation', 'authentication', 'permission'
+     *    ou null quando não houver uma classificação específica.
      *
      * @return int Status HTTP que deve acompanhar a resposta.
      */
-    
+
     private static function getHttpStatusCode(?string $errorSource): int
     {
+        /**
+         * Primeiro verificamos se a falha possui uma classificação reconhecida.
+         * Essas classificações têm prioridade sobre um status já definido para
+         * a resposta.
+         */
+
         switch ($errorSource) {
             case 'validation':
                 return 422;
@@ -1506,22 +1581,23 @@ final class ErrorHandler
             case 'permission':
                 return 403;
         }
-        
+
+
+
         /**
-         * Consultamos o status que já está definido para esta resposta, sem
-         * tentar modificá-lo nesta chamada.
+         * Sem uma classificação reconhecida, consultamos o status que já está
+         * definido para esta resposta, sem modificá-lo nesta chamada.
          */
-        
+
         $currentStatus = http_response_code();
 
 
 
         /**
-         * Se já houver um status de erro entre 400 e 599, devolvemos esse
-         * mesmo valor. Um status 404 definido antes da falha, por exemplo, não
-         * será trocado por 500.
+         * Se já houver um status de erro entre 400 e 599, devolvemos esse mesmo
+         * valor. Assim, preservamos uma decisão anterior, como um status 404.
          */
-        
+
         if ($currentStatus !== false && $currentStatus >= 400 && $currentStatus <= 599) {
             return $currentStatus;
         }
@@ -1529,9 +1605,10 @@ final class ErrorHandler
 
 
         /**
-         * Para qualquer outro código, usamos 500 como status padrão da falha.
+         * Sem uma classificação reconhecida e sem um status de erro anterior,
+         * usamos 500 como status padrão da falha.
          */
-        
+
         return 500;
     }
 }
@@ -1539,5 +1616,6 @@ final class ErrorHandler
 
 
 // -----------------------------------------------------------------------------
-// ◀️ VOLTAR AO TÓPICO ANTERIOR:
+// ◀️ VOLTAR A UM TÓPICO ANTERIOR:
 // 🔗 LINK: /galastri/bootstrap/bootstrap.php
+// 🔗 LINK: /galastri/core/Galastri.php

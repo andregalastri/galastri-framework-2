@@ -398,15 +398,16 @@ final class ErrorHandler
                      * │ retirar `args` completamente.                         │
                      * └───────────────────────────────────────────────────────┘
                      *
-                     * $value armazena uma array contendo chaves como `file`,
+                     * $value armazena um array contendo chaves como `file`,
                      * `line`, `function` ou, o que queremos remover, `args`.
                      * Por isso, executamos um `array_filter()` que percorre
                      * todos os campos de $value.
                      *
-                     * A opção ARRAY_FILTER_USE_KEY faz filtragem receber as
-                     * chaves ao invés do seu valor, o que permite verificarmos
-                     * os nomes dos campos. Quando o nome do campo for `args`,
-                     * removemos ela da array, mantendo os demais.
+                     * A opção ARRAY_FILTER_USE_KEY faz a função de filtragem
+                     * receber as chaves ao invés do seu valor, o que permite
+                     * verificarmos os nomes dos campos. Quando o nome do campo
+                     * for `args`, removemos esse campo do array, mantendo os
+                     * demais.
                      *
                      * O array filtrado é, então, armazenado em `$trace`.
                      */
@@ -563,7 +564,7 @@ final class ErrorHandler
 
                 /**
                  * Se o erro corresponder a um dos tipos da lista, então será
-                 * necessário encaminhamos os dados do erro fatal para o mesmo
+                 * necessário encaminhar os dados do erro fatal para o mesmo
                  * tratamento usado pelos outros caminhos.
                  *
                  * O histórico coletado aqui pertence ao momento do
@@ -666,14 +667,14 @@ final class ErrorHandler
      *
      * Mas em produção, essa configuração deverá, idealmente, ser desativada com
      * `false` pra garantir que nenhuma informação interna com dados sensíveis
-     * vazem para usuários.
+     * vaze para usuários.
      *
      * Se nenhuma dessas condições permitir mostrar a mensagem real, exibimos a
      * mensagem genérica armazenada em `DEFAULT_ERROR_MESSAGE`, na classe
      * `Message`.
      *
-     * O arquivo de log salvo na pasta /logs, porém, continua armazenando a
-     * mensagem original.
+     * O arquivo de log salvo na pasta /logs, porém, continua armazenando o
+     * caminho original do arquivo.
      *
      *
      * ---
@@ -690,7 +691,7 @@ final class ErrorHandler
         getMessage(string $message, bool $displayValidationError = false): string
     {
         /**
-         * Consultamos a configuração de rota `displayErrors` com fallback pra
+         * Consultamos as configurações de rota `displayErrors` com fallback pra
          * `false` como padrão enquanto a configuração das rotas ainda não
          * estiver carregada. Assim, se uma falha ocorrer antes do carregamento
          * das configurações da rota, não liberamos a exibição de mensagens
@@ -1024,25 +1025,6 @@ final class ErrorHandler
         $isNonFatalError = in_array($code, $nonFatalErrorList, true);
 
 
-
-        /**
-         * Se `stopOnNonFatalErrors` estiver `true`, o código é encerrado e a execução
-         * não prossegue nem mesmo em caso de avisos.
-         *
-         * Se estiver desabilitado e ocorrerem os avisos da lista, o código
-         * prossegue.
-         *
-         * ⚠️ IMPORTANTE
-         * ┌──────────────────────────────────────────────────────────────────┐
-         * │ Aqui estamos tratando apenas do comportamento de avisos. No PHP, │
-         * │ por padrão, a execução prossegue mesmo havendo avisos            │
-         * │                                                                  │
-         * │ Este trecho NÃO trata de casos em que o próprio PHP encerra a    │
-         * │ execução, como no caso e E_NOTICE ou lançamento de exceções não  │
-         * │ capturadas.Nestes casos, o comportamento do PHP de encerrar a    │
-         * │ execução não tem como ser controlada.                            │
-         * └──────────────────────────────────────────────────────────────────┘
-         */
         
         /**
          * Se a falha não for fatal e `stopOnNonFatalErrors` estiver desativado,
@@ -1180,7 +1162,7 @@ final class ErrorHandler
 
         /**
          * Não sendo um streaming, a resposta é um JSON comum. Informamos o tipo
-         * do conteúdo no cabeçalho caso ainda não haja nenhum.
+         * do conteúdo enquanto os cabeçalhos ainda não tiverem sido enviados.
          */
         
         if (!headers_sent()) {
@@ -1245,7 +1227,7 @@ final class ErrorHandler
     private static function printErrorView(array $data): void
     {
         /**
-         * Adicionamos uma tag `<pre>` para mantér os espaços e as quebras de
+         * Adicionamos uma tag `<pre>` para mantém os espaços e as quebras de
          * linha. O estilo `pre-wrap` também permite que linhas longas sejam
          * quebradas para caber no espaço disponível.
          */
@@ -1422,7 +1404,8 @@ final class ErrorHandler
             
             
             /**
-             * O `explode()` separa as quebras.
+             * O `explode()` separa o texto nas quebras de linha, criando um
+             * array em que cada elemento contém uma linha a ser desenhada.
              */
             
             $textLines = explode("\n", $wrappedText);
@@ -1451,7 +1434,7 @@ final class ErrorHandler
 
         /**
          * A altura da imagem é definida agora. Colocamos uma margem no topo e
-         * na base, além do espaço necessário para caber todas as linhas.
+         * na base, além do espaço necessário para caberem todas as linhas.
          * 
          * Assim, mensagens com mais linhas produzem uma imagem mais alta.
          */
@@ -1509,9 +1492,9 @@ final class ErrorHandler
          * Carregamos o logotipo e calculamos sua posição a partir do canto
          * inferior direito, mantendo a margem definida no início.
          *
-         * O método `imagecopyresampled()` copia a imagem original para o
-         * tamanho escolhido. Depois, liberamos o recurso do logotipo, pois sua
-         * cópia já está no desenho principal.
+         * A função `imagecopyresampled()` copia a imagem original para o
+         * tamanho escolhido. Depois, podemos remover a referência ao logotipo
+         * que não será mais utilizado.
          */
         
         $logoImage = imagecreatefrompng($logoPath);
@@ -1520,22 +1503,23 @@ final class ErrorHandler
         $yPos = $height - $logoHeight - $margin;
         
         imagecopyresampled($canvas, $logoImage, $xPos, $yPos, 0, 0, $logoWidth, $logoHeight, imagesx($logoImage), imagesy($logoImage));
-        imagedestroy($logoImage);
+        unset($logoImage);
 
 
 
         /**
-         * Por fim, informamos o cabeçalho da resposta que o conteúdo será um
+         * Por fim, informamos na cabeçalho da resposta que o conteúdo será um
          * PNG e enviamos a imagem criada. Como `imagepng()` não recebe um
          * caminho de destino, sua saída vai para a resposta, sendo renderizada
          * no navegador.
          *
-         * Finalizamos liberando a memória removendo a imagem.
+         * Finalizamos removendo a referência à imagem que não será mais
+         * utilizada.
          */
         
         header('Content-type: image/png');
         imagepng($canvas);
-        imagedestroy($canvas);
+        unset($canvas);
     }
 
 
@@ -1590,10 +1574,10 @@ final class ErrorHandler
          * ela será criada agora com nível de permissão 0700.
          *
          * ℹ️ INFORMAÇÃO
-         * ┌─────────────────────────────────────────────────────────────────┐
-         * │ `Tools::createDir()` não altera as permissões se a pasta que já │
-         * │ existir.                                                        │
-         * └─────────────────────────────────────────────────────────────────┘
+         * ┌───────────────────────────────────────────────────────────────────┐
+         * │ `Tools::createDir()` não altera as permissões se a pasta já       │
+         * │ existir.                                                          │
+         * └───────────────────────────────────────────────────────────────────┘
          */
         
         Tools::createDir(PROJECT_DIR.'/logs', 0700);
@@ -1642,8 +1626,8 @@ final class ErrorHandler
             ]),
             
             /**
-             * INSERT_CONTENT_AT_START é uma constante que informa o writeFile()
-             * a colocar o novo registro no topo do arquivo.
+             * INSERT_CONTENT_AT_START é uma constante que orienta o método
+             * writeFile() a colocar o novo registro no topo do arquivo.
              *
              * O valor 0600 define a permissão de acesso UNIX caso se tenha que
              * criar o arquivo. Se ele já existir, ele não altera essas

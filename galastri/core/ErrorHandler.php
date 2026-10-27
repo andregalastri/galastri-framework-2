@@ -441,72 +441,34 @@ final class ErrorHandler
                  * classe própria do framework que é uma extensão do \Exception
                  * nativo do PHP).
                  *
-                 * 2. Se for e o objeto `$e` possui a propriedade
-                 *    `displayValidationError` com valor `true`.
-                 *
-                 * Se as duas condições forem verdadeiras, autorizamos
-                 * printError() a mostrar a mensagem original, mesmo com a
-                 * configuração de rota `displayErrors` desativada.
-                 *
-                 * ⚠️ IMPORTANTE
-                 * ┌───────────────────────────────────────────────────────────┐
-                 * │ `displayValidationError` é uma propriedade específica     │
-                 * │ para permitir exibição de mensagens da classe Validation. │
-                 * │                                                           │
-                 * │ Quando a configuração de rota `displayErrors` é `false`,  │
-                 * │ mensagens de erro internas do PHP ficam ocultas por       │
-                 * │ questões de segurança. Só que mensagens de validação      │
-                 * │ também acabariam ocultas.                                 │
-                 * │                                                           │
-                 * │ A classe `Validation`, portanto, possui essa condição     │
-                 * │ especial, que autoriza a exibição da mensagem daquela     │
-                 * │ falha de validação através desta propriedade.             │
-                 * │                                                           │
-                 * │ Isso foi feito pois espera-se que mensagens de falha de   │
-                 * │ validação sejam exibidas mesmo que mensagens de erro      │
-                 * │ internas estejam desabilitadas.                           │
-                 * └───────────────────────────────────────────────────────────┘
-                 *
-                 * Arquivo, linha e histórico continuam dependendo das
-                 * configurações verificadas pelos métodos que preparam esses
-                 * campos.
-                 */
-                
-                
-                /**
-                 * Neste ponto fazemos um teste que verifica se o objeto `$e` é
-                 * uma instância da classe galastri\extensions\Exception (uma
-                 * classe própria do framework que é uma extensão do \Exception
-                 * nativo do PHP).
-                 *
                  * Caso seja, então precisamos atribuir dois valores que vão
                  * incrementar a saída de erro.
                  * 
-                 * ┌──────────────────────────┬────────────────────────────────┐
-                 * │ `$errorSource`           │ Trás a origem da exceção,      │
-                 * │                          │ podendo vir da classe          │
-                 * │                          │ Validation, Permission ou      │
-                 * │                          │ Authentication. Esta           │
-                 * │                          │ informação é importante pois   │
-                 * │                          │ permite maior precisão no      │
-                 * │                          │ código de retorno HTTP à       │
-                 * │                          │ requisição.                    │
-                 * │                          │                                │
-                 * │                          │ Por padrão ela é `null`, o que │
-                 * │                          │ inevitavelmente vai gerar      │
-                 * │                          │ código 500 de retorno HTTP     │
-                 * ├──────────────────────────┼────────────────────────────────┤
-                 * │ `displayValidationError` │ trás uma autorização           │
-                 * │                          │ alternativa para mostrar a     │
-                 * │                          │ mensagem de erro de validação  │
-                 * │                          │ mesmo com a configuração de    │
-                 * │                          │ rota `displayErrors`           │
-                 * │                          │ desativada.                    │
-                 * │                          │                                │
-                 * │                          │ Por padrão ela é `false`,      │
-                 * │                          │ garantindo que a configuração  │
-                 * │                          │ de rota seja levada em conta.  │
-                 * └──────────────────────────┴────────────────────────────────┘
+                 * ┌──────────────────────────┬───────────────────────────────┐
+                 * │ `$errorSource`           │ Traz a origem da exceção,     │
+                 * │                          │ podendo vir da classe         │
+                 * │                          │ Validation, Permission ou     │
+                 * │                          │ Authentication. Esta          │
+                 * │                          │ informação é importante pois  │
+                 * │                          │ permite maior precisão no     │
+                 * │                          │ código de retorno HTTP à      │
+                 * │                          │ requisição.                   │
+                 * │                          │                               │
+                 * │                          │ Por padrão ela é `null`,      │
+                 * │                          │ podendo manter um status já   │
+                 * │                          │ definido ou código 500.       │
+                 * ├──────────────────────────┼───────────────────────────────┤
+                 * │ `displayValidationError` │ Traz uma autorização          │
+                 * │                          │ alternativa para mostrar a    │
+                 * │                          │ mensagem de erro de validação │
+                 * │                          │ mesmo com a configuração de   │
+                 * │                          │ rota `displayErrors`          │
+                 * │                          │ desativada.                   │
+                 * │                          │                               │
+                 * │                          │ Por padrão ela é `false`,     │
+                 * │                          │ garantindo que a configuração │
+                 * │                          │ de rota seja levada em conta. │
+                 * └──────────────────────────┴───────────────────────────────┘
                  */
                 
                 $errorSource = null;
@@ -980,7 +942,7 @@ final class ErrorHandler
      *
      * @param bool $displayValidationError  
      * :: Autorizador da classe `Validation` que opera como autorização
-     *    alternativa ao da configuração de rota `displayErrors`.
+     *    alternativa à da configuração de rota `displayErrors`.
      *
      * @param string|null $errorSource  
      * :: Classificação da origem da falha. Será usada para escolher o status
@@ -1079,12 +1041,15 @@ final class ErrorHandler
          * disponível.
          *
          * Neste caso, passamos os parâmetros originais para o log, sem ocultar
-         * dados, já que este é um arquivo de relatório acessível apenas pelo
-         * desenvolvedor e deve conter o máximo de detalhes possível.
+         * dados, já que este é um arquivo de relatório destinado à consulta
+         * pelo desenvolvedor e deve conter o máximo de detalhes possível.
          */
         
         if (Config::get('createLogsOnError', true)) {
-            self::createLogFile($code, $message, $file, $line, $trace, $currentDate, $currentTime);
+            
+            self::createLogFile(
+                $code, $message, $file, $line, $trace, $currentDate, $currentTime
+            );
         }
 
 
@@ -1094,28 +1059,32 @@ final class ErrorHandler
          * avisos, ou se ele para como se fosse um erro fatal.
          *
          * Este comportamento é definido na configuração de rota
-         * `stopOnWarnings`. Se for `true`, ele encerra a execução mesmo sendo
+         * `stopOnNonFatalErrors`. Se for `true`, ele encerra a execução mesmo sendo
          * apenas um aviso.
          *
-         * Existem quatro códigos que o framework considera como sendo um aviso
-         * e tomar a decisão de parar ou continuar. A comparação é estrita: o
+         * Existem quatro códigos que o framework considera como avisos para
+         * tomar a decisão de parar ou continuar. A comparação é estrita: o
          * código precisa corresponder a um dos nomes da lista.
          */
         
-        $warningList = [
+        $nonFatalErrorList = [
             'E_WARNING',
             'E_CORE_WARNING',
             'E_COMPILE_WARNING',
-            'E_USER_WARNING'
+            'E_USER_WARNING',
+            'E_NOTICE',
+            'E_USER_NOTICE',
+            'E_DEPRECATED',
+            'E_USER_DEPRECATED',
         ];
         
-        $isWarning = in_array($code, $warningList, true);
+        $isNonFatalError = in_array($code, $nonFatalErrorList, true);
 
 
 
         /**
-         * Se `stopOnWarnings` estiver `true`, o código é encerrado e a execução
-         * não prossegue até mesmo para avisos ().
+         * Se `stopOnNonFatalErrors` estiver `true`, o código é encerrado e a execução
+         * não prossegue nem mesmo em caso de avisos.
          *
          * Se estiver desabilitado e ocorrerem os avisos da lista, o código
          * prossegue.
@@ -1132,7 +1101,7 @@ final class ErrorHandler
          * └──────────────────────────────────────────────────────────────────┘
          */
         
-        if (Config::get('stopOnWarnings', true) || !$isWarning) {
+        if (Config::get('stopOnNonFatalErrors', true) || !$isNonFatalError) {
             exit;
         }
     }
@@ -1544,7 +1513,7 @@ final class ErrorHandler
      *
      * Se a origem estiver ausente ou não for reconhecida, consultamos o status
      * já definido para a resposta. Caso esteja entre 400 e 599, mantemos esse
-     * valor para preservar uma decisão anterior, como uma respostas 404.
+     * valor para preservar uma decisão anterior, como uma resposta 404.
      *
      * Sem uma origem reconhecida e sem um status de erro anterior, usamos 500
      * como padrão para a falha.

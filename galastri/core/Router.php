@@ -118,7 +118,7 @@ final class Router
     private static function configureRouteProperties(): void
     {
         self::setConfigIfExists('displayErrors', false);
-        self::setConfigIfExists('stopOnWarnings', true);
+        self::setConfigIfExists('stopOnNonFatalErrors', true);
         // self::setConfigIfExists('useErrorHandler', true);
         self::setConfigIfExists('showTrace', false);
         // self::setConfigIfExists('performanceAnalysis', false);

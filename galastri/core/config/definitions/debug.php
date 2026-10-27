@@ -16,7 +16,7 @@ return [
         'context' => 'debug',
     ],
 
-    'stopOnWarnings' => [
+    'stopOnNonFatalErrors' => [
         'defaultValue' => true,
         'validTypes' => ['bool'],
         'invalidTypes' => [],

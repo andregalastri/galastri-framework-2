@@ -967,73 +967,7 @@ final class ErrorHandler
         $currentTime = date('H:i:s');
 
 
-
-        /**
-         * Montamos os campos que serão enviados na resposta. Arquivo, linha,
-         * mensagem e histórico passam pelas verificações de exibição antes de
-         * entrar nesse array, decidindo se mostrarão os dados originais ou se
-         * serão ocultados da exibição visual.
-         *
-         * Os campos `warning` e `error` ficam como `true` nesta saída de falha.
-         * Eles são indicadores da resposta, não a classificação usada para
-         * decidir se a execução pode continuar. É útil pois o frontend
-         * facilmente consegue detectar se houve erro ou não para decidir o que
-         * fazer.
-         */
         
-        $data = [
-            'date' => $currentDate,
-            'time' => $currentTime,
-            'code' => $code,
-            'origin' => self::getFile($file),
-            'line' => self::getLine($line),
-            'message' => self::getMessage($message, $displayValidationError),
-            'trace' => self::getTrace($trace),
-            'warning' => true,
-            'error' => true,
-        ];
-
-
-
-        /**
-         * O status HTTP faz parte dos cabeçalhos da resposta. Só tentamos
-         * ajustá-lo se eles ainda não foram enviados. Deve ser assim pois
-         * falhas podem ocorrer durante um streaming iniciado pela classe
-         * `ResponseStream`, usada para enviar dados antes do fim da requisição,
-         * por exemplo.
-         *
-         * Passamos `$errorSource` para getHttpStatusCode(), que escolhe o status
-         * conforme a classificação da falha.
-         */
-        
-        if (!headers_sent()) {
-            http_response_code(self::getHttpStatusCode($errorSource));
-        }
-
-
-
-        /**
-         * Escolhemos a apresentação do erro conforme a saída definida na
-         * configuração de rota `output`. Se a configuração ainda não estiver
-         * disponível, usamos `view` por padrão, que mostra os campos como texto
-         * em HTML.
-         */
-        
-        switch (Config::get('output', 'view')) {
-            case 'json':
-                self::printErrorJson($data);
-                break;
-
-            case 'file':
-                self::printErrorFile($data);
-                break;
-
-            default:
-                self::printErrorView($data);
-        }
-
-
-
         /**
          * Depois da apresentação do erro, conferimos se devemos registrar a
          * falha no arquivo de log. Usamos `true` como fallback se a
@@ -1055,12 +989,12 @@ final class ErrorHandler
 
 
         /**
-         * Para finalizar, é necessário decidir se o código prossegue em caso de
-         * avisos, ou se ele para como se fosse um erro fatal.
+         * É necessário decidir se o código prossegue em caso de avisos, ou se
+         * ele para como se fosse um erro fatal.
          *
          * Este comportamento é definido na configuração de rota
-         * `stopOnNonFatalErrors`. Se for `true`, ele encerra a execução mesmo sendo
-         * apenas um aviso.
+         * `stopOnNonFatalErrors`. Se for `true`, ele encerra a execução mesmo
+         * sendo apenas um aviso.
          *
          * Existem quatro códigos que o framework considera como avisos para
          * tomar a decisão de parar ou continuar. A comparação é estrita: o
@@ -1101,9 +1035,77 @@ final class ErrorHandler
          * └──────────────────────────────────────────────────────────────────┘
          */
         
-        if (Config::get('stopOnNonFatalErrors', true) || !$isNonFatalError) {
-            exit;
+        if ($isNonFatalError && !Config::get('stopOnNonFatalErrors', true)) {
+            return;
         }
+        
+        
+        
+        /**
+         * Montamos os campos que serão enviados na resposta. Arquivo, linha,
+         * mensagem e histórico passam pelas verificações de exibição antes de
+         * entrar nesse array, decidindo se mostrarão os dados originais ou se
+         * serão ocultados da exibição visual.
+         *
+         * Os campos `warning` e `error` ficam como `true` nesta saída de falha.
+         * Eles são indicadores da resposta, não a classificação usada para
+         * decidir se a execução pode continuar. É útil pois o frontend
+         * facilmente consegue detectar se houve erro ou não para decidir o que
+         * fazer.
+         */
+
+        $data = [
+            'date' => $currentDate,
+            'time' => $currentTime,
+            'code' => $code,
+            'origin' => self::getFile($file),
+            'line' => self::getLine($line),
+            'message' => self::getMessage($message, $displayValidationError),
+            'trace' => self::getTrace($trace),
+            'warning' => true,
+            'error' => true,
+        ];
+        
+        
+        
+        /**
+         * O status HTTP faz parte dos cabeçalhos da resposta. Só tentamos
+         * ajustá-lo se eles ainda não foram enviados. Deve ser assim pois
+         * falhas podem ocorrer durante um streaming iniciado pela classe
+         * `ResponseStream`, usada para enviar dados antes do fim da requisição,
+         * por exemplo.
+         *
+         * Passamos `$errorSource` para getHttpStatusCode(), que escolhe o status
+         * conforme a classificação da falha.
+         */
+
+        if (!headers_sent()) {
+            http_response_code(self::getHttpStatusCode($errorSource));
+        }
+        
+        
+        
+        /**
+         * Por fim, escolhemos a apresentação do erro conforme a saída definida
+         * na configuração de rota `output`. Se a configuração ainda não estiver
+         * disponível, usamos `view` por padrão, que mostra os campos como texto
+         * em HTML.
+         */
+
+        switch (Config::get('output', 'view')) {
+            case 'json':
+                self::printErrorJson($data);
+                break;
+
+            case 'file':
+                self::printErrorFile($data);
+                break;
+
+            default:
+                self::printErrorView($data);
+        }
+        
+        exit;
     }
 
 

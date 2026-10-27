@@ -21,7 +21,7 @@
 /**
  * 🟢 NAMESPACE DA CLASSE
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * ErrorHandler pertence ao núcleo do framework
+ * ErrorHandler pertence ao núcleo do framework.
  */
 
 namespace galastri\core;

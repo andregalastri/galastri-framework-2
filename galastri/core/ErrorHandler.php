@@ -637,6 +637,8 @@ final class ErrorHandler
             E_USER_WARNING => 'E_USER_WARNING',
             E_NOTICE => 'E_NOTICE',
             E_USER_NOTICE => 'E_USER_NOTICE',
+            E_DEPRECATED => 'E_DEPRECATED',
+            E_USER_DEPRECATED => 'E_USER_DEPRECATED',
         ];
 
 
@@ -904,17 +906,23 @@ final class ErrorHandler
      * do erro. Quando chegamos aqui, já sabemos qual a mensagem, o código, a
      * origem e o histórico disponíveis para aquela falha.
      *
-     * Primeiro montamos os dados da resposta, consultando os métodos que
-     * decidem quais detalhes podem aparecer. Depois, ajustamos o status HTTP,
-     * quando ainda é possível, e escolhemos como apresentar o resultado.
+     * Primeiro registramos a falha no log, caso a configuração de rota
+     * `createLogsOnError` esteja habilitada. Nesse registro usamos os dados
+     * originais, mesmo que as configurações de exibição determinem que eles
+     * fiquem ocultos na resposta.
+     *
+     * Depois verificamos se podemos deixar a execução continuar. Se a falha não
+     * for fatal e a configuração de rota `stopOnNonFatalErrors` estiver
+     * desativada, prosseguimos com a execução sem acrescentar conteúdo de falha
+     * para não contaminar a saída e nem alterar seu status HTTP.
+     *
+     * Caso contrário, montamos os dados da resposta, consultando os métodos que
+     * decidem quais detalhes podem aparecer. Ajustamos o status HTTP, quando
+     * ainda é possível, apresentamos a falha e encerramos a execução.
      *
      * A configuração de rota `output` define como será a apresentação dos
      * dados: `json` envia um JSON, `file` gera uma imagem PNG e os demais
      * valores usam a apresentação em HTML.
-     *
-     * Também gravamos o log se a configuração de rota `createLogsOnError`
-     * permitir. Nos registros de log usamos apenas os dados originais
-     * recebidos, e não as versões ocultadas na resposta por se tratar
      *
      * ℹ️ OBSERVAÇÃO
      * ┌───────────────────────────────────────────────────────────────────────┐
@@ -969,10 +977,10 @@ final class ErrorHandler
 
         
         /**
-         * Depois da apresentação do erro, conferimos se devemos registrar a
-         * falha no arquivo de log. Usamos `true` como fallback se a
-         * configuração de rota `createLogsOnError` ainda não estiver
-         * disponível.
+         * Antes de decidir se apresentaremos a falha ou deixaremos a execução
+         * continuar, conferimos se devemos registrá-la no arquivo de log.
+         * Usamos `true` como fallback se a configuração de rota
+         * `createLogsOnError` ainda não estiver disponível.
          *
          * Neste caso, passamos os parâmetros originais para o log, sem ocultar
          * dados, já que este é um arquivo de relatório destinado à consulta
@@ -996,9 +1004,10 @@ final class ErrorHandler
          * `stopOnNonFatalErrors`. Se for `true`, ele encerra a execução mesmo
          * sendo apenas um aviso.
          *
-         * Existem quatro códigos que o framework considera como avisos para
-         * tomar a decisão de parar ou continuar. A comparação é estrita: o
-         * código precisa corresponder a um dos nomes da lista.
+         * A lista abaixo reúne os códigos das falhas não fatais que
+         * consideramos nessa decisão, incluindo avisos, notificações e
+         * mensagens de depreciação. A comparação é estrita: o código precisa
+         * corresponder a um dos nomes da lista.
          */
         
         $nonFatalErrorList = [
@@ -1033,6 +1042,26 @@ final class ErrorHandler
          * │ capturadas.Nestes casos, o comportamento do PHP de encerrar a    │
          * │ execução não tem como ser controlada.                            │
          * └──────────────────────────────────────────────────────────────────┘
+         */
+        
+        /**
+         * Se a falha não for fatal e `stopOnNonFatalErrors` estiver desativado,
+         * deixamos a execução continuar. O log já foi tratado acima, então
+         * podemos retornar sem mostrar a falha nem alterar o status HTTP.
+         *
+         * Nos demais casos, seguimos para a apresentação da falha e encerramos
+         * a execução no final deste método.
+         *
+         * ⚠️ IMPORTANTE
+         * ┌─────────────────────────────────────────────────────────────────┐
+         * │ O `return` encerra apenas este método. Ele permite que o código │
+         * │ continue quando o próprio PHP ainda permite essa continuação.   │
+         * │                                                                 │
+         * │ Este trecho NÃO trata de casos em que o próprio PHP encerra a   │
+         * │ execução, como lançamento de exceções não capturadas, por       │
+         * │ exemplo. Nestes casos, o comportamento do PHP de encerrar a     │
+         * │ execução não tem como ser controlada.                           │
+         * └─────────────────────────────────────────────────────────────────┘
          */
         
         if ($isNonFatalError && !Config::get('stopOnNonFatalErrors', true)) {
@@ -1113,20 +1142,21 @@ final class ErrorHandler
     /**
      * 🟢 ENVIANDO O ERRO EM JSON
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Envia os dados do erro em JSON. Aqui as decisões sobre ocultar mensagem,
-     * arquivo, linha e histórico já foram tomadas por printError().
+     * Quando a saída configurada nas rotas é um `json`, os dados do erro devem
+     * estar em formato JSON. Aqui as decisões sobre ocultar mensagem, arquivo,
+     * linha e histórico já foram tomadas por `printError()`.
      *
      * Se a resposta já estiver em streaming, usamos Json::stream() para enviar
      * mais uma linha no mesmo formato das etapas anteriores. Isso permite que
-     * quem está recebendo acompanhe também a falha, sem mudar o formato no
-     * meio da resposta.
+     * quem está recebendo acompanhe também a falha, sem mudar o formato no meio
+     * da resposta.
      *
      * Se o streaming ainda não começou, enviamos um JSON comum, com recuos e
      * quebras de linha para facilitar sua leitura.
      *
      *
      * ---
-     * @param array $data
+     * @param array $data  
      * :: Dados já preparados para a resposta.
      *
      * @return void
@@ -1135,9 +1165,10 @@ final class ErrorHandler
     private static function printErrorJson(array $data): void
     {
         /**
-         * Se já estamos enviando etapas por streaming, acrescentamos o erro
-         * como uma nova linha JSON. O return impede que os mesmos dados sejam
-         * enviados novamente pelo caminho de JSON comum.
+         * Testamos se há uma transmissão por streaming e acrescentamos o erro
+         * como uma nova linha JSON. O `return` impede que os mesmos dados sejam
+         * enviados novamente na finalização deste método, que seria uma
+         * repetição desnecessária.
          */
         
         if (Json::isStreaming()) {
@@ -1148,8 +1179,8 @@ final class ErrorHandler
 
 
         /**
-         * Para uma resposta JSON comum, informamos o tipo do conteúdo quando
-         * ainda podemos modificar os cabeçalhos.
+         * Não sendo um streaming, a resposta é um JSON comum. Informamos o tipo
+         * do conteúdo no cabeçalho caso ainda não haja nenhum.
          */
         
         if (!headers_sent()) {
@@ -1159,37 +1190,53 @@ final class ErrorHandler
 
 
         /**
-         * Convertemos o array em JSON e enviamos o texto. JSON_PRETTY_PRINT
-         * organiza os recuos; as opções UNESCAPED deixam barras e caracteres
-         * Unicode sem escapes desnecessários.
+         * Convertemos o `array` em formato JSON e enviamos o texto.
          *
-         * JSON_INVALID_UTF8_SUBSTITUTE substitui sequências inválidas em
-         * UTF-8, permitindo representar o restante do texto.
+         * Ativamos algumas opções para ajustar a saída usando as constantes do
+         * PHP dentro do `json_encode`:
+         * ┌────────────────────────────────┬────────────────────────────────────┐
+         * │ `JSON_PRETTY_PRINT`            │ Organiza os recuos e torna a       │
+         * │                                │ leitura do JSON mais fácil.        │
+         * ├────────────────────────────────┼────────────────────────────────────┤
+         * │ `JSON_UNESCAPED_SLASHES`       │ Deixam barras e caracteres Unicode │
+         * │                                │ sem escapes desnecessários.        │
+         * │ `JSON_UNESCAPED_UNICODE`       │                                    │
+         * ├────────────────────────────────┼────────────────────────────────────┤
+         * │ `JSON_INVALID_UTF8_SUBSTITUTE` │ Substitui sequências inválidas em  │
+         * │                                │ UTF-8, permitindo representar o    │
+         * │                                │ restante do texto.                 │
+         * └────────────────────────────────┴────────────────────────────────────┘
          */
         
         echo json_encode(
-            $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE
+            $data,
+               JSON_PRETTY_PRINT
+             | JSON_UNESCAPED_SLASHES
+             | JSON_UNESCAPED_UNICODE
+             | JSON_INVALID_UTF8_SUBSTITUTE
         );
     }
 
 
 
     /**
-     * 🟢 EXIBINDO O ERRO COMO TEXTO NO NAVEGADOR
+     * 🟢 ENVIANDO O ERRO EM HTML / VIEW
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Apresenta os dados do erro como texto dentro de um bloco HTML.
+     * Quando a saída configurada nas rotas é um `view`, os dados do erro devem
+     * estar em formato HTML. Aqui as decisões sobre ocultar mensagem, arquivo,
+     * linha e histórico já foram tomadas por `printError()`.
      *
      * Cada campo ocupa sua própria linha. Quando o valor é um array, como
-     * acontece com trace, usamos var_export() para transformá-lo em um texto
-     * que mostre sua estrutura.
+     * acontece com os dados de `trace`, usamos `var_export()` para
+     * transformá-lo em um texto que mostre sua estrutura.
      *
-     * O conteúdo passa por htmlspecialchars() antes de ser exibido. Se uma
-     * mensagem contiver <b>Teste</b>, por exemplo, queremos enxergar essas
-     * tags escritas, sem que elas alterem a apresentação da página.
+     * O conteúdo passa por `htmlspecialchars()` antes de ser exibido. Se uma
+     * mensagem contiver <b>Teste</b>, por exemplo, queremos enxergar essas tags
+     * escritas, sem que elas alterem a apresentação da página.
      *
      *
      * ---
-     * @param array $data
+     * @param array $data  
      * :: Dados já preparados para a resposta.
      *
      * @return void
@@ -1198,9 +1245,9 @@ final class ErrorHandler
     private static function printErrorView(array $data): void
     {
         /**
-         * A tag pre mantém os espaços e as quebras de linha. O estilo pre-wrap
-         * também permite que linhas longas sejam quebradas para caber no
-         * espaço disponível.
+         * Adicionamos uma tag `<pre>` para mantér os espaços e as quebras de
+         * linha. O estilo `pre-wrap` também permite que linhas longas sejam
+         * quebradas para caber no espaço disponível.
          */
         
         echo '<pre style="white-space: pre-wrap;">';
@@ -1213,9 +1260,10 @@ final class ErrorHandler
          */
         
         foreach ($data as $key => $value) {
+            
             /**
-             * Um array não pode ser juntado diretamente ao texto da linha.
-             * var_export() devolve uma representação escrita de suas chaves e
+             * Um array não pode ser impresso diretamente ao texto da linha. O
+             * `var_export()` devolve uma representação escrita de suas chaves e
              * valores.
              */
             
@@ -1226,15 +1274,30 @@ final class ErrorHandler
 
 
             /**
-             * str_pad() reserva pelo menos dez posições para o nome do campo,
-             * alinhando os dois-pontos dos nomes mais curtos.
+             * Queremos apresentar o texto em formato tabular. O `str_pad()`
+             * reserva pelo menos dez posições para o nome do campo, alinhando
+             * os dois-pontos dos nomes mais curtos.
              *
-             * Depois, htmlspecialchars() prepara a linha para aparecer como
-             * texto no HTML. ENT_QUOTES inclui as aspas na conversão, e
-             * ENT_SUBSTITUTE substitui trechos inválidos em UTF-8.
+             * Fazemos a impressão do resultado na tela usando
+             * `htmlspecialchars()` que prepara a linha para aparecer como texto
+             * no HTML.
+             * 
+             * Ativamos algumas opções para ajustar a saída usando as
+             * constantes do PHP dentro do `htmlspecialchars`:
+             * 
+             * ┌──────────────────┬────────────────────────────────────────────┐
+             * │ `ENT_QUOTES`     │ Inclui as aspas na conversão.              │
+             * ├──────────────────┼────────────────────────────────────────────┤
+             * │ `ENT_SUBSTITUTE` │ Substitui trechos inválidos em UTF-8.      │
+             * └──────────────────┴────────────────────────────────────────────┘
              */
             
-            echo htmlspecialchars(str_pad($key, 10).': '.$value."\n", ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $keyName = str_pad($key, 10);
+            $output = $keyName.': '.$value."\n";
+            
+            echo htmlspecialchars(
+                $output, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
+            );
         }
 
 
@@ -1249,28 +1312,29 @@ final class ErrorHandler
 
 
     /**
-     * 🟢 DESENHANDO O ERRO EM UMA IMAGEM PNG
+     * 🟢 ENVIANDO O ERRO EM IMAGEM / FILE
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Produz uma imagem PNG contendo os dados do erro. Essa apresentação é
-     * usada quando output está definido como file.
+     * Quando a saída configurada nas rotas é um `file`, os dados do erro devem
+     * estar em formato de arquivo. Escolhemos um arquivo de imagem, que permite
+     * exibir os erros diretamente nela. Aqui as decisões sobre ocultar
+     * mensagem, arquivo, linha e histórico já foram tomadas por `printError()`.
      *
      * A imagem é criada em memória e seu conteúdo é enviado diretamente na
-     * resposta.
+     * resposta em formato PNG.
      *
      * Transformamos os campos em linhas de texto, calculamos a altura
-     * necessária e desenhamos esse conteúdo sobre um fundo escuro. Depois,
-     * acrescentamos o logotipo no canto inferior direito.
+     * necessária e desenhamos esse conteúdo sobre um fundo escuro.
      *
      * ℹ️ OBSERVAÇÃO
-     * ┌───────────────────────────────────────────────────────────────────────┐
-     * │ A criação da imagem depende da extensão GD com suporte à fonte        │
-     * │ TrueType, além dos arquivos de fonte e logotipo definidos abaixo. O   │
-     * │ código tenta carregar esses arquivos diretamente.                     │
-     * └───────────────────────────────────────────────────────────────────────┘
+     * ┌──────────────────────────────────────────────────────────────────┐
+     * │ A criação da imagem depende da extensão `GD` com suporte à fonte │
+     * │ TrueType do PHP, além dos arquivos de fonte e logotipo definidos │
+     * │ abaixo. O código tenta carregar esses arquivos diretamente.      │
+     * └──────────────────────────────────────────────────────────────────┘
      *
      *
      * ---
-     * @param array $data
+     * @param array $data  
      * :: Dados já preparados para a resposta.
      *
      * @return void
@@ -1278,10 +1342,15 @@ final class ErrorHandler
     
     private static function printErrorFile(array $data): void
     {
+        
         /**
-         * Definimos as medidas da apresentação: largura da imagem, distância
-         * entre as linhas, margem e tamanho reservado para o logotipo. Os
-         * valores estão em pixels, exceto o tamanho da fonte usado adiante.
+         * Definimos as medidas da apresentação:
+         * - Largura da imagem
+         * - Distância entre as linhas
+         * - Margem
+         * - Tamanho reservado para o logotipo.
+         *
+         * Os valores estão em pixels, exceto o tamanho da fonte usado adiante.
          */
         
         $width = 600;
@@ -1295,7 +1364,7 @@ final class ErrorHandler
         /**
          * Definimos os arquivos usados para desenhar as letras e carregar o
          * logotipo. A fonte TrueType permite escrever o texto com
-         * imagettftext().
+         * `imagettftext()`.
          */
         
         $fontPath = PROJECT_DIR.'/galastri/misc/error-handler-font.ttf';
@@ -1315,22 +1384,59 @@ final class ErrorHandler
 
 
         /**
-         * Transformamos cada campo em texto. var_export() preserva uma
-         * representação legível dos valores, inclusive arrays, null e
-         * booleanos.
-         *
-         * wordwrap() procura pontos para quebrar o texto na largura informada.
-         * Como não ativamos a quebra forçada de palavras, um trecho longo sem
-         * espaços pode ultrapassar esse limite. explode() separa as quebras, e
-         * array_merge() acrescenta as linhas à lista.
+         * Para cada dado, precisamos fazer uma formatação, ajustando
+         * espaçamento e reconhecimento de valores.
          */
         
         foreach ($data as $key => $value) {
-            $text = str_pad($key, 10) . ': ' . var_export($value, true);
-            $lines = array_merge($lines, explode("\n", wordwrap($text, 64)));
+            
+            /**
+             * Queremos apresentar o texto em formato tabular. O `str_pad()`
+             * reserva pelo menos dez posições para o nome do campo, alinhando
+             * os dois-pontos dos nomes mais curtos.
+             */
+            
+            $fieldName = str_pad($key, 10);
+            
+            
+            
+            /**
+             * Transformamos cada campo em texto através do loop. O
+             * `var_export()` preserva uma representação legível dos valores,
+             * inclusive `arrays`, `null` e `booleanos`.
+             */ 
+            
+            $fieldValue = var_export($value, true);
+            $text = $fieldName.': '.$fieldValue;
 
+            
+            
+            /**
+             * O `wordwrap()` procura pontos para quebrar o texto na largura
+             * informada. Como não ativamos a quebra forçada de palavras, um
+             * trecho longo sem espaços pode ultrapassar esse limite.
+             */
+            
+            $wrappedText = wordwrap($text, 64);
+            
+            
+            
+            /**
+             * O `explode()` separa as quebras.
+             */
+            
+            $textLines = explode("\n", $wrappedText);
 
+            
+            
+            /**
+             * O `array_merge()` acrescenta as linhas à lista.
+             */
+            
+            $lines = array_merge($lines, $textLines);
 
+            
+            
             /**
              * Depois dos campos line e message, incluímos uma linha vazia para
              * separar visualmente as partes do erro.
@@ -1344,9 +1450,10 @@ final class ErrorHandler
 
 
         /**
-         * A altura recebe uma margem no topo, outra embaixo e o espaço
-         * necessário para todas as linhas. Assim, mensagens com mais linhas
-         * produzem uma imagem mais alta.
+         * A altura da imagem é definida agora. Colocamos uma margem no topo e
+         * na base, além do espaço necessário para caber todas as linhas.
+         * 
+         * Assim, mensagens com mais linhas produzem uma imagem mais alta.
          */
         
         $height = $margin * 2 + count($lines) * $lineHeight;
@@ -1354,29 +1461,45 @@ final class ErrorHandler
 
 
         /**
-         * Criamos a imagem em memória, reservamos as cores do fundo e do texto
-         * e preenchemos toda a área com o fundo escuro.
+         * Criamos a imagem em memória, armazenada em $canvas. Reservamos as
+         * cores do fundo e do texto através do padrão RGB.
          */
         
         $canvas = imagecreatetruecolor($width, $height);
         $bgColor = imagecolorallocate($canvas, 60, 61, 66);
         $textColor = imagecolorallocate($canvas, 255, 255, 255);
+        
+        
+        
+        /**
+         * Preenchemos toda a área com o fundo escuro.
+         */
+        
         imagefilledrectangle($canvas, 0, 0, $width, $height, $bgColor);
 
 
 
         /**
-         * A primeira linha começa depois da margem superior, levando em conta
-         * o tamanho da fonte. imagettftext() usa $y como a linha de base das
-         * letras, e não como o topo delas.
+         * Agora começamos a desenhar o texto na imagem.
          *
-         * Depois de desenhar cada linha, aumentamos $y pela altura reservada
-         * entre linhas. O ângulo zero mantém o texto na horizontal.
+         * A primeira linha começa depois da margem do topo, levando em conta o
+         * tamanho da fonte.
+         *
+         * `$y` armazena a posição atual onde a linha será desenhada. Conforme
+         * vamos desenhando cada linha, aumentamos `$y` pela altura reservada
+         * para ir posicionando uma linha abaixo da outra.
+         *
+         * A função `imagettftext()` faz o desenho levando em conta todas as
+         * configurações preparadas até aqui.
          */
         
         $y = $margin + $fontSize;
+        
         foreach ($lines as $line) {
-            imagettftext($canvas, $fontSize, 0, $margin, $y, $textColor, $fontPath, $line);
+            imagettftext(
+                $canvas, $fontSize, 0, $margin, $y, $textColor, $fontPath, $line
+            );
+            
             $y += $lineHeight;
         }
 
@@ -1386,25 +1509,28 @@ final class ErrorHandler
          * Carregamos o logotipo e calculamos sua posição a partir do canto
          * inferior direito, mantendo a margem definida no início.
          *
-         * imagecopyresampled() copia a imagem original para o tamanho
-         * escolhido. Depois, liberamos o recurso do logotipo, pois sua cópia
-         * já está no desenho principal.
+         * O método `imagecopyresampled()` copia a imagem original para o
+         * tamanho escolhido. Depois, liberamos o recurso do logotipo, pois sua
+         * cópia já está no desenho principal.
          */
         
         $logoImage = imagecreatefrompng($logoPath);
+        
         $xPos = $width - $logoWidth - $margin;
         $yPos = $height - $logoHeight - $margin;
+        
         imagecopyresampled($canvas, $logoImage, $xPos, $yPos, 0, 0, $logoWidth, $logoHeight, imagesx($logoImage), imagesy($logoImage));
         imagedestroy($logoImage);
 
 
 
         /**
-         * Informamos que a resposta contém um PNG e enviamos a imagem criada
-         * em memória. Como imagepng() não recebe um caminho de destino, sua
-         * saída vai para a resposta.
+         * Por fim, informamos o cabeçalho da resposta que o conteúdo será um
+         * PNG e enviamos a imagem criada. Como `imagepng()` não recebe um
+         * caminho de destino, sua saída vai para a resposta, sendo renderizada
+         * no navegador.
          *
-         * Por fim, liberamos o recurso da imagem principal.
+         * Finalizamos liberando a memória removendo a imagem.
          */
         
         header('Content-type: image/png');
@@ -1417,56 +1543,57 @@ final class ErrorHandler
     /**
      * 🟢 REGISTRANDO OS DETALHES EM LOG
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Guarda os detalhes da falha no arquivo de log correspondente à data
-     * recebida. Assim, podemos consultar o que aconteceu mesmo quando a
+     * Este método armazena os detalhes da falha no arquivo de log. Isso mantém
+     * um registro que nos permite consultar o que aconteceu mesmo quando a
      * resposta mostrou apenas uma mensagem genérica.
      *
      * Recebemos os dados originais de printError(), incluindo a mensagem, o
-     * caminho do arquivo, a linha e o histórico. As configurações que ocultam
-     * esses detalhes na resposta não retiram essas informações do registro.
+     * caminho do arquivo, a linha e o histórico, ou seja, sem dados ocultos.
      *
-     * A data completa o caminho definido em PATH_LOG. Cada novo registro entra
-     * no início do arquivo, deixando as falhas mais recentes antes das
-     * anteriores.
+     * Cada dia gera um arquivo de log sempre que for necessário. Cada novo
+     * registro ocorrido no mesmo dia entra no início do arquivo já existente,
+     * deixando as falhas mais recentes antes das anteriores.
      *
-     * Solicitamos a criação da pasta com permissão 0700 e do arquivo com
-     * permissão 0600. Em ambientes que usam permissões Unix, esses valores
-     * reservam o acesso à pasta e a leitura e escrita do arquivo ao seu
-     * proprietário. A criação da pasta também depende das permissões do
-     * processo e da configuração do ambiente.
-     *
-     *
+     * 
      * ---
-     * @param int|string $code
+     * @param int|string $code  
      * :: Código original da falha.
      *
-     * @param string $message
+     * @param string $message  
      * :: Mensagem original.
      *
-     * @param string $file
+     * @param string $file  
      * :: Caminho original do arquivo.
      *
-     * @param int $line
+     * @param int $line  
      * :: Linha original.
      *
-     * @param array $trace
+     * @param array $trace  
      * :: Histórico disponível para o registro.
      *
-     * @param string $currentDate
+     * @param string $currentDate  
      * :: Data usada no conteúdo e no nome do arquivo.
      *
-     * @param string $currentTime
+     * @param string $currentTime  
      * :: Horário usado no conteúdo do registro.
      *
      * @return void
      */
     
-    private static function createLogFile(int|string $code, string $message, string $file, int $line, array $trace, string $currentDate, string $currentTime): void
+    private static function createLogFile(int|string $code, string $message,
+        string $file, int $line, array $trace,
+        string $currentDate, string $currentTime): void
     {
+        
         /**
-         * Garantimos que a pasta de logs exista, solicitando 0700 quando for
-         * necessário criá-la. Tools::createDir() não altera as permissões de
-         * uma pasta que já existe.
+         * Precisamos garantir que a pasta de logs exista. Se ela não existir,
+         * ela será criada agora com nível de permissão 0700.
+         *
+         * ℹ️ INFORMAÇÃO
+         * ┌─────────────────────────────────────────────────────────────────┐
+         * │ `Tools::createDir()` não altera as permissões se a pasta que já │
+         * │ existir.                                                        │
+         * └─────────────────────────────────────────────────────────────────┘
          */
         
         Tools::createDir(PROJECT_DIR.'/logs', 0700);
@@ -1474,21 +1601,34 @@ final class ErrorHandler
 
 
         /**
-         * Montamos o caminho substituindo {{}} pela data recebida. O conteúdo
-         * reúne data, horário, código, origem, linha, mensagem e histórico,
-         * separados por quebras de linha.
+         * Em seguida executamos a ferramenta de criação de arquivos e
+         * informamos o caminho do arquivo + os dados a serem inseridos.
          *
+         * 
+         * 
          * var_export() representa os valores em texto. Uma mensagem com aspas,
          * por exemplo, permanece identificável dentro do registro.
          *
          * INSERT_CONTENT_AT_START coloca o novo registro antes do conteúdo
          * existente. O valor 0600 define a permissão aplicada por Tools ao
-         * criar o arquivo, sem alterar por aqui as permissões de um arquivo
-         * que já existia.
+         * criar o arquivo, sem alterar por aqui as permissões de um arquivo que
+         * já existia.
          */
         
         Tools::writeFile(
+            /**
+             * O caminho possui placeholder {{}}. Substituímos ele pela data
+             * atual.
+             */
             Tools::replacePlaceholders(self::PATH_LOG, [$currentDate]),
+            
+            /**
+             * O conteúdo reúne todos os dados reunidos pelo `printError()`.
+             * Colocamos cada dado em uma linha.
+             *
+             * O `implode()` aqui acrescenta as quebras `\n` sem a necessidade
+             * de ficar declarando elas em cada campo.
+             */
             implode("\n", [
                 'date     : '.$currentDate,
                 'time     : '.$currentTime,
@@ -1500,6 +1640,15 @@ final class ErrorHandler
                 'trace    : '.var_export($trace, true),
                 "\n\n----------------------------------------\n\n\n",
             ]),
+            
+            /**
+             * INSERT_CONTENT_AT_START é uma constante que informa o writeFile()
+             * a colocar o novo registro no topo do arquivo.
+             *
+             * O valor 0600 define a permissão de acesso UNIX caso se tenha que
+             * criar o arquivo. Se ele já existir, ele não altera essas
+             * permissões.
+             */
             INSERT_CONTENT_AT_START,
             0600
         );
@@ -1510,8 +1659,8 @@ final class ErrorHandler
     /**
      * 🟢 ESCOLHENDO O STATUS HTTP DA FALHA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Aqui escolhemos o status HTTP que acompanhará a resposta de erro,
-     * começando pela origem recebida de `$errorSource`.
+     * Aqui escolhemos o status HTTP que acompanhará a resposta de erro, baseado
+     * na origem recebida de `$errorSource`.
      *
      * Se a origem estiver ausente ou não for reconhecida, consultamos o status
      * já definido para a resposta. Caso esteja entre 400 e 599, mantemos esse
@@ -1539,9 +1688,8 @@ final class ErrorHandler
     private static function getHttpStatusCode(?string $errorSource): int
     {
         /**
-         * Primeiro verificamos se a falha possui uma classificação reconhecida.
-         * Essas classificações têm prioridade sobre um status já definido para
-         * a resposta.
+         * Primeiro verificamos se a falha possui uma origem conhecida. Essas
+         * origens têm prioridade sobre um status já definido para a resposta.
          */
 
         switch ($errorSource) {
@@ -1556,18 +1704,14 @@ final class ErrorHandler
 
 
         /**
-         * Sem uma classificação reconhecida, consultamos o status que já está
-         * definido para esta resposta, sem modificá-lo nesta chamada.
-         */
-
-        $currentStatus = http_response_code();
-
-
-
-        /**
+         * Sem uma origem reconhecida, consultamos o status que já está definido
+         * para esta resposta, sem modificá-lo nesta chamada.
+         *
          * Se já houver um status de erro entre 400 e 599, devolvemos esse mesmo
          * valor. Assim, preservamos uma decisão anterior, como um status 404.
          */
+
+        $currentStatus = http_response_code();
 
         if ($currentStatus !== false && $currentStatus >= 400 && $currentStatus <= 599) {
             return $currentStatus;

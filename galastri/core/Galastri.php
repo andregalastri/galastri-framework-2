@@ -1,6 +1,66 @@
 <?php
+/**
+ * -----------------------------------------------------------------------------
+ * 📂
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║                    ARQUIVO /galastri/core/Galastri.php                    ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ * Este arquivo define a classe que coordena o processamento da requisição.
+ * 
+ * Depois que o bootstrap prepara os recursos básicos, Galastri assume a
+ * condução das próximas etapas.
+ * 🔗 LINK: /galastri/bootstrap/bootstrap.php
+ *
+ * Aqui preparamos as configurações, verificamos a rota e a autenticação,
+ * identificamos o controller que será executado e chamamos a classe responsável
+ * por apresentar a resposta.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+
+
+/**
+ * 🟢 NAMESPACE DA CLASSE
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * Galastri pertence ao núcleo do framework.
+ */
 
 namespace galastri\core;
+
+
+
+/**
+ * 🟢 CLASSES UTILIZADAS
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * Para conduzir o processamento, precisamos consultar as configurações,
+ * identificar o destino da requisição e verificar se podemos continuar.
+ * Estas classes fornecem os recursos usados em cada uma dessas etapas.
+ *
+ * ┌──────────────────┬───────────────────────────────────────────────────────┐
+ * │ Classe           │ Uso                                                   │
+ * ├──────────────────┼───────────────────────────────────────────────────────┤
+ * │ `Config`         │ Prepara as definições das configurações e permite     │
+ * │                  │ consultar os valores durante o processamento.         │
+ * ├──────────────────┼───────────────────────────────────────────────────────┤
+ * │ `Router`         │ Interpreta a URL, identifica a rota e fornece os      │
+ * │                  │ nomes do controller e do método que serão usados.     │
+ * ├──────────────────┼───────────────────────────────────────────────────────┤
+ * │ `Exception`      │ Permite lançar as falhas encontradas nas verificações │
+ * │                  │ que fazemos antes de executar o controller.           │
+ * ├──────────────────┼───────────────────────────────────────────────────────┤
+ * │ `Message`        │ Fornece as mensagens padronizadas usadas nas          │
+ * │                  │ exceções do framework.                                │
+ * ├──────────────────┼───────────────────────────────────────────────────────┤
+ * │ `Authentication` │ Verifica a autenticação quando a opção `authTag` está │
+ * │                  │ preenchida nas configurações da rota.                 │
+ * ├──────────────────┼───────────────────────────────────────────────────────┤
+ * │ `Redirect`       │ Redireciona para outro endereço quando alguma das     │
+ * │                  │ configurações determina redirecionamento.             │
+ * ├──────────────────┼───────────────────────────────────────────────────────┤
+ * │ `Tools`          │ Ajuda a preparar o nome da classe de saída e o        │
+ * │                  │ caminho do controller usado nas mensagens de erro.    │
+ * └──────────────────┴───────────────────────────────────────────────────────┘
+ */
 
 use galastri\core\config\Config;
 use galastri\core\Router;
@@ -9,7 +69,8 @@ use galastri\language\Message;
 use galastri\modules\Authentication;
 use galastri\modules\Redirect;
 use galastri\modules\Tools;
-use galastri\modules\VarDump;
+
+
 
 final class Galastri
 {

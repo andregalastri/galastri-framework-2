@@ -1,20 +1,15 @@
 <?php
-/**
- * Documentação:
- * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-Galastri
- */
 
 namespace galastri\core;
 
-use galastri\core\Router;
 use galastri\core\config\Config;
+use galastri\core\Router;
 use galastri\extensions\Exception;
 use galastri\language\Message;
+use galastri\modules\Authentication;
+use galastri\modules\Redirect;
 use galastri\modules\Tools;
 use galastri\modules\VarDump;
-use galastri\modules\Redirect;
-use galastri\modules\Authentication;
-// use galastri\modules\PerformanceAnalysis;
 
 final class Galastri
 {

@@ -21,9 +21,7 @@
 /**
  * 🟢 NAMESPACE DA CLASSE
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * ErrorHandler pertence ao núcleo do framework. Por isso, seu namespace segue
- * a pasta galastri/core, onde ficam as classes responsáveis por coordenar o
- * funcionamento da aplicação.
+ * ErrorHandler pertence ao núcleo do framework
  */
 
 namespace galastri\core;

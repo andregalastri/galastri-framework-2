@@ -57,7 +57,6 @@ namespace galastri\modules;
 
 final class VarDump
 {
-    
     /**
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                               CONSTANTES                              ║
@@ -75,6 +74,8 @@ final class VarDump
      * A folha de estilos fica neste arquivo abaixo:
      * 🔗 LINK: /galastri/misc/vardump.css
      *
+     * 
+     * ---
      * @var string
      */
     
@@ -91,6 +92,8 @@ final class VarDump
      * Nesse caso, `print()` exibe o dump original daquele valor, escapado
      * para HTML.
      *
+     * 
+     * ---
      * @var int
      */
     
@@ -115,6 +118,8 @@ final class VarDump
      * necessário incrementar esse nível, para mostrar a origem da chamada feita
      * pelo desenvolvedor e não pelo `vardump()`.
      *
+     * 
+     * ---
      * @var int
      */
     
@@ -132,6 +137,8 @@ final class VarDump
      * qual byte ele parou, para que, quando ele prosseguir com o
      * processamento, ele continue a partir da posição armazenada aqui.
      *
+     * 
+     * ---
      * @var int
      */
     
@@ -170,6 +177,8 @@ final class VarDump
      * a exibição correta do caractere. Quando o valor não tem esse marcador,
      * deixamos a propriedade vazia.
      *
+     * 
+     * ---
      * @var string
      */
     
@@ -199,6 +208,8 @@ final class VarDump
      * │ formatar aquele dump e exibimos sua saída original.                   │
      * └───────────────────────────────────────────────────────────────────────┘
      *
+     * 
+     * ---
      * @var int
      */
     
@@ -2088,6 +2099,8 @@ final class VarDump
         self::$backTraceLevel = 0;
     }
 }
+
+
 
 // -----------------------------------------------------------------------------
 // ◀️ VOLTAR A UM TÓPICO ANTERIOR:

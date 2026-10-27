@@ -65,11 +65,15 @@ final class Permission
         }
 
         if (!$valid) {
-            throw new Exception(
+            $exception = new Exception(
                 '{{}}',
                 [$this->currentFailMessage],
                 'PERMISSION_DENIED'
             );
+
+            $exception->errorSource = 'permission';
+
+            throw $exception;
         }
     }
 

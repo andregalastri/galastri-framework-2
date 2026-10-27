@@ -175,7 +175,7 @@ final class Tools
 
                 if ($placeholder === '') {
                     $currentMode = 'sequential';
-                } elseif (preg_match('/^[1-9][0-9]*$/D', $placeholder)) {
+                } elseif (preg_match('/^(?:0|[1-9][0-9]*)$/D', $placeholder)) {
                     $currentMode = 'positional';
                 } elseif (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/D', $placeholder)) {
                     $currentMode = 'named';
@@ -199,13 +199,13 @@ final class Tools
                     if ($mode === 'sequential') {
                         $index = $sequentialIndex++;
                     } else {
-                        $position = filter_var($placeholder, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+                        $position = filter_var($placeholder, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
 
                         if ($position === false) {
                             throw new Exception(Message::get('TOOLS_INVALID_PLACEHOLDER_POSITION'), [$match[0]]);
                         }
 
-                        $index = $position - 1;
+                        $index = $position;
                     }
 
                     if (!array_key_exists($index, $values)) {

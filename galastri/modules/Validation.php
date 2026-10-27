@@ -12,7 +12,7 @@ use galastri\modules\validation\DateTimeValidation;
 
 final class Validation
 {
-    public static bool $displayError = false;
+    public static bool $displayValidationError = false;
 
     private function __construct() {}
 

@@ -127,10 +127,14 @@ final class Galastri
             if ($authFailRedirectTo !== '' && $output != 'json') {
                 Redirect::to($authFailRedirectTo);
             }
-
-            throw new Exception(
+            
+            $exception = new Exception(
                 $authFailMessage
             );
+
+            $exception->errorSource = 'authentication';
+
+            throw $exception;
         }
     }
 

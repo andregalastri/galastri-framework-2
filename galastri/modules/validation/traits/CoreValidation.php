@@ -8,7 +8,6 @@ namespace galastri\modules\validation\traits;
 
 use galastri\extensions\Exception;
 use galastri\language\Message;
-use galastri\modules\Validation;
 
 trait CoreValidation
 {
@@ -48,16 +47,22 @@ trait CoreValidation
 
     private function throwError(): void
     {
-        Validation::$displayError = true;
-
         if (Exception::hasPlaceholders($this->failMessage[0])) {
-            throw new Exception(
-                $this->failMessage, $this->messageFlagValues, $this->additionalData
+            $exception = new Exception(
+                $this->failMessage,
+                $this->messageFlagValues,
+                $this->additionalData
+            );
+        } else {
+            $exception = new Exception(
+                $this->failMessage,
+                $this->additionalData
             );
         }
-        
-        throw new Exception(
-            $this->failMessage, $this->additionalData
-        );
+
+        $exception->displayValidationError = true;
+        $exception->errorSource = 'validation';
+
+        throw $exception;
     }
 }

@@ -3,14 +3,14 @@
  * -----------------------------------------------------------------------------
  * 📂
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║                   ARQUIVO /galastri/core/ErrorHandler.php                ║
+ * ║                  ARQUIVO /galastri/core/ErrorHandler.php                  ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  * Este arquivo define o gerenciador de erros do framework. Ele recebe as
  * informações de uma falha, prepara o que pode ser mostrado na resposta e,
  * quando configurado, guarda os detalhes em um arquivo de log.
  *
- * O gerenciador é ativado no bootstrap, antes do bootstrap da aplicação e
- * do processamento da requisição por Galastri::run().
+ * O gerenciador é ativado no bootstrap, antes do bootstrap da aplicação e do
+ * processamento da requisição por Galastri::run().
  *
  * 🔗 LINK: /galastri/bootstrap/bootstrap.php
  * ─────────────────────────────────────────────────────────────────────────────
@@ -31,33 +31,47 @@ namespace galastri\core;
 
 
 /**
- * 🟢 REFERENCIAÇÃO AOS NOMES DAS CLASSES USADOS
+ * 🟢 CLASSES UTILIZADAS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * As declarações use permitem escrever os nomes curtos das classes usadas
- * neste arquivo.
+ * Estas classes fornecem os recursos que usamos para preparar as respostas de
+ * erro, consultar as configurações e registrar os detalhes das falhas.
  *
- * Config consulta as configurações; Json participa da resposta em JSON;
- * Message fornece as mensagens; Tools reúne os recursos para trabalhar com
- * arquivos. Exception é a exceção própria do framework, que pode autorizar a
- * exibição de uma mensagem específica.
- *
- * Essas declarações apenas referenciam os nomes. O carregamento dos arquivos
- * continua sendo responsabilidade do autoloader.
+ * ┌─────────────┬─────────────────────────────────────────────────────────────┐
+ * │ Classe      │ Uso                                                         │
+ * ├─────────────┼─────────────────────────────────────────────────────────────┤
+ * │ `Config`    │ Consulta as configurações que definem quais detalhes podem  │
+ * │             │ aparecer na resposta, qual apresentação será usada e se     │
+ * │             │ devemos gravar logs ou interromper a execução nos avisos.   │
+ * ├─────────────┼─────────────────────────────────────────────────────────────┤
+ * │ `Json`      │ Identifica se a resposta já está em streaming e permite     │
+ * │             │ enviar o erro como uma nova linha JSON nesse mesmo fluxo.   │
+ * ├─────────────┼─────────────────────────────────────────────────────────────┤
+ * │ `Exception` │ Representa a exceção própria do framework. Aqui verificamos │
+ * │             │ se a falha pertence a essa classe e se sua propriedade      │
+ * │             │ displayError autoriza mostrar a mensagem original.          │
+ * ├─────────────┼─────────────────────────────────────────────────────────────┤
+ * │ `Message`   │ Busca a mensagem genérica que mostramos quando os detalhes  │
+ * │             │ da falha não podem ser exibidos.                            │
+ * ├─────────────┼─────────────────────────────────────────────────────────────┤
+ * │ `Tools`     │ Oferece funções auxiliares para identificar tipos de        │
+ * │             │ valores, preparar o caminho do log, criar sua pasta e       │
+ * │             │ gravar os registros no arquivo.                             │
+ * └─────────────┴─────────────────────────────────────────────────────────────┘
  */
 
 use galastri\core\config\Config;
 use galastri\core\output\Json;
+use galastri\extensions\Exception;
 use galastri\language\Message;
 use galastri\modules\Tools;
-use galastri\extensions\Exception;
 
 
 
 /**
  * 🟢 CLASSE ErrorHandler
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Quando acontece uma falha, queremos apresentar uma resposta que combine com
- * a saída da requisição e registrar informações que ajudem a descobrir o que
+ * Quando acontece uma falha, queremos apresentar uma resposta que combine com a
+ * saída da requisição e registrar informações que ajudem a descobrir o que
  * houve.
  *
  * Esta classe reúne esse trabalho. Erros do PHP, exceções que não foram
@@ -68,8 +82,8 @@ use galastri\extensions\Exception;
  * mostrá-la, consultamos as configurações para decidir quais detalhes podem
  * aparecer. O log, quando habilitado, recebe os dados originais da falha.
  *
- * Chamar run() prepara esses caminhos. As funções registradas por ele só
- * entram em ação quando o PHP comunica um erro, uma exceção não capturada ou o
+ * Chamar run() prepara esses caminhos. As funções registradas por ele só entram
+ * em ação quando o PHP comunica um erro, uma exceção não capturada ou o
  * encerramento da execução.
  */
 
@@ -79,11 +93,9 @@ final class ErrorHandler
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                              CONSTANTES                               ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     */
-
-
-
-    /**
+     *
+     *
+     *
      * 🟢 CAMINHO DO ARQUIVO DE LOG
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Define onde os registros de erro serão guardados. O trecho {{}} é um
@@ -91,12 +103,12 @@ final class ErrorHandler
      *
      * ✔️ EXEMPLO
      * ┌───────────────────────────────────────────────────────────────────────┐
-     * │ Uma falha ocorrida em 2026-10-26 entra neste arquivo:                 │
+     * │ Uma falha ocorrida em 26/10/2026 é registrada neste arquivo:          │
      * │                                                                       │
-     * │ logs/ErrorHandler-2026-10-26.log                                      │
+     * │ /logs/ErrorHandler-2026-10-26.log                                     │
      * │                                                                       │
-     * │ As falhas do mesmo dia compartilham o arquivo. Os registros mais      │
-     * │ recentes ficam no início.                                             │
+     * │ As falhas do mesmo dia compartilham o mesmo arquivo. Os registros     │
+     * │ mais recentes ficam no início.                                        │
      * └───────────────────────────────────────────────────────────────────────┘
      *
      *
@@ -112,18 +124,16 @@ final class ErrorHandler
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                                MÉTODOS                                ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     */
-
-
-
-    /**
+     *
+     *
+     *
      * 🟢 CLASSE ESTÁTICA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Os recursos desta classe são usados diretamente, como em
-     * ErrorHandler::run(), sem precisar criar um objeto.
+     * Os recursos desta classe são acessados diretamente por chamadas como
+     * `ErrorHandler::run()`, sem precisar criar um objeto.
      *
-     * Deixamos o construtor privado para impedir que a classe seja instanciada
-     * com new ErrorHandler().
+     * Por isso, deixamos o construtor privado para impedir que a classe seja
+     * instanciada com `new ErrorHandler()`.
      */
     
     private function __construct() {}
@@ -133,18 +143,19 @@ final class ErrorHandler
     /**
      * 🟢 ATIVANDO O GERENCIADOR DE ERROS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Prepara o PHP para encaminhar as falhas aos métodos desta classe.
+     * Executa uma série de métodos internos para preparar o PHP para encaminhar
+     * as falhas aos métodos desta classe.
      *
      * Registramos uma função para os erros que o PHP permite tratar durante a
-     * execução, outra para exceções não capturadas e uma terceira para
-     * conferir o último erro no encerramento.
+     * execução, outra para exceções não capturadas e uma terceira para conferir
+     * o último erro no encerramento.
      *
      * Essas funções ficam aguardando os acontecimentos correspondentes para
      * executar o tratamento registrado.
      *
-     * O bootstrap faz essa ativação antes de carregar o bootstrap da
-     * aplicação. Uma falha que impeça o código de chegar até aqui ainda não
-     * terá esses tratamentos disponíveis.
+     * O bootstrap faz essa ativação antes de carregar o bootstrap da aplicação.
+     * Uma falha que impeça o código de chegar até aqui ainda não terá esses
+     * tratamentos disponíveis.
      *
      *
      * ---
@@ -170,14 +181,11 @@ final class ErrorHandler
      * 🟢 RECEBENDO OS ERROS DO PHP
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Registra a função que o PHP vai chamar quando ocorrer um erro abrangido
-     * por set_error_handler(), como um aviso E_WARNING.
+     * por `set_error_handler()`, como um aviso `E_WARNING`.
      *
      * O PHP entrega o nível, a mensagem, o arquivo e a linha do erro. Primeiro
-     * conferimos se esse nível está habilitado em error_reporting(). Depois,
-     * encaminhamos as informações para printError().
-     *
-     * Alguns erros fatais não passam por esse mecanismo. Por isso, run()
-     * também registra uma verificação no encerramento da execução.
+     * conferimos se esse nível está habilitado em `error_reporting()`. Depois,
+     * encaminhamos as informações para `printError()`.
      *
      *
      * ---
@@ -187,7 +195,7 @@ final class ErrorHandler
     private static function setErrorHandler(): void
     {
         /**
-         * A função sem nome passada a set_error_handler() será chamada pelo
+         * A função sem nome passada a `set_error_handler()` será chamada pelo
          * PHP quando houver um erro que esse mecanismo possa tratar. Seus
          * parâmetros recebem as informações da falha.
          */
@@ -197,13 +205,13 @@ final class ErrorHandler
             {
                 /**
                  * O PHP pode chamar nosso tratamento mesmo para um nível que
-                 * não está habilitado em error_reporting(). Por isso, fazemos
+                 * não está habilitado em `error_reporting()`. Por isso, fazemos
                  * essa conferência antes de preparar a resposta.
                  *
-                 * O operador & verifica se o nível recebido está entre os
+                 * O operador `&` verifica se o nível recebido está entre os
                  * níveis ativos. Aqui ele não cria uma referência entre
                  * variáveis. Se o resultado for zero, não encaminhamos esse
-                 * erro para printError().
+                 * erro para `printError()`.
                  */
                 
                 if ((error_reporting() & $level) === 0) {
@@ -213,8 +221,8 @@ final class ErrorHandler
 
 
                 /**
-                 * Transformamos o nível em um nome. Se ele não estiver na
-                 * lista de getErrorCode(), usamos E_WARNING como alternativa.
+                 * Transformamos o nível em um nome. Se ele não estiver na lista
+                 * de getErrorCode(), usamos E_WARNING como alternativa.
                  *
                  * Também recolhemos o histórico das chamadas neste ponto.
                  * DEBUG_BACKTRACE_PROVIDE_OBJECT permite incluir o objeto das
@@ -226,7 +234,13 @@ final class ErrorHandler
                  * e o log.
                  */
                 
-                self::printError(self::getErrorCode($level, 'E_WARNING'), $message, $file, $line, debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS));
+                $errorCode = self::getErrorCode($level, 'E_WARNING');
+                
+                $debugBacktrace = debug_backtrace(
+                    DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS
+                );
+                
+                self::printError($errorCode, $message, $file, $line, $debugBacktrace);
             }
         );
     }
@@ -236,81 +250,167 @@ final class ErrorHandler
     /**
      * 🟢 RECEBENDO EXCEÇÕES NÃO CAPTURADAS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Registra o tratamento que será usado quando uma exceção chegar ao PHP
-     * sem ter sido capturada por um catch da aplicação. Esse caminho também
-     * pode receber erros representados por objetos, como TypeError.
+     * Quando uma exceção é lançada com `throw`, o PHP procura um `catch` que
+     * possa tratá-la. Se encontrar, a aplicação assume esse tratamento, mas se
+     * ninguém capturar a exceção, precisamos de um lugar para receber essa
+     * falha e preparar a resposta que será apresentada.
      *
-     * O objeto recebido informa a mensagem, o código, a origem e o histórico
-     * de chamadas. Retiramos os argumentos desse histórico antes de
-     * encaminhá-lo para printError(), para não incluir os valores passados às
-     * funções nessa lista.
+     * É isso que fazemos aqui: usamos set_exception_handler() para registrar
+     * uma função que o PHP chamará quando uma exceção não for capturada.
      *
-     * Se o objeto for uma Exception do framework, sua propriedade displayError
-     * também participa da decisão de mostrar a mensagem original. Essa
-     * autorização vale para a mensagem; arquivo, linha e histórico continuam
-     * seguindo suas próprias verificações.
+     * Essa função recebe um objeto com informações sobre a falha. Podemos
+     * consultar sua mensagem, seu código de erro, o arquivo e a linha de
+     * origem, além do histórico de chamadas que levou até sua criação.
      *
-     * Esse tratamento global não devolve a execução ao trecho que lançou a
-     * exceção. O PHP encerra a execução depois de chamar a função registrada.
+     * ℹ️ OBSERVAÇÕES  
+     * ┌───────────────────────────────────────────────────────────────────────┐
+     * │ Algumas falhas são lançadas pelo próprio PHP como objetos.            │
+     * │                                                                       │
+     * │ EXEMPLO                                                               │
+     * │ ┌───────────────────────────────────────────────────────────────────┐ │
+     * │ │ function mostrarNome(string $nome) {                              │ │
+     * │ │     echo $nome;                                                   │ │
+     * │ │ }                                                                 │ │
+     * │ │                                                                   │ │
+     * │ │ mostrarNome(['teste']);                                           │ │
+     * │ └───────────────────────────────────────────────────────────────────┘ │
+     * │                                                                       │
+     * │ Não precisamos escrever um `throw` no código para que esse tratamento │
+     * │ seja acionado. Algumas falhas, como passar um array para uma função   │
+     * │ que exige uma string, fazem o próprio PHP criar e lançar um erro como │
+     * │ TypeError.                                                            │
+     * │                                                                       │
+     * │ Se nenhum `catch` capturar esse erro, o PHP chamará a função que      │
+     * │ registramos com set_exception_handler().                              │
+     * ├───────────────────────────────────────────────────────────────────────┤
+     * │ Quando a falha chega a esse tratamento global, a execução já não pode │
+     * │ ser retomada.                                                         │
+     * │                                                                       │
+     * │ EXEMPLO                                                               │
+     * │ ┌───────────────────────────────────────────────────────────────────┐ │
+     * │ │ function mostrarNome(string $nome) {                              │ │
+     * │ │     echo $nome;                                                   │ │
+     * │ │ }                                                                 │ │
+     * │ │                                                                   │ │
+     * │ │ mostrarNome(['teste']); // Gera o TypeError                       │ │
+     * │ │                                                                   │ │
+     * │ │ echo 'Continuando o programa...';                                 │ │
+     * │ └───────────────────────────────────────────────────────────────────┘ │
+     * │                                                                       │
+     * │ Neste caso, o PHP chama nosso tratamento para apresentar a falha, mas │
+     * │ não volta depois para executar esse `echo`; o PHP encerra a execução. │
+     * │                                                                       │
+     * │ Para tratar uma falha assim e continuar o programa, é necessário      │
+     * │ capturá-la com um try/catch. O tratamento global que faremos aqui é o │
+     * │ último destino de uma falha se ninguém a capturar.                    │
+     * └───────────────────────────────────────────────────────────────────────┘
      *
      *
      * ---
      * @return void
      */
-    
+
     private static function setExceptionHandler(): void
     {
         /**
-         * Entregamos ao PHP a função que receberá uma exceção não capturada. O
-         * parâmetro $e contém o objeto da falha, e não apenas seu texto.
+         * set_exception_handler() recebe e armazena uma função como sendo o
+         * tratamento global de exceções.
+         *
+         * O bloco `function` abaixo é armazenado e fica disponível para o PHP
+         * chamar quando uma exceção não for capturada.
+         *
+         * Quando isso acontecer, o próprio PHP preencherá o parâmetro `$e` com
+         * o objeto com os dados da falha.
          */
-        
+
         set_exception_handler(
             function (object $e): void
             {
-                /**
-                 * Começamos com uma lista vazia para montar a versão do
-                 * histórico que será enviada ao gerenciador.
-                 */
                 
+                /**
+                 * Começamos com a preparação de uma cópia do histórico de
+                 * chamadas que ocorreram até o ponto em que a exceção ocorreu.
+                 * Começamos com um array vazio e acrescentaremos nele cada
+                 * chamada do histórico.
+                 */
+
                 $trace = [];
 
 
 
                 /**
-                 * getTrace() devolve uma lista de chamadas. Cada entrada reúne
-                 * informações como função, classe, arquivo, linha e, quando
-                 * disponíveis, os argumentos recebidos.
+                 * Aqui pegamos a lista das chamadas que estavam em andamento
+                 * quando a exceção foi criada. É como um retrato do caminho que
+                 * levou a execução até aquele ponto.
                  *
-                 * Percorremos essas entradas para retirar o campo args antes
-                 * de guardar cada uma em $trace.
+                 * ✔️ EXEMPLO
+                 * ┌───────────────────────────────────────────────────────────┐
+                 * │ Um controller chama cadastrarUsuario(), que chama         │
+                 * │ salvarNoBanco() que chama conectarNoBanco().              │
+                 * │                                                           │
+                 * │ Se dentro de conectarNoBanco(), uma exceção for lançada,  │
+                 * │ o histórico mostrará quem chamou conectarNoBanco(), quem  │
+                 * │ chamou salvarNoBanco() e quem chamou cadastrarUsuario().  │
+                 * │                                                           │
+                 * │ Ou seja, mostra uma trilha que permite verificar cada     │
+                 * │ passo de chamadas, dando mais informações para depuração  │
+                 * │ do erro.                                                  │
+                 * └───────────────────────────────────────────────────────────┘
+                 *
+                 * ℹ️ OBSERVAÇÃO
+                 * ┌───────────────────────────────────────────────────────────┐
+                 * │ Não se trata, porém, de uma lista completa de todas as    │
+                 * │ instruções que o programa executou. São apenas as         │
+                 * │ chamadas que ainda estavam em andamento naquele momento.  │
+                 * └───────────────────────────────────────────────────────────┘
+                 *
+                 * Executamos o método `getTrace()` para recuperar essa lista em
+                 * formato de array. Cada entrada informa a função, a classe, o
+                 * arquivo, a linha e os argumentos recebidos, mas a
+                 * disponibilidade destes dados pode variar.
+                 *
+                 * A cada passagem deste `foreach`, `$value` contém os dados de
+                 * uma dessas chamadas.
                  */
-                
+
                 foreach ($e->getTrace() as $key => $value) {
-                    /**
-                     * Esta conferência ignora uma entrada externa chamada
-                     * args, se houver. Na lista normalmente devolvida por
-                     * getTrace(), as chaves externas são números; o campo args
-                     * fica dentro de cada entrada e é retirado na etapa
-                     * seguinte.
-                     */
-                    
-                    if ($key === 'args') {
-                        continue;
-                    }
-
-
 
                     /**
-                     * ARRAY_FILTER_USE_KEY faz a função de filtragem receber o
-                     * nome do campo, em vez de seu valor. Mantemos todos os
-                     * campos cuja chave seja diferente de args.
+                     * Dentro dos dados do histórico, pode existir um campo
+                     * chamado `args`. Ele guarda os valores que foram passados
+                     * como argumentos àquela função ou método.
                      *
-                     * Guardamos a entrada filtrada em $trace, preservando a
-                     * ordem das chamadas.
+                     * ✔️ EXEMPLO
+                     * ┌───────────────────────────────────────────────────────┐
+                     * │ Uma chamada `autenticar($email, $senha)` pode deixar  │
+                     * │ os valores desses parâmetros dentro de `args`.        │
+                     * │ Mantê-los permitiria que fossem incluídos no log ou   │
+                     * │ na resposta, quando o histórico fosse exibido.        │
+                     * ├───────────────────────────────────────────────────────┤
+                     * │ O problema é que os argumentos também podem conter    │
+                     * │ arrays e objetos grandes, aumentando bastante o       │
+                     * │ tamanho do histórico e tornando a exibição do erro    │
+                     * │ confusa.                                              │
+                     * │                                                       │
+                     * │ Por isso, nesta apresentação de erros, preservamos os │
+                     * │ dados que identificam as chamadas, mas optamos por    │
+                     * │ retirar `args` completamente.                         │
+                     * └───────────────────────────────────────────────────────┘
+                     *
+                     * $value armazena uma array contendo chaves como `file`,
+                     * `line`, `function` ou, o que queremos remover, `args`.
+                     * Por isso, executamos um `array_filter()` que percorre
+                     * todos os campos de $value.
+                     *
+                     * A opção ARRAY_FILTER_USE_KEY faz filtragem receber as
+                     * chaves ao invés do seu valor, o que permite verificarmos
+                     * os nomes dos campos. Quando o nome do campo for `args`,
+                     * removemos ela da array, mantendo os demais.
+                     *
+                     * O array filtrado é, então, armazenado em `$trace`.
                      */
-                    
-                    $trace[] = array_filter($value, function ($key){
+
+                    $trace[] = array_filter($value, function ($key) {
                         return $key !== 'args';
                     }, ARRAY_FILTER_USE_KEY);
                 }
@@ -318,16 +418,73 @@ final class ErrorHandler
 
 
                 /**
-                 * Retiramos do objeto o código, a mensagem, o arquivo e a
-                 * linha. Enviamos também o histórico que acabamos de preparar.
+                 * Agora reunimos as informações que serão entregues ao método
+                 * `printError()`.
                  *
-                 * A última condição só será verdadeira se $e for uma Exception
-                 * do framework com displayError habilitado. O operador && só
-                 * consulta essa propriedade depois de confirmar o tipo do
-                 * objeto.
+                 * `getCode()` e `getMessage()` fornecem o código e a mensagem
+                 * da falha. `getFile()` e `getLine()` identificam o ponto de
+                 * origem registrado no objeto.
+                 *
+                 * Também passamos `$trace`, que contém o histórico preparado no
+                 * laço anterior.
                  */
                 
-                self::printError($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), $trace, $e instanceof Exception && $e->displayError);
+                $code = $e->getCode();
+                $message = $e->getMessage();
+                $file = $e->getFile();
+                $line = $e->getLine();
+                
+                /**
+                 * Esta última expressão é um teste que verifica duas condições.
+                 *
+                 * 1. Se o objeto `$e` é uma instância da classe
+                 *    galastri\extensions\Exception (uma classe própria do
+                 *    framework que é uma extensão do \Exception nativo do PHP).
+                 *
+                 * 2. Se for e o objeto `$e` possui a propriedade
+                 *    `displayValidationError` com valor `true`.
+                 *
+                 * Se as duas condições forem verdadeiras, autorizamos
+                 * printError() a mostrar a mensagem original, mesmo com a
+                 * configuração de rota `displayErrors` desativada.
+                 *
+                 * ⚠️ IMPORTANTE
+                 * ┌───────────────────────────────────────────────────────────┐
+                 * │ `displayValidationError` é uma propriedade específica     │
+                 * │ para permitir exibição de mensagens da classe Validation. │
+                 * │                                                           │
+                 * │ Quando a configuração de rota `displayErrors` é `false`,  │
+                 * │ mensagens de erro internas do PHP ficam ocultas por       │
+                 * │ questões de segurança. Só que mensagens de validação      │
+                 * │ também acabariam ocultas.                                 │
+                 * │                                                           │
+                 * │ A classe `Validation`, portanto, possui essa condição     │
+                 * │ especial, que autoriza a exibição da mensagem daquela     │
+                 * │ falha de validação através desta propriedade.             │
+                 * │                                                           │
+                 * │ Isso foi feito pois espera-se que mensagens de falha de   │
+                 * │ validação sejam exibidas mesmo que mensagens de erro      │
+                 * │ internas estejam desabilitadas.                           │
+                 * └───────────────────────────────────────────────────────────┘
+                 *
+                 * Arquivo, linha e histórico continuam dependendo das
+                 * configurações verificadas pelos métodos que preparam esses
+                 * campos.
+                 */
+                $errorSource = null;
+                $displayValidationError = false;
+
+                if ($e instanceof Exception) {
+                    $errorSource = $e->errorSource;
+                    $displayValidationError = $e->displayValidationError;
+                }
+                
+                $displayValidationError = $e instanceof Exception && $e->displayValidationError;
+
+                self::printError(
+                    $code, $message, $file, $line, $trace,
+                    $displayValidationError, $errorSource
+                );
             }
         );
     }
@@ -341,13 +498,9 @@ final class ErrorHandler
      * Ela será chamada também em encerramentos normais, então não podemos
      * considerar sua chamada, por si só, um sinal de erro.
      *
-     * Consultamos o último erro registrado pelo PHP e só encaminhamos os tipos
-     * fatais listados neste método. Se não houver erro ou se ele for de outro
-     * tipo, não fazemos nada.
-     *
-     * Essa verificação complementa o manipulador de erros. Ela depende de já
-     * ter sido registrada: não recupera uma falha que impediu o próprio
-     * bootstrap de executar.
+     * Por isso, consultamos o último erro registrado pelo PHP e só encaminhamos
+     * os tipos fatais listados neste método. Se não houver erro ou se ele for
+     * de outro tipo, não fazemos nada e a execução se encerra normalmente.
      *
      *
      * ---
@@ -357,18 +510,18 @@ final class ErrorHandler
     private static function registerShutdownFunction(): void
     {
         /**
-         * A função abaixo fica registrada para o encerramento da execução.
-         * Como esse momento também acontece sem falhas, precisamos conferir o
-         * que realmente ocorreu.
+         * `register_shutdown_function` registra a função para o encerramento da
+         * execução. Como esse momento também acontece sem falhas, precisamos
+         * conferir o que realmente ocorreu.
          */
         
         register_shutdown_function(
             function (): void
             {
                 /**
-                 * Consultamos o último erro registrado pelo PHP. Se não
-                 * existir nenhum, error_get_last() devolve null e encerramos
-                 * esta verificação.
+                 * Consultamos o último erro registrado pelo PHP. Se não existir
+                 * nenhum, error_get_last() devolve null. Neste caso, não
+                 * fazemos nada e a execução se encerra normalmente.
                  */
                 
                 $error = error_get_last();
@@ -381,20 +534,27 @@ final class ErrorHandler
 
                 /**
                  * Ter um último erro não significa que ele causou o
-                 * encerramento. Conferimos se seu tipo pertence à lista de
-                 * erros fatais que este método trata.
-                 *
-                 * O último argumento true exige uma comparação estrita entre o
-                 * tipo recebido e as constantes da lista.
+                 * encerramento. Aqui, testamos se o tipo do último erro
+                 * pertence à lista de erros fatais que este método trata.
                  */
                 
-                $isFatalError = in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, E_RECOVERABLE_ERROR], true);
+                $errorTypeList = [
+                    E_ERROR,
+                    E_PARSE,
+                    E_CORE_ERROR,
+                    E_COMPILE_ERROR,
+                    E_USER_ERROR,
+                    E_RECOVERABLE_ERROR,
+                ];
+                
+                
+                $isFatalError = in_array($error['type'], $errorTypeList, true);
 
 
 
                 /**
-                 * Um aviso ou outro nível fora dessa lista não deve gerar uma
-                 * nova resposta de erro só porque a execução chegou ao fim.
+                 * Se o erro não corresponder a nenhum dos tipos listados, não
+                 * fazemos nada e a execução se encerra normalmente.
                  */
                 
                 if (!$isFatalError) {
@@ -404,16 +564,25 @@ final class ErrorHandler
 
 
                 /**
-                 * Encaminhamos os dados do erro fatal para o mesmo tratamento
-                 * usado pelos outros caminhos.
+                 * Se o erro corresponder a um dos tipos da lista, então será
+                 * necessário encaminhamos os dados do erro fatal para o mesmo
+                 * tratamento usado pelos outros caminhos.
                  *
                  * O histórico coletado aqui pertence ao momento do
-                 * encerramento. Ele não reconstrói a pilha original da falha;
-                 * o arquivo e a linha do erro vêm dos campos guardados em
-                 * $error.
+                 * encerramento. Ele não reconstrói a pilha original da falha; o
+                 * arquivo e a linha do erro vêm dos campos guardados em
+                 * `$error`.
                  */
                 
-                self::printError(self::getErrorCode($error['type']), $error['message'], $error['file'], $error['line'], debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS));
+                $code = self::getErrorCode($error['type']);
+                $message = $error['message'];
+                $file = $error['file'];
+                $line = $error['line'];
+                $debugBacktrace = debug_backtrace(
+                    DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS
+                );
+                
+                self::printError($code, $message, $file, $line, $debugBacktrace);
             }
         );
     }
@@ -424,36 +593,37 @@ final class ErrorHandler
      * 🟢 CONVERTENDO O NÍVEL DO ERRO EM UM NOME
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * O PHP identifica os níveis de erro com números, usando constantes como
-     * E_WARNING e E_ERROR. Para a resposta e o log ficarem mais fáceis de ler,
-     * procuramos aqui o nome correspondente ao número recebido.
+     * `E_WARNING` e `E_ERROR`. Para a resposta e o log ficarem mais fáceis de
+     * ler, procuramos aqui o nome correspondente ao número recebido.
      *
      * ✔️ EXEMPLO
      * ┌───────────────────────────────────────────────────────────────────────┐
-     * │ A constante E_WARNING representa um nível numérico do PHP. Ao receber │
-     * │ esse número, devolvemos o texto 'E_WARNING', que fica mais fácil de   │
-     * │ identificar na resposta e no log.                                     │
+     * │ A constante `E_WARNING` representa um nível numérico do PHP. Ao       │
+     * │ receber esse número, devolvemos o texto 'E_WARNING', que fica mais    │
+     * │ fácil de identificar na resposta e no log.                            │
      * └───────────────────────────────────────────────────────────────────────┘
      *
      * A lista não contém todos os níveis existentes no PHP. Quando não
      * encontramos o nível recebido, devolvemos o valor padrão informado por
-     * quem chamou. Se nenhum padrão foi passado, esse retorno será false.
+     * quem chamou. Se nenhum padrão foi passado, esse retorno será `false`.
      *
      *
      * ---
-     * @param bool|int $errorLevel
+     * @param bool|int $errorLevel  
      * :: Nível recebido do PHP ou valor informado por quem chamou.
      *
-     * @param mixed $default
+     * @param mixed $default  
      * :: Valor devolvido quando o nível não está na lista.
      *
      * @return mixed Nome do nível ou o valor padrão recebido.
      */
     
-    private static function getErrorCode(bool|int $errorLevel, mixed $default = false): mixed
+    private static function getErrorCode(bool|int $errorLevel,
+        mixed $default = false): mixed
     {
         /**
-         * Associamos os valores numéricos das constantes aos nomes que
-         * queremos escrever na resposta e no log.
+         * Criamos um mapeamento dos valores numéricos das constantes aos nomes
+         * que queremos escrever na resposta e no log.
          */
         
         $errorMap = [
@@ -474,7 +644,7 @@ final class ErrorHandler
 
 
         /**
-         * Procuramos o nível na lista. O operador ?? devolve $default quando
+         * Procuramos o nível na lista. O operador ?? devolve `$default` quando
          * não há uma entrada para esse valor.
          */
         
@@ -486,55 +656,67 @@ final class ErrorHandler
     /**
      * 🟢 ESCOLHENDO A MENSAGEM QUE PODE SER EXIBIDA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Decide se a resposta vai mostrar a mensagem original ou uma mensagem
-     * genérica.
+     * Este método decide se a resposta vai mostrar a mensagem original do erro
+     * ou uma mensagem genérica.
      *
-     * Durante o desenvolvimento, displayErrors pode permitir os detalhes da
-     * falha. Quando essa configuração está desativada, ainda podemos mostrar
-     * uma mensagem específica se quem chamou passar $displayError como true.
+     * Durante o desenvolvimento da aplicação, é normal deixar a configuração de
+     * rota `displayErrors` em `true`, para permitir a exibição de mensagens de
+     * erro internas do PHP, banco de dados, etc. que trazem informações
+     * relevantes pro desenvolvedor.
      *
-     * ℹ️ OBSERVAÇÃO
-     * ┌───────────────────────────────────────────────────────────────────────┐
-     * │ A autorização em $displayError permite mostrar esta mensagem. Ela não │
-     * │ libera o arquivo, a linha ou o histórico da falha. Esses campos       │
-     * │ continuam dependendo de suas próprias verificações.                   │
-     * └───────────────────────────────────────────────────────────────────────┘
+     * Mas em produção, essa configuração deverá, idealmente, ser desativada com
+     * `false` pra garantir que nenhuma informação interna com dados sensíveis
+     * vazem para usuários.
      *
-     * Se nenhuma dessas condições permitir a mensagem original, buscamos
-     * DEFAULT_ERROR_MESSAGE na classe Message. O log continua recebendo a
-     * mensagem original por outro caminho.
+     * Se nenhuma dessas condições permitir mostrar a mensagem real, exibimos a
+     * mensagem genérica armazenada em `DEFAULT_ERROR_MESSAGE`, na classe
+     * `Message`.
+     *
+     * O arquivo de log salvo na pasta /logs, porém, continua armazenando a
+     * mensagem original.
      *
      *
      * ---
-     * @param string $message
+     * @param string $message  
      * :: Mensagem original da falha.
      *
-     * @param bool $displayError
-     * :: Autoriza mostrar esta mensagem mesmo sem displayErrors.
+     * @param bool $displayValidationError  
+     * :: Autoriza mostrar esta mensagem ou não.
      *
      * @return string Mensagem original ou a mensagem genérica.
      */
     
-    private static function getMessage(string $message, bool $displayError = false): string
+    private static function
+        getMessage(string $message, bool $displayValidationError = false): string
     {
         /**
-         * Consultamos displayErrors usando false como alternativa caso a
-         * configuração ainda não esteja disponível.
+         * Consultamos a configuração de rota `displayErrors` com fallback pra
+         * `false` como padrão enquanto a configuração das rotas ainda não
+         * estiver carregada. Assim, se uma falha ocorrer antes do carregamento
+         * das configurações da rota, não liberamos a exibição de mensagens
+         * internas por esse caminho.
          *
-         * Basta essa configuração ou a autorização recebida em $displayError
-         * ser verdadeira para devolver a mensagem original.
+         * Já o parâmetro `$displayValidationError` é usado pela classe
+         * Validation para autorizar a exibição de mensagens de erro de
+         * validação. Ela opera como um autorizador alternativo, mas que não
+         * sobrescreve a configuração de rota, apenas permite que as mensagens
+         * de erro de validação de dados possam ser mostradas mesmo com a
+         * configuração de rota `displayErrors` em `false`.
+         *
+         * Sendo a configuração de rota, ou `$displayValidationError`, `true`, a
+         * mensagem é retornada para ser mostrada.
          */
         
-        if (Config::get('displayErrors', false) || $displayError) {
+        if (Config::get('displayErrors', false) || $displayValidationError) {
             return $message;
         }
 
 
 
         /**
-         * Sem autorização para exibir os detalhes, buscamos a mensagem
-         * genérica. Message::get() devolve um array; a posição zero contém o
-         * texto que será apresentado.
+         * Sem autorização para exibir a mensagem original, buscamos a mensagem
+         * genérica com `Message::get()`. Esse método devolve um array, e a
+         * posição [0] contém o texto que será apresentado.
          */
         
         return Message::get('DEFAULT_ERROR_MESSAGE')[0];
@@ -543,18 +725,24 @@ final class ErrorHandler
 
 
     /**
-     * 🟢 DECIDINDO SE A LINHA PODE APARECER
+     * 🟢 DECIDINDO SE O NÚMERO DA LINHA DO ERRO PODE APARECER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * A linha ajuda a localizar o problema no código, mas também é um detalhe
-     * interno da aplicação.
+     * Este método decide se a resposta vai mostrar o número da linha original
+     * do erro ou um dado sem valor prático (no caso zero aqui).
      *
-     * Quando displayErrors está habilitado, devolvemos a linha recebida. Caso
-     * contrário, colocamos zero na resposta. A linha original continua
-     * disponível para o registro em log.
+     * A questão aqui é a mesma sobre a exibição de mensagens ou não: segurança
+     * de dados na hora de exibir erros.
+     *
+     * O número da linha ajuda a localizar o problema no código, mas também é um
+     * detalhe interno da aplicação que precisa ficar sob a autorização da
+     * configuração de rotas `displayErrors` para ser mostrada ou não.
+     * 
+     * O arquivo de log salvo na pasta /logs, porém, continua armazenando a
+     * linha original.
      *
      *
      * ---
-     * @param int $line
+     * @param int $line  
      * :: Linha original da falha.
      *
      * @return int Linha recebida ou zero quando os detalhes estão ocultos.
@@ -563,9 +751,14 @@ final class ErrorHandler
     private static function getLine(int $line): int
     {
         /**
-         * A condição escolhe entre a linha original e zero. Mesmo que uma
-         * exceção tenha autorizado mostrar sua mensagem, esta decisão continua
-         * dependendo de displayErrors.
+         * Consultamos a configuração de rota `displayErrors`, com fallback pra
+         * `false` como padrão enquanto a configuração das rotas ainda não
+         * estiver carregada. Assim, se uma falha ocorrer antes do carregamento
+         * das configurações da rota, não liberamos a exibição do número real da
+         * linha.
+         *
+         * Sendo a configuração de rota `true`, retorna o número da linha real
+         * para ser mostrado.
          */
         
         return Config::get('displayErrors', false) ? $line : 0;
@@ -574,21 +767,41 @@ final class ErrorHandler
 
 
     /**
-     * 🟢 PREPARANDO O CAMINHO DO ARQUIVO PARA A RESPOSTA
+     * 🟢 DECIDINDO SE O CAMINHO DO ARQUIVO PODE APARECER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Prepara o caminho que identifica o arquivo da falha na resposta.
+     * Este método decide se a resposta vai mostrar o caminho do arquivo onde o
+     * erro ocorreu ou não.
      *
-     * Retiramos o caminho da raiz do projeto da parte que representa a pasta e
-     * acrescentamos um ponto no início. Para um arquivo dentro do projeto, o
-     * resultado fica parecido com ./app/controllers/Index.php.
+     * A questão aqui é a mesma sobre a exibição de mensagens ou não: segurança
+     * de dados na hora de exibir erros.
      *
-     * Esse caminho só é devolvido quando displayErrors está habilitado. Caso
-     * contrário, a resposta recebe null. O caminho original é mantido para o
-     * log.
+     * O caminho do arquivo é crucial na depuração de problemas e é uma das
+     * informações mais sensíveis por mostrar a estrutura interna do projeto.
      *
+     * ℹ️ OBSERVAÇÃO
+     * ┌──────────────────────────────────────────────────────────────────────┐
+     * │ O caminho do arquivo onde ocorreu o erro é mostrado a partir da raiz │
+     * │ do projeto, sem mostrar pastas anteriores.                           │
+     * │                                                                      │
+     * │ EXEMPLO                                                              │
+     * │ ┌──────────────────────────────────────────────────────────────────┐ │
+     * │ │ Se ocorrer um erro no arquivo controller Index.php,              │ │
+     * │ │ ao invés de mostrar o caminho assim:                             │ │
+     * │ │                                                                  │ │
+     * │ │ /var/www/galastri-framework/app/controllers/Index.php            │ │
+     * │ │                                                                  │ │
+     * │ │ ...será mostrado assim:                                          │ │
+     * │ │                                                                  │ │
+     * │ │ ./app/controllers/Index.php                                      │ │
+     * │ └──────────────────────────────────────────────────────────────────┘ │
+     * └──────────────────────────────────────────────────────────────────────┘
      *
+     * O arquivo de log salvo na pasta /logs, porém, continua armazenando a
+     * mensagem original.
+     *
+     * 
      * ---
-     * @param string $file
+     * @param string $file  
      * :: Caminho original do arquivo onde a falha ocorreu.
      *
      * @return string|null Caminho preparado ou null para ocultar o arquivo.
@@ -597,9 +810,9 @@ final class ErrorHandler
     private static function getFile(string $file): ?string
     {
         /**
-         * pathinfo() separa a pasta do nome do arquivo. Na pasta, retiramos o
-         * caminho definido em PROJECT_DIR para não repetir a raiz do projeto
-         * na apresentação.
+         * Usamos `pathinfo()` para separar a pasta do nome do arquivo. Na
+         * pasta, retiramos o caminho definido em PROJECT_DIR para não repetir a
+         * raiz do projeto na apresentação do caminho até o arquivo.
          */
         
         $directory = str_replace(PROJECT_DIR, '', pathinfo($file)['dirname']);
@@ -607,9 +820,8 @@ final class ErrorHandler
 
 
         /**
-         * Juntamos novamente a pasta e o nome do arquivo, colocando um ponto
-         * no início. Por exemplo, /app/controllers mais Index.php formam
-         * ./app/controllers/Index.php.
+         * Montamos o caminho simplificado partindo da pasta do projeto até o
+         * nome do arquivo, colocando um ponto no início.
          */
         
         $path = '.'.$directory.'/'.pathinfo($file)['basename'];
@@ -617,8 +829,14 @@ final class ErrorHandler
 
 
         /**
-         * Devolvemos o caminho preparado somente quando a exibição de detalhes
-         * está habilitada. Caso contrário, este campo fica como null.
+         * Consultamos a configuração de rota `displayErrors`, com fallback pra
+         * `false` como padrão enquanto a configuração das rotas ainda não
+         * estiver carregada. Assim, se uma falha ocorrer antes do carregamento
+         * das configurações da rota, não liberamos a exibição do caminho do
+         * arquivo. 
+         *
+         * Sendo a configuração de rota `true`, retorna o caminho do arquivo
+         * para ser mostrado.
          */
         
         return Config::get('displayErrors', false) ? $path : null;
@@ -627,22 +845,23 @@ final class ErrorHandler
 
 
     /**
-     * 🟢 DECIDINDO SE O HISTÓRICO PODE APARECER
+     * 🟢 DECIDINDO SE O HISTÓRICO (TRACE) PODE APARECER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * O histórico de chamadas, também chamado de trace, mostra o caminho
      * percorrido entre funções e métodos até o ponto em que foi coletado. Isso
      * pode ajudar a entender como chegamos a uma falha.
      *
-     * Só devolvemos esse histórico quando displayErrors e showTrace estão
-     * habilitados ao mesmo tempo. Assim, permitir a mensagem detalhada não
-     * obriga a resposta a incluir toda a lista de chamadas.
+     * Só devolvemos esse histórico quando `displayErrors` e `showTrace` estão
+     * habilitados ao mesmo tempo nas configurações de rota. Isso significa que
+     * o desenvolvedor pode fazer a exibição de erros, mas não obriga a resposta
+     * a incluir o histórico de chamadas se ele não quiser.
      *
-     * Se uma dessas configurações estiver desativada, devolvemos um array
-     * vazio. O histórico recebido ainda pode ser guardado no log.
+     * O arquivo de log salvo na pasta /logs, porém, continua armazenando o
+     * histórico.
      *
      *
      * ---
-     * @param array $trace
+     * @param array $trace  
      * :: Histórico recebido pelo gerenciador.
      *
      * @return array Histórico recebido ou um array vazio.
@@ -651,9 +870,17 @@ final class ErrorHandler
     private static function getTrace(array $trace): array
     {
         /**
-         * As duas condições precisam ser verdadeiras. showTrace permite o
-         * histórico, enquanto displayErrors permite os detalhes da falha. Se
-         * alguma configuração não estiver disponível, usamos false.
+         * Consultamos a configuração de rota `displayErrors` e `showTrace`,
+         * ambas com fallback pra `false` como padrão enquanto a configuração
+         * das rotas ainda não estiver carregada. Assim, se uma falha ocorrer
+         * antes do carregamento das configurações da rota, não liberamos a
+         * exibição do histórico.
+         *
+         * As duas configurações precisam ser verdadeiras para que o histórico
+         * seja exibido. `showTrace` permite o histórico, enquanto
+         * `displayErrors` permite os detalhes da falha.
+         *
+         * Se alguma configuração não estiver disponível, usamos false.
          */
         
         if (Config::get('displayErrors', false) && Config::get('showTrace', false)) {
@@ -675,60 +902,62 @@ final class ErrorHandler
     /**
      * 🟢 MONTANDO E ENVIANDO A RESPOSTA DE ERRO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Reúne o trabalho que é comum aos diferentes caminhos de erro. Quando
-     * chegamos aqui, já recebemos a mensagem, o código, a origem e o histórico
-     * disponíveis para aquela falha.
+     * Este método centraliza todos os dados coletados para preparar a exibição
+     * do erro. Quando chegamos aqui, já sabemos qual a mensagem, o código, a
+     * origem e o histórico disponíveis para aquela falha.
      *
      * Primeiro montamos os dados da resposta, consultando os métodos que
      * decidem quais detalhes podem aparecer. Depois, ajustamos o status HTTP,
      * quando ainda é possível, e escolhemos como apresentar o resultado.
      *
-     * A configuração output define essa apresentação: json envia JSON, file
-     * gera uma imagem PNG e os demais valores usam a apresentação em HTML.
+     * A configuração de rota `output` define como será a apresentação dos
+     * dados: `json` envia um JSON, `file` gera uma imagem PNG e os demais
+     * valores usam a apresentação em HTML.
      *
-     * Em seguida, gravamos o log se createLogsOnError permitir. Para esse
-     * registro usamos os dados originais recebidos, e não as versões ocultadas
-     * na resposta.
-     *
-     * Por fim, conferimos se a execução deve parar. Só os códigos listados
-     * como avisos neste método podem passar sem exit, e apenas quando
-     * stopOnWarnings está desativado. Nos demais casos, encerramos a execução.
+     * Também gravamos o log se a configuração de rota `createLogsOnError`
+     * permitir. Nos registros de log usamos apenas os dados originais
+     * recebidos, e não as versões ocultadas na resposta por se tratar
      *
      * ℹ️ OBSERVAÇÃO
      * ┌───────────────────────────────────────────────────────────────────────┐
      * │ Este método não faz uma limpeza geral do buffer de saída. Um conteúdo │
-     * │ produzido antes da falha pode aparecer junto da resposta de erro.     │
+     * │ produzido antes da falha pode aparecer junto da resposta de erro. O   │
+     * │ arquivo de log, porém, armazena apenas o erro em si.                  │
      * └───────────────────────────────────────────────────────────────────────┘
      *
      *
      * ---
-     * @param int|string $code
+     * @param int|string $code  
      * :: Código que identifica a falha.
      *
-     * @param string $message
+     * @param string $message  
      * :: Mensagem original.
      *
-     * @param string $file
+     * @param string $file  
      * :: Arquivo original da falha.
      *
-     * @param int $line
+     * @param int $line  
      * :: Linha original da falha.
      *
-     * @param array $trace
+     * @param array $trace  
      * :: Histórico disponível para esta falha.
      *
-     * @param bool $displayError
-     * :: Autoriza a exibição da mensagem original.
+     * @param bool $displayValidationError  
+     * :: Autorizador da classe `Validation` que opera como autorização
+     *    alternativa ao da configuração de rota `displayErrors`.
      *
      * @return void
      */
     
-    private static function printError(int|string $code, string $message, string $file, int $line, array $trace, bool $displayError = false): void
+    private static function printError(int|string $code, string $message,
+        string $file, int $line, array $trace,
+        bool $displayValidationError = false,
+        ?string $errorSource = null): void
     {
         /**
-         * Guardamos a data e o horário desta passagem. Os mesmos valores serão
-         * usados na resposta e no registro em log, para que ambos identifiquem
-         * o mesmo atendimento da falha.
+         * Começamos guardando a data e o horário desta passagem. Os mesmos
+         * valores serão usados na resposta e no registro em log, para que ambos
+         * identifiquem o mesmo atendimento da falha.
          */
         
         $currentDate = date('Y-m-d');
@@ -739,11 +968,14 @@ final class ErrorHandler
         /**
          * Montamos os campos que serão enviados na resposta. Arquivo, linha,
          * mensagem e histórico passam pelas verificações de exibição antes de
-         * entrar nesse array.
+         * entrar nesse array, decidindo se mostrarão os dados originais ou se
+         * serão ocultados da exibição visual.
          *
-         * Os campos warning e error ficam como true nesta saída de falha. Eles
-         * são indicadores da resposta, não a classificação usada para decidir
-         * se a execução pode continuar.
+         * Os campos `warning` e `error` ficam como `true` nesta saída de falha.
+         * Eles são indicadores da resposta, não a classificação usada para
+         * decidir se a execução pode continuar. É útil pois o frontend
+         * facilmente consegue detectar se houve erro ou não para decidir o que
+         * fazer.
          */
         
         $data = [
@@ -752,7 +984,7 @@ final class ErrorHandler
             'code' => $code,
             'origin' => self::getFile($file),
             'line' => self::getLine($line),
-            'message' => self::getMessage($message, $displayError),
+            'message' => self::getMessage($message, $displayValidationError),
             'trace' => self::getTrace($trace),
             'warning' => true,
             'error' => true,
@@ -764,13 +996,16 @@ final class ErrorHandler
          * O status HTTP faz parte dos cabeçalhos da resposta. Só tentamos
          * ajustá-lo se eles ainda não foram enviados.
          *
-         * Se um streaming já enviou conteúdo, por exemplo, o status anterior
-         * permanece. A falha ainda pode ser comunicada no conteúdo da
-         * resposta.
+         * Isso é importante pois falhas podem ocorrer durante um streaming
+         * iniciado pela classe `ResponseStream`, usada para enviar dados antes
+         * do fim da requisição.
+         *
+         * Esta classe já envia um cabeçalho com o conteúdo e não podemos
+         * reenviar um cabeçalho novamente nestes casos.
          */
         
         if (!headers_sent()) {
-            http_response_code(self::getHttpStatusCode($code));
+            http_response_code(self::getHttpStatusCode($errorSource));
         }
 
 
@@ -1261,8 +1496,17 @@ final class ErrorHandler
      * @return int Status HTTP que deve acompanhar a resposta.
      */
     
-    private static function getHttpStatusCode(int|string $code): int
+    private static function getHttpStatusCode(?string $errorSource): int
     {
+        switch ($errorSource) {
+            case 'validation':
+                return 422;
+
+            case 'authentication':
+            case 'permission':
+                return 403;
+        }
+        
         /**
          * Consultamos o status que já está definido para esta resposta, sem
          * tentar modificá-lo nesta chamada.
@@ -1285,24 +1529,14 @@ final class ErrorHandler
 
 
         /**
-         * Quando ainda não há um status de erro a preservar, estes quatro
-         * códigos recebem 400. Os nomes são comparados exatamente com as
-         * entradas da lista.
-         */
-        
-        if (in_array($code, ['E_WARNING', 'E_USER_WARNING', 'E_NOTICE', 'E_USER_NOTICE'], true)) {
-            return 400;
-        }
-
-
-
-        /**
          * Para qualquer outro código, usamos 500 como status padrão da falha.
          */
         
         return 500;
     }
 }
+
+
 
 // -----------------------------------------------------------------------------
 // ◀️ VOLTAR AO TÓPICO ANTERIOR:

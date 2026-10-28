@@ -94,7 +94,7 @@ final class Galastri
      *
      *
      *
-     * 🟢 NAMESPACE DO CONTROLLER
+     * 🟢 CLASSE BASE DOS CONTROLLERS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Armazena o nome completo da classe base dos controllers.
      *
@@ -159,7 +159,7 @@ final class Galastri
      * └───────────────────────────────────────────────────────────────────────┘
      *
      * Depois que `Router` identifica o controller, `Galastri` monta esse nome
-     * completo e o armazena aqui. Vamos precisamos disso em vários momentos:
+     * completo e o armazena aqui. Precisamos disso em vários momentos:
      *
      * - Pra verificar se a classe existe;
      * - Conferir se ela herda da classe base Controller;
@@ -194,7 +194,7 @@ final class Galastri
      * construtor da classe base `Controller` consulta esse nome através de
      * `Galastri::getControllerMethodName()` e chama o método correspondente.
      *
-     * É por isso que o nome fica guardado aqui propriedade: ele precisa
+     * É por isso que o nome fica guardado nesta propriedade: ele precisa
      * continuar disponível depois da verificação, para que o `Controller` saiba
      * qual método chamar.
      *
@@ -281,7 +281,7 @@ final class Galastri
      * a preparação, consultamos a configuração `httpMethod`. Se houver uma
      * associação para o tipo de requisição recebido, guardamos o nome do método
      * e mudamos esse indicador para `true`.
-     * 
+     *
      * ✔️ EXEMPLO
      * ┌───────────────────────────────────────────────────────────────────────┐
      * │ Por exemplo, se apenas POST estiver associado a `salvar()`, uma       │
@@ -292,9 +292,9 @@ final class Galastri
      * │ existir, lançamos uma exceção.                                        │
      * └───────────────────────────────────────────────────────────────────────┘
      *
-     * Depois, durante a ins Controller consulta esse valor através de
-     * Galastri::httpMethodExists(). É essa consulta que decide se haverá a
-     * chamada adicional, depois da execução do método da rota.
+     * Depois, o construtor da classe base Controller consulta esse valor
+     * através de `Galastri::httpMethodExists()`. É essa consulta que decide se
+     * haverá a chamada adicional, depois da execução do método da rota.
      *
      *
      * ---
@@ -337,7 +337,7 @@ final class Galastri
      * Armazena a instância do controller criado para atender à requisição.
      *
      * Até então, temos o nome da classe guardado em `$controllerNamespace`.
-     * Quando `executeController()`é executado ele usa esse nome para criar um
+     * Quando `executeController()` é executado, ele usa esse nome para criar um
      * objeto dessa classe e guardamos o objeto nesta propriedade.
      *
      * Durante essa criação, o construtor da classe base `Controller` executa os
@@ -389,7 +389,7 @@ final class Galastri
         self::checkOffline();
         self::isValidRoute();
         self::checkAuthentication();
-        self::setControllerNamespace();
+        self::checkControllerNamespace();
         self::setMethodName();
         self::setHttpMethodName();
 
@@ -411,8 +411,8 @@ final class Galastri
      *
      * Por exemplo, se configurarmos `America/Sao_Paulo`, uma chamada como
      * date('H:i') vai apresentar a hora nesse fuso. Isso evita depender do fuso
-     * que definido nas configurações do PHP, que pode ser diferente daquele que
-     * queremos usar na aplicação.
+     * que está definido nas configurações do PHP, que pode ser diferente
+     * daquele que queremos usar na aplicação.
      *
      * Esse ajuste acontece no começo do processamento, antes de executar o
      * controller, para que o código da aplicação já esteja configurado com o
@@ -428,86 +428,315 @@ final class Galastri
         /**
          * O método recupera o valor da configuração de rota `timezone`.
          */
+        
         $timezone = Config::get('timezone');
         
         
         
         /**
-         * Testa-se se o valor da configuração é diferente de `false` e de uma
+         * É testado se o valor da configuração é diferente de `false` e de uma
          * string vazia. Caso seja, então aplica esse fuso usando a função
          * nativa `date_default_timezone_set()`.
          *
          * Do contrário, não faz nenhuma alteração e o PHP continua usando o
-         * fuso que estiver definido nas configurações internas.
+         * fuso que já estava em uso.
          */
+        
         if ($timezone !== false && $timezone !== '') {
             date_default_timezone_set($timezone);
         }
     }
+    
+    
 
+    /**
+     * 🟢 VERIFICANDO REDIRECIONAMENTO FORÇADO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Aqui verificamos se a configuração forceRedirectTo manda encaminhar o
+     * acesso para outro endereço antes de continuar o processamento.
+     *
+     * ✔️ EXEMPLO
+     * ┌───────────────────────────────────────────────────────────────────────┐
+     * │ Podemos ter um endereço antigo que deve levar o visitante para uma    │
+     * │ página nova. Essa configuração permite fazer isso sem precisar        │
+     * │ executar um controller só para redirecionar.                          │
+     * └───────────────────────────────────────────────────────────────────────┘
+     *
+     *
+     * ---
+     * @return void
+     */
+    
     private static function checkForceRedirectTo(): void
     {
+        /**
+         * O método recupera o valor da configuração de rota `forceRedirectTo`.
+         */
+        
         $forceRedirectTo = Config::get('forceRedirectTo');
-
+        
+        
+        
+        /**
+         * É testado se o valor da configuração é diferente de `false` e de uma
+         * string vazia. Caso seja, então chama o módulo `Redirect::to()`
+         * apontando para o destino configurado.
+         * 
+         * Se não houver redirecionamento configurado, seguimos normalmente.
+         * 
+         * ℹ️ OBSERVAÇÃO
+         * ┌───────────────────────────────────────────────────────────────────┐
+         * │ Essa chamada prepara o redirecionamento e encerra a execução.     │
+         * └───────────────────────────────────────────────────────────────────┘
+         */
+        
         if ($forceRedirectTo !== false && $forceRedirectTo !== '') {
             Redirect::to($forceRedirectTo);
         }
     }
-
+    
+    
+    
+    /**
+     * 🟢 VERIFICANDO ROTA OFFLINE
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Esse método verifica se precisamos suspender o atendimento normal da
+     * requisição porque a configuração offline está ativada. Isso pode ser útil
+     * durante uma manutenção, por exemplo.
+     *
+     *
+     * ---
+     * @return void
+     */
+    
     private static function checkOffline(): void
     {
+        /**
+         * Recuperamos três valores de configuração de rota: `offline`,
+         * `offlineRedirectTo` e `offlineMessage`.
+         */
+        
         $offline = Config::get('offline');
         $offlineRedirectTo = Config::get('offlineRedirectTo');
         $offlineMessage = Config::get('offlineMessage');
-
+        
+        
+        
+        /**
+         * Se offline estiver em `true`, temos dois caminhos:
+         *
+         * 1. Com `offlineRedirectTo` preenchido, encaminhamos o acesso para o
+         *    endereço configurado, que pode ser uma página de manutenção, por
+         *    exemplo.
+         *
+         * 2. Sem o redirecionamento, lançamos uma exceção com a mensagem de
+         *    `offlineMessage`. O `ErrorHandler` assume a apresentação da falha,
+         *    seguindo as configurações de exibição de erros.
+         *
+         *    🔗 LINK: /galastri/core/ErrorHandler.php
+         *
+         * Nos dois casos, impedimos que o processamento prossiga.
+         */
+        
         if ($offline) {
 
             if ($offlineRedirectTo !== '') {
                 Redirect::to($offlineRedirectTo);
             }
 
-            throw new Exception(
-                $offlineMessage
-            );
+            throw new Exception($offlineMessage);
         }
     }
 
+    
+    
+    /**
+     * 🟢 VERIFICANDO SE A ROTA É VÁLIDA
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Quando chegamos aqui, o Router já interpretou a URL e informou se ela
+     * corresponde a uma rota válida. Agora precisamos decidir se uma eventual
+     * invalidade impede o prosseguimento da execução do código.
+     *
+     *
+     * ---
+     * @return void
+     */
+    
     private static function isValidRoute(): void
     {
+        /**
+         * Para chamar `notFound()`, o método exige que duas condições sejam
+         * verdadeiras ao mesmo tempo:
+         *
+         * 1. O `Router` considera a rota inválida.
+         *
+         * 2. A classe de saída exige um controller.
+         *
+         * Essa segunda condição existe por causa de saídas como file, que podem
+         * entregar arquivos diretamente do disco.
+         *
+         * ✔️ EXEMPLO
+         * ┌───────────────────────────────────────────────────────────────────┐
+         * │ Imagine uma rota /arquivos configurada com essa saída e um acesso │
+         * │ a /arquivos/manual.pdf. O trecho manual.pdf pode ficar disponível │
+         * │ para a classe File procurar o arquivo.                            │
+         * │                                                                   │
+         * │ Para o Router, esse trecho restante pode tornar a rota inválida,  │
+         * │ porque ele não corresponde a um método ou aos parâmetros          │
+         * │ esperados. Mesmo assim, ainda podemos atender ao pedido           │
+         * │ entregando o arquivo.                                             │
+         * └───────────────────────────────────────────────────────────────────┘
+         *
+         * Por isso, quando a saída não exige controller, deixamos o
+         * processamento continuar até as verificações próprias dessa saída. Se
+         * o arquivo de nosso exemplo não existir, a classe `File` poderá chamar
+         * `notFound()` depois.
+         */
+        
         if (!Router::isValidRoute() && self::$output::requiresController()) {
             self::notFound();
         }
     }
 
+    
+    
+    /**
+     * 🟢 RESPONDENDO COM 404 - NOT FOUND
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Responde a requisição erro 404. Esse método reúne o tratamento dessa
+     * situação para que outras partes do framework possam recorrer à mesma
+     * lógica.
+     *
+     * Esse método é público porque também atende outras classes. A saída
+     * `File`, por exemplo, o chama quando não encontra o arquivo solicitado.
+     * Assim, tanto uma rota inválida quanto um arquivo ausente podem usar o
+     * mesmo tratamento.
+     *
+     *
+     * ---
+     * @return void
+     */
+    
     public static function notFound(): void
     {
+        /**
+         * Recuperamos três valores de configuração de rota: `output`,
+         * `notFoundRedirectTo` e `notFoundMessage`.
+         */
+        
         $output = Config::get('output');
         $notFoundRedirectTo = Config::get('notFoundRedirectTo');
         $notFoundMessage = Config::get('notFoundMessage');
 
+        
+        
+        /**
+         * Primeiro, consultamos se existe um endereço em `notFoundRedirectTo`.
+         * Se houver e a saída for diferente de `json`, redirecionamos para esse
+         * endereço. Isso permite encaminhar o visitante para uma página
+         * personalizada de "não encontrado".
+         * 
+         * ⚠️ IMPORTANTE
+         * ┌───────────────────────────────────────────────────────────────┐
+         * │ Quando a saída é JSON, esse redirecionamento não é realizado, │
+         * │ mesmo que esteja configurado.                                 │
+         * │                                                               │
+         * │ Isso precisa ser assim por que quem consome a resposta pode   │
+         * │ receber a falha em JSON e tratá-la dentro do fluxo daquela    │
+         * │ requisição.                                                   │
+         * └───────────────────────────────────────────────────────────────┘
+         */
+        
         if ($notFoundRedirectTo !== '' && $output != 'json') {
             Redirect::to($notFoundRedirectTo);
         }
+        
+        
+        
+        /**
+         * Quando não há redirecionamento configurado, definimos o status HTTP
+         * 404 e lançamos uma exceção com a mensagem de `notFoundMessage`. O
+         * `ErrorHandler` recebe essa exceção, preserva o status 404 já definido
+         * e prepara a apresentação da falha conforme as configurações.
+         *
+         * 🔗 LINK: /galastri/core/ErrorHandler.php
+         */
 
         http_response_code(404);
         throw new Exception($notFoundMessage);
     }
 
+    
+    
+    /**
+     * 🟢 VERIFICANDO AUTENTICAÇÃO REQUERIDA
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Aqui verificamos a autenticação quando a configuração `authTag` está
+     * preenchida. Essa tag identifica qual autenticação precisamos conferir
+     * para permitir que a requisição continue.
+     *
+     * Se `authTag` estiver vazia, seguimos sem fazer essa verificação. Quando
+     * estiver preenchida, chamamos `Authentication::validate()`, informando a
+     * tag configurada necessária.
+     *
+     *
+     * ---
+     * @return void
+     */
     private static function checkAuthentication(): void
     {
+        /**
+         * Recuperamos quatro valores de configuração de rota: `authTag`,
+         * `authFailRedirectTo`, `authFailMessage` e `output`.
+         */
+        
         $authTag = Config::get('authTag');
         $authFailRedirectTo = Config::get('authFailRedirectTo');
         $authFailMessage = Config::get('authFailMessage');
         $output = Config::get('output');
-
+        
+        
+        
+        /**
+         * Se authTag não estiver vazia, e a autenticação falhar, temos dois
+         * caminhos:
+         */
         if ($authTag !== '' && !Authentication::validate($authTag)) {
+            
+            /**
+             * Se `authFailRedirectTo` estiver preenchido e a saída for
+             * diferente de `json`, redirecionamos para o endereço configurado,
+             * que pode ser uma página de login, por exemplo. Esse
+             * redirecionamento encerra a execução.
+             * 
+             * ⚠️ IMPORTANTE
+             * ┌───────────────────────────────────────────────────────────────┐
+             * │ Quando a saída é JSON, esse redirecionamento não é realizado, │
+             * │ mesmo que esteja configurado.                                 │
+             * │                                                               │
+             * │ Isso precisa ser assim por que quem consome a resposta pode   │
+             * │ receber a falha em JSON e tratá-la dentro do fluxo daquela    │
+             * │ requisição.                                                   │
+             * └───────────────────────────────────────────────────────────────┘
+             */
+            
             if ($authFailRedirectTo !== '' && $output != 'json') {
                 Redirect::to($authFailRedirectTo);
             }
             
-            $exception = new Exception(
-                $authFailMessage
-            );
+            
+            
+            /**
+             * Caso contrário, criamos uma exceção com a mensagem de
+             * `authFailMessage`.
+             *
+             * Nesse segundo caminho, preenchemos a propriedade `errorSource` da
+             * exceção com 'authentication' antes de lançá-la. Essa informação
+             * permite que o `ErrorHandler` reconheça a origem da falha e
+             * escolha o status HTTP 403.
+             */
+            
+            $exception = new Exception($authFailMessage);
 
             $exception->errorSource = 'authentication';
 
@@ -515,22 +744,115 @@ final class Galastri
         }
     }
 
+    
+    
+    /**
+     * 🟢 DEFININDO A CLASSE DE SAÍDA
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * A configuração `output` informa qual saída queremos usar, mas precisamos
+     * transformar esse valor no nome completo da classe responsável por ela.
+     *
+     * ✔️ EXEMPLO
+     * ┌───────────────────────────────────────────────────────────────────┐
+     * │ Se o valor for `json`, por exemplo, recuperamos e preparamos esse │
+     * │ valor para obter o nome `Json`. Depois, juntamos esse nome ao     │
+     * │ namespace guardado em `OUTPUT_NAMESPACE`, formando                │
+     * │ `galastri\core\output\Json`.                                      │
+     * └───────────────────────────────────────────────────────────────────┘
+     *
+     *
+     * ---
+     * @return void
+     */
+    
     private static function setOutputClass(): void
     {
-        $output = Tools::toPascalCase(Config::get('output'));
-        $outputClass = self::OUTPUT_NAMESPACE.'\\'.$output;
+        /**
+         * Recuperamos o valor de `output` já convertendo o nome para
+         * PascalCase, que é o padrão para nomes de classes.
+         *
+         * Este resultado preparado para conter o namespace completo + o nome da
+         * classe, que será armazenado na propriedade $output.
+         */
+        
+        $outputClass = Tools::toPascalCase(Config::get('output'));
+        $outputClass = self::OUTPUT_NAMESPACE.'\\'.$outputClass;
         
         self::$output = $outputClass;
     }
 
-    private static function setControllerNamespace(): void
+    
+    
+    /**
+     * 🟢 VERIFICAÇÃO E DEFINIÇÃO DO NAMESPACE DO CONTROLLER
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Quando o `Router` identifica a rota, ele nos entrega o nome do controller
+     * que deve atendê-la. Porém, é necessário fazer algumas conferências antes
+     * de prosseguir: a classe pode não existir ou pode existir sem ter a
+     * estrutura que o framework espera de um controller.
+     *
+     * Este método cuida dessa preparação. Antes de executar o código da
+     * aplicação, precisamos saber se temos um controller que podemos usar e se
+     * a requisição pode continuar caso ele não exista.
+     *
+     *
+     * ---
+     * @return void
+     */
+    
+    private static function checkControllerNamespace(): void
     {
+        /**
+         * Primeiro, precisamos do nome completo da classe, como
+         * `app\controllers\Clientes`. É esse nome que permite ao PHP
+         * identificar exatamente qual classe queremos consultar e, depois,
+         * instanciar.
+         *
+         * O Router entrega esse nome em uma array, dividido em partes como
+         * ['app', 'controllers', 'Clientes'], pois vai construindo essa
+         * informação enquanto interpreta a rota. Aqui reunimos essas partes e
+         * guardamos o resultado para que as verificações dos métodos e a
+         * criação do objeto usem a mesma referência.
+         */
+        
         self::$controllerNamespace = implode('\\', Router::getControllerNamespace());
 
+        
+        
+        /**
+         * Depois precisamos verificar se o PHP encontra essa classe.
+         *
+         * Se a classe não existir, precisaremos considerar a saída escolhida
+         * para decidir se a execução prossegue ou não.
+         */
         if (!class_exists(self::$controllerNamespace)) {
-            $controllerLocation = implode('/', Tools::deleteLastKey(Router::getControllerNamespace()));
+            
+            /**
+             * Ao confirmar que a classe não existe, precisamos considerar a
+             * saída escolhida:
+             *
+             * 1. Se a saída exigir um controller e o controller não existe,
+             *    lançamos uma exceção informando que a classe não foi
+             *    encontrada.
+             *
+             *    O caminho preparado em `$controllerLocation` compõe a mensagem
+             *    de erro. Para montá-lo, retiramos a última parte, que
+             *    representa o nome da classe, e juntamos as demais com /.
+             *
+             * 2. Se não exigir, mudamos a propriedade `$controllerExists` para
+             *    `false` e deixamos a execução prosseguir.
+             *
+             *    O indicador `$controllerExists` é importante pois fará as
+             *    próximas etapas pularem qualquer preparação de métodos e a
+             *    criação de um objeto controller.
+             */
+            
+            $controllerFullNamespace = Router::getControllerNamespace();
+            $controllerNamespace = Tools::deleteLastKey($controllerFullNamespace);
+            $controllerLocation = implode('/', ($controllerNamespace));
 
             if (self::$output::requiresController()) {
+                
                 throw new Exception(
                     Message::get("CONTROLLER_NOT_FOUND"),
                     [
@@ -542,6 +864,21 @@ final class Galastri
 
             self::$controllerExists = false;
 
+            
+            
+        /**
+         * Se existir, precisamos conferir também se ela herda de
+         * `galastri\modules\Controller`.
+         *
+         * Essa herança é necessária porque parte do trabalho de um controller é
+         * fornecida pela classe base. É ela que executa os métodos da
+         * aplicação, reúne seus retornos e disponibiliza os dados que a saída
+         * consultará depois. Apenas encontrar uma classe com o nome esperado
+         * não garante que esse funcionamento esteja presente.
+         * 
+         * Se a classe encontrada não herdar dela, lançamos uma exceção.
+         */
+        
         } elseif (!is_subclass_of(self::$controllerNamespace, self::MODULE_CONTROLLER)) {
 
             throw new Exception(
@@ -553,16 +890,53 @@ final class Galastri
         }
     }
 
+    
+    
+    /**
+     * 🟢 VERIFICAÇÃO E DEFINIÇÃO DO MÉTODO DO CONTROLLER
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Depois de identificar a classe do controller, precisamos garantir que ela
+     * tenha o método escolhido para atender à rota.
+     *
+     * O Router já nos entregou esse nome do método, mas a configuração da rota
+     * e os métodos disponíveis na classe precisam estar de acordo.
+     *
+     *
+     * ---
+     * @return void
+     */
+    
     private static function setMethodName(): void
     {
+        /**
+         * Primeiro consultamos $controllerExists. Se estivermos seguindo sem
+         * controller, retornamos imediatamente, porque não há um método para
+         * preparar.
+         */
         if (!self::controllerExists()) {
             return;
         }
 
+        
+        
+        /**
+         * Guardamos o nome do método na propriedade `$controllerMethodName`,
+         * para que o construtor da classe base `Controller` possa consultar
+         * posteriormente.
+         */
         self::$controllerMethodName = Router::getMethodName();
         
-        if(!method_exists(self::$controllerNamespace, self::$controllerMethodName)) {
         
+        
+        /**
+         * Como existe um controller, é obrigatóio que tenhamos este método
+         * declarado na classe controller.
+         *
+         * Consultamos se o método não existe e lançamos uma exceção se isso se
+         * confirmar. Se existir, não faremos nada, a execução prossegue.
+         */ 
+        if(!method_exists(self::$controllerNamespace, self::$controllerMethodName)) {
+
             throw new Exception(
                 Message::get("CONTROLLER_METHOD_NOT_FOUND"),
                 [
@@ -573,21 +947,124 @@ final class Galastri
         }
     }
 
+    
+    
+    /**
+     * 🟢 VERIFICAÇÃO E DEFINIÇÃO DO MÉTODO HTTP DO CONTROLLER
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Aqui procuramos uma configuração adicional das configurações de rota
+     * chamada `httpMethod`.
+     *
+     * Uma mesma rota pode ter a necessidade de fazer uma execução adicional
+     * dependendo do tipo de requisição HTTP enviado ao backend.
+     *
+     * ✔️ EXEMPLO
+     * ┌───────────────────────────────────────────────────────────────────────┐
+     * │ Imagine que queremos executar o método `main()` ao acessar a rota,    │
+     * │ mas que quando o tipo de requisição for `POST`, ele execute mais um   │
+     * │ método, que configuraríamos com o nome `salvar()` no `httpMethod`.    │
+     * │                                                                       │
+     * │ Nesta configuração:                                                   │
+     * │                                                                       │
+     * │ - Uma requisição GET executa apenas main().                           │
+     * │                                                                       │
+     * │ - Uma requisição PUT executa apenas main().                           │
+     * │                                                                       │
+     * │ - Mas uma requisição POST executa main() e, depois, salvar().         │
+     * │                                                                       │
+     * │ OBSERVAÇÃO                                                            │
+     * │ ┌───────────────────────────────────────────────────────────────────┐ │
+     * │ │ Perceba que `httpMethod` faz sua execução DEPOIS o método         │ │
+     * │ │ principal.                                                        │ │
+     * │ └───────────────────────────────────────────────────────────────────┘ │
+     * └───────────────────────────────────────────────────────────────────────┘
+     *
+     * 🔴 TODO: Futuramente criar uma opção que permita o ser executado ANTES do
+     * método principal da rota.
+     */
+    
     private static function setHttpMethodName(): void
     {
+        /**
+         * Primeiro consultamos $controllerExists. Se estivermos seguindo sem
+         * controller, retornamos imediatamente, porque não há um método para
+         * preparar.
+         */
+        
         if (!self::controllerExists()) {
             return;
         }
 
+        
+        /**
+         * Recuperamos o valor da configuração de rota `httpMethod`. Se ela não
+         * for vazia, vai retornar um array contendo a lista relacionando um
+         * tipo de requisição com um método existente na classe controller.
+         *
+         * ✔️ EXEMPLO
+         * ┌────────────────────────────┐
+         * │ [                          │
+         * │     'get' => 'listar'      │
+         * │     'post' => 'adicionar'  │
+         * │     'delete' => 'remover'  │
+         * │ ];                         │
+         * └────────────────────────────┘
+         */
+        
         $httpMethodList = Config::get('httpMethod');
+        
+        
+        
+        /**
+         * Lemos o tipo da requisição em `$_SERVER['REQUEST_METHOD']` e o
+         * convertemos para minúsculas porque o `Router` também organiza as
+         * chaves de `httpMethod` dessa maneira.
+         */
         $serverHttpMethod = mb_strtolower($_SERVER['REQUEST_METHOD']);
 
+        
+        
+        /**
+         * Quando `httpMethodList` não for vazia e encontrarmos uma associação
+         * entre o método atual e o tipo de requisição atual, seguimos com a
+         * preparação do método http
+         */
         if (!empty($httpMethodList) && array_key_exists($serverHttpMethod, $httpMethodList)) {
 
+            /**
+             * Precisamos deixar duas informações disponíveis para a execução no
+             * controller:
+             *
+             * 1. O nome do método HTTP relacionado ao método atual;
+             *
+             * 2. A informação de que existe uma adicional preparada que deve
+             *    ser executada no controller.
+             *
+             * O construtor da classe base `Controller` consulta esses valores
+             * para decidir se chama outro método após o método da rota.
+             */
+            
             self::$controllerHttpMethodName = $httpMethodList[$serverHttpMethod];
-            self::$controllerHttpMethodExists = true;
+            
+            self::$controllerHttpMethodExists = method_exists(
+                self::$controllerNamespace, self::$controllerHttpMethodName
+            );
+            
+            
 
-            if(!method_exists(self::$controllerNamespace, self::$controllerHttpMethodName)) {
+            /**
+             * Encontrar a associação, porém, ainda não garante que o método
+             * indicado exista no controller.
+             *
+             * Se configurarmos `salvar()` na rota sem criar esse método dentro
+             * do controller, a execução não conseguirá atender ao que foi
+             * definido.
+             *
+             * Por isso, conferimos sua existência e lançamos uma exceção se ele
+             * não for encontrado, encerrando a execução.
+             */
+            
+            if(!self::$controllerHttpMethodExists) {
                 throw new Exception(
                     Message::get("CONTROLLER_METHOD_NOT_FOUND"),
                     [
@@ -644,3 +1121,9 @@ final class Galastri
        return self::$controllerHttpMethodName;
     }
 }
+
+
+
+//  ----------------------------------------------------------------------------
+//  ▶️ PRÓXIMO TÓPICO:
+//  🔗 LINK: /galastri/core/Galastri.php

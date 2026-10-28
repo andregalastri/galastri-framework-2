@@ -229,5 +229,5 @@ Galastri::run();
 
 
 //  ----------------------------------------------------------------------------
-//  ▶️ PRÓXIMO TÓPICO
+//  ▶️ PRÓXIMO TÓPICO:
 //  🔗 LINK: /galastri/core/Galastri.php

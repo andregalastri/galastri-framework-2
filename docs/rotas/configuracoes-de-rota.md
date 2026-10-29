@@ -110,11 +110,11 @@
  * │ `json` │ Converte o `array` de saída do `endpoint` para formato JSON e    │
  * │        │ retorna ao usuário.                                              │
  * ├────────┼──────────────────────────────────────────────────────────────────┤
- * │ `file` │ Se houver um `controller`, entrega o conteúdo preparado em       │
- * │        │ setFileContents().                                               │
+ * │ `file` │ Entrega o conteúdo preparado pelo controller com                 │
+ * │        │ `setFileContents()`.                                             │
  * │        │                                                                  │
- * │        │ Se não houver um `controller`, procura o arquivo no disco usando │
- * │        │ fileFolder e o restante da URL.                                  │
+ * │        │ Quando não há controller, procura o arquivo no disco usando      │
+ * │        │ `fileFolder` e o restante da URL.                                │
  * └────────┴──────────────────────────────────────────────────────────────────┘
  * 
  * 🖥️ EXEMPLO DE USO
@@ -271,9 +271,9 @@
  * - Tipo: `string`
  * - Valor padrão: 'System is temporarily offline.'
  *
- * No exemplo acima, o funcionamento das outras páginas permanece normal. Ao
- * acessar `www.dominio.com/sobre-a-empresa`, o processamento é interrompido. A
- * mensagem personalizada aparece se `displayErrors` estiver habilitado.
+ * Define a mensagem da exceção lançada quando a rota está offline e não há
+ * redirecionamento configurado em `offlineRedirectTo`. Sua apresentação ao
+ * usuário depende da configuração `displayErrors`.
  *
  * 🖥️ EXEMPLO DE USO
  * ┌─────────────────────────────────────────────────────────────────────┐
@@ -299,9 +299,9 @@
  * │ ];                                                                  │
  * └─────────────────────────────────────────────────────────────────────┘
  *
- * No exemplo acima, ao acessar qualquer outra página, o funcionamento estarás
- * normal. Porém, ao acessar `www.dominio.com/sobre-a-empresa`, o usuário verá
- * a mensagem "Sistema offline temporariamente."
+ * No exemplo acima, o funcionamento das outras páginas permanece normal. Ao
+ * acessar `www.dominio.com/sobre-a-empresa`, o processamento é interrompido. A
+ * mensagem personalizada aparece se `displayErrors` estiver habilitado.
  *
  *
  *
@@ -474,27 +474,27 @@
  * `displayErrors`.
  *
  * 🖥️ EXEMPLO DE USO
- * ┌─────────────────────────────────────────────────────────────────────┐
- * │ <?php                                                               │
- * │                                                                     │
- * │ return [                                                            │
- * │     '/' => [                                                        │
- * │         'notFoundMessage' => 'O endereço informado foi encontrado', │
- * │                                                                     │
- * │         '@main' => [                                                │
- * │             ...                                                     │
- * │         ],                                                          │
- * │                                                                     │
- * │         '/nao-encontrado' => [                                      │
- * │             '@main' => [                                            │
- * │                 ...                                                 │
- * │             ],                                                      │
- * │         ],                                                          │
- * │                                                                     │
- * │         ...                                                         │
- * │     ],                                                              │
- * │ ];                                                                  │
- * └─────────────────────────────────────────────────────────────────────┘
+ * ┌──────────────────────────────────────────────────────────────────────┐
+ * │ <?php                                                                │
+ * │                                                                      │
+ * │ return [                                                             │
+ * │     '/' => [                                                         │
+ * │         'notFoundMessage' => 'O endereço informado foi encontrado.', │
+ * │                                                                      │
+ * │         '@main' => [                                                 │
+ * │             ...                                                      │
+ * │         ],                                                           │
+ * │                                                                      │
+ * │         '/nao-encontrado' => [                                       │
+ * │             '@main' => [                                             │
+ * │                 ...                                                  │
+ * │             ],                                                       │
+ * │         ],                                                           │
+ * │                                                                      │
+ * │         ...                                                          │
+ * │     ],                                                               │
+ * │ ];                                                                   │
+ * └──────────────────────────────────────────────────────────────────────┘
  *
  * No exemplo acima, acessar `www.dominio.com/produtos` resulta em uma resposta
  * HTTP 404. A mensagem personalizada aparece se `displayErrors` estiver
@@ -618,35 +618,35 @@
  * └────────┴──────────┴─────────────────────────────────────────────────────┘
  *
  * 🖥️ EXEMPLO DE USO
- * ┌─────────────────────────────────────────────────────────┐
- * │ <?php                                                   │
- * │                                                         │
- * │ return [                                                │
- * │     '/' => [                                            │
- * │         'browserCache' => [4000, 'immutable, private'], │
- * │                                                         │
- * │         '@main' => [                                    │
- * │             ...                                         │
- * │         ],                                              │
- * │                                                         │
- * │         '/produtos' => [                                │
- * │             '@main' => [                                │
- * │                 ...                                     │
- * │             ],                                          │
- * │         ],                                              │
- * │                                                         │
- * │         '/empresa' => [                                 │
- * │             'browserCache' => [],                       │
- * │                                                         │
- * │             '@main' => [                                │
- * │                 ...                                     │
- * │             ],                                          │
- * │         ],                                              │
- * │                                                         │
- * │         ...                                             │
- * │     ],                                                  │
- * │ ];                                                      │
- * └─────────────────────────────────────────────────────────┘
+ * ┌──────────────────────────────────────────────────────────┐
+ * │ <?php                                                    │
+ * │                                                          │
+ * │ return [                                                 │
+ * │     '/' => [                                             │
+ * │         'browserCache' => [86400, 'immutable, private'], │
+ * │                                                          │
+ * │         '@main' => [                                     │
+ * │             ...                                          │
+ * │         ],                                               │
+ * │                                                          │
+ * │         '/produtos' => [                                 │
+ * │             '@main' => [                                 │
+ * │                 ...                                      │
+ * │             ],                                           │
+ * │         ],                                               │
+ * │                                                          │
+ * │         '/empresa' => [                                  │
+ * │             'browserCache' => [],                        │
+ * │                                                          │
+ * │             '@main' => [                                 │
+ * │                 ...                                      │
+ * │             ],                                           │
+ * │         ],                                               │
+ * │                                                          │
+ * │         ...                                              │
+ * │     ],                                                   │
+ * │ ];                                                       │
+ * └──────────────────────────────────────────────────────────┘
  *
  * No exemplo acima, todos os endpoints das rotas serão armazenados em cache no
  * navegador do usuário por 86400 segundos (1 dia), com as propriedades
@@ -1470,27 +1470,28 @@
  * apenas para determinadas rotas.
  *
  * 🖥️ EXEMPLO DE USO
- * ┌──────────────────────────────────┐
- * │ <?php                            │
- * │                                  │
- * │ return [                         │
- * │     '/' => [                     │
- * │         'output' => 'view',      │
- * │                                  │
- * │         '@main' => [             │
- * │             ...                  │
- * │         ],                       │
- * │                                  │
- * │         '@listar' => [           │
- * │             'showTrace' => true, │
- * │                                  │
- * │             ...                  │
- * │         ],                       │
- * │                                  │
- * │         ...                      │
- * │     ],                           │
- * │ ];                               │
- * └──────────────────────────────────┘
+ * ┌──────────────────────────────────────┐
+ * │ <?php                                │
+ * │                                      │
+ * │ return [                             │
+ * │     '/' => [                         │
+ * │         'output' => 'view',          │
+ * │                                      │
+ * │         '@main' => [                 │
+ * │             ...                      │
+ * │         ],                           │
+ * │                                      │
+ * │         '@listar' => [               │
+ * │             'displayErrors' => true, │
+ * │             'showTrace' => true,     │
+ * │                                      │
+ * │             ...                      │
+ * │         ],                           │
+ * │                                      │
+ * │         ...                          │
+ * │     ],                               │
+ * │ ];                                   │
+ * └──────────────────────────────────────┘
  *
  * Supondo que a URL **`www.dominio.com/listar`** esteja com algum erro, o
  * exemplo acima irá apresentar também o histórico de chamadas junto com a

@@ -75,14 +75,14 @@
  *    uma classe controller chamada `Produtos`.
  *
  * 2. IDENTIFICA O ENDPOINT  
- *     A segunda parte da URL é `listar`. Dentro do `node` `/produtos`, o
+ *    A segunda parte da URL é `listar`. Dentro do `node` `/produtos`, o
  *    framework busca pela chave correspondente e encontra `@listar`.
  *
  *    O caractere `@` indica que `listar` é um `endpoint`, ou seja, um método
- *    dentro da classe `Produtos`, chamado `listar()` .
+ *    dentro da classe `Produtos`, chamado `listar()`.
  *
- * 3. EXECUTA O MÉTODO  
- *     listar() O framework executa o método `listar()` da classe `Produtos`,
+ * 3. EXECUTA O MÉTODO LISTAR()
+ *    O framework executa o método `listar()` da classe `Produtos`,
  *    processando os dados e retornando o resultado ao usuário.
  *
  *    Esse mecanismo permite um roteamento flexível e organizado, facilitando a

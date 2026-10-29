@@ -62,7 +62,7 @@
  *
  *    A programação do usuário ocorre nesses métodos, que podem incluir
  *    importações de classes ou dados personalizados. Os dados processados devem
- *    ser retornados em um `array`, o qual será utilizada na etapa de retorno
+ *    ser retornados em um `array`, o qual será utilizado na etapa de retorno
  *    de dados.
  *
  * 5️⃣ ORDEM DOS MÉTODOS

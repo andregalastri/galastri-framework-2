@@ -1340,10 +1340,11 @@ final class Galastri
          * etapas, como a saída escolhida, o controller e os métodos que serão
          * chamados.
          *
-         * Aproveite para ver sobre a classe `Config` e `Router` agora e depois
-         * volte aqui:
-         * 🔗 LINK: /galastri/core/config/Config.php
-         * 🔗 LINK: /galastri/core/Router.php
+         * Aproveite para ver sobre as classes `Config` e `Router` agora e
+         * depois volte aqui:
+         *
+         * 🔗 LINK: /galastri/core/config/Config.php  
+         * 🔗 LINK: /galastri/core/Router.php  
          */
 
         Config::run();

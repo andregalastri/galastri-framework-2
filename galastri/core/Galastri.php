@@ -982,6 +982,10 @@ final class Galastri
      *
      * 🔴 TODO: Futuramente criar uma opção que permita que o método seja
      * executado ANTES do método principal da rota.
+     * 
+     * 
+     * ---
+     * @return void
      */
     
     private static function setHttpMethodName(): void
@@ -1078,46 +1082,256 @@ final class Galastri
         }
     }
 
+    
+    
+    /**
+     * 🟢 A EXECUÇÃO DO CONTROLLER
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * O `executeController()` é o momento em que criamos esse controller e
+     * iniciamos a execução do código da aplicação.
+     *
+     * Embora o método tenha apenas uma linha, que é criar o objeto, `new`
+     * também executa construtor do controller. Como o controller herda de
+     * `galastri\modules\Controller`, é o construtor dessa classe base que
+     * conduz o trabalho: chama o método da rota, depois o método associado ao
+     * tipo de requisição HTTP, quando houver, e reúne seus retornos.
+     *
+     *
+     * Aproveite para ver sobre a classe base Controller agora e depois volte
+     * aqui:  
+     * 🔗 LINK: /galastri/modules/Controller.php 
+     *
+     *
+     * É por isso que o método se chama `executeController()`: a criação do
+     * objeto já desencadeia esse processamento.
+     *
+     * Usamos o nome guardado em `$controllerNamespace` para criar a classe
+     * escolhida para aquela requisição. Assim, essa mesma instrução pode
+     * instanciar `app\controllers\Clientes`, `app\controllers\Produtos` ou
+     * qualquer outro controller identificado nas etapas anteriores.
+     *
+     * Depois que o construtor termina, guardamos o objeto em `$controller`.
+     * Precisamos manter essa instância disponível porque ela contém o resultado
+     * do processamento, que será consultado pela classe de saída para preparar
+     * a resposta. É através dela que `getControllerResponse()` e
+     * `getControllerFileContents()` recuperam os dados do controller.
+     * 
+     * 
+     * ---
+     * @return void
+     */
+    
     private static function executeController(): void
     {
         self::$controller = new self::$controllerNamespace();
     }
 
+    
+    
+    /**
+     * 🟢 PASSANDO A BOLA PRO FORMATO DE SAÍDA
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * O `executeOutput()` é o momento em que entregamos à classe de saída a
+     * responsabilidade de preparar e enviar a resposta da requisição.
+     * 
+     * ✔️ EXEMPLO
+     * ┌─────────────────────────────────────────────────────────────────────┐
+     * │ Se o controller consultou uma lista de clientes e retornou esses    │
+     * │ dados, ainda precisamos apresentá-los no formato esperado por quem  │
+     * │ fez o acesso.                                                       │
+     * │                                                                     │
+     * │ Na saída `json`, a classe `Json` consulta a resposta do controller, │
+     * │ converte os dados para JSON e envia esse conteúdo com o cabeçalho   │
+     * │ correspondente.                                                     │
+     * └─────────────────────────────────────────────────────────────────────┘
+     * 
+     * Se ainda não viu, conheça sobre o fluxo de dados e os tipos de saída:
+     * 🔗 LINK: /docs/fluxo-de-dados.md
+     * 
+     * Uma boa ideia é começar a entender os detalhes de cada classe de saída,
+     * começando pela View:
+     * 🔗 LINK: /galastri/core/output/View.php
+     *
+     * A escolha da classe de saída já aconteceu em `setOutputClass()`, quando
+     * guardamos seu nome completo em `$output`. Agora usamos essa referência
+     * para chamar seu método estático `run()`.
+     * 
+     * 
+     * ---
+     * @return void
+     */
+    
     private static function executeOutput(): void
     {
+        /**
+         * Essa única chamada permite que cada saída cuide de suas próprias
+         * necessidades. `Galastri` sabe quando a saída deve ser executada; a
+         * classe escolhida sabe como produzir a resposta. Assim, não precisamos
+         * reunir aqui condições para converter dados, preparar páginas ou
+         * entregar arquivos. Esses detalhes ficam nas classes responsáveis por
+         * cada formato.
+         *
+         * E há uma diferença em relação a `executeController()`: a saída também
+         * precisa ser executada quando seguimos sem controller.
+         */
         self::$output::run();
     }
+    
+    
 
+    /**
+     * 🟢 CHECANDO SE O CONTROLLER EXISTE
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Consulta se há um controller disponível para atender à requisição.
+     *
+     * Essa informação permite que outras partes do framework decidam se devem
+     * realizar trabalhos que dependem do controller.
+     *
+     *
+     * ---
+     * @return bool
+     */
+    
     public static function controllerExists(): bool
     {
         return self::$controllerExists;
     }
 
+    
+    
+    /**
+     * 🟢 CHECANDO SE O MÉTODO HTTP EXISTE
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Informa se há um método adicional preparado para o tipo de requisição
+     * HTTP recebido.
+     *
+     * A classe base `Controller` consulta esse indicador para decidir se deve
+     * executar a chamada adicional depois do método da rota. Quando não há uma
+     * associação para o tipo de requisição recebido, o retorno permanece em
+     * false.
+     *
+     * 
+     * ---
+     * @return bool
+     */
+    
     public static function httpMethodExists(): bool
     {
         return self::$controllerHttpMethodExists;
     }
 
+    
+    
+    /**
+     * 🟢 RECUPERANDO A RESPOSTA DO CONTROLLER
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Recupera a resposta preparada pelo controller.
+     *
+     * O `array` reúne os retornos dos métodos executados dentro de Controller
+     * e, quando configurado, os metadados do projeto. As classes de saída podem
+     * consultar esses dados através de Galastri.
+     *
+     * 
+     * ---
+     * @return array
+     */
+    
     public static function getControllerResponse(): array
     {
         return self::$controller->getResponse();
     }
 
+    
+    
+    /**
+     * 🟢 RECUPERANDO UM ARQUIVO GERADO OU ARMAZENADO NO CONTROLLER
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Recupera as informações de um arquivo preparado pelo controller. O
+     * `array` contém, nesta ordem:
+     * 
+     * ┌─────┬───────────────────┐
+     * │ [0] │ o conteúdo        │
+     * ├─────┼───────────────────┤
+     * │ [1] │ o nome do arquivo │
+     * ├─────┼───────────────────┤
+     * │ [2] │ seu tipo MIME     │
+     * └─────┴───────────────────┘
+     *
+     * A saída `File` usa essas informações para entregar o conteúdo fornecido
+     * pela aplicação. A preparação dos cabeçalhos e o envio ficam por conta da
+     * saída
+     * 
+     * Se o controller não tiver preparado um arquivo, o array retornado estará
+     * vazio.
+     *
+     *
+     * ---
+     * @return array
+     */
+    
     public static function getControllerFileContents(): array
     {
         return self::$controller->getFileContents();
     }
 
+    
+    
+    /**
+     * 🟢 RECUPERANDO O NOME DA CLASSE CONTROLLER
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Retorna o nome completo da classe do controller, como
+     * `app\controllers\Clientes`, guardado em `$controllerNamespace`.
+     *
+     * Isso permite consultar qual classe foi identificada para a requisição sem
+     * acessar diretamente a propriedade privada.
+     *
+     * Apesar do nome do método, o valor inclui o namespace e o nome da classe.
+     *
+     * ---
+     * @return string
+     */
+    
     public static function getControllerNamespace(): string
     {
        return self::$controllerNamespace;
     }
 
+    
+    
+    /**
+     * 🟢 RECUPERANDO O NOME DO MÉTODO DO CONTROLLER
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Retorna o nome do método escolhido para atender à rota, guardado em
+     * `$controllerMethodName`.
+     *
+     * A classe base `Controller` consulta esse valor para saber qual método
+     * deve chamar.
+     *
+     * 
+     * ---
+     * @return string
+     */
+    
     public static function getControllerMethodName(): string
     {
        return self::$controllerMethodName;
     }
 
+    
+    
+    /**
+     * 🟢 RECUPERANDO O NOME DO MÉTODO HTTP DO CONTROLLER
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Retorna o nome do método adicional associado ao tipo de requisição HTTP
+     * recebido, guardado em `$controllerHttpMethodName`.
+     *
+     * Quando não há associação, o nome permanece uma string vazia.
+     *
+     * 
+     * ---
+     * @return string
+     */
+    
     public static function getControllerHttpMethodName(): string
     {
        return self::$controllerHttpMethodName;
@@ -1127,8 +1341,7 @@ final class Galastri
 
 
 /**
- * 🔴 TODO: Definir o próximo tópico.
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * ▶️ PRÓXIMO TÓPICO:
- * 🔗 LINK: 
+ * 🔗 LINK: /galastri/core/output/View.php
  */

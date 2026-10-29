@@ -64,6 +64,8 @@ function vardump(mixed ...$values): void
 
 
 
-// -----------------------------------------------------------------------------
-// ◀️ VOLTAR AO TÓPICO ANTERIOR:
-// 🔗 LINK: /galastri/bootstrap/bootstrap.php
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * ◀️ VOLTAR AO TÓPICO ANTERIOR:
+ * 🔗 LINK: /galastri/bootstrap/bootstrap.php
+ */

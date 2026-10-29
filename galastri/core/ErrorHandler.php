@@ -1712,7 +1712,9 @@ final class ErrorHandler
 
 
 
-// -----------------------------------------------------------------------------
-// ◀️ VOLTAR A UM TÓPICO ANTERIOR:
-// 🔗 LINK: /galastri/bootstrap/bootstrap.php
-// 🔗 LINK: /galastri/core/Galastri.php
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * ◀️ VOLTAR A UM TÓPICO ANTERIOR:
+ * 🔗 LINK: /galastri/bootstrap/bootstrap.php
+ * 🔗 LINK: /galastri/core/Galastri.php
+ */

@@ -2102,6 +2102,8 @@ final class VarDump
 
 
 
-// -----------------------------------------------------------------------------
-// ◀️ VOLTAR A UM TÓPICO ANTERIOR:
-// 🔗 LINK: /galastri/bootstrap/bootstrap.php
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * ◀️ VOLTAR AO TÓPICO ANTERIOR:
+ * 🔗 LINK: /galastri/bootstrap/bootstrap.php
+ */

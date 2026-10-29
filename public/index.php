@@ -90,6 +90,8 @@ require(__DIR__.'/../galastri/bootstrap/bootstrap.php');
 
 
 
-// -----------------------------------------------------------------------------
-// ▶️ PRÓXIMO TÓPICO:
-// 🔗 LINK: /galastri/bootstrap/bootstrap.php
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * ▶️ PRÓXIMO TÓPICO:
+ * 🔗 LINK: /galastri/bootstrap/bootstrap.php
+ */

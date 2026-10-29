@@ -180,6 +180,8 @@ if (is_file(MIME_TYPES_FILE_PATH)) {
 
 
 
-// -----------------------------------------------------------------------------
-// ◀️ VOLTAR AO TÓPICO ANTERIOR:
-// 🔗 LINK: /galastri/bootstrap/bootstrap.php
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * ◀️ VOLTAR AO TÓPICO ANTERIOR:
+ * 🔗 LINK: /galastri/bootstrap/bootstrap.php
+ */

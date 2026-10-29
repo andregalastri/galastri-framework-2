@@ -249,10 +249,12 @@ final class Galastri
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Indica se temos um controller para usar nesta requisição.
      *
-     * Ela começa em `true`. Durante a preparação, verificamos se a classe do
-     * controller existe. Se não existir, precisamos considerar se a saída
-     * escolhida exige um controller. Atualmente apenas a saída `file` não
-     * exige.
+     * Ela começa em `false`, porque essa chamada adicional é opcional. Durante
+     * a preparação, consultamos a configuração `httpMethod`. Se houver uma
+     * associação para o tipo de requisição recebido, guardamos o nome do método
+     * e verificamos se ele existe no controller. O indicador só passa para
+     * `true` se o método existir; caso contrário, permanece em `false` e
+     * lançamos uma exceção.
      *
      * Quando podemos continuar sem controller, mudamos essa propriedade para
      * `false`. `Galastri` consulta esse valor para pular a preparação dos
@@ -282,14 +284,17 @@ final class Galastri
      * associação para o tipo de requisição recebido, guardamos o nome do método
      * e mudamos esse indicador para `true`.
      *
+     * Se houver uma associação para o tipo de requisição recebido, guardamos o
+     * nome do método e mudamos esse indicador para true.
+     *
      * ✔️ EXEMPLO
      * ┌───────────────────────────────────────────────────────────────────────┐
      * │ Por exemplo, se apenas POST estiver associado a `salvar()`, uma       │
      * │ requisição GET mantém o indicador em `false`.                         │
      * │                                                                       │
-     * │ Apenas uma requisição POST faz o indicador passar para `true`. Neste  │
-     * │ caso também verificamos se `salvar()` existe no controller; se não    │
-     * │ existir, lançamos uma exceção.                                        │
+     * │ Uma requisição POST faz o indicador passar para `true` somente se     │
+     * │ `salvar()` existir no controller. Se não existir, o indicador         │
+     * │ permanece em `false` e lançamos uma exceção.                          │
      * └───────────────────────────────────────────────────────────────────────┘
      *
      * Depois, o construtor da classe base Controller consulta esse valor
@@ -603,9 +608,8 @@ final class Galastri
     /**
      * 🟢 RESPONDENDO COM 404 - NOT FOUND
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Responde a requisição erro 404. Esse método reúne o tratamento dessa
-     * situação para que outras partes do framework possam recorrer à mesma
-     * lógica.
+     * Trata as situações em que a rota ou o arquivo solicitado não é encontrado
+     * para que outras partes do framework possam recorrer à mesma lógica.
      *
      * Esse método é público porque também atende outras classes. A saída
      * `File`, por exemplo, o chama quando não encontra o arquivo solicitado.
@@ -641,7 +645,7 @@ final class Galastri
          * │ Quando a saída é JSON, esse redirecionamento não é realizado, │
          * │ mesmo que esteja configurado.                                 │
          * │                                                               │
-         * │ Isso precisa ser assim por que quem consome a resposta pode   │
+         * │ Isso precisa ser assim porque quem consome a resposta pode    │
          * │ receber a falha em JSON e tratá-la dentro do fluxo daquela    │
          * │ requisição.                                                   │
          * └───────────────────────────────────────────────────────────────┘
@@ -654,10 +658,10 @@ final class Galastri
         
         
         /**
-         * Quando não há redirecionamento configurado, definimos o status HTTP
-         * 404 e lançamos uma exceção com a mensagem de `notFoundMessage`. O
-         * `ErrorHandler` recebe essa exceção, preserva o status 404 já definido
-         * e prepara a apresentação da falha conforme as configurações.
+         * Quando não redirecionamos, definimos o status HTTP 404 e lançamos uma
+         * exceção com a mensagem de `notFoundMessage`. O `ErrorHandler` recebe
+         * essa exceção, preserva o status 404 já definido e prepara a
+         * apresentação da falha conforme as configurações.
          *
          * 🔗 LINK: /galastri/core/ErrorHandler.php
          */
@@ -714,7 +718,7 @@ final class Galastri
              * │ Quando a saída é JSON, esse redirecionamento não é realizado, │
              * │ mesmo que esteja configurado.                                 │
              * │                                                               │
-             * │ Isso precisa ser assim por que quem consome a resposta pode   │
+             * │ Isso precisa ser assim porque quem consome a resposta pode    │
              * │ receber a falha em JSON e tratá-la dentro do fluxo daquela    │
              * │ requisição.                                                   │
              * └───────────────────────────────────────────────────────────────┘
@@ -771,8 +775,8 @@ final class Galastri
          * Recuperamos o valor de `output` já convertendo o nome para
          * PascalCase, que é o padrão para nomes de classes.
          *
-         * Este resultado preparado para conter o namespace completo + o nome da
-         * classe, que será armazenado na propriedade $output.
+         * Este resultado é preparado para conter o namespace completo + o nome
+         * da classe, que será armazenado na propriedade $output.
          */
         
         $outputClass = Tools::toPascalCase(Config::get('output'));
@@ -808,7 +812,7 @@ final class Galastri
          * identificar exatamente qual classe queremos consultar e, depois,
          * instanciar.
          *
-         * O Router entrega esse nome em uma array, dividido em partes como
+         * O Router entrega esse nome em um array, dividido em partes como
          * ['app', 'controllers', 'Clientes'], pois vai construindo essa
          * informação enquanto interpreta a rota. Aqui reunimos essas partes e
          * guardamos o resultado para que as verificações dos métodos e a
@@ -831,7 +835,7 @@ final class Galastri
              * Ao confirmar que a classe não existe, precisamos considerar a
              * saída escolhida:
              *
-             * 1. Se a saída exigir um controller e o controller não existe,
+             * 1. Se a saída exigir um controller e o controller não existir,
              *    lançamos uma exceção informando que a classe não foi
              *    encontrada.
              *
@@ -929,8 +933,8 @@ final class Galastri
         
         
         /**
-         * Como existe um controller, é obrigatóio que tenhamos este método
-         * declarado na classe controller.
+         * Como existe um controller, o método escolhido pela rota precisa
+         * existir nele.
          *
          * Consultamos se o método não existe e lançamos uma exceção se isso se
          * confirmar. Se existir, não faremos nada, a execução prossegue.
@@ -962,7 +966,7 @@ final class Galastri
      * ┌───────────────────────────────────────────────────────────────────────┐
      * │ Imagine que queremos executar o método `main()` ao acessar a rota,    │
      * │ mas que quando o tipo de requisição for `POST`, ele execute mais um   │
-     * │ método, que configuraríamos com o nome `salvar()` no `httpMethod`.    │
+     * │ método, que configuraríamos com o nome `salvar` no `httpMethod`.      │
      * │                                                                       │
      * │ Nesta configuração:                                                   │
      * │                                                                       │
@@ -973,14 +977,14 @@ final class Galastri
      * │ - Mas uma requisição POST executa main() e, depois, salvar().         │
      * │                                                                       │
      * │ OBSERVAÇÃO                                                            │
-     * │ ┌───────────────────────────────────────────────────────────────────┐ │
-     * │ │ Perceba que `httpMethod` faz sua execução DEPOIS o método         │ │
-     * │ │ principal.                                                        │ │
-     * │ └───────────────────────────────────────────────────────────────────┘ │
+     * │ ┌──────────────────────────────────────────────────────────────────┐  │
+     * │ │ Perceba que método associado em httpMethod é executado depois do │  │
+     * │ │ método da rota.                                                  │  │
+     * │ └──────────────────────────────────────────────────────────────────┘  │
      * └───────────────────────────────────────────────────────────────────────┘
      *
-     * 🔴 TODO: Futuramente criar uma opção que permita o ser executado ANTES do
-     * método principal da rota.
+     * 🔴 TODO: Futuramente criar uma opção que permita que o método seja
+     * executado ANTES do método principal da rota.
      */
     
     private static function setHttpMethodName(): void
@@ -999,14 +1003,14 @@ final class Galastri
         /**
          * Recuperamos o valor da configuração de rota `httpMethod`. Se ela não
          * for vazia, vai retornar um array contendo a lista relacionando um
-         * tipo de requisição com um método existente na classe controller.
+         * tipo de requisição com o nome de um método do controller.
          *
          * ✔️ EXEMPLO
          * ┌────────────────────────────┐
          * │ [                          │
-         * │     'get' => 'listar'      │
-         * │     'post' => 'adicionar'  │
-         * │     'delete' => 'remover'  │
+         * │     'get' => 'listar',     │
+         * │     'post' => 'adicionar', │
+         * │     'delete' => 'remover', │
          * │ ];                         │
          * └────────────────────────────┘
          */
@@ -1026,8 +1030,8 @@ final class Galastri
         
         /**
          * Quando `httpMethodList` não for vazia e encontrarmos uma associação
-         * entre o método atual e o tipo de requisição atual, seguimos com a
-         * preparação do método http
+         * para o tipo de requisição recebido, seguimos com a preparação do
+         * método http
          */
         if (!empty($httpMethodList) && array_key_exists($serverHttpMethod, $httpMethodList)) {
 
@@ -1035,10 +1039,11 @@ final class Galastri
              * Precisamos deixar duas informações disponíveis para a execução no
              * controller:
              *
-             * 1. O nome do método HTTP relacionado ao método atual;
+             * 1. O nome do método do controller associado ao tipo de requisição
+             *    recebido.
              *
-             * 2. A informação de que existe uma adicional preparada que deve
-             *    ser executada no controller.
+             * 2. A informação de que existe uma chamada adicional preparada que
+             *    deve ser executada no controller.
              *
              * O construtor da classe base `Controller` consulta esses valores
              * para decidir se chama outro método após o método da rota.

@@ -578,7 +578,7 @@ final class Galastri
 
 
     /**
-     * 🟢 RESPONDENDO COM 404 - NOT FOUND
+     * 🟢 TRATANDO O QUE NÃO FOI ENCONTRADO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Trata as situações em que a rota ou o arquivo solicitado não é encontrado
      * para que outras partes do framework possam recorrer à mesma lógica.
@@ -1037,9 +1037,9 @@ final class Galastri
              * Encontrar a associação, porém, ainda não garante que o método
              * indicado exista no controller.
              *
-             * Se configurarmos `salvar()` na rota sem criar esse método dentro
-             * do controller, a execução não conseguirá atender ao que foi
-             * definido.
+             * Se configurarmos o nome `salvar` na rota sem criar esse método
+             * dentro do controller, a execução não conseguirá atender ao que
+             * foi definido.
              *
              * Por isso, conferimos sua existência e lançamos uma exceção se ele
              * não for encontrado, encerrando a execução.
@@ -1164,7 +1164,8 @@ final class Galastri
      *
      *
      * ---
-     * @return bool
+     * @return bool Retorna `true` se há um controller disponível. Se não,
+     * retorna `false`.
      */
 
     public static function controllerExists(): bool
@@ -1187,7 +1188,8 @@ final class Galastri
      *
      *
      * ---
-     * @return bool
+     * @return bool Retorna `true` se o método adicional associado à requisição
+     * HTTP existe. Se não, retorna `false`.
      */
 
     public static function httpMethodExists(): bool
@@ -1208,7 +1210,8 @@ final class Galastri
      *
      *
      * ---
-     * @return array
+     * @return array Retorna um `array` contendo toda a resposta reunida pelo
+     * controller.
      */
 
     public static function getControllerResponse(): array
@@ -1241,7 +1244,8 @@ final class Galastri
      *
      *
      * ---
-     * @return array
+     * @return array Retorna um `array` com as informações de um arquivo
+     * preparado no controller ou vazio se não houver nada preparado.
      */
 
     public static function getControllerFileContents(): array
@@ -1263,7 +1267,8 @@ final class Galastri
      * Apesar do nome do método, o valor inclui o namespace e o nome da classe.
      *
      * ---
-     * @return string
+     * @return string Retorna uma `string` com o nome completo da classe do
+     * controller, incluindo o namespace.
      */
 
     public static function getControllerNamespace(): string
@@ -1284,7 +1289,8 @@ final class Galastri
      *
      *
      * ---
-     * @return string
+     * @return string Retorna uma `string` com o nome do método do controller
+     * escolhido para atender à rota.
      */
 
     public static function getControllerMethodName(): string
@@ -1304,7 +1310,8 @@ final class Galastri
      *
      *
      * ---
-     * @return string
+     * @return string Retorna uma `string` com o nome do método adicional
+     * associado à requisição HTTP ou uma string vazia quando não há associação.
      */
 
     public static function getControllerHttpMethodName(): string

@@ -249,12 +249,10 @@ final class Galastri
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Indica se temos um controller para usar nesta requisição.
      *
-     * Ela começa em `false`, porque essa chamada adicional é opcional. Durante
-     * a preparação, consultamos a configuração `httpMethod`. Se houver uma
-     * associação para o tipo de requisição recebido, guardamos o nome do método
-     * e verificamos se ele existe no controller. O indicador só passa para
-     * `true` se o método existir; caso contrário, permanece em `false` e
-     * lançamos uma exceção.
+     * Ela começa em `true`. Durante a preparação, verificamos se a classe do
+     * controller existe. Se não existir, precisamos considerar se a saída
+     * escolhida exige um controller. Atualmente apenas a saída `file` não
+     * exige.
      *
      * Quando podemos continuar sem controller, mudamos essa propriedade para
      * `false`. `Galastri` consulta esse valor para pular a preparação dos
@@ -282,10 +280,9 @@ final class Galastri
      * Ela começa em `false`, porque essa chamada adicional é opcional. Durante
      * a preparação, consultamos a configuração `httpMethod`. Se houver uma
      * associação para o tipo de requisição recebido, guardamos o nome do método
-     * e mudamos esse indicador para `true`.
-     *
-     * Se houver uma associação para o tipo de requisição recebido, guardamos o
-     * nome do método e mudamos esse indicador para true.
+     * e verificamos se ele existe no controller. O indicador só passa para
+     * `true` se o método existir; caso contrário, permanece em `false` e
+     * lançamos uma exceção.
      *
      * ✔️ EXEMPLO
      * ┌───────────────────────────────────────────────────────────────────────┐
@@ -963,25 +960,25 @@ final class Galastri
      * dependendo do tipo de requisição HTTP enviado ao backend.
      *
      * ✔️ EXEMPLO
-     * ┌───────────────────────────────────────────────────────────────────────┐
-     * │ Imagine que queremos executar o método `main()` ao acessar a rota,    │
-     * │ mas que quando o tipo de requisição for `POST`, ele execute mais um   │
-     * │ método, que configuraríamos com o nome `salvar` no `httpMethod`.      │
-     * │                                                                       │
-     * │ Nesta configuração:                                                   │
-     * │                                                                       │
-     * │ - Uma requisição GET executa apenas main().                           │
-     * │                                                                       │
-     * │ - Uma requisição PUT executa apenas main().                           │
-     * │                                                                       │
-     * │ - Mas uma requisição POST executa main() e, depois, salvar().         │
-     * │                                                                       │
-     * │ OBSERVAÇÃO                                                            │
-     * │ ┌──────────────────────────────────────────────────────────────────┐  │
-     * │ │ Perceba que método associado em httpMethod é executado depois do │  │
-     * │ │ método da rota.                                                  │  │
-     * │ └──────────────────────────────────────────────────────────────────┘  │
-     * └───────────────────────────────────────────────────────────────────────┘
+     * ┌─────────────────────────────────────────────────────────────────────┐
+     * │ Imagine que queremos executar o método `main()` ao acessar a rota,  │
+     * │ mas que quando o tipo de requisição for `POST`, ele execute mais um │
+     * │ método, que configuraríamos com o nome `salvar` no `httpMethod`.    │
+     * │                                                                     │
+     * │ Nesta configuração:                                                 │
+     * │                                                                     │
+     * │ - Uma requisição GET executa apenas main().                         │
+     * │                                                                     │
+     * │ - Uma requisição PUT executa apenas main().                         │
+     * │                                                                     │
+     * │ - Mas uma requisição POST executa main() e, depois, salvar().       │
+     * │                                                                     │
+     * │ OBSERVAÇÃO                                                          │
+     * │ ┌─────────────────────────────────────────────────────────────────┐ │
+     * │ │ Perceba que o método associado em httpMethod é executado depois │ │
+     * │ │ do método da rota.                                              │ │
+     * │ └─────────────────────────────────────────────────────────────────┘ │
+     * └─────────────────────────────────────────────────────────────────────┘
      *
      * 🔴 TODO: Futuramente criar uma opção que permita que o método seja
      * executado ANTES do método principal da rota.
@@ -1031,7 +1028,7 @@ final class Galastri
         /**
          * Quando `httpMethodList` não for vazia e encontrarmos uma associação
          * para o tipo de requisição recebido, seguimos com a preparação do
-         * método http
+         * método HTTP.
          */
         if (!empty($httpMethodList) && array_key_exists($serverHttpMethod, $httpMethodList)) {
 
@@ -1130,7 +1127,8 @@ final class Galastri
 
 
 /**
+ * 🔴 TODO: Definir o próximo tópico.
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * ▶️ PRÓXIMO TÓPICO:
- * 🔗 LINK: /
+ * 🔗 LINK: 
  */

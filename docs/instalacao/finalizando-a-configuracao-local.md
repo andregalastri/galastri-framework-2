@@ -199,8 +199,8 @@
  * │                         │    └───────────────────────────────────────┘    │
  * │                         │                                                 │
  * │                         │ 2. Confira também as permissões das pastas do   │
- * │                         │    framework se executou `composer install` no  │
- * │                         │    projeto.                                     │
+ * │                         │    framework e se executou `composer install`   │
+ * │                         │    no projeto.                                  │
  * ├─────────────────────────┼─────────────────────────────────────────────────┤
  * │ O Apache não inicia     │ Você vai precisar rever a configuração do       │
  * │ depois da configuração  │ Apache.                                         │

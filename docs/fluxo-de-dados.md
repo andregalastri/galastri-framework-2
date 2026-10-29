@@ -50,9 +50,9 @@
  *    - Confirma se a opção de desativar o sistema temporariamente está ativa,
  *      interrompendo a execução se necessário.
  *
- *    Nesse ponto, os dados são repassados para o controller, e o método
- *    correspondente à rota é executado, incluindo o tratamento de métodos
- *    específicos para o tipo de requisição HTTP (quando houver).
+ *    Também verificamos a validade da rota e a autenticação configurada.
+ *    Depois, identificamos o controller e conferimos os métodos que serão
+ *    chamados antes de começar a execução da aplicação.
  *
  * 4️⃣ EXECUÇÃO DA CONTROLLER
  *    ──────────────────────────────────────────────────────────────────────────
@@ -62,29 +62,28 @@
  *
  *    A programação do usuário ocorre nesses métodos, que podem incluir
  *    importações de classes ou dados personalizados. Os dados processados devem
- *    ser retornados em uma `array`, a qual será utilizada na etapa de retorno
+ *    ser retornados em um `array`, o qual será utilizada na etapa de retorno
  *    de dados.
  *
  * 5️⃣ ORDEM DOS MÉTODOS
  *    ──────────────────────────────────────────────────────────────────────────
- *    1. Execução do Método da Rota: O primeiro passo é a execução do método da
- *       rota, que processa os dados necessários para a requisição. Os dados
- *       retornados por esse método são armazenados e ficam disponíveis para os
- *       métodos subsequentes.
+ *    1. Execução do Método da Rota: Executamos o método escolhido para atender
+ *       à rota e guardamos seu retorno.
  *
- *    2. Execução do Método para o Tipo de Requisição HTTP: Quando for
- *       configurado um método correspondente ao tipo de requisição HTTP (por
- *       exemplo, get(), post(), etc.) ele é executado em seguida. Os    dados
- *       retornados por esse método são anexados aos dados já armazenados do
- *       método da rota.
+ *    2. Execução do Método para o Tipo de Requisição HTTP: Quando existe uma
+ *       associação para o tipo recebido, executamos o método adicional e
+ *       guardamos seu retorno separadamente.
  *
- *    O resultado final será uma array contendo todos os dados processados,
+ *    O retorno do primeiro método não é passado como argumento para o segundo.
+ *    A classe base `Controller` reúne os retornos após as chamadas.
+ *
+ *    O resultado final será um array contendo todos os dados processados,
  *    prontos para serem retornados e usados na etapa de saída.
  *
  * 6️⃣ RETORNO DOS DADOS
  *    ──────────────────────────────────────────────────────────────────────────
  *    O fluxo é finalizado com a execução da classe responsável pelo formato de
- *    saída
+ *    saída.
  *
  *    Atualmente os formatos são `View`, `Json` e `File`.
  */
@@ -117,8 +116,8 @@
  * │ Dada a URL: `www.dominio.com/produtos/listar`                             │
  * └───────────────────────────────────────────────────────────────────────────┘
  *
- * Espera-se que a view esteja em `/app/views/Produtos/lista.php`, sendo
- * `produtos` a parte referente o controller e `lista` o método.
+ * Espera-se que a view esteja em `/app/views/Produtos/listar.php`, sendo
+ * `produtos` a parte referente ao controller e `listar` o método.
  *
  * Este é o comportamento padrão, mas configurações de rota podem modificar esse
  * comportamento.
@@ -139,10 +138,10 @@
  *
  * 🔶 MOTORES DE TEMPLATING
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * O framework não possui um motor de templating próprio, pois entende-se que o
- * PHP já é ótimo para isso. Por isso, a classe `PhpEngine` cria o objeto `$g`,
- * que armazena os dados do controller e possui métodos para incluir arquivos
- * externos.
+ * Atualmente, o framework utiliza o próprio PHP para renderizar as páginas. A
+ * classe `View` cria uma instância de `PhpEngine` e a disponibiliza em `$g`.
+ * Esse objeto permite consultar os dados do controller e incluir outros
+ * arquivos durante a montagem da página.
  *
  * ℹ️ INFORMAÇÃO
  * ┌───────────────────────────────────────────────────────────────────────────┐
@@ -157,7 +156,7 @@
  * 🟢 SAÍDA JSON
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Converte os dados processados pela controller em formato JSON e retorna o
- * resultado para o frontendÄ.
+ * resultado para o frontend.
  *
  *
  * Não são necessários arquivos adicionais, pois o processo consiste apenas na
@@ -240,8 +239,8 @@
  *
  * 2. Os arquivos estão armazenados em `/app/assets/imagens`.
  *
- * 3. Não foi definido um método, portanto, nenhum controller será
- *    executado.
+ * 3. Se não existir a classe `app\controllers\Imagens`, o processamento
+ *    continuará sem controller, pois a saída `file` permite isso.
  *
  * 4. O restante da URL `/icones/empresa.jpg` será o caminho buscado em
  *    `/app/assets/imagens`.

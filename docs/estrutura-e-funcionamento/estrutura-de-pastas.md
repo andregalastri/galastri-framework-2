@@ -184,7 +184,7 @@
  * Reúne as classes centrais do funcionamento do framework:
  *
  * ┌────────────────────┬──────────────────────────────────────────────────────┐
- * │ ARQUIVO            │ FINALIDADE_                                          │
+ * │ ARQUIVO            │ FINALIDADE                                           │
  * ├────────────────────┼──────────────────────────────────────────────────────┤
  * │ `Galastri.php`     │ Coordena a execução do framework.                    │
  * ├────────────────────┼──────────────────────────────────────────────────────┤
@@ -328,21 +328,21 @@
  * 
  * Ela contém três arquivos:
  * 
- * ┌──────────────┬───────────────────────────────────────────────────────────┐
- * │ ARQUIVO      │ FINALIDADE_                                               │
- * ├──────────────┼───────────────────────────────────────────────────────────┤
- * │ `index.php`  │ Recebe as requisições e inicia a execução do framework.   │
- * ├──────────────┼───────────────────────────────────────────────────────────┤
- * │ `.htaccess`  │ Configura as regras de encaminhamento das requisições no  │
- * │              │ Apache.                                                   │
- * ├──────────────┼───────────────────────────────────────────────────────────┤
- * │ `nginx.conf` │ Fornece regras para ambientes que utilizam Nginx no lugar │
- * │              │ do Apache.                                                │
- * │              │                                                           │
- * │              │ Essas regras precisam ser incorporadas à configuração do  │
- * │              │ servidor, junto das demais configurações do site e do     │
- * │              │ PHP-FPM.                                                  │
- * └──────────────┴───────────────────────────────────────────────────────────┘
+ * ┌──────────────┬────────────────────────────────────────────────────────────┐
+ * │ ARQUIVO      │ FINALIDADE                                                 │
+ * ├──────────────┼────────────────────────────────────────────────────────────┤
+ * │ `index.php`  │ Recebe as requisições e inicia a execução do framework.    │
+ * ├──────────────┼────────────────────────────────────────────────────────────┤
+ * │ `.htaccess`  │ Configura as regras de encaminhamento das requisições no   │
+ * │              │ Apache.                                                    │
+ * ├──────────────┼────────────────────────────────────────────────────────────┤
+ * │ `nginx.conf` │ Fornece regras para ambientes que utilizam Nginx no lugar  │
+ * │              │ do Apache.                                                 │
+ * │              │                                                            │
+ * │              │ Essas regras precisam ser incorporadas à configuração do   │
+ * │              │ servidor, junto das demais configurações do site e do      │
+ * │              │ PHP-FPM.                                                   │
+ * └──────────────┴────────────────────────────────────────────────────────────┘
  * 
  * ⚠️ IMPORTANTE
  * ┌───────────────────────────────────────────────────────────────────────────┐
@@ -373,7 +373,7 @@
  * namespaces configurados pelo projeto, conforme abaixo:
  * 
  * ┌─────────────┬─────────────────────────────────────────────────────────────┐
- * │ NAMESPACE_  │ FINALIDADE                                                  │
+ * │ NAMESPACE   │ FINALIDADE                                                  │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤
  * │ `app\`      │ Permite buscar classes dentro de `app/`                     │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤

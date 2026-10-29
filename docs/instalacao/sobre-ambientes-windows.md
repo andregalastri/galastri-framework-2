@@ -78,8 +78,6 @@
  *
  * 🔶 CRIANDO SEU USUÁRIO NO UBUNTU
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Vamos usar o Ubuntu que é a distribuição Linux mais simples de configurar.
- * 
  * 1. Na primeira execução, o Ubuntu solicitará que você crie um nome de usuário
  *    e uma senha.
  *
@@ -162,7 +160,7 @@
  *    │ sudo apt upgrade │
  *    └──────────────────┘
  * 
- *    Se for pedido uma senha, informe a que você criou anteriormente.
+ *    Se for pedida uma senha, informe a que você criou anteriormente.
  *    Se aparecer uma pergunta de confirmação, responda `s` ou `y` e prossiga.
  */
 

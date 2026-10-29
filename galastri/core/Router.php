@@ -210,7 +210,7 @@ final class Router
     private static function configureEndpointProperties(): void
     {
         if (self::setConfigIfExists('method') && self::$routeData['method'] !== '') {
-            self::$methodName = self::$routeData['method'];
+            self::$methodName = ltrim(self::$routeData['method'], '@');
         }
 
         if (isset(self::$routeData['httpMethod'])) {

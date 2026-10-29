@@ -44,21 +44,21 @@
  * janela no frontend.
  *
  * 🖥️ EXEMPLO DE USO
- * ┌───────────────────────────────────────────────┐
- * │ <?php                                         │
- * │                                               │
- * │ return [                                      │
- * │     '/' => [                                  │
- * │         'projectName' => 'Galastri Framework' │
- * │                                               │
- * │         '@main' => [                          │
- * │             ...                               │
- * │         ],                                    │
- * │                                               │
- * │         ...                                   │
- * │     ],                                        │
- * │ ];                                            │
- * └───────────────────────────────────────────────┘
+ * ┌────────────────────────────────────────────────┐
+ * │ <?php                                          │
+ * │                                                │
+ * │ return [                                       │
+ * │     '/' => [                                   │
+ * │         'projectName' => 'Galastri Framework', │
+ * │                                                │
+ * │         '@main' => [                           │
+ * │             ...                                │
+ * │         ],                                     │
+ * │                                                │
+ * │         ...                                    │
+ * │     ],                                         │
+ * │ ];                                             │
+ * └────────────────────────────────────────────────┘
  *
  *
  *
@@ -107,16 +107,16 @@
  * │ `view` │ Passa o `array` de saída do `endpoint` para um template PHP e/ou │
  * │        │ um arquivo `view` correspondente, retornando um HTML ao usuário. │
  * ├────────┼──────────────────────────────────────────────────────────────────┤
- * │ `json` │ Converte o `array` de saída do `endpoint` para formado JSON e    │
+ * │ `json` │ Converte o `array` de saída do `endpoint` para formato JSON e    │
  * │        │ retorna ao usuário.                                              │
  * ├────────┼──────────────────────────────────────────────────────────────────┤
- * │ `file` │ Se houver um `controller`, o array de saída do método endpoint   │
- * │        │ será utilizado para criar ou apontar para um arquivo.            │
+ * │ `file` │ Se houver um `controller`, entrega o conteúdo preparado em       │
+ * │        │ setFileContents().                                               │
  * │        │                                                                  │
- * │        │ Se não houver um `controller`, o restante da URL a partir do     │
- * │        │ endpoint será interpretada como um caminho para um arquivo       │
+ * │        │ Se não houver um `controller`, procura o arquivo no disco usando │
+ * │        │ fileFolder e o restante da URL.                                  │
  * └────────┴──────────────────────────────────────────────────────────────────┘
- *
+ * 
  * 🖥️ EXEMPLO DE USO
  * ┌─────────────────────────────────┐
  * │ <?php                           │
@@ -271,9 +271,9 @@
  * - Tipo: `string`
  * - Valor padrão: 'System is temporarily offline.'
  *
- * Define uma mensagem que será exibida ao usuário caso a rota esteja offline e
- * não haja um redirecionamento definido via `offlineRedirectTo`. Esta mensagem
- * é apresentada diretamente ao usuário, informando-o sobre o estado da rota.
+ * No exemplo acima, o funcionamento das outras páginas permanece normal. Ao
+ * acessar `www.dominio.com/sobre-a-empresa`, o processamento é interrompido. A
+ * mensagem personalizada aparece se `displayErrors` estiver habilitado.
  *
  * 🖥️ EXEMPLO DE USO
  * ┌─────────────────────────────────────────────────────────────────────┐
@@ -310,9 +310,9 @@
  * - Tipo: `string`
  * - Valor padrão: ''
  *
- * Define uma tag de autenticação associada à rota. Se um usuário não tiver um
- * cookie com essa tag, o acesso à rota será negado, forçando a autenticação
- * antes que o conteúdo seja acessado.
+ * Define a tag da autenticação que será verificada ao acessar a rota. Quando
+ * preenchida, exige uma autenticação válida para essa tag, conferida por
+ * `Authentication::validate()`.
  *
  * 🖥️ EXEMPLO DE USO
  * ┌────────────────────────────────────────────────┐
@@ -337,9 +337,8 @@
  * │ ];                                             │
  * └────────────────────────────────────────────────┘
  *
- * No exemplo acima, se um usuário tentar acessar
- * www.dominio.com/area-do-usuario ou www.dominio.com/area-do-usuario/pedidos
- * sem ter o cookie contendo a tag login-area-usuario, o acesso será negado.
+ * No exemplo acima, o acesso a `www.dominio.com/area-do-usuario` exige uma
+ * autenticação válida para a tag `login-area-usuario`.
  *
  *
  *
@@ -348,9 +347,9 @@
  * - Tipo: `string`
  * - Valor padrão: ''
  *
- * Define o endereço para o qual o usuário será redirecionado caso a
- * autenticação via `authTag` falhe. Isso é útil para encaminhar o usuário a uma
- * página de login ou outra área de autenticação.
+ * Define o endereço de redirecionamento quando a autenticação falha. O
+ * redirecionamento acontece quando esse endereço está preenchido e a saída é
+ * diferente de `json`.
  *
  * 🖥️ EXEMPLO DE USO
  * ┌─────────────────────────────────────────────────┐
@@ -382,21 +381,20 @@
  * │ ];                                              │
  * └─────────────────────────────────────────────────┘
  *
- * No exemplo acima, se o usuário acessar `www.dominio.com/area-do-usuario` ou
- * `www.dominio.com/area-do-usuario/pedidos` sem ter o cookie com a tag
- * `login-area-usuario`, ele será redirecionado para `www.dominio.com/login`.
+ * No exemplo acima, acessar `www.dominio.com/area-do-usuario` sem uma
+ * autenticação válida para a tag `login-area-usuario` provoca o
+ * redirecionamento para `www.dominio.com/login`.
  *
  *
  *
  * 🔶 authFailMessage
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * - Tipo: `string`
- * - Valor padrão: 'Forbidden'
+ * - Valor padrão: 'Forbidden.'
  *
- * Define a mensagem de erro que será exibida caso a autenticação via `authTag`
- * falhe e não haja um redirecionamento definido via `authFailRedirectTo`. Isso
- * é útil para fornecer uma resposta personalizada ao usuário que não possui as
- * credenciais necessárias.
+ * Define a mensagem da exceção lançada quando a autenticação falha e não ocorre
+ * redirecionamento. Sua apresentação ao usuário depende da configuração
+ * `displayErrors`.
  *
  * 🖥️ EXEMPLO DE USO
  * ┌─────────────────────────────────────────────────────────────────┐
@@ -422,10 +420,9 @@
  * │ ];                                                              │
  * └─────────────────────────────────────────────────────────────────┘
  *
- * No exemplo acima, se o usuário acessar `www.dominio.com/area-do-usuario` ou
- * `www.dominio.com/area-do-usuario/pedidos` sem ter o cookie com a tag
- * `login-area-usuario`, a mensagem "Faça o login para acessar." será
- * retornada.
+ * No exemplo acima, acessar `www.dominio.com/area-do-usuario` sem uma
+ * autenticação válida interrompe o processamento. A mensagem "Faça o login para
+ * acessar." aparece se `displayErrors` estiver habilitado.
  *
  *
  *
@@ -434,8 +431,9 @@
  * - Tipo: `string`
  * - Valor padrão: ''
  *
- * Define o endereço de redirecionamento para ser utilizado caso a rota
- * solicitada seja inválida ou não encontrada.
+ * Define o endereço de redirecionamento usado por `notFound()` quando uma rota
+ * ou um arquivo não é encontrado. Na saída `json`, esse redirecionamento não é
+ * realizado.
  *
  * 🖥️ EXEMPLO DE USO
  * ┌─────────────────────────────────────────────────────┐
@@ -471,38 +469,36 @@
  * - Tipo: `string`
  * - Valor padrão: '404 - Route not found'
  *
- * Define o endereço de redirecionamento para ser utilizado caso a rota
- * solicitada seja inválida ou não encontrada.Define uma mensagem que será
- * exibida ao usuário caso a rota solicitada seja inválida ou não encontrada e
- * não haja um redirecionamento definido via notFoundRedirectTo. Esta mensagem é
- * apresentada diretamente ao usuário, informando-o sobre o estado da rota.
+ * Define a mensagem da exceção lançada por `notFound()` quando não ocorre
+ * redirecionamento. Sua apresentação ao usuário depende da configuração
+ * `displayErrors`.
  *
  * 🖥️ EXEMPLO DE USO
- * ┌──────────────────────────────────────────────────────────────────┐
- * │ <?php                                                            │
- * │                                                                  │
- * │ return [                                                         │
- * │     '/' => [                                                     │
- * │         'notFoundMessage' => 'O endereço informado não encontrdo │
- * │                                                                  │
- * │         '@main' => [                                             │
- * │             ...                                                  │
- * │         ],                                                       │
- * │                                                                  │
- * │         '/nao-encontrado' => [                                   │
- * │             '@main' => [                                         │
- * │                 ...                                              │
- * │             ],                                                   │
- * │         ],                                                       │
- * │                                                                  │
- * │         ...                                                      │
- * │     ],                                                           │
- * │ ];                                                               │
- * └──────────────────────────────────────────────────────────────────┘
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ <?php                                                               │
+ * │                                                                     │
+ * │ return [                                                            │
+ * │     '/' => [                                                        │
+ * │         'notFoundMessage' => 'O endereço informado foi encontrado', │
+ * │                                                                     │
+ * │         '@main' => [                                                │
+ * │             ...                                                     │
+ * │         ],                                                          │
+ * │                                                                     │
+ * │         '/nao-encontrado' => [                                      │
+ * │             '@main' => [                                            │
+ * │                 ...                                                 │
+ * │             ],                                                      │
+ * │         ],                                                          │
+ * │                                                                     │
+ * │         ...                                                         │
+ * │     ],                                                              │
+ * │ ];                                                                  │
+ * └─────────────────────────────────────────────────────────────────────┘
  *
- * No exemplo acima, caso o usuário acesse `www.dominio.com/produtos` a rota
- * será considerada inválida pois não foi configurada. O usuário receberá a
- * mensagem "O endereço informado não foi encontrado ou é inválido.".
+ * No exemplo acima, acessar `www.dominio.com/produtos` resulta em uma resposta
+ * HTTP 404. A mensagem personalizada aparece se `displayErrors` estiver
+ * habilitado.
  *
  *
  *
@@ -515,33 +511,41 @@
  * ou externa.
  *
  * 🖥️ EXEMPLO DE USO
- * ┌─────────────────────────────────────────────────────────────────────┐
- * │ <?php                                                               │
- * │                                                                     │
- * │ return [                                                            │
- * │     '/' => [                                                        │
- * │         '@main' => [                                                │
- * │             ...                                                     │
- * │         ],                                                          │
- * │                                                                     │
- * │         '/produtos' => [                                            │
- * │             'forceRedirectTo' => '/produtos-novo',                  │
- * │         ],                                                          │
- * │                                                                     │
- * │         '/produtos-novo' => [                                       │
- * │             '@main' => [                                            │
- * │                 ...                                                 │
- * │             ],                                                      │
- * │         ],                                                          │
- * │                                                                     │
- * │         '/nosso-whatsapp' => [                                      │
- * │             'forceRedirectTo' => 'https://api.example.com?code=001' │
- * │         ],                                                          │
- * │                                                                     │
- * │         ...                                                         │
- * │     ],                                                              │
- * │ ];                                                                  │
- * └─────────────────────────────────────────────────────────────────────┘
+ * ┌──────────────────────────────────────────────────────────────────────┐
+ * │ <?php                                                                │
+ * │                                                                      │
+ * │ return [                                                             │
+ * │     '/' => [                                                         │
+ * │         '@main' => [                                                 │
+ * │             ...                                                      │
+ * │         ],                                                           │
+ * │                                                                      │
+ * │         '/produtos' => [                                             │
+ * │             'forceRedirectTo' => '/produtos-novo',                   │
+ * │                                                                      │
+ * │             '@main' => [                                             │
+ * │                 ...                                                  │
+ * │             ],                                                       │
+ * │         ],                                                           │
+ * │                                                                      │
+ * │         '/produtos-novo' => [                                        │
+ * │             '@main' => [                                             │
+ * │                 ...                                                  │
+ * │             ],                                                       │
+ * │         ],                                                           │
+ * │                                                                      │
+ * │         '/nosso-whatsapp' => [                                       │
+ * │             'forceRedirectTo' => 'https://api.example.com?code=001', │
+ * │                                                                      │
+ * │             '@main' => [                                             │
+ * │                 ...                                                  │
+ * │             ],                                                       │
+ * │         ],                                                           │
+ * │                                                                      │
+ * │         ...                                                          │
+ * │     ],                                                               │
+ * │ ];                                                                   │
+ * └──────────────────────────────────────────────────────────────────────┘
  *
  * No exemplo acima:
  *
@@ -549,54 +553,8 @@
  *   redirecionado para `www.dominio.com/produtos-novo`.
  *
  * - Caso o usuário acesse `www.dominio.com/nosso-whatsapp`, ele será
- *   redirecionado para o link externo do WhatsApp.
+ *   redirecionado para o endereço externo configurado.
  *
- *
- *
- * 🔶 forceRedirectTo
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * - Tipo: `bool` ou `string`
- * - Valor padrão: `false`
- *
- * Força o redirecionamento de uma rota para outra rota ou página, seja interna
- * ou externa.
- *
- * 🖥️ EXEMPLO DE USO
- * ┌─────────────────────────────────────────────────────────────────────┐
- * │ <?php                                                               │
- * │                                                                     │
- * │ return [                                                            │
- * │     '/' => [                                                        │
- * │         '@main' => [                                                │
- * │             ...                                                     │
- * │         ],                                                          │
- * │                                                                     │
- * │         '/produtos' => [                                            │
- * │             'forceRedirectTo' => '/produtos-novo',                  │
- * │         ],                                                          │
- * │                                                                     │
- * │         '/produtos-novo' => [                                       │
- * │             '@main' => [                                            │
- * │                 ...                                                 │
- * │             ],                                                      │
- * │         ],                                                          │
- * │                                                                     │
- * │         '/nosso-whatsapp' => [                                      │
- * │             'forceRedirectTo' => 'https://api.example.com?code=001' │
- * │         ],                                                          │
- * │                                                                     │
- * │         ...                                                         │
- * │     ],                                                              │
- * │ ];                                                                  │
- * └─────────────────────────────────────────────────────────────────────┘
- *
- * No exemplo acima:
- *
- * - Caso o usuário acesse `www.dominio.com/produtos`, ele será automaticamente
- *   redirecionado para `www.dominio.com/produtos-novo`.
- *
- * - Caso o usuário acesse `www.dominio.com/nosso-whatsapp`, ele será
- *   redirecionado para o link externo do WhatsApp.
  *
  *
  * 🔶 namespace
@@ -646,14 +604,15 @@
  * - Tipo: `array`
  * - Valor padrão: []
  *
- * Define se o conteúdo a ser retornado será armazenado em cache no navegador do
- * usuário. Funciona apenas para saídas view e file.
+ * Configura o cache das respostas `view` e dos arquivos exibidos pela saída
+ * `file`. É aplicado a requisições GET ou HEAD com status 200. Rotas com
+ * `authTag` preenchida recebem `Cache-Control: private, no-store`.
  *
  * CONFIGURAÇÃO DOS ÍNDICES
  * ┌────────┬──────────┬─────────────────────────────────────────────────────┐
  * │ Índice │ Tipo     │ Descrição                                           │
  * ├────────┼──────────┼─────────────────────────────────────────────────────┤
- * │ `[0]`  │ `int`    │ A duração do cache em milissegundos.                │
+ * │ `[0]`  │ `int`    │ A duração do cache em segundos.                     │
  * ├────────┼──────────┼─────────────────────────────────────────────────────┤
  * │ `[1]`  │ `string` │ Opcional: As definições do cabeçalho Cache-Control. │
  * └────────┴──────────┴─────────────────────────────────────────────────────┘
@@ -690,32 +649,33 @@
  * └─────────────────────────────────────────────────────────┘
  *
  * No exemplo acima, todos os endpoints das rotas serão armazenados em cache no
- * navegador do usuário por 4000 ms, com as propriedades 'immutable, private',
- * exceto para a rota www.dominio.com/empresa, que teve o browserCache
- * desabilitado (vazio).
+ * navegador do usuário por 86400 segundos (1 dia), com as propriedades
+ * 'immutable, private', exceto para a rota www.dominio.com/empresa, que teve o
+ * browserCache desabilitado (vazio).
  *
  * 🖥️ EXEMPLO DE USO
- * ┌───────────────────────────────────┐
- * │ <?php                             │
- * │                                   │
- * │ return [                          │
- * │     '/' => [                      │
- * │         'browserCache' => [4000], │
- * │                                   │
- * │         '@main' => [              │
- * │             ...                   │
- * │         ],                        │
- * │                                   │
- * │         ...                       │
- * │     ],                            │
- * │ ];                                │
- * └───────────────────────────────────┘
+ * ┌────────────────────────────────────┐
+ * │ <?php                              │
+ * │                                    │
+ * │ return [                           │
+ * │     '/' => [                       │
+ * │         'browserCache' => [86400], │
+ * │                                    │
+ * │         '@main' => [               │
+ * │             ...                    │
+ * │         ],                         │
+ * │                                    │
+ * │         ...                        │
+ * │     ],                             │
+ * │ ];                                 │
+ * └────────────────────────────────────┘
  *
  * No exemplo acima, todos os endpoints das rotas serão armazenados em cache no
- * navegador do usuário por 4000 ms. Como o segundo índice foi omitido, então
- * ele automaticamente irá definir como 'public'.
+ * navegador do usuário por 86400 segundos (1 dia). Como o segundo índice foi
+ * omitido, então ele automaticamente irá definir como 'public'.
  *
  *
+ * 
  * 🔶 templateFile
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * - Tipo: `string`
@@ -810,9 +770,9 @@
  * - Tipo: `string`
  * - Valor padrão: ''
  *
- * Define o diretório onde estão localizados os arquivos que serão acessados
- * diretamente quando o `output` for definido como `file`, e não houver um
- * `controller` especificado.
+ * Define o diretório usado pela saída `file` para procurar arquivos no disco.
+ * Essa busca acontece quando o controller não fornece conteúdo por
+ * `setFileContents()`, inclusive quando a requisição segue sem controller.
  *
  * Esse parâmetro só é relevante quando o valor de `output` for `file`.
  *
@@ -838,9 +798,9 @@
  * │ ];                                                │
  * └───────────────────────────────────────────────────┘
  *
- * No exemplo acima, a rota `/images` não possui um `controller` ou um
- * `endpoint` definido, portanto, o sistema procurará os arquivos na pasta
- * `/app/images/public`.
+ * No exemplo acima, a saída procura arquivos em `/app/images/public` quando
+ * não há controller ou quando ele não fornece conteúdo por
+ * `setFileContents()`.
  *
  * Se houver um arquivo chamado `logo.jpg` em `/app/images/public/logo.jpg`, a
  * URL `www.dominio.com/images/logo.jpg` irá retornar esse arquivo.
@@ -892,9 +852,9 @@
  * - Tipo: `array`
  * - Valor padrão: []
  *
- * Define uma lista de extensões de arquivo que são permitidas para serem
- * acessados. Se um arquivo solicitado não tiver uma extensão que esteja na
- * lista definida, a rota será considerada inválida.
+ * Define as extensões permitidas para os arquivos procurados no disco.
+ * Uma lista vazia não restringe as extensões. Quando a lista está preenchida,
+ * uma extensão que não esteja nela provoca uma exceção.
  *
  * Esse parâmetro só é relevante quando o valor de `output` for `file`.
  *
@@ -921,10 +881,9 @@
  * │ ];                                                            │
  * └───────────────────────────────────────────────────────────────┘
  *
- * No exemplo acima, ao acessar um arquivo na rota `/images`, o framework irá
- * verificar a extensão do arquivo. Caso a extensão não seja uma das permitidas,
- * como `jpg`, `gif` ou `png`, o arquivo não será acessado e a rota será
- * considerada inválida.
+ * No exemplo acima, o framework verifica a extensão do arquivo solicitado. Se
+ * ela não for `jpg`, `gif` ou `png`, lança uma exceção e interrompe a entrega
+ * do arquivo.
  *
  *
  *
@@ -933,8 +892,9 @@
  * - Tipo: `string`
  * - Valor padrão: 'Forbidden.'
  *
- * Define a mensagem de erro que será exibida quando o módulo `Permission`
- * detectar que o usuário não tem permissão para realizar uma ação específica.
+ * Define a mensagem padrão usada pelo módulo `Permission` quando uma
+ * verificação de permissão falha. Sua apresentação ao usuário depende da
+ * configuração `displayErrors`.
  *
  * ⚠️ IMPORTANTE
  * ┌───────────────────────────────────────────────────────────────────────────┐
@@ -963,6 +923,10 @@
  * │                 '@deletar' => [                                           │
  * │                     'permissionFailMessage' => 'Você não tem permissão.', │
  * │                 ],                                                        │
+ * │                                                                           │
+ * │                 '@main' => [                                              │
+ * │                     ...                                                   │
+ * │                 ],                                                        │
  * │             ],                                                            │
  * │         ],                                                                │
  * │                                                                           │
@@ -971,10 +935,9 @@
  * │ ];                                                                        │
  * └───────────────────────────────────────────────────────────────────────────┘
  *
- * No exemplo acima, se o usuário tentar deletar pedidos na rota
- * `/area-do-usuario/pedidos/deletar`, ele será barrado se não tiver as
- * permissões necessárias, e a mensagem personalizada  "Você não tem permissão
- * para esta ação."  será exibida.
+ * No exemplo acima, uma verificação feita com `Permission` pode impedir a
+ * operação em `/area-do-usuario/api/deletar`. A mensagem "Você não tem
+ * permissão." aparece se `displayErrors` estiver habilitado.
  *
  *
  *
@@ -1031,8 +994,9 @@
  * Faz com que o framework ignore a auto detecção do tipo MIME de uma extensão,
  * aplicando um tipo MIME forçadamente.
  *
- * Esta configuração faz com que a configuração `validateMimeType` seja
- * ignorada.
+ * Para as extensões presentes nessa configuração, o tipo informado substitui a
+ * detecção automática e a verificação de `validateMimeType`. As demais
+ * extensões continuam seguindo a configuração de validação.
  *
  * 🖥️ EXEMPLO DE USO
  * ┌───────────────────────────────────────────┐
@@ -1203,13 +1167,13 @@
  *    Indica um parâmetro que deve obrigatoriamente estar presente na URL. Caso
  *    contrário, a rota será considerada inválida pelo framework.
  *
- *    - Como é definido na configuração: `/parâmetro`
+ *    - Como é definido na configuração: `/parametro`
  *
  * 2. Parâmetro opcional `/?`
  *    Indica um parâmetro opcional, que pode ser omitido na URL sem invalidar a
  *    rota.
  *
- *    - Como é definido na configuração: `/?parâmetro`
+ *    - Como é definido na configuração: `/?parametro`
  *
  * ✔️ EXEMPLO DE USO
  * ┌──────────────────────────────────────────────────────────────────────────┐
@@ -1248,9 +1212,9 @@
  *
  * - Se a URL não incluir `decrescente`, a rota continuará válida, pois `ordem`
  *   é um parâmetro opcional.
- *
- * - Porém, se `todos` for omitido, a rota será invalidada, pois `tipo` é um
- *   parâmetro obrigatório.
+ * 
+ * - Se não houver valor para o parâmetro obrigatório `tipo`, a rota será
+ *   invalidada.
  *
  * Ou seja:
  * ┌─────────────────────────────────────────────────────┬─────────┐
@@ -1283,62 +1247,49 @@
  *   aquela requisição.
  *
  * 🖥️ EXEMPLO DE USO
- * ┌────────────────────────────────────────────┐
- * │ <?php                                      │
- * │                                            │
- * │ return [                                   │
- * │     '/' => [                               │
- * │         'output' => 'view',                │
- * │                                            │
- * │         '@main' => [                       │
- * │             ...                            │
- * │         ],                                 │
- * │                                            │
- * │         '/produtos' => [                   │
- * │             '@main' => [                   │
- * │                 ...                        │
- * │             ],                             │
- * │                                            │
- * │             '@cadastro' => [               │
- * │                 'httpMethod' => [          │
- * │                     'GET' => '@listar'     │
- * │                     'POST' => '@adicionar' │
- * │                     'DELETE' => '@remover' │
- * │                 ]                          │
- * │             ],                             │
- * │         ],                                 │
- * │                                            │
- * │         ...                                │
- * │     ],                                     │
- * │ ];                                         │
- * └────────────────────────────────────────────┘
+ * ┌─────────────────────────────────────────────┐
+ * │ <?php                                       │
+ * │                                             │
+ * │ return [                                    │
+ * │     '/' => [                                │
+ * │         'output' => 'view',                 │
+ * │                                             │
+ * │         '@main' => [                        │
+ * │             ...                             │
+ * │         ],                                  │
+ * │                                             │
+ * │         '/produtos' => [                    │
+ * │             '@main' => [                    │
+ * │                 ...                         │
+ * │             ],                              │
+ * │                                             │
+ * │             '@cadastro' => [                │
+ * │                 'httpMethod' => [           │
+ * │                     'GET' => '@listar',     │
+ * │                     'POST' => '@adicionar', │
+ * │                     'DELETE' => '@remover', │
+ * │                 ],                          │
+ * │             ],                              │
+ * │         ],                                  │
+ * │                                             │
+ * │         ...                                 │
+ * │     ],                                      │
+ * │ ];                                          │
+ * └─────────────────────────────────────────────┘
  *
- * No exemplo acima, o `endpoint` `cadastro` terá comportamentos diferentes
- * conforme o tipo de requisição HTTP:
+ * No exemplo acima, o método `cadastro()` continua obrigatório e é executado
+ * primeiro. Depois, o tipo da requisição determina a chamada adicional:
  *
- * - `GET`: irá executar o método `listar`.
- * - `POST`: irá executar o método `adicionar`.
- * - `DELETE`: irá executar o método `remover`.
+ * - GET: executa `cadastro()` e, depois, `listar()`.
+ * - POST: executa `cadastro()` e, depois, `adicionar()`.
+ * - DELETE: executa `cadastro()` e, depois, `remover()`.
  *
+ * O retorno de `cadastro()` não é passado como argumento para o método
+ * seguinte. A classe base `Controller` reúne os arrays retornados depois
+ * das chamadas.
  *
- * Além disso, é importante observar que o método `cadastro` se torna opcional.
- * Caso ele esteja presente na classe controller, ele será executado antes do
- * método associado ao tipo de requisição. O fluxo de execução seria:
- *
- * - `GET`:
- *    o método `cadastro` será executado e seus resultados passados para o
- *   método `listar`
- *
- * - `POST`:
- *   o método `cadastro` será executado e seus resultados passados para o método
- *   `adicionar`.
- *
- * - `DELETE`:
- *   o método `cadastro` será executado e seus resultados passados para o método
- *   `remover`.
- *
- *
- * Isso é útil pois permite uma execução prévia antes do método da requisição.
+ * Se não houver uma associação para o tipo de requisição recebido,
+ * apenas `cadastro()` será executado.
  */
 
 
@@ -1347,7 +1298,7 @@
  * 🟢 CONFIGURAÇÕES DO CONTEXTO debug
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Trata-se de uma extensão do contexto `route`, pois seu funcionamento é
- * idêntico. Porém,conceitualmente, é um contexto separado, já que trata de
+ * idêntico. Porém, conceitualmente, é um contexto separado, já que trata de
  * configurações de depuração, não de rota e processamento de requisições.
  *
  *
@@ -1357,7 +1308,7 @@
  * - Tipo: `bool`
  * - Valor padrão: false
  *
- * Define se mensagens de erros serão mostrados integralmente quando `true`
+ * Define se mensagens de erros serão mostradas integralmente quando `true`
  * ou se apenas uma mensagem genérica será mostrada.
  *
  * 🖥️ EXEMPLO DE USO
@@ -1386,7 +1337,7 @@
  * problema de segurança, já que dados sensíveis podem ser exibidos.
  *
  * Uma característica importante é que o parâmetro pode ser configurado por
- * rota, ou seja, é possível habilitar ou desabilitar a apresentação erros
+ * rota, ou seja, é possível habilitar ou desabilitar a apresentação de erros
  * apenas para determinadas rotas.
  *
  * 🖥️ EXEMPLO DE USO
@@ -1412,70 +1363,69 @@
  * │ ];                                   │
  * └──────────────────────────────────────┘
  *
- * Supondo que a URL `www.dominio.com/listar`esteja com algum erro, o
+ * Supondo que a URL `www.dominio.com/listar` esteja com algum erro, o
  * exemplo acima permite a exibição das mensagens de erro apenas para esta rota,
  * mantendo as demais com o comportamento padrão.
  *
  *
  *
- * 🔶 stopOnWarnings
+ * 🔶 stopOnNonFatalErrors
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * - Tipo: `bool`
  * - Valor padrão: true
  *
- * Altera o comportamento padrão do PHP de prosseguir com a execução do código
- * mesmo havendo erros de nível *warning*. Ao habilitar este parâmetro como
- * `true`, este comportamento é alterado, e a execução do código é interrompida
- * em erros de nível *warning*.
+ * Define se falhas não fatais, como avisos, notificações e mensagens de
+ * depreciação, devem interromper a execução. Quando está em `false`,
+ * registramos o log, se habilitado, e continuamos sem apresentar a falha nem
+ * alterar o status HTTP.
  *
  * 🖥️ EXEMPLO DE USO
- * ┌───────────────────────────────────┐
- * │ <?php                             │
- * │                                   │
- * │ return [                          │
- * │     '/' => [                      │
- * │         'stopOnWarnings' => true, │
- * │         'output' => 'view',       │
- * │                                   │
- * │         '@main' => [              │
- * │             ...                   │
- * │         ],                        │
- * │                                   │
- * │         ...                       │
- * │     ],                            │
- * │ ];                                │
- * └───────────────────────────────────┘
+ * ┌─────────────────────────────────────────┐
+ * │ <?php                                   │
+ * │                                         │
+ * │ return [                                │
+ * │     '/' => [                            │
+ * │         'stopOnNonFatalErrors' => true, │
+ * │         'output' => 'view',             │
+ * │                                         │
+ * │         '@main' => [                    │
+ * │             ...                         │
+ * │         ],                              │
+ * │                                         │
+ * │         ...                             │
+ * │     ],                                  │
+ * │ ];                                      │
+ * └─────────────────────────────────────────┘
  *
- * No exemplo acima, caso haja algum erro de nível *warning* na programação PHP
- * ou qualquer outro tipo de erro no projeto, a execução do código será
- * interrompida.
+ * No exemplo acima, avisos, notificações e mensagens de depreciação também
+ * interrompem a execução, pois `stopOnNonFatalErrors` está em `true`.
  *
  * Uma característica importante é que o parâmetro pode ser configurado por
  * rota, ou seja, é possível habilitar ou desabilitar o comportamento citado
  * apenas para determinadas rotas.
  *
  * 🖥️ EXEMPLO DE USO
- * ┌────────────────────────────────────────┐
- * │ <?php                                  │
- * │                                        │
- * │ return [                               │
- * │     '/' => [                           │
- * │         'output' => 'view',            │
- * │                                        │
- * │         '@main' => [                   │
- * │             ...                        │
- * │         ],                             │
- * │                                        │
- * │         '@listar' => [                 │
- * │             'stopOnWarnings' => false, │
- * │                                        │
- * │             ...                        │
- * │         ],                             │
- * │                                        │
- * │         ...                            │
- * │     ],                                 │
- * │ ];                                     │
- * └────────────────────────────────────────┘
+ * ┌──────────────────────────────────────────────┐
+ * │ <?php                                        │
+ * │                                              │
+ * │ return [                                     │
+ * │     '/' => [                                 │
+ * │         'output' => 'view',                  │
+ * │                                              │
+ * │         '@main' => [                         │
+ * │             ...                              │
+ * │         ],                                   │
+ * │                                              │
+ * │         '@listar' => [                       │
+ * │             'stopOnNonFatalErrors' => false, │
+ * │                                              │
+ * │             ...                              │
+ * │         ],                                   │
+ * │                                              │
+ * │         ...                                  │
+ * │     ],                                       │
+ * │ ];                                           │
+ * └──────────────────────────────────────────────┘
  *
  * Supondo que a URL `www.dominio.com/listar` esteja com algum erro de nível
  * *warning*, o exemplo acima não irá parar a execução do código, mas apenas
@@ -1489,31 +1439,31 @@
  * - Tipo: `bool`
  * - Valor padrão: false
  *
- * Define se o relatório de erros irá mostrar também o *trace route* do erro.
- * Caso seja `true`, o framework irá tentar imprimir o *trace route* junto com o
- * relatório de erros. Caso `false`, o *trace route* é omitido.
+ * Autoriza a apresentação do histórico de chamadas da falha. Esse histórico só
+ * aparece quando `showTrace` e `displayErrors` estão em `true`.
  *
  * 🖥️ EXEMPLO DE USO
- * ┌──────────────────────────────┐
- * │ <?php                        │
- * │                              │
- * │ return [                     │
- * │     '/' => [                 │
- * │         'showTrace' => true, │
- * │         'output' => 'view',  │
- * │                              │
- * │         '@main' => [         │
- * │             ...              │
- * │         ],                   │
- * │                              │
- * │         ...                  │
- * │     ],                       │
- * │ ];                           │
- * └──────────────────────────────┘
+ * ┌──────────────────────────────────┐
+ * │ <?php                            │
+ * │                                  │
+ * │ return [                         │
+ * │     '/' => [                     │
+ * │         'displayErrors' => true, │
+ * │         'showTrace' => true,     │
+ * │         'output' => 'view',      │
+ * │                                  │
+ * │         '@main' => [             │
+ * │             ...                  │
+ * │         ],                       │
+ * │                                  │
+ * │         ...                      │
+ * │     ],                           │
+ * │ ];                               │
+ * └──────────────────────────────────┘
  *
  * No exemplo acima, caso haja algum erro na programação PHP ou qualquer outro
- * tipo de erro no projeto, o *trace route* será mostrado junto com a mensagem
- * de erro.
+ * tipo de erro no projeto, o histórico de chamadas será mostrado junto com a
+ * mensagem de erro.
  *
  * Uma característica importante é que o parâmetro pode ser configurado por
  * rota, ou seja, é possível habilitar ou desabilitar o comportamento citado
@@ -1543,8 +1493,8 @@
  * └──────────────────────────────────┘
  *
  * Supondo que a URL **`www.dominio.com/listar`** esteja com algum erro, o
- * exemplo acima irá apresentar também o *trace route* junto com a mensagem de
- * erro.
+ * exemplo acima irá apresentar também o histórico de chamadas junto com a
+ * mensagem de erro.
  *
  *
  *
@@ -1588,7 +1538,7 @@
  * │ return [                                 │
  * │     '/' => [                             │
  * │         'output' => 'view',              │
- * │                                          │
+ * │         'createLogsOnError' => false,    │
  * │         '@main' => [                     │
  * │             ...                          │
  * │         ],                               │

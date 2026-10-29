@@ -12,7 +12,7 @@
  *
  * A URL é processada ignorando o domínio/subdomínio e dividindo o restante em
  * partes fundamentais que determinam o comportamento do framework. Esse
- * comportamento é configurado no arquivo de rotas
+ * comportamento é configurado no arquivo de rotas.
  *
  * As partes da URL operam em contextos definidos no arquivo de configuração de
  * rotas. Existem três contextos principais:
@@ -67,22 +67,23 @@
  *
  * O framework processará a URL da seguinte forma:
  *
- * 1. IDENTIFICA O NODE A primeira parte da URL é `produtos`. O framework busca
- *    no arquivo de configuração e encontra a chave `/produtos`.
+ * 1. IDENTIFICA O NODE  
+ *    A primeira parte da URL é `produtos`. O framework busca no arquivo de
+ *    configuração e encontra a chave `/produtos`.
  *
  *    O caractere `/` indica que `produtos` é um `node`, ou seja, corresponde a
  *    uma classe controller chamada `Produtos`.
  *
- * 2. IDENTIFICA O ENDPOINT A segunda parte da URL é `listar`. Dentro do `node`
- *    `/produtos`, o framework busca pela chave correspondente e encontra
- *    `@listar`.
+ * 2. IDENTIFICA O ENDPOINT  
+ *     A segunda parte da URL é `listar`. Dentro do `node` `/produtos`, o
+ *    framework busca pela chave correspondente e encontra `@listar`.
  *
  *    O caractere `@` indica que `listar` é um `endpoint`, ou seja, um método
  *    dentro da classe `Produtos`, chamado `listar()` .
  *
- * 3. EXECUTA O MÉTODO listar() O framework executa o método `listar()` da
- *    classe `Produtos`, processando os dados e retornando o resultado ao
- *    usuário.
+ * 3. EXECUTA O MÉTODO  
+ *     listar() O framework executa o método `listar()` da classe `Produtos`,
+ *    processando os dados e retornando o resultado ao usuário.
  *
  *    Esse mecanismo permite um roteamento flexível e organizado, facilitando a
  *    estruturação das rotas dentro do framework.
@@ -98,8 +99,8 @@
  * │ NOME        │ DESCRIÇÃO                                                   │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤
  * │ parameters  │ Representam valores dinâmicos passados diretamente na URL,  │
- * │             │ separados por `/` ou `/?`. Esses valores podem ser          │
- * │             │ armazenados e utilizados pelo _controller_.                 │
+ * │             │ separados por `/`. Esses valores podem ser armazenados e    │
+ * │             │ utilizados pelo _controller_.                               │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤
  * │ querystring │ Representam valores passados após um `?`, geralmente usados │
  * │             │ para filtros e configurações. A estrutura padrão é          │
@@ -141,13 +142,13 @@
  *
  * 2. IDENTIFICA O ENDPOINT
  *
- * 3. EXECUTA O MÉTODO LISTAR()
+ * 3. ARMAZENA OS PARÂMETROS
+ *    A terceira parte da URL é `todos`. Dentro do endpoint `@listar`,
+ *    a configuração `parameters` tem o valor `/exibicao`. O framework
+ *    guarda `todos` no parâmetro `exibicao`, que ficará disponível
+ *    para o controller.
  *
- * 4. ARMAZENA OS PARÂMETROS
- *    A terceira parte da URL é `todos`. Dentro do `endpoint` `@listar`, está
- *    definida a configuração chamada `parameters`, cujo valor é `/exibicao`. O
- *    framework irá armazenar o valor `todos` dentro do parâmetro `exibicao`,
- *    que poderá ser usado dentro do método `listar()`.
+ * 4. EXECUTA O MÉTODO LISTAR()
  */
 
 
@@ -161,13 +162,13 @@
  *    Indica um parâmetro que deve obrigatoriamente estar presente na URL. Caso
  *    contrário, a rota será considerada inválida pelo framework.
  *
- *    Como é definido na configuração: `/parâmetro`
+ *    Como é definido na configuração: `/parametro`
  *
  * 2. PARÂMETRO OPCIONAL '/?'
  *    Indica um parâmetro opcional, que pode ser omitido na URL sem invalidar a
  *    rota.
  *
- *    Como é definido na configuração: `/?parâmetro`
+ *    Como é definido na configuração: `/?parametro`
  *
  * ✔️ EXEMPLO
  * ┌───────────────────────────────────────────────────────────────────────────┐
@@ -206,8 +207,8 @@
  * -  Se a URL não incluir `decrescente`, a rota continuará válida, pois `ordem`
  *    é um parâmetro opcional.
  *
- * -  Porém, se `todos` for omitido, a rota será invalidada, pois `tipo` é um
- *    parâmetro obrigatório.
+ * -  Se não houver valor para o parâmetro obrigatório `tipo`, a rota será
+ *    invalidada.
  *
  * ┌─────────────────────────────────────────────────────┬─────────┐
  * │ URL                                                 │ Válido? │
@@ -286,7 +287,7 @@
  * └───────────────────────────────────────────────────────────────────────────┘
  *
  * O processamento da URL ocorre como já mencionado, até chegar em `/usuario`.
- * epois, o framework processa a parte `maria` da seguinte forma:
+ * Depois, o framework processa a parte `maria` da seguinte forma:
  *
  * 1. ARMAZENA O VALOR DINÂMICO
  *    O framework entende que `maria` deve ser armazenada como o valor de
@@ -320,9 +321,9 @@
  * Quando isso ocorre, o framework assume que o método a ser chamado é `main()`,
  * que funciona como um método padrão sempre que o `endpoint` é omitido.
  *
- * Por isso, toda configuração de rota deve incluir a chave `@main`, e todo
- * *controller* deve ter um método `main()`, garantindo um ponto de entrada
- * padrão caso nenhum `endpoint` seja especificado.
+ * Nas saídas `view` e `json`, o nó acessado precisa conter o endpoint `@main`.
+ * A saída `file` pode dispensar essa configuração. Os controllers precisam
+ * implementar ou herdar o método `main()`, exigido pela classe base.
  *
  * ✔️ EXEMPLO
  * ┌───────────────────────────────────────────────────────────────────────────┐
@@ -369,7 +370,7 @@
  *
  * ✔️ EXEMPLO
  * ┌───────────────────────────────────────────────────────────────────────────┐
- * │ Dada a URL a seguir: `www.dominio.com/vendas/id/123` e a seguinte         │
+ * │ Dada a URL a seguir: `www.dominio.com/venda/id/123` e a seguinte          │
  * │ configuração de rotas:                                                    │
  * │ ┌────────────────────────────────────────────────┐                        │
  * │ │ <?php                                          │                        │
@@ -416,7 +417,7 @@
  * 
  * ✔️ EXEMPLO
  * ┌───────────────────────────────────────────────────────────────────────────┐
- * │ Dada a URL a seguir: `www.dominio.com/produtos/listar` e a seguinte       │
+ * │ Dada a URL a seguir: `www.dominio.com/produtos/listar/todos` e a seguinte │
  * │ configuração de rotas:                                                    │
  * │ ┌────────────────────────────────────────────────┐                        │
  * │ │ <?php                                          │                        │
@@ -449,7 +450,7 @@
  * 💻 CÓDIGO
  * ┌────────────────────────────────────────┐
  * │ <?php                                  │
- * │ namespace app\controller;              │
+ * │ namespace app\controllers;             │
  * │                                        │
  * │ use galastri\modules\Controller;       │
  * │                                        │
@@ -516,7 +517,7 @@
  * 💻 CÓDIGO
  * ┌─────────────────────────────────────────┐
  * │ <?php                                   │
- * │ namespace app\controller\Sobre;         │
+ * │ namespace app\controllers\Sobre;        │
  * │                                         │
  * │ use galastri\modules\Controller;        │
  * │                                         │

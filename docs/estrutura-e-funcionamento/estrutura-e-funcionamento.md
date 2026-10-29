@@ -66,9 +66,9 @@
  * │ │ `clientes`    │ O framework entende que se trata de um nó e relaciona │ │
  * │ │               │ esta parte à classe `Clientes`.                       │ │
  * │ ├───────────────┼───────────────────────────────────────────────────────┤ │
- * │ │ `listar`      │ É um endpoint por ser o último trecho da rota, sendo  │ │
- * │ │               │ relacionado a um método dentro da classe `Clientes`.  │ │
- * │ │               │ O nome do método, neste caso, é `listar()`.           │ │
+ * │ │ `listar`      │ Neste exemplo, corresponde ao endpoint configurado    │ │
+ * │ │               │ como @listar, associado ao método listar() da classe  │ │
+ * │ │               │ Clientes.                                             │ │
  * │ └───────────────┴───────────────────────────────────────────────────────┘ │
  * │                                                                           │
  * │ O domínio é sempre ignorado nesta composição.                             │

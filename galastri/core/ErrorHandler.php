@@ -607,10 +607,10 @@ final class ErrorHandler
      *
      * ---
      * @param bool|int $errorLevel  
-     * :: Nível recebido do PHP ou valor informado por quem chamou.
+     *    Nível recebido do PHP ou valor informado por quem chamou.
      *
      * @param mixed $default  
-     * :: Valor devolvido quando o nível não está na lista.
+     *    Valor devolvido quando o nível não está na lista.
      *
      * @return mixed Nome do nível ou o valor padrão recebido.
      */
@@ -677,10 +677,10 @@ final class ErrorHandler
      *
      * ---
      * @param string $message  
-     * :: Mensagem original da falha.
+     *    Mensagem original da falha.
      *
      * @param bool $displayValidationError  
-     * :: Autoriza mostrar esta mensagem ou não.
+     *    Autoriza mostrar esta mensagem ou não.
      *
      * @return string Mensagem original ou a mensagem genérica.
      */
@@ -742,7 +742,7 @@ final class ErrorHandler
      *
      * ---
      * @param int $line  
-     * :: Linha original da falha.
+     *    Linha original da falha.
      *
      * @return int Linha recebida ou zero quando os detalhes estão ocultos.
      */
@@ -801,7 +801,7 @@ final class ErrorHandler
      * 
      * ---
      * @param string $file  
-     * :: Caminho original do arquivo onde a falha ocorreu.
+     *    Caminho original do arquivo onde a falha ocorreu.
      *
      * @return string|null Caminho preparado ou null para ocultar o arquivo.
      */
@@ -861,7 +861,7 @@ final class ErrorHandler
      *
      * ---
      * @param array<int,array<string,mixed>> $trace  
-     * :: Histórico recebido pelo gerenciador.
+     *    Histórico recebido pelo gerenciador.
      *
      * @return array<int,array<string,mixed>> Histórico recebido ou um array
      * vazio.
@@ -934,26 +934,26 @@ final class ErrorHandler
      *
      * ---
      * @param int|string $code  
-     * :: Código que identifica a falha.
+     *    Código que identifica a falha.
      *
      * @param string $message  
-     * :: Mensagem original.
+     *    Mensagem original.
      *
      * @param string $file  
-     * :: Arquivo original da falha.
+     *    Arquivo original da falha.
      *
      * @param int $line  
-     * :: Linha original da falha.
+     *    Linha original da falha.
      *
      * @param array<int,array<string,mixed>> $trace  
-     * :: Histórico disponível para esta falha.
+     *    Histórico disponível para esta falha.
      *
      * @param bool $displayValidationError  
-     * :: Autorizador da classe `Validation` que opera como autorização
+     *    Autorizador da classe `Validation` que opera como autorização
      *    alternativa à da configuração de rota `displayErrors`.
      *
      * @param string|null $errorSource  
-     * :: Classificação da origem da falha. Será usada para escolher o status
+     *    Classificação da origem da falha. Será usada para escolher o status
      *    HTTP. Pode receber 'validation', 'authentication', 'permission' ou
      *    `null` quando não houver uma origem específica.
      *
@@ -1138,7 +1138,7 @@ final class ErrorHandler
      *
      * ---
      * @param array<string,mixed> $data 
-     * :: Dados já preparados para a resposta.
+     *    Dados já preparados para a resposta.
      *
      * @return void
      */
@@ -1218,7 +1218,7 @@ final class ErrorHandler
      *
      * ---
      * @param array<string,mixed> $data 
-     * :: Dados já preparados para a resposta.
+     *    Dados já preparados para a resposta.
      *
      * @return void
      */
@@ -1316,7 +1316,7 @@ final class ErrorHandler
      *
      * ---
      * @param array<string,mixed> $data 
-     * :: Dados já preparados para a resposta.
+     *    Dados já preparados para a resposta.
      *
      * @return void
      */
@@ -1540,25 +1540,25 @@ final class ErrorHandler
      * 
      * ---
      * @param int|string $code  
-     * :: Código original da falha.
+     *    Código original da falha.
      *
      * @param string $message  
-     * :: Mensagem original.
+     *    Mensagem original.
      *
      * @param string $file  
-     * :: Caminho original do arquivo.
+     *    Caminho original do arquivo.
      *
      * @param int $line  
-     * :: Linha original.
+     *    Linha original.
      *
      * @param array<int,array<string,mixed>> $trace
-     * :: Histórico disponível para o registro.
+     *    Histórico disponível para o registro.
      *
      * @param string $currentDate  
-     * :: Data usada no conteúdo e no nome do arquivo.
+     *    Data usada no conteúdo e no nome do arquivo.
      *
      * @param string $currentTime  
-     * :: Horário usado no conteúdo do registro.
+     *    Horário usado no conteúdo do registro.
      *
      * @return void
      */
@@ -1662,7 +1662,7 @@ final class ErrorHandler
      *
      * ---
      * @param string|null $errorSource  
-     * :: Classificação da falha: 'validation', 'authentication', 'permission'
+     *    Classificação da falha: 'validation', 'authentication', 'permission'
      *    ou null quando não houver uma classificação específica.
      *
      * @return int Status HTTP que deve acompanhar a resposta.

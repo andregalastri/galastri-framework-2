@@ -290,7 +290,7 @@ final class VarDump
      * 
      * ---
      * @param mixed ...$valueList  
-     * :: Valores que serão exibidos para depuração.
+     *    Valores que serão exibidos para depuração.
      *
      * @return void
      */
@@ -540,7 +540,7 @@ final class VarDump
      * 
      * ---
      * @param mixed ...$valueList  
-     * :: Valores que serão exibidos para depuração.
+     *    Valores que serão exibidos para depuração.
      * 
      * @return void
      */
@@ -633,7 +633,7 @@ final class VarDump
      * 
      * ---
      * @param mixed ...$valueList  
-     * :: Valores que serão depurados pelo var_dump().
+     *    Valores que serão depurados pelo var_dump().
      * 
      * @return string[] Textos produzidos, na ordem dos valores recebidos.
      */
@@ -723,10 +723,10 @@ final class VarDump
      * 
      * ---
      * @param string $regex  
-     * :: Expressão que descreve o trecho procurado.
+     *    Expressão que descreve o trecho procurado.
      * 
      * @param string $currentOutput  
-     * :: Texto do dump que estamos lendo.
+     *    Texto do dump que estamos lendo.
      * 
      * @return array<int,string>|false Trechos encontrados ou false.
      */
@@ -811,7 +811,7 @@ final class VarDump
      * 
      * ---
      * @param string $dump  
-     * :: Texto completo do dump que estamos lendo.
+     *    Texto completo do dump que estamos lendo.
      *
      * @return string|null HTML do valor lido ou null se não pudermos formatá-lo.
      */
@@ -977,10 +977,10 @@ final class VarDump
      * 
      * ---
      * @param string $currentoutput  
-     * :: Texto completo do dump que estamos lendo.
+     *    Texto completo do dump que estamos lendo.
      *
      * @param array<int,string> $matches  
-     * :: Capturas do cabeçalho da string.
+     *    Capturas do cabeçalho da string.
      *
      * @return string|null HTML da string ou null se a leitura não conferir.
      */
@@ -1081,10 +1081,10 @@ final class VarDump
      *
      * ---
      * @param string $currentOutput  
-     * :: Texto completo do dump que estamos lendo.
+     *    Texto completo do dump que estamos lendo.
      *
      * @param array<int,string> $matches  
-     * :: Capturas do cabeçalho do array.
+     *    Capturas do cabeçalho do array.
      *
      * @return string|null HTML do array ou null se a leitura falhar.
      */
@@ -1255,10 +1255,10 @@ final class VarDump
      * 
      * ---
      * @param string $currentOutput  
-     * :: Texto completo do dump que estamos lendo.
+     *    Texto completo do dump que estamos lendo.
      * 
      * @param array<int,string> $matches  
-     * :: Capturas do cabeçalho do objeto.
+     *    Capturas do cabeçalho do objeto.
      * 
      * @return string|null HTML do objeto ou null se a leitura falhar.
      */
@@ -1441,7 +1441,7 @@ final class VarDump
      * 
      * ---
      * @param array<int,string> $matches
-     * :: Capturas do tipo e do valor numérico.
+     *    Capturas do tipo e do valor numérico.
      * 
      * @return string HTML do valor numérico.
      */
@@ -1497,7 +1497,7 @@ final class VarDump
      *
      * ---
      * @param array<int,string> $matches  
-     * :: Capturas do valor booleano.
+     *    Capturas do valor booleano.
      *
      * @return string HTML do valor booleano.
      */
@@ -1563,7 +1563,7 @@ final class VarDump
      *
      * ---
      * @param array<int,string> $matches  
-     * :: Capturas do aviso de recursão.
+     *    Capturas do aviso de recursão.
      *
      * @return string HTML do aviso de recursão.
      */
@@ -1619,7 +1619,7 @@ final class VarDump
      *
      * ---
      * @param array<int,string> $matches  
-     * :: Capturas do aviso e do tipo declarado.
+     *    Capturas do aviso e do tipo declarado.
      *
      * @return string|null HTML do aviso ou null se a separação do tipo falhar.
      */
@@ -1751,7 +1751,7 @@ final class VarDump
      *
      * ---
      * @param array<int,string> $matches  
-     * :: Capturas das informações do recurso.
+     *    Capturas das informações do recurso.
      *
      * @return string HTML do recurso.
      */
@@ -1804,7 +1804,7 @@ final class VarDump
      * 
      * ---
      * @param array<int,string> $matches
-     * :: Capturas da identificação do caso.
+     *    Capturas da identificação do caso.
      * 
      * @return string HTML do caso de enum.
      */
@@ -1864,7 +1864,7 @@ final class VarDump
      * 
      * ---
      * @param array<int,string> $matches  
-     * :: Capturas do marcador UNKNOWN:0.
+     *    Capturas do marcador UNKNOWN:0.
      * 
      * @return string HTML do marcador de valor desconhecido.
      */
@@ -1969,10 +1969,10 @@ final class VarDump
      *
      * ---
      * @param string $class  
-     * :: Classes CSS que serão aplicadas ao trecho.
+     *    Classes CSS que serão aplicadas ao trecho.
      *
      * @param string $value  
-     * :: Texto que será exibido dentro do elemento.
+     *    Texto que será exibido dentro do elemento.
      *
      * @return string Elemento span com as classes e o texto preparado.
      */
@@ -2013,7 +2013,7 @@ final class VarDump
      *
      * ---
      * @param string $value  
-     * :: Texto que será preparado para exibição.
+     *    Texto que será preparado para exibição.
      *
      * @return string Texto com os caracteres especiais convertidos.
      */
@@ -2045,7 +2045,7 @@ final class VarDump
      *
      * ---
      * @param int $moves  
-     * :: Quantidade de bytes que será acrescentada à posição atual.
+     *    Quantidade de bytes que será acrescentada à posição atual.
      *
      * @return void
      */

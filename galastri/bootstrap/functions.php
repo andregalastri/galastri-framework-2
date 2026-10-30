@@ -51,7 +51,7 @@
  *
  * ---
  * @param mixed ...$values  
- * :: Valores que serão exibidos para depuração.
+ *    Valores que serão exibidos para depuração.
  * 
  * @return void
  */

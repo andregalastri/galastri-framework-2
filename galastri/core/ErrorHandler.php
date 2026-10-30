@@ -860,10 +860,11 @@ final class ErrorHandler
      *
      *
      * ---
-     * @param array<int,array<string,mixed>> $trace
+     * @param array<int,array<string,mixed>> $trace  
      * :: Histórico recebido pelo gerenciador.
      *
-     * @return array Histórico recebido ou um array vazio.
+     * @return array<int,array<string,mixed>> Histórico recebido ou um array
+     * vazio.
      */
     
     private static function getTrace(array $trace): array

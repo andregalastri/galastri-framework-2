@@ -132,7 +132,7 @@ final class Definition
      * Armazena o nome que identifica a configuração, como `output`, `timezone`,
      * etc. É basicamente o nome que informamos na configuração de rota ou
      * através da classe Config. Cada configuração precisa ter um nome
-     * exclusivo, mesmo quando pertencerem a contextos diferentes.
+     * exclusivo, mesmo quando pertencer a contextos diferentes.
      *
      * Também o usamos nas mensagens de erro para indicar qual configuração
      * recebeu uma definição ou um valor inválido.
@@ -572,7 +572,7 @@ final class Definition
      * _________________________________
      * @return array<string>  
      *    Retorna um `array` com os nomes dos tipos de dados permitidos ou um
-     *    array vazio quando não haver restrições.
+     *    array vazio quando não houver restrições.
      */
 
     public function getValidTypes(): array
@@ -600,7 +600,7 @@ final class Definition
      *
      * _________________________________
      * @param mixed<array> $values  
-     *   Lista dos tipos de dados probidos. O parâmetro aceita `mixed` para
+     *   Lista dos tipos de dados proibidos. O parâmetro aceita `mixed` para
      *   que possamos validar o tipo dentro do próprio método, sem conversões
      *   ou erros de tipo gerados pelo PHP. Neste caso aqui, precisa ser um
      *   `array`.
@@ -623,7 +623,7 @@ final class Definition
                     'invalidTypes',
                     'array',
                     Tools::typeOf($values),
-        ]
+                ]
             );
         }
 
@@ -669,7 +669,7 @@ final class Definition
      * _________________________________
      * @return array<string>  
      *    Retorna um `array` com os nomes dos tipos de dados proibidos ou um
-     *    array vazio quando não haver restrições.
+     *    array vazio quando não houver restrições.
      */
     
     public function getInvalidTypes(): array
@@ -718,7 +718,7 @@ final class Definition
             throw new Exception(
                 Message::get("DEFINITION_INVALID_TYPE"),
                 [
-                $this->getName(),
+                    $this->getName(),
                     'validValues',
                     'array',
                     Tools::typeOf($values),
@@ -775,10 +775,10 @@ final class Definition
     private function setInvalidValues(mixed $values): void
     {
         /**
-         * Precisamos conferir se recebemos um array, pois setValue() percorrerá
+         * Precisamos conferir se recebemos um array, pois setValue() consultará
          * essa lista para procurar o valor informado. Os elementos podem ter
-         * tipos diferentes: podemos definir uma configuração que aceite, por
-         * exemplo, tanto `false` quanto uma `string` específica.
+         * tipos diferentes: podemos proibir, por exemplo, tanto false quanto
+         * uma string específica.
          *
          * Por isso, aqui verificamos apenas se a lista é um `array`. Se não
          * for, lançamos uma exceção; se for, guardamos a lista em
@@ -792,7 +792,7 @@ final class Definition
             throw new Exception(
                 Message::get("DEFINITION_INVALID_TYPE"),
                 [
-                $this->getName(),
+                    $this->getName(),
                     'invalidValues',
                     'array',
                     Tools::typeOf($values),
@@ -907,7 +907,7 @@ final class Definition
      *    Expressão regular que define o formato proibido. O parâmetro aceita
      *    `mixed` para que possamos validar o tipo dentro do próprio método, sem
      *    conversões ou erros de tipo gerados pelo PHP. Neste caso aqui, precisa
-     *    ser uma `string`
+     *    ser uma `string`.
      * _________________________________
      * @return void
      */
@@ -927,7 +927,7 @@ final class Definition
             throw new Exception(
                 Message::get("DEFINITION_INVALID_TYPE"),
                 [
-                $this->getName(),
+                    $this->getName(),
                     'invalidRegex',
                     'string',
                     Tools::typeOf($value),
@@ -941,8 +941,8 @@ final class Definition
     /**
      * 🔶 CONSULTA DA EXPRESSÃO REGULAR PARA O FORMATO PROIBIDO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Retorna a expressão guardada em $INvalidRegex, permitindo que setValue()
-     * consulte o padrão ao qual o valor precisa corresponder.
+     * Retorna a expressão guardada em $invalidRegex, permitindo que setValue()
+     * consulte o padrão que identifica conteúdos proibidos.
      *
      *
      * _________________________________
@@ -976,7 +976,7 @@ final class Definition
      *
      *    O parâmetro aceita `mixed` para que possamos validar o tipo dentro do
      *    próprio método, sem conversões ou erros de tipo gerados pelo PHP.
-     *    Neste caso aqui, precisa ser uma `string`
+     *    Neste caso aqui, precisa ser uma `string`.
      * _________________________________
      * @return void
      */
@@ -1163,7 +1163,7 @@ final class Definition
                         $this->getName(),
                         $value,
                         $this->getValidRegex(),
-                ],
+                    ],
                     [
                         'testedValue' => $value,
                     ]
@@ -1220,7 +1220,7 @@ final class Definition
      * │ Por exemplo, podemos informar `'string'`, que faz com que ele teste  │
      * │ se o valor é exclusivamente uma `string`. Mas se informarmos         │
      * │ `['bool', 'string']` então o teste aceita que o valor seja tanto uma │
-     * │ string quando um booleano.                                           │
+     * │ string quanto um booleano.                                           │
      * └──────────────────────────────────────────────────────────────────────┘
      * 
      * 
@@ -1234,14 +1234,14 @@ final class Definition
      * ___________________________________________________________
      * @return bool
      *    Retorna `true` se o valor corresponder a pelo menos um dos tipos
-     *    informados ou `false`, Se nenhum corresponder.
+     *    informados ou `false`, se nenhum corresponder.
      */
 
     private function isOfType(array|string $types, mixed $value): bool
     {
         /**
-         * O método aceita que o parâmetro `$types` recebema apenas um tipo
-         * solto ou uma array com vários. Por isso, testamos o que foi recebido
+         * O método aceita que o parâmetro `$types` receba apenas um tipo
+         * solto ou um array com vários. Por isso, testamos o que foi recebido
          * neste parâmetro: se foi uma string solta, convertemos ela em um array
          * com um único valor. Se ele já for um array, então já estará tudo
          * certo.
@@ -1257,7 +1257,7 @@ final class Definition
         
         
         /**
-         * Testamos cada valor, comparando-o com os tipos permitidos.
+         * Comparamos o tipo do valor recebido com cada nome de tipo informado.
          * 
          * 💡 OBSERVAÇÃO
          * ┌─────────────────────────────────────────────────────────────┐

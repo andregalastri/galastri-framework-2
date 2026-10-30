@@ -636,13 +636,14 @@ final class VarDump
      * O método também é usado por `raw()`, que aproveita esses mesmos textos
      * para montar sua apresentação.
      *
-     * 
+     *
      * _________________________________
      * @param mixed ...$valueList  
      *    Valores que serão depurados pelo var_dump().
      * _________________________________
-     * @return string    
-     *    Textos produzidos, na ordem dos valores recebidos.
+     * @return array<string>  
+     *    Retorna um `array` com os textos produzidos, na ordem dos valores
+     *    recebidos.
      */
     
     private static function getVarDumpOutput(mixed ...$valueList): array

@@ -728,7 +728,7 @@ final class VarDump
      * @param string $currentOutput  
      * :: Texto do dump que estamos lendo.
      * 
-     * @return array<int, string>|false Trechos encontrados ou false.
+     * @return array<int,string>|false Trechos encontrados ou false.
      */
     
     private static function getMatches(string $regex, string $currentOutput): array|bool
@@ -979,7 +979,7 @@ final class VarDump
      * @param string $currentoutput  
      * :: Texto completo do dump que estamos lendo.
      *
-     * @param array<int, string> $matches  
+     * @param array<int,string> $matches  
      * :: Capturas do cabeçalho da string.
      *
      * @return string|null HTML da string ou null se a leitura não conferir.
@@ -1083,7 +1083,7 @@ final class VarDump
      * @param string $currentOutput  
      * :: Texto completo do dump que estamos lendo.
      *
-     * @param array<int, string> $matches  
+     * @param array<int,string> $matches  
      * :: Capturas do cabeçalho do array.
      *
      * @return string|null HTML do array ou null se a leitura falhar.
@@ -1257,7 +1257,7 @@ final class VarDump
      * @param string $currentOutput  
      * :: Texto completo do dump que estamos lendo.
      * 
-     * @param array<int, string> $matches  
+     * @param array<int,string> $matches  
      * :: Capturas do cabeçalho do objeto.
      * 
      * @return string|null HTML do objeto ou null se a leitura falhar.
@@ -1440,7 +1440,7 @@ final class VarDump
      *
      * 
      * ---
-     * @param array<int, string> $matches
+     * @param array<int,string> $matches
      * :: Capturas do tipo e do valor numérico.
      * 
      * @return string HTML do valor numérico.
@@ -1496,7 +1496,7 @@ final class VarDump
      *
      *
      * ---
-     * @param array<int, string> $matches  
+     * @param array<int,string> $matches  
      * :: Capturas do valor booleano.
      *
      * @return string HTML do valor booleano.
@@ -1562,7 +1562,7 @@ final class VarDump
      *
      *
      * ---
-     * @param array<int, string> $matches  
+     * @param array<int,string> $matches  
      * :: Capturas do aviso de recursão.
      *
      * @return string HTML do aviso de recursão.
@@ -1618,7 +1618,7 @@ final class VarDump
      *
      *
      * ---
-     * @param array<int, string> $matches  
+     * @param array<int,string> $matches  
      * :: Capturas do aviso e do tipo declarado.
      *
      * @return string|null HTML do aviso ou null se a separação do tipo falhar.
@@ -1750,7 +1750,7 @@ final class VarDump
      *
      *
      * ---
-     * @param array<int, string> $matches  
+     * @param array<int,string> $matches  
      * :: Capturas das informações do recurso.
      *
      * @return string HTML do recurso.
@@ -1803,7 +1803,7 @@ final class VarDump
      *
      * 
      * ---
-     * @param array<int, string> $matches
+     * @param array<int,string> $matches
      * :: Capturas da identificação do caso.
      * 
      * @return string HTML do caso de enum.
@@ -1863,7 +1863,7 @@ final class VarDump
      *
      * 
      * ---
-     * @param array<int, string> $matches  
+     * @param array<int,string> $matches  
      * :: Capturas do marcador UNKNOWN:0.
      * 
      * @return string HTML do marcador de valor desconhecido.

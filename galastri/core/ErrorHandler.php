@@ -860,7 +860,7 @@ final class ErrorHandler
      *
      *
      * ---
-     * @param array $trace  
+     * @param array<int,array<string,mixed>> $trace
      * :: Histórico recebido pelo gerenciador.
      *
      * @return array Histórico recebido ou um array vazio.
@@ -944,7 +944,7 @@ final class ErrorHandler
      * @param int $line  
      * :: Linha original da falha.
      *
-     * @param array $trace  
+     * @param array<int,array<string,mixed>> $trace  
      * :: Histórico disponível para esta falha.
      *
      * @param bool $displayValidationError  
@@ -1136,7 +1136,7 @@ final class ErrorHandler
      *
      *
      * ---
-     * @param array $data  
+     * @param array<string,mixed> $data 
      * :: Dados já preparados para a resposta.
      *
      * @return void
@@ -1216,7 +1216,7 @@ final class ErrorHandler
      *
      *
      * ---
-     * @param array $data  
+     * @param array<string,mixed> $data 
      * :: Dados já preparados para a resposta.
      *
      * @return void
@@ -1314,7 +1314,7 @@ final class ErrorHandler
      *
      *
      * ---
-     * @param array $data  
+     * @param array<string,mixed> $data 
      * :: Dados já preparados para a resposta.
      *
      * @return void
@@ -1550,7 +1550,7 @@ final class ErrorHandler
      * @param int $line  
      * :: Linha original.
      *
-     * @param array $trace  
+     * @param array<int,array<string,mixed>> $trace
      * :: Histórico disponível para o registro.
      *
      * @param string $currentDate  

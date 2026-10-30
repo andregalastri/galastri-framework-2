@@ -1210,8 +1210,8 @@ final class Galastri
      *
      *
      * ---
-     * @return array Retorna um `array` contendo toda a resposta reunida pelo
-     * controller.
+     * @return array<int|string,mixed> Retorna um `array` contendo toda a
+     * resposta reunida pelo controller.
      */
 
     public static function getControllerResponse(): array
@@ -1244,7 +1244,7 @@ final class Galastri
      *
      *
      * ---
-     * @return array Retorna um `array` com as informações de um arquivo
+     * @return array<int,string> Retorna um `array` com as informações de um arquivo
      * preparado no controller ou vazio se não houver nada preparado.
      */
 

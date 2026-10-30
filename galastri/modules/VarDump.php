@@ -61,9 +61,11 @@ final class VarDump
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                               CONSTANTES                              ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     * 
-     * 
-     * 
+     */
+
+    
+
+    /**
      * 🟢 ARQUIVO DE ESTILOS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Define o caminho absoluto da folha de estilos utilizada na apresentação
@@ -75,7 +77,7 @@ final class VarDump
      * 🔗 LINK: /galastri/misc/vardump.css
      *
      * 
-     * ---
+     * _________________________________
      * @var string
      */
     
@@ -93,7 +95,7 @@ final class VarDump
      * para HTML.
      *
      * 
-     * ---
+     * _________________________________
      * @var int
      */
     
@@ -105,9 +107,11 @@ final class VarDump
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                              PROPRIEDADES                             ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     * 
-     * 
-     * 
+     */
+
+    
+
+    /**
      * 🟢 NÍVEL DE CONSULTA NA PILHA DE CHAMADAS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Indica quantos níveis devem ser avançados na pilha de chamadas para
@@ -119,7 +123,7 @@ final class VarDump
      * pelo desenvolvedor e não pelo `vardump()`.
      *
      * 
-     * ---
+     * _________________________________
      * @var int
      */
     
@@ -138,7 +142,7 @@ final class VarDump
      * processamento, ele continue a partir da posição armazenada aqui.
      *
      * 
-     * ---
+     * _________________________________
      * @var int
      */
     
@@ -178,7 +182,7 @@ final class VarDump
      * deixamos a propriedade vazia.
      *
      * 
-     * ---
+     * _________________________________
      * @var string
      */
     
@@ -209,7 +213,7 @@ final class VarDump
      * └───────────────────────────────────────────────────────────────────────┘
      *
      * 
-     * ---
+     * _________________________________
      * @var int
      */
     
@@ -221,9 +225,11 @@ final class VarDump
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                                 MÉTODOS                               ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     *
-     *
-     *
+     */
+
+    
+
+    /**
      * 🟢 CLASSE ESTÁTICA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Os recursos desta classe são acessados diretamente por chamadas como
@@ -288,10 +294,10 @@ final class VarDump
      * └───────────────────────────────────────────────────────────────────────┘
      *
      * 
-     * ---
+     * _________________________________
      * @param mixed ...$valueList  
      *    Valores que serão exibidos para depuração.
-     *
+     * _________________________________
      * @return void
      */
     
@@ -538,10 +544,10 @@ final class VarDump
      * var_dump() do PHP.
      *
      * 
-     * ---
+     * _________________________________
      * @param mixed ...$valueList  
      *    Valores que serão exibidos para depuração.
-     * 
+     * _________________________________
      * @return void
      */
     
@@ -605,7 +611,7 @@ final class VarDump
      * depois reinicia a propriedade para não afetar as chamadas seguintes.
      *
      * 
-     * ---
+     * _________________________________
      * @return void
      */
     
@@ -631,11 +637,12 @@ final class VarDump
      * para montar sua apresentação.
      *
      * 
-     * ---
+     * _________________________________
      * @param mixed ...$valueList  
      *    Valores que serão depurados pelo var_dump().
-     * 
-     * @return string[] Textos produzidos, na ordem dos valores recebidos.
+     * _________________________________
+     * @return string    
+     *    Textos produzidos, na ordem dos valores recebidos.
      */
     
     private static function getVarDumpOutput(mixed ...$valueList): array
@@ -721,14 +728,15 @@ final class VarDump
      * tipo e o tamanho `5`, que será necessário para ler o valor da string.
      *
      * 
-     * ---
+     * _________________________________
      * @param string $regex  
      *    Expressão que descreve o trecho procurado.
      * 
      * @param string $currentOutput  
      *    Texto do dump que estamos lendo.
-     * 
-     * @return array<int,string>|false Trechos encontrados ou false.
+     * _________________________________
+     * @return array<int,string>|false  
+     *    Trechos encontrados ou false.
      */
     
     private static function getMatches(string $regex, string $currentOutput): array|bool
@@ -809,11 +817,12 @@ final class VarDump
      * profundidade, retornamos null.
      *
      * 
-     * ---
+     * _________________________________
      * @param string $dump  
      *    Texto completo do dump que estamos lendo.
-     *
-     * @return string|null HTML do valor lido ou null se não pudermos formatá-lo.
+     * _________________________________
+     * @return string|null  
+     *    HTML do valor lido ou null se não pudermos formatá-lo.
      */
     
     private static function applyFormats(string $dump): ?string
@@ -975,14 +984,15 @@ final class VarDump
      * com estilos separados para o valor e para a indicação do tipo.
      *
      * 
-     * ---
+     * _________________________________
      * @param string $currentoutput  
      *    Texto completo do dump que estamos lendo.
      *
      * @param array<int,string> $matches  
      *    Capturas do cabeçalho da string.
-     *
-     * @return string|null HTML da string ou null se a leitura não conferir.
+     * _________________________________
+     * @return string|null  
+     *    HTML da string ou null se a leitura não conferir.
      */
     
     private static function stringFormatting(string $currentoutput, array $matches): ?string
@@ -1079,14 +1089,15 @@ final class VarDump
      * formatação.
      *
      *
-     * ---
+     * _________________________________
      * @param string $currentOutput  
      *    Texto completo do dump que estamos lendo.
      *
      * @param array<int,string> $matches  
      *    Capturas do cabeçalho do array.
-     *
-     * @return string|null HTML do array ou null se a leitura falhar.
+     * _________________________________
+     * @return string|null  
+     *    HTML do array ou null se a leitura falhar.
      */
     
     private static function arrayFormatting(string $currentOutput, array $matches): ?string
@@ -1253,14 +1264,15 @@ final class VarDump
      * para aplicar os estilos que ajudam a diferenciá-las na apresentação.
      *
      * 
-     * ---
+     * _________________________________
      * @param string $currentOutput  
      *    Texto completo do dump que estamos lendo.
      * 
      * @param array<int,string> $matches  
      *    Capturas do cabeçalho do objeto.
-     * 
-     * @return string|null HTML do objeto ou null se a leitura falhar.
+     * _________________________________
+     * @return string|null  
+     *    HTML do objeto ou null se a leitura falhar.
      */
     
     private static function objectFormatting(string $currentOutput, array $matches): ?string
@@ -1439,11 +1451,12 @@ final class VarDump
      * como `INF`, `-INF` e `NAN`, sem tentar convertê-las em outro número.
      *
      * 
-     * ---
+     * _________________________________
      * @param array<int,string> $matches
      *    Capturas do tipo e do valor numérico.
-     * 
-     * @return string HTML do valor numérico.
+     * _________________________________
+     * @return string  
+     *    HTML do valor numérico.
      */
     
     private static function numericFormatting(array $matches): ?string
@@ -1495,11 +1508,12 @@ final class VarDump
      * dois ao conferir os resultados da depuração.
      *
      *
-     * ---
+     * _________________________________
      * @param array<int,string> $matches  
      *    Capturas do valor booleano.
-     *
-     * @return string HTML do valor booleano.
+     * _________________________________
+     * @return string  
+     *    HTML do valor booleano.
      */
     
     private static function booleanFormatting(array $matches): ?string
@@ -1561,11 +1575,12 @@ final class VarDump
      * aplicamos seu estilo para deixá-lo visível na depuração.
      *
      *
-     * ---
+     * _________________________________
      * @param array<int,string> $matches  
      *    Capturas do aviso de recursão.
-     *
-     * @return string HTML do aviso de recursão.
+     * _________________________________
+     * @return string  
+     *    HTML do aviso de recursão.
      */
     
     private static function recursionFormatting(array $matches): ?string
@@ -1617,11 +1632,12 @@ final class VarDump
      * sinais que ligam essas partes.
      *
      *
-     * ---
+     * _________________________________
      * @param array<int,string> $matches  
      *    Capturas do aviso e do tipo declarado.
-     *
-     * @return string|null HTML do aviso ou null se a separação do tipo falhar.
+     * _________________________________
+     * @return string|null  
+     *    HTML do aviso ou null se a separação do tipo falhar.
      */
     
     private static function uninitializedFormatting(array $matches): ?string
@@ -1749,11 +1765,12 @@ final class VarDump
      * └───────────────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
+     * _________________________________
      * @param array<int,string> $matches  
      *    Capturas das informações do recurso.
-     *
-     * @return string HTML do recurso.
+     * _________________________________
+     * @return string  
+     *    HTML do recurso.
      */
     
     private static function resourceFormatting(array $matches): ?string
@@ -1802,11 +1819,12 @@ final class VarDump
      * aplicando os estilos próprios dessa apresentação.
      *
      * 
-     * ---
+     * _________________________________
      * @param array<int,string> $matches
      *    Capturas da identificação do caso.
-     * 
-     * @return string HTML do caso de enum.
+     * _________________________________
+     * @return string  
+     *    HTML do caso de enum.
      */
     
     private static function enumFormatting(array $matches): ?string
@@ -1862,11 +1880,12 @@ final class VarDump
      * continuar mostrando a indicação que veio do PHP.
      *
      * 
-     * ---
+     * _________________________________
      * @param array<int,string> $matches  
      *    Capturas do marcador UNKNOWN:0.
-     * 
-     * @return string HTML do marcador de valor desconhecido.
+     * _________________________________
+     * @return string  
+     *    HTML do marcador de valor desconhecido.
      */
     
     private static function unknownFormatting(array $matches): ?string
@@ -1920,8 +1939,9 @@ final class VarDump
      * capturas de uma expressão regular para montar sua apresentação.
      *
      * 
-     * ---
-     * @return string HTML do valor null.
+     * _________________________________
+     * @return string  
+     *    HTML do valor null.
      */
     
     private static function nullFormatting(): ?string
@@ -1967,14 +1987,15 @@ final class VarDump
      * conteúdo depurado não seja interpretado como HTML da página.
      *
      *
-     * ---
+     * _________________________________
      * @param string $class  
      *    Classes CSS que serão aplicadas ao trecho.
      *
      * @param string $value  
      *    Texto que será exibido dentro do elemento.
-     *
-     * @return string Elemento span com as classes e o texto preparado.
+     * _________________________________
+     * @return string  
+     *    Elemento span com as classes e o texto preparado.
      */
     
     private static function applyHtml(string $class, string $value): string
@@ -2011,11 +2032,12 @@ final class VarDump
      * conteúdo depurado.
      *
      *
-     * ---
+     * _________________________________
      * @param string $value  
      *    Texto que será preparado para exibição.
-     *
-     * @return string Texto com os caracteres especiais convertidos.
+     * _________________________________
+     * @return string  
+     *    Texto com os caracteres especiais convertidos.
      */
     
     private static function escapeHtml(string $value): string
@@ -2043,10 +2065,10 @@ final class VarDump
      * interno também deixa o caminho pronto para quem continuar depois dele.
      *
      *
-     * ---
+     * _________________________________
      * @param int $moves  
      *    Quantidade de bytes que será acrescentada à posição atual.
-     *
+     * _________________________________
      * @return void
      */
     
@@ -2068,7 +2090,7 @@ final class VarDump
      * anterior.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
     
@@ -2090,7 +2112,7 @@ final class VarDump
      * deixa a propriedade pronta para as próximas chamadas.
      *
      * 
-     * ---
+     * _________________________________
      * @return void
      */
     

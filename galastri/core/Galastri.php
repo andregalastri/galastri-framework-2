@@ -91,9 +91,11 @@ final class Galastri
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                              CONSTANTES                               ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     *
-     *
-     *
+     */
+
+    
+
+    /**
      * 🟢 CLASSE BASE DOS CONTROLLERS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Armazena o nome completo da classe base dos controllers.
@@ -107,7 +109,7 @@ final class Galastri
      * framework interrompe o processamento com uma exceção.
      *
      *
-     * ---
+     * _________________________________
      * @var string
      */
 
@@ -132,7 +134,7 @@ final class Galastri
      * └───────────────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
+     * _________________________________
      * @var string
      */
 
@@ -144,9 +146,11 @@ final class Galastri
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                             PROPRIEDADES                              ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     *
-     *
-     *
+     */
+
+
+
+    /**
      * 🟢 NOME COMPLETO DO CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Armazena o nome completo da classe do controller que atenderá a
@@ -171,7 +175,7 @@ final class Galastri
      * mesma classe, sem precisar montar essa informação novamente a cada uso.
      *
      *
-     * ---
+     * _________________________________
      * @var string
      */
 
@@ -202,7 +206,7 @@ final class Galastri
      * código da aplicação.
      *
      *
-     * ---
+     * _________________________________
      * @var string
      */
 
@@ -236,7 +240,7 @@ final class Galastri
      * adicional armazenado aqui e chamá-lo se a associação for válida.
      *
      *
-     * ---
+     * _________________________________
      * @var string
      */
 
@@ -263,7 +267,7 @@ final class Galastri
      * caso, a execução não prossegue.
      *
      *
-     * ---
+     * _________________________________
      * @var bool
      */
 
@@ -299,7 +303,7 @@ final class Galastri
      * haverá a chamada adicional, depois da execução do método da rota.
      *
      *
-     * ---
+     * _________________________________
      * @var bool
      */
 
@@ -325,7 +329,7 @@ final class Galastri
      * resposta.
      *
      *
-     * ---
+     * _________________________________
      * @var string
      */
 
@@ -365,9 +369,11 @@ final class Galastri
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                                MÉTODOS                                ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     *
-     *
-     *
+     */
+
+    
+
+    /**
      * 🟢 CLASSE ESTÁTICA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Os recursos desta classe são acessados diretamente por chamadas como
@@ -396,7 +402,7 @@ final class Galastri
      * fuso quando precisar trabalhar com datas e horários.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 
@@ -440,7 +446,7 @@ final class Galastri
      * └───────────────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 
@@ -482,7 +488,7 @@ final class Galastri
      * durante uma manutenção, por exemplo.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 
@@ -535,7 +541,7 @@ final class Galastri
      * invalidade impede o prosseguimento da execução do código.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 
@@ -589,7 +595,7 @@ final class Galastri
      * mesmo tratamento.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 
@@ -656,7 +662,7 @@ final class Galastri
      * tag configurada necessária.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
     private static function checkAuthentication(): void
@@ -737,7 +743,7 @@ final class Galastri
      * └───────────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 
@@ -772,7 +778,7 @@ final class Galastri
      * a requisição pode continuar caso ele não exista.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 
@@ -878,7 +884,7 @@ final class Galastri
      * e os métodos disponíveis na classe precisam estar de acordo.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 
@@ -959,7 +965,7 @@ final class Galastri
      * executado ANTES do método principal da rota.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 
@@ -1092,7 +1098,7 @@ final class Galastri
      * `getControllerFileContents()` recuperam os dados do controller.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 
@@ -1132,7 +1138,7 @@ final class Galastri
      * para chamar seu método estático `run()`.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 
@@ -1163,9 +1169,10 @@ final class Galastri
      * realizar trabalhos que dependem do controller.
      *
      *
-     * ---
-     * @return bool Retorna `true` se há um controller disponível. Se não,
-     * retorna `false`.
+     * _________________________________
+     * @return bool  
+     *    Retorna `true` se há um controller disponível. Se não, retorna
+     *    `false`.
      */
 
     public static function controllerExists(): bool
@@ -1187,9 +1194,10 @@ final class Galastri
      * false.
      *
      *
-     * ---
-     * @return bool Retorna `true` se o método adicional associado à requisição
-     * HTTP existe. Se não, retorna `false`.
+     * _________________________________
+     * @return bool  
+     *    Retorna `true` se o método adicional associado à requisição HTTP
+     *    existe. Se não, retorna `false`.
      */
 
     public static function httpMethodExists(): bool
@@ -1209,9 +1217,9 @@ final class Galastri
      * consultar esses dados através de Galastri.
      *
      *
-     * ---
-     * @return array<int|string,mixed> Retorna um `array` contendo toda a
-     * resposta reunida pelo controller.
+     * _________________________________
+     * @return array<int|string,mixed>  
+     *    Retorna um `array` contendo toda a resposta reunida pelo controller.
      */
 
     public static function getControllerResponse(): array
@@ -1243,9 +1251,10 @@ final class Galastri
      * vazio.
      *
      *
-     * ---
-     * @return array<int,string> Retorna um `array` com as informações de um arquivo
-     * preparado no controller ou vazio se não houver nada preparado.
+     * _________________________________
+     * @return array<int,string>  
+     *    Retorna um `array` com as informações de um arquivo preparado no
+     *    controller ou vazio se não houver nada preparado.
      */
 
     public static function getControllerFileContents(): array
@@ -1266,9 +1275,10 @@ final class Galastri
      *
      * Apesar do nome do método, o valor inclui o namespace e o nome da classe.
      *
-     * ---
-     * @return string Retorna uma `string` com o nome completo da classe do
-     * controller, incluindo o namespace.
+     * _________________________________
+     * @return string  
+     *    Retorna uma `string` com o nome completo da classe do controller,
+     *    incluindo o namespace.
      */
 
     public static function getControllerNamespace(): string
@@ -1288,9 +1298,10 @@ final class Galastri
      * deve chamar.
      *
      *
-     * ---
-     * @return string Retorna uma `string` com o nome do método do controller
-     * escolhido para atender à rota.
+     * _________________________________
+     * @return string  
+     *    Retorna uma `string` com o nome do método do controller escolhido para
+     *    atender à rota.
      */
 
     public static function getControllerMethodName(): string
@@ -1309,9 +1320,10 @@ final class Galastri
      * Quando não há associação, o nome permanece uma string vazia.
      *
      *
-     * ---
-     * @return string Retorna uma `string` com o nome do método adicional
-     * associado à requisição HTTP ou uma string vazia quando não há associação.
+     * _________________________________
+     * @return string  
+     *    Retorna uma `string` com o nome do método adicional associado à
+     *    requisição HTTP ou uma string vazia quando não há associação.
      */
 
     public static function getControllerHttpMethodName(): string
@@ -1334,7 +1346,7 @@ final class Galastri
      * conseguimos acompanhar como essas partes trabalham juntas.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 

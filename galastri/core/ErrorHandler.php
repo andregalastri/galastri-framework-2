@@ -92,9 +92,9 @@ final class ErrorHandler
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                              CONSTANTES                               ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     *
-     *
-     *
+     */
+    
+    /**
      * 🟢 CAMINHO DO ARQUIVO DE LOG
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Define onde os registros de erro serão guardados. O trecho {{}} é um
@@ -111,21 +111,31 @@ final class ErrorHandler
      * └───────────────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
+     * _________________________________
      * @var string
      */
     
     const PATH_LOG = PROJECT_DIR.'/logs/ErrorHandler-{{}}.log';
 
+    
+    
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                             PROPRIEDADES                              ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     * 
+     * Esta classe não possui propriedades
+     */
 
+    
 
     /**
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                                MÉTODOS                                ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     *
-     *
-     *
+     */
+    
+    /**
      * 🟢 CLASSE ESTÁTICA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Os recursos desta classe são acessados diretamente por chamadas como
@@ -157,7 +167,7 @@ final class ErrorHandler
      * tratamentos disponíveis.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
     
@@ -187,7 +197,7 @@ final class ErrorHandler
      * encaminhamos as informações para `printError()`.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
     
@@ -305,7 +315,7 @@ final class ErrorHandler
      * └───────────────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
 
@@ -500,7 +510,7 @@ final class ErrorHandler
      * de outro tipo, não fazemos nada e a execução se encerra normalmente.
      *
      *
-     * ---
+     * _________________________________
      * @return void
      */
     
@@ -605,13 +615,13 @@ final class ErrorHandler
      * quem chamou. Se nenhum padrão foi passado, esse retorno será `false`.
      *
      *
-     * ---
+     * _________________________________
      * @param bool|int $errorLevel  
      *    Nível recebido do PHP ou valor informado por quem chamou.
      *
      * @param mixed $default  
      *    Valor devolvido quando o nível não está na lista.
-     *
+     * _________________________________
      * @return mixed Nome do nível ou o valor padrão recebido.
      */
     
@@ -675,13 +685,13 @@ final class ErrorHandler
      * caminho original do arquivo.
      *
      *
-     * ---
+     * _________________________________
      * @param string $message  
      *    Mensagem original da falha.
      *
      * @param bool $displayValidationError  
      *    Autoriza mostrar esta mensagem ou não.
-     *
+     * _________________________________
      * @return string Mensagem original ou a mensagem genérica.
      */
     
@@ -740,10 +750,10 @@ final class ErrorHandler
      * linha original.
      *
      *
-     * ---
+     * _________________________________
      * @param int $line  
      *    Linha original da falha.
-     *
+     * _________________________________
      * @return int Linha recebida ou zero quando os detalhes estão ocultos.
      */
     
@@ -799,10 +809,10 @@ final class ErrorHandler
      * mensagem original.
      *
      * 
-     * ---
+     * _________________________________
      * @param string $file  
      *    Caminho original do arquivo onde a falha ocorreu.
-     *
+     * _________________________________
      * @return string|null Caminho preparado ou null para ocultar o arquivo.
      */
     
@@ -859,10 +869,10 @@ final class ErrorHandler
      * histórico.
      *
      *
-     * ---
+     * _________________________________
      * @param array<int,array<string,mixed>> $trace  
      *    Histórico recebido pelo gerenciador.
-     *
+     * _________________________________
      * @return array<int,array<string,mixed>> Histórico recebido ou um array
      * vazio.
      */
@@ -932,7 +942,7 @@ final class ErrorHandler
      * └───────────────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
+     * _________________________________
      * @param int|string $code  
      *    Código que identifica a falha.
      *
@@ -956,7 +966,7 @@ final class ErrorHandler
      *    Classificação da origem da falha. Será usada para escolher o status
      *    HTTP. Pode receber 'validation', 'authentication', 'permission' ou
      *    `null` quando não houver uma origem específica.
-     *
+     * _________________________________
      * @return void
      */
     
@@ -1136,10 +1146,10 @@ final class ErrorHandler
      * quebras de linha para facilitar sua leitura.
      *
      *
-     * ---
+     * _________________________________
      * @param array<string,mixed> $data 
      *    Dados já preparados para a resposta.
-     *
+     * _________________________________
      * @return void
      */
     
@@ -1216,10 +1226,10 @@ final class ErrorHandler
      * escritas, sem que elas alterem a apresentação da página.
      *
      *
-     * ---
+     * _________________________________
      * @param array<string,mixed> $data 
      *    Dados já preparados para a resposta.
-     *
+     * _________________________________
      * @return void
      */
     
@@ -1314,10 +1324,10 @@ final class ErrorHandler
      * └──────────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
+     * _________________________________
      * @param array<string,mixed> $data 
      *    Dados já preparados para a resposta.
-     *
+     * _________________________________
      * @return void
      */
     
@@ -1538,7 +1548,7 @@ final class ErrorHandler
      * deixando as falhas mais recentes antes das anteriores.
      *
      * 
-     * ---
+     * _________________________________
      * @param int|string $code  
      *    Código original da falha.
      *
@@ -1559,7 +1569,7 @@ final class ErrorHandler
      *
      * @param string $currentTime  
      *    Horário usado no conteúdo do registro.
-     *
+     * _________________________________
      * @return void
      */
     
@@ -1660,11 +1670,11 @@ final class ErrorHandler
      * └───────────────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
+     * _________________________________
      * @param string|null $errorSource  
      *    Classificação da falha: 'validation', 'authentication', 'permission'
      *    ou null quando não houver uma classificação específica.
-     *
+     * _________________________________
      * @return int Status HTTP que deve acompanhar a resposta.
      */
 

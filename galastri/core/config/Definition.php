@@ -22,7 +22,7 @@
 /**
  * 🟢 NAMESPACE DA CLASSE
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * `Definition` pertence ao núcleo do framework.
+ * Definition pertence ao núcleo do framework.
  */
 
 namespace galastri\core\config;
@@ -89,9 +89,11 @@ final class Definition
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                              CONSTANTES                               ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     *
-     *
-     *
+     */
+
+    
+
+    /**
      * 🟢 CONTEXTOS DE CONFIGURAÇÃO PERMITIDOS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Reúne os nomes de contexto que podemos atribuir a uma configuração.
@@ -107,7 +109,7 @@ final class Definition
      * exceção.
      *
      *
-     * ---
+     * _________________________________
      * @var array
      */
     private const ALLOWED_CONFIG_CONTEXT = [
@@ -120,9 +122,11 @@ final class Definition
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                             PROPRIEDADES                              ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     *
-     *
-     *
+     */
+
+    
+
+    /**
      * 🟢 NOME DA CONFIGURAÇÃO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Armazena o nome que identifica a configuração, como `output`, `timezone`,
@@ -133,6 +137,8 @@ final class Definition
      * Também o usamos nas mensagens de erro para indicar qual configuração
      * recebeu uma definição ou um valor inválido.
      *
+     * 
+     * _________________________________
      * @var string
      */
     
@@ -148,14 +154,16 @@ final class Definition
      *
      * Durante a criação do objeto, é atribuído o valor padrão definido no
      * arquivo de definição das configurações. Depois, pode ser atualizado
-     * através de `Config::setValue()`, desde que o novo valor passe pelas
-     * regras de validação.
+     * através de `Config::set()`, desde que o novo valor passe pelas regras de
+     * validação.
      *
      * Usamos o tipo de dado `mixed` porque cada configuração pode trabalhar com
      * um tipo diferente. Uma configuração como `offline` guarda um booleano,
      * enquanto `projectName` guarda uma string. As regras de cada objeto é que
      * determinam quais tipos ele aceita.
      *
+     * 
+     * _________________________________
      * @var mixed
      */
     
@@ -178,6 +186,8 @@ final class Definition
      * Passar por essa verificação ainda exige que o valor respeite as demais
      * regras da configuração.
      *
+     * 
+     * _________________________________
      * @var array
      */
 
@@ -199,6 +209,8 @@ final class Definition
      * aparecer tanto em `$validTypes` quanto aqui, seu uso será rejeitado pela
      * verificação dos tipos proibidos.
      *
+     * 
+     * _________________________________
      * @var array
      */
 
@@ -212,7 +224,7 @@ final class Definition
      * Armazena uma lista com os valores que a configuração pode receber.
      *
      * Aqui limitamos o conteúdo aceito. A configuração `output`, por exemplo,
-     * permite o tipo `string`, mas também restringe seu valor à uma lista de
+     * permite o tipo `string`, mas também restringe seu valor a uma lista de
      * valores, que podem ser 'view', 'file' ou 'json'.
      *
      * A comparação considera tanto o conteúdo quanto o tipo do dado. Portanto,
@@ -220,6 +232,8 @@ final class Definition
      *
      * Quando a lista está vazia, essa regra não limita os valores disponíveis.
      *
+     * 
+     * _________________________________
      * @var array
      */
 
@@ -235,13 +249,15 @@ final class Definition
      *
      * Podemos usar essa regra quando queremos impedir valores específicos sem
      * precisar listar todas as possibilidades aceitas. Por exemplo, uma lista
-     * contendo `[0, 1, 2]` proíbe os inteiro zero, um e dois.
+     * contendo `[0, 1, 2]` proíbe os inteiros zero, um e dois.
      *
      * Assim como em `$validValues`, a comparação considera o tipo do dado.
      * Nesse exemplo, a `string` `'0'` não seria rejeitada por essa lista.
      *
      * Quando está vazia, não há valores proibidos por essa regra.
      *
+     * 
+     * _________________________________
      * @var array
      */
 
@@ -252,7 +268,7 @@ final class Definition
     /**
      * 🟢 EXPRESSÃO REGULAR PARA O FORMATO PERMITIDO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Armazena uma expressão regular REGEX que o valor precisa corresponder
+     * Armazena uma expressão regular REGEX à qual o valor precisa corresponder
      * para ser aceito.
      *
      * Essa regra é útil quando precisamos verificar um formato, como o caminho
@@ -264,6 +280,8 @@ final class Definition
      * recebido é diferente de uma string vazia. Se o valor NÃO corresponder ao
      * que foi definido, lançamos uma exceção.
      *
+     * 
+     * _________________________________
      * @var string
      */
     
@@ -284,6 +302,8 @@ final class Definition
      * Essa verificação também depende de a expressão estar preenchida e de o
      * valor recebido ser diferente de uma string vazia.
      *
+     * 
+     * _________________________________
      * @var string
      */
     
@@ -301,6 +321,8 @@ final class Definition
      * framework. Por exemplo, `output` pertence ao contexto `route`, enquanto
      * `httpMethod` pertence ao contexto `endpoint`.
      *
+     * 
+     * _________________________________
      * @var string
      */
     
@@ -312,9 +334,11 @@ final class Definition
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                                MÉTODOS                                ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     *
-     *
-     *
+     */
+
+    
+
+    /**
      * 🟢 PREPARAÇÃO DA CONFIGURAÇÃO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * O construtor prepara o objeto que representará uma configuração.
@@ -326,12 +350,12 @@ final class Definition
      * receber alterações e fornecer seu valor quando for consultada.
      * 
      * 
-     * ---
+     * _________________________________
      * @param string $name
-     * :: Nome que identifica a configuração, como `output` ou `offline`.
+     *    Nome que identifica a configuração, como `output` ou `offline`.
      * 
      * @param array<string,mixed> $definitions
-     * :: Array com as regras de validação, o contexto e o valor padrão da
+     *    Array com as regras de validação, o contexto e o valor padrão da
      *    configuração.
      */
     
@@ -354,6 +378,7 @@ final class Definition
          * tipos precisam ser `arrays` contendo os tipos, e o contexto
          * precisa estar entre aqueles reconhecidos pelo framework.
          */
+        
         $this->setValidTypes($definitions['validTypes']);
         $this->setInvalidTypes($definitions['invalidTypes']);
         $this->setValidValues($definitions['validValues']);
@@ -371,6 +396,7 @@ final class Definition
          * posteriores. Afinal, o valor inicial também precisa respeitar a
          * definição da configuração.
          */
+        
         $this->setValue($definitions['defaultValue']);
         
         /**
@@ -398,13 +424,13 @@ final class Definition
      * └───────────────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
+     * _________________________________
      * @param mixed<string> $value  
-     *   Nome que será atribuído à configuração. O parâmetro aceita `mixed` para
-     *   que possamos validar o tipo dentro do próprio método, sem conversões ou
-     *   erros de tipo gerados pelo PHP. Neste caso aqui, precisa ser uma
-     *   `string`.
-     *
+     *     Nome que será atribuído à configuração. O parâmetro aceita `mixed`
+     *     para que possamos validar o tipo dentro do próprio método, sem
+     *     conversões ou erros de tipo gerados pelo PHP. Neste caso aqui,
+     *     precisa ser uma `string`.
+     * _________________________________
      * @return void
      */
     
@@ -435,15 +461,16 @@ final class Definition
     
     /**
      * 🔶 CONSULTA DO NOME DA CONFIGURAÇÃO
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Retorna o nome guardado na propriedade `$name`.
      *
      * Como o nome já foi conferido durante sua atribuição, aqui apenas
      * recuperamos o valor armazenado.
      *
      *
-     * ---
-     * @return string Retorna uma `string` com o nome da configuração.
+     * _________________________________
+     * @return string  
+     *    Retorna uma `string` com o nome da configuração.
      */
 
     public function getName(): string
@@ -454,20 +481,39 @@ final class Definition
     
 
     /**
-     * 🟢 xxx
+     * 🟢 DEFINIÇÃO DOS TIPOS DE DADOS PERMITIDOS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Este método prepara a lista de tipos que a configuração poderá receber.
+     * Essa lista será consultada por setValue() para conferir o tipo de cada
+     * valor antes de armazená-lo.
+     * 
+     * ✔️ EXEMPLO
+     * ┌──────────────────────────────────────────────────────────────────────┐
+     * │ Por exemplo, se for definido `['bool', 'string']`, isso indicará que │
+     * │ a configuração pode receber um booleano ou uma string. Guardamos os  │
+     * │ nomes dos tipos porque eles serão comparados com o tipo identificado │
+     * │ no valor recebido.                                                   │
+     * └──────────────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
-     * @param mixed $values  
-     *   xxx
-     *
+     * _________________________________
+     * @param mixed<array> $values  
+     *     Lista dos tipos de dados permitidos. O parâmetro aceita `mixed` para
+     *     que possamos validar o tipo dentro do próprio método, sem conversões
+     *     ou erros de tipo gerados pelo PHP. Neste caso aqui, precisa ser um
+     *     `array`.
+     * _________________________________
      * @return void
      */
     
     private function setValidTypes(mixed $values): void
     {
+        /**
+         * Precisamos conferir a estrutura em dois níveis. Primeiro verificamos
+         * se recebemos um `array`, pois precisamos de uma lista que possamos
+         * percorrer.
+         */
+        
         if (!$this->isOfType('array', $values)) {
             throw new Exception(
                 Message::get("DEFINITION_INVALID_TYPE"),
@@ -480,6 +526,13 @@ final class Definition
             );
         }
 
+        
+        
+        /**
+         * Depois, conferimos se cada elemento do `array` é uma string, já que
+         * cada posição deve conter o nome de um tipo.
+         */
+        
         foreach ($values as $value) {
             if (!$this->isOfType('string', $value)) {
                 throw new Exception(
@@ -494,17 +547,32 @@ final class Definition
             }
         }
 
+        
+        
+        /**
+         * Se qualquer uma dessas verificações falhar, lançamos uma exceção. A
+         * propriedade só armazena a lista depois que todos os elementos
+         * passarem pela conferência.
+         *
+         * Um array vazio também é permitido. Nesse caso, `setValue()` não
+         * restringirá o tipo através dessa lista, mas continuará aplicando as
+         * demais regras da configuração.
+         */
+        
         $this->validTypes = $values;
     }
     
     /**
-     * 🔶 xxx
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * 🔶 CONSULTA DOS TIPOS DE DADOS PERMITIDOS
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Retorna a lista guardada em $validTypes, permitindo que `setValue()`
+     * consulte quais tipos a configuração pode receber ou se não há restrição.
      *
      *
-     * ---
-     * @return array xxx
+     * _________________________________
+     * @return array<string>  
+     *    Retorna um `array` com os nomes dos tipos de dados permitidos ou um
+     *    array vazio quando não haver restrições.
      */
 
     public function getValidTypes(): array
@@ -515,20 +583,38 @@ final class Definition
 
     
     /**
-     * 🟢 xxx
+     * 🟢 DEFINIÇÃO DOS TIPOS DE DADOS PROIBIDOS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Este método prepara a lista de tipos que a configuração NÃO poderá
+     * receber. Essa lista será consultada por setValue() para conferir o tipo
+     * de cada valor antes de armazená-lo.
+     *
+     * ✔️ EXEMPLO
+     * ┌──────────────────────────────────────────────────────────────────────┐
+     * │ Por exemplo, se for definido `['bool', 'string']`, isso indicará que │
+     * │ a configuração NÃO PODERÁ receber um booleano ou uma string.         │
+     * │ Guardamos os nomes dos tipos porque eles serão comparados com o tipo │
+     * │ identificado no valor recebido.                                      │
+     * └──────────────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
-     * @param mixed $values  
-     *   xxx
-     *
+     * _________________________________
+     * @param mixed<array> $values  
+     *   Lista dos tipos de dados probidos. O parâmetro aceita `mixed` para
+     *   que possamos validar o tipo dentro do próprio método, sem conversões
+     *   ou erros de tipo gerados pelo PHP. Neste caso aqui, precisa ser um
+     *   `array`.
+     * _________________________________
      * @return void
      */
     
     private function setInvalidTypes(mixed $values): void
     {
+        /**
+         * Precisamos conferir a estrutura em dois níveis. Primeiro verificamos
+         * se recebemos um `array`, pois precisamos de uma lista que possamos
+         * percorrer.
+         */
         if (!$this->isOfType('array', $values)) {
             throw new Exception(
                 Message::get("DEFINITION_INVALID_TYPE"),
@@ -537,10 +623,14 @@ final class Definition
                     'invalidTypes',
                     'array',
                     Tools::typeOf($values),
-                ]
+        ]
             );
         }
 
+        /**
+         * Depois, conferimos se cada elemento do `array` é uma string, já que
+         * cada posição deve conter o nome de um tipo.
+         */
         foreach ($values as $value) {
             if (!$this->isOfType('string', $value)) {
                 throw new Exception(
@@ -554,18 +644,32 @@ final class Definition
                 );
             }
         }
+        
+        /**
+         * Se qualquer uma dessas verificações falhar, lançamos uma exceção. A
+         * propriedade só armazena a lista depois que todos os elementos
+         * passarem pela conferência.
+         *
+         * Um array vazio também é permitido. Nesse caso, `setValue()` não
+         * restringirá o tipo através dessa lista, mas continuará aplicando as
+         * demais regras da configuração.
+         */
 
         $this->invalidTypes = $values;
     }
 
     /**
-     * 🔶 xxx
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * 🔶 CONSULTA DOS TIPOS DE DADOS PROIBIDOS
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Retorna a lista guardada em $invalidTypes, permitindo que `setValue()`
+     * consulte quais tipos a configuração NÃO PODE receber ou se não há
+     * restrição.
      *
      *
-     * ---
-     * @return array xxx
+     * _________________________________
+     * @return array<string>  
+     *    Retorna um `array` com os nomes dos tipos de dados proibidos ou um
+     *    array vazio quando não haver restrições.
      */
     
     public function getInvalidTypes(): array
@@ -576,20 +680,40 @@ final class Definition
 
     
     /**
-     * 🟢 xxx
+     * 🟢 DEFINIÇÃO DOS VALORES PERMITIDOS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Prepara a lista de valores que a configuração pode receber. Essa regra
+     * permite limitar as opções disponíveis, como acontece em `output`, que
+     * aceita apenas 'view', 'file' ou 'json' como valores válidos.
      *
      *
-     * ---
-     * @param mixed $values  
-     *   xxx
-     *
+     * _________________________________
+     * @param mixed<array> $values
+     *    Lista dos valores permitidos. O parâmetro aceita `mixed` para que
+     *    possamos validar o tipo dentro do próprio método, sem conversões ou
+     *    erros de tipo gerados pelo PHP. Neste caso aqui, precisa ser um
+     *    `array`.
+     * 
+     * _________________________________
      * @return void
      */
     
     private function setValidValues(mixed $values): void
     {
+        /**
+         * Precisamos conferir se recebemos um array, pois setValue() percorrerá
+         * essa lista para procurar o valor informado. Os elementos podem ter
+         * tipos diferentes: podemos definir uma configuração que aceite, por
+         * exemplo, tanto `false` quanto uma `string` específica.
+         *
+         * Por isso, aqui verificamos apenas se a lista é um `array`. Se não
+         * for, lançamos uma exceção; se for, guardamos a lista em $validValues.
+         *
+         * Um array vazio deixa essa regra sem restringir os valores
+         * disponíveis. As demais regras da configuração continuam sendo
+         * aplicadas.
+         */
+        
         if (!$this->isOfType('array', $values)) {
             throw new Exception(
                 Message::get("DEFINITION_INVALID_TYPE"),
@@ -606,13 +730,16 @@ final class Definition
     }
 
     /**
-     * 🔶 xxx
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * 🔶 CONSULTA DOS VALORES PERMITIDOS
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Retorna a lista guardada em $validValues, permitindo que setValue()
+     * confira se o valor recebido está entre as opções permitidas.
      *
      *
-     * ---
-     * @return array xxx
+     * _________________________________
+     * @return array<mixed>  
+     *    Retorna um `array` com os valores permitidos ou um `array` vazio
+     *    quando essa regra não impõe restrições.
      */
     
     public function getValidValues(): array
@@ -623,20 +750,44 @@ final class Definition
     
 
     /**
-     * 🟢 xxx
+     * 🟢 DEFINIÇÃO DOS VALORES PROIBIDOS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Prepara a lista de valores que a configuração NÃO PODE receber. Essa
+     * regra permite definir as opções não disponíveis.
+     *
+     * ✔️ EXEMPLO
+     * ┌─────────────────────────────────────────────────────────────┐
+     * │ Por exemplo, se for definido `[0, 1, 2]`, isso indicará que │
+     * │ a configuração NÃO PODERÁ receber tais valores.             │
+     * └─────────────────────────────────────────────────────────────┘
      *
      *
-     * ---
-     * @param mixed $values  
-     *   xxx
-     *
+     * _________________________________
+     * @param mixed<array> $values
+     *    Lista dos valores proibidos. O parâmetro aceita `mixed` para que
+     *    possamos validar o tipo dentro do próprio método, sem conversões ou
+     *    erros de tipo gerados pelo PHP. Neste caso aqui, precisa ser um
+     *    `array`.
+     * _________________________________
      * @return void
      */
 
     private function setInvalidValues(mixed $values): void
     {
+        /**
+         * Precisamos conferir se recebemos um array, pois setValue() percorrerá
+         * essa lista para procurar o valor informado. Os elementos podem ter
+         * tipos diferentes: podemos definir uma configuração que aceite, por
+         * exemplo, tanto `false` quanto uma `string` específica.
+         *
+         * Por isso, aqui verificamos apenas se a lista é um `array`. Se não
+         * for, lançamos uma exceção; se for, guardamos a lista em
+         * $invalidValues.
+         *
+         * Um array vazio deixa essa regra sem restringir valores. As demais
+         * regras da configuração continuam sendo aplicadas.
+         */
+        
         if (!$this->isOfType('array', $values)) {
             throw new Exception(
                 Message::get("DEFINITION_INVALID_TYPE"),
@@ -653,13 +804,16 @@ final class Definition
     }
 
     /**
-     * 🔶 xxx
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * 🔶 CONSULTA DOS VALORES PROIBIDOS
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Retorna a lista guardada em $invalidValues, permitindo que setValue()
+     * confira se o valor recebido está entre as opções proibidas.
      *
      *
-     * ---
-     * @return array xxx
+     * _________________________________
+     * @return array<mixed>  
+     *    Retorna um `array` com os valores proibidos ou um `array` vazio
+     *    quando essa regra não impõe restrições.
      */
     
     public function getInvalidValues(): array
@@ -670,20 +824,38 @@ final class Definition
 
     
     /**
-     * 🟢 xxx
+     * 🟢 DEFINIÇÃO DA EXPRESSÃO REGULAR PARA O FORMATO PERMITIDO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Prepara a expressão regular que será usada para conferir o formato dos
+     * valores recebidos pela configuração.
+     *
+     * Essa regra é útil quando queremos aceitar conteúdos com determinada
+     * estrutura, como um caminho de arquivo PHP, sem precisar listar todas as
+     * possibilidades.
      *
      *
-     * ---
-     * @param mixed $value  
-     *   xxx
-     *
+     * _________________________________
+     * @param mixed<string> $value  
+     *    Expressão regular que define o formato permitido. O parâmetro aceita
+     *    `mixed` para que possamos validar o tipo dentro do próprio método, sem
+     *    conversões ou erros de tipo gerados pelo PHP. Neste caso aqui, precisa
+     *    ser uma `string`.
+     * _________________________________
      * @return void
      */
     
     private function setValidRegex(mixed $value): void
     {
+        /**
+         * Aqui conferimos se a expressão foi informada como uma `string` antes
+         * de guardá-la em $validRegex. Se recebermos outro tipo, lançamos uma
+         * exceção.
+         *
+         * Uma string vazia também é permitida e deixa essa regra desativada. A
+         * sintaxe da expressão não é validada neste método; sua aplicação ao
+         * valor acontece depois, em `setValue()`, através de `preg_match()`.
+         */
+        
         if (!$this->isOfType('string', $value)) {
             throw new Exception(
                 Message::get("DEFINITION_INVALID_TYPE"),
@@ -700,13 +872,16 @@ final class Definition
     }
 
     /**
-     * 🔶 xxx
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * 🔶 CONSULTA DA EXPRESSÃO REGULAR PARA O FORMATO PERMITIDO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Retorna a expressão guardada em $validRegex, permitindo que setValue()
+     * consulte o padrão ao qual o valor precisa corresponder.
      *
      *
-     * ---
-     * @return string xxx
+     * _________________________________
+     * @return string  
+     *    Retorna uma `string` com a expressão regular do formato permitido ou
+     *    uma `string` vazia quando esta regra está desativada.
      */
     
     public function getValidRegex(): string
@@ -717,20 +892,37 @@ final class Definition
 
     
     /**
-     * 🟢 xxx
+     * 🟢 DEFINIÇÃO DA EXPRESSÃO REGULAR PARA O FORMATO PROIBIDO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Prepara a expressão regular que será usada para conferir o formato dos
+     * valores recebidos pela configuração.
+     *
+     * Essa regra é útil quando NÃO queremos aceitar conteúdos com determinada
+     * estrutura, como um caminho de arquivo PHP, sem precisar listar todas as
+     * possibilidades.
      *
      *
-     * ---
-     * @param mixed $value  
-     *   xxx
-     *
+     * _________________________________
+     * @param mixed<string> $value  
+     *    Expressão regular que define o formato proibido. O parâmetro aceita
+     *    `mixed` para que possamos validar o tipo dentro do próprio método, sem
+     *    conversões ou erros de tipo gerados pelo PHP. Neste caso aqui, precisa
+     *    ser uma `string`
+     * _________________________________
      * @return void
      */
 
     private function setInvalidRegex(mixed $value): void
     {
+        /**
+         * Aqui conferimos se a expressão foi informada como uma `string` antes
+         * de guardá-la em $invalidRegex. Se recebermos outro tipo, lançamos uma
+         * exceção.
+         *
+         * Uma string vazia também é permitida e deixa essa regra desativada. A
+         * sintaxe da expressão não é validada neste método; sua aplicação ao
+         * valor acontece depois, em `setValue()`, através de `preg_match()`.
+         */
         if (!$this->isOfType('string', $value)) {
             throw new Exception(
                 Message::get("DEFINITION_INVALID_TYPE"),
@@ -747,13 +939,16 @@ final class Definition
     }
 
     /**
-     * 🔶 xxx
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * 🔶 CONSULTA DA EXPRESSÃO REGULAR PARA O FORMATO PROIBIDO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Retorna a expressão guardada em $INvalidRegex, permitindo que setValue()
+     * consulte o padrão ao qual o valor precisa corresponder.
      *
      *
-     * ---
-     * @return string xxx
+     * _________________________________
+     * @return string  
+     *    Retorna uma `string` com a expressão regular do formato proibido ou
+     *    uma `string` vazia quando esta regra está desativada.
      */
     
     public function getInvalidRegex(): string
@@ -764,20 +959,34 @@ final class Definition
     
     
     /**
-     * 🟢 xxx
+     * 🟢 DEFINIÇÃO DO CONTEXTO DA CONFIGURAÇÃO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Prepara a classificação da configuração dentro da organização do
+     * framework. Para isso, precisamos receber um nome de contexto reconhecido.
+     *
+     * Se alguma verificação falhar, lançamos uma exceção. Quando o nome está
+     * correto, guardamos o contexto em `$context`, deixando essa classificação
+     * disponível para consulta.
      *
      *
-     * ---
-     * @param mixed $value  
-     *   xxx
+     * _________________________________
+     * @param mixed<string> $value  
+     *    Nome do contexto da configuração. Precisa ser uma string presente em
+     *    ALLOWED_CONFIG_CONTEXT.
      *
+     *    O parâmetro aceita `mixed` para que possamos validar o tipo dentro do
+     *    próprio método, sem conversões ou erros de tipo gerados pelo PHP.
+     *    Neste caso aqui, precisa ser uma `string`
+     * _________________________________
      * @return void
      */
 
     private function setContext(mixed $value): void
     {
+        /**
+         * Fazemos duas verificações antes de guardar essa informação: primeiro
+         * conferimos se o valor é uma string.
+         */
         if (!$this->isOfType('string', $value)) {
             throw new Exception(
                 Message::get("DEFINITION_INVALID_TYPE"),
@@ -790,6 +999,11 @@ final class Definition
             );
         }
 
+        /**
+         * Depois, se ele está entre os nomes de ALLOWED_CONFIG_CONTEXT. Essa
+         * segunda verificação restringe a lista de possibilidades apenas à
+         * lista permitida.
+         */
         if (empty(self::ALLOWED_CONFIG_CONTEXT) || !in_array($value, self::ALLOWED_CONFIG_CONTEXT, true)) {
             throw new Exception(
                 Message::get("DEFINITION_INVALID_VALUE_IN_ARRAY"),
@@ -806,13 +1020,15 @@ final class Definition
     }
 
     /**
-     * 🔶 xxx
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * 🔶 CONSULTA DO CONTEXTO DA CONFIGURAÇÃO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Retorna o nome do contexto guardado em $context, permitindo consultar a
+     * classificação atribuída à configuração.
      *
      *
-     * ---
-     * @return string xxx
+     * _________________________________
+     * @return string  
+     *    Retorna uma `string` com o nome do contexto da configuração.
      */
     
     public function getContext(): string
@@ -823,20 +1039,30 @@ final class Definition
 
     
     /**
-     * 🟢 xxx
+     * 🟢 VALIDAÇÃO E ATRIBUIÇÃO DO VALOR DA CONFIGURAÇÃO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Este método aplica as regras que preparamos para decidir se o valor
+     * recebido pode ser armazenado na configuração.
+     *
+     * Ele é usado tanto pelo construtor, ao atribuir o valor padrão, quanto por
+     * `Config::set()`, em possíveis alterações posteriores. Assim, o valor
+     * inicial e os novos valores passam pelas mesmas verificações.
      *
      *
-     * ---
+     * _________________________________
      * @param mixed $value  
-     *   xxx
-     *
+     *    Valor que será atribuído à configuração. Pode ter qualquer tipo, desde
+     *    que respeite todas as regras definidas para este objeto.
+     * _________________________________
      * @return void
      */
 
     public function setValue(mixed $value): void
     {
+        /**
+         * Começamos pelos tipos de dados. Se houver uma lista de tipos
+         * permitidos, o valor é testado e precisa corresponder a um deles.
+         */
         if (!empty($this->getValidTypes()) && !$this->isOfType($this->getValidTypes(), $value)) {
             throw new Exception(
                 Message::get("CONFIG_INVALID_TYPE"),
@@ -851,6 +1077,9 @@ final class Definition
             );
         }
 
+        /**
+         * Depois, verificamos se seu tipo está entre os proibidos.
+         */
         if (!empty($this->getInvalidTypes()) && $this->isOfType($this->getInvalidTypes(), $value)) {
             throw new Exception(
                 Message::get("CONFIG_INVALID_TYPE_NOT"),
@@ -864,6 +1093,18 @@ final class Definition
             );
         }
 
+        /**
+         * Em seguida, conferimos as listas de valores permitidos e proibidos.
+         * Essas comparações são estritas, ou seja, consideram tanto o conteúdo
+         * quanto o tipo do dado.
+         *
+         * Por isso, o inteiro 1 e a string '1' são tratados como valores
+         * diferentes.
+         *
+         * As regras são aplicadas em conjunto. Estar na lista de valores
+         * permitidos não dispensa as outras verificações. Se o mesmo valor
+         * também estiver entre os proibidos, ele será rejeitado.
+         */
         if (!empty($this->getValidValues()) && !in_array($value, $this->getValidValues(), true)) {
             throw new Exception(
                 Message::get("CONFIG_INVALID_VALUE"),
@@ -891,6 +1132,15 @@ final class Definition
             );
         }
 
+        /**
+         * Depois, quando o valor recebido for diferente de uma string vazia,
+         * aplicamos as expressões regulares que estiverem preenchidas. Primeiro
+         * verificamos se ele corresponde ao padrão proibido; em seguida, se
+         * atende ao padrão permitido.
+         *
+         * A string vazia pula apenas as verificações por expressão regular. Ela
+         * ainda precisa respeitar as regras anteriores de tipos e valores.
+         */
         if ($value !== '') {
             if (!empty($this->getInvalidRegex()) && preg_match($this->getInvalidRegex(), $value)) {
                 throw new Exception(
@@ -920,18 +1170,35 @@ final class Definition
                 );
             }
         }
+        
+        /**
+         * Quando uma regra não é atendida, lançamos uma exceção que identifica
+         * a configuração e a falha encontrada. Também guardamos o valor
+         * rejeitado nos dados da exceção, com a chave testedValue, para que o
+         * código que capturar essa falha possa consultá-lo.
+         *
+         * Só atribuímos o valor à propriedade `$value` depois de concluir todas
+         * as verificações. Se já houver um valor armazenado e a tentativa de
+         * alteração for rejeitada, o valor anterior permanece.
+         */
 
         $this->value = $value;
     }
     
     /**
-     * 🔶 xxx
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * 🔶 CONSULTA DO VALOR DA CONFIGURAÇÃO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Retorna o valor atual guardado em `$value`. É através deste método que
+     * `Config::get()` recupera o conteúdo da configuração.
      *
-     *
-     * ---
-     * @return mixed xxx
+     * O tipo do retorno depende da configuração consultada. Como o valor já
+     * passou pelas verificações durante sua atribuição, aqui apenas recuperamos
+     * o conteúdo armazenado.
+     * 
+     * 
+     * _________________________________
+     * @return mixed  
+     *    Retorna o valor atual da configuração.
      */
 
     public function getValue(): mixed
@@ -942,27 +1209,74 @@ final class Definition
     
     
     /**
-     * 🟢 xxx
+     * 🟢 VERIFICAÇÃO DO TIPO DE DADO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Este método faz a comparação de tipos, usada nas verificações da classe.
+     * Com ele, podemos conferir se um valor corresponde a um único tipo ou a
+     * qualquer um dos tipos de uma lista.
      *
-     *
-     * ---
-     * @param array|string $types  
-     *   xxx
+     * ✔️ EXEMPLO
+     * ┌──────────────────────────────────────────────────────────────────────┐
+     * │ Por exemplo, podemos informar `'string'`, que faz com que ele teste  │
+     * │ se o valor é exclusivamente uma `string`. Mas se informarmos         │
+     * │ `['bool', 'string']` então o teste aceita que o valor seja tanto uma │
+     * │ string quando um booleano.                                           │
+     * └──────────────────────────────────────────────────────────────────────┘
      * 
-     * @param mixed $value  
-     *   xxx
+     * 
+     * ___________________________________________________________
+     * @param array<string>|string $types
+     *    Nome de um tipo de dado ou um array com os nomes dos tipos que
+     *    queremos comparar, seguindo a identificação de `Tools::typeOf()`.
      *
-     * @return bool xxx
+     * @param mixed $value
+     *    Valor cujo tipo será verificado.
+     * ___________________________________________________________
+     * @return bool
+     *    Retorna `true` se o valor corresponder a pelo menos um dos tipos
+     *    informados ou `false`, Se nenhum corresponder.
      */
 
     private function isOfType(array|string $types, mixed $value): bool
     {
+        /**
+         * O método aceita que o parâmetro `$types` recebema apenas um tipo
+         * solto ou uma array com vários. Por isso, testamos o que foi recebido
+         * neste parâmetro: se foi uma string solta, convertemos ela em um array
+         * com um único valor. Se ele já for um array, então já estará tudo
+         * certo.
+         *
+         * É feito assim para que os dois formatos de entrada sigam a mesma
+         * lógica de comparação a seguir.
+         */
+        
         if (Tools::typeOf($types) !== 'array') {
             $types = [$types];
         }
 
+        
+        
+        /**
+         * Testamos cada valor, comparando-o com os tipos permitidos.
+         * 
+         * 💡 OBSERVAÇÃO
+         * ┌─────────────────────────────────────────────────────────────┐
+         * │ O termo da identificação segue os nomes utilizados pelo     │
+         * │ framework, como 'bool', 'int', 'float' e 'string', conforme │
+         * │ descrito no método `typeOf()` da classe `Tools`.            │
+         * └─────────────────────────────────────────────────────────────┘
+         * 
+         * Ao encontrar uma correspondência, retornamos `true` imediatamente. Se
+         * nenhum nome corresponder, retornamos `false`. Uma lista vazia também
+         * resulta em `false`, pois não há nenhum tipo com o qual comparar.
+         * 
+         * ⚠️ IMPORTANTE
+         * ┌─────────────────────────────────────────────────────────────────┐
+         * │ A comparação não converte o valor recebido. Uma string contendo │
+         * │ '123', por exemplo, continua sendo identificada como 'string'.  │
+         * └─────────────────────────────────────────────────────────────────┘
+         */
+        
         foreach ($types as $type) {
             if (Tools::typeOf($value) === $type) {
                 return true;

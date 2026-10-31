@@ -33,20 +33,20 @@ namespace galastri\core\config;
  * definições e informar quando os dados recebidos estão incorretos. Estas
  * classes fornecem os recursos usados nessa preparação e nas consultas.
  *
- * ┌──────────────┬────────────────────────────────────────────────────────────┐
- * │ Classe       │ Uso                                                        │
- * ├──────────────┼────────────────────────────────────────────────────────────┤
- * │ `Definition` │ Representa cada configuração e confere seus valores de     │
- * │              │ acordo com as regras definidas para ela.                   │
- * ├──────────────┼────────────────────────────────────────────────────────────┤
- * │ `Exception`  │ Permite informar falhas no carregamento ou no acesso às    │
- * │              │ configurações.                                             │
- * ├──────────────┼────────────────────────────────────────────────────────────┤
- * │ `Message`    │ Fornece as mensagens padronizadas das exceções.            │
- * ├──────────────┼────────────────────────────────────────────────────────────┤
- * │ `Tools`      │ Identifica o tipo dos dados recebidos dos arquivos de      │
- * │              │ definição.                                                 │
- * └──────────────┴────────────────────────────────────────────────────────────┘
+ * ┌──────────────┬─────────────────────────────────────────────────────────┐
+ * │ Classe       │ Uso                                                     │
+ * ├──────────────┼─────────────────────────────────────────────────────────┤
+ * │ `Definition` │ Representa cada configuração e confere seus valores de  │
+ * │              │ acordo com as regras definidas para ela.                │
+ * ├──────────────┼─────────────────────────────────────────────────────────┤
+ * │ `Exception`  │ Permite informar falhas no carregamento ou no acesso às │
+ * │              │ configurações.                                          │
+ * ├──────────────┼─────────────────────────────────────────────────────────┤
+ * │ `Message`    │ Fornece as mensagens padronizadas das exceções.         │
+ * ├──────────────┼─────────────────────────────────────────────────────────┤
+ * │ `Tools`      │ Identifica o tipo dos dados recebidos dos arquivos de   │
+ * │              │ definição.                                              │
+ * └──────────────┴─────────────────────────────────────────────────────────┘
  */
 
 use galastri\core\config\Definition;
@@ -86,7 +86,6 @@ final class Config
      * ╚═══════════════════════════════════════════════════════════════════════╝
      */
     
-    
     /**
      * 🟢 CAMINHO DAS DEFINIÇÕES DO FRAMEWORK
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -95,7 +94,7 @@ final class Config
      *
      * O trecho `*.php` permite localizar todos os arquivos PHP diretamente
      * nessa pasta. Assim, podemos separar as definições em arquivos diferentes
-     * e carregá-las através de `run()`.
+     * e carregá-las de uma vez.
      *
      *
      * _________________________________
@@ -117,8 +116,8 @@ final class Config
      * permitindo acrescentar configurações com seus próprios valores padrão e
      * regras. Não é obrigatório haver arquivos nesse caminho.
      *
-     * Assim como em `GALASTRI_DEFINITIONS`, usamos `*.php` para localizar os
-     * arquivos PHP diretamente nessa pasta.
+     * Assim como em `GALASTRI_DEFINITIONS`, usamos `*.php` para localizar todos
+     * os arquivos PHP diretamente dessa pasta.
      *
      *
      * _________________________________
@@ -138,7 +137,7 @@ final class Config
      * Precisamos informar o valor padrão, as regras de tipos e valores, as
      * expressões regulares e o contexto. Mesmo quando uma regra não impõe
      * restrições, sua propriedade precisa existir com o valor que a deixa
-     * desativada, como um array ou uma string vazia.
+     * desativada, como um `array` ou uma `string` vazia.
      *
      * Essa lista permite conferir se a definição está completa antes de criar o
      * objeto `Definition`. A validação do conteúdo de cada propriedade fica a
@@ -188,19 +187,18 @@ final class Config
     private static array $config = [];
 
     
+    
     /**
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                                MÉTODOS                                ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
      */
     
-    
-    
     /**
      * 🟢 CLASSE ESTÁTICA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Os recursos desta classe são acessados diretamente por chamadas como
-     * `Config::set('offline', true)`, sem precisar criar um objeto.
+     * `Config::get('offline')`, sem precisar criar um objeto.
      *
      * Por isso, deixamos o construtor privado para impedir que a classe seja
      * instanciada com `new Config()`.
@@ -241,19 +239,25 @@ final class Config
         $galastriConfigDefinitions = glob(self::GALASTRI_DEFINITIONS);
         $appConfigDefinitions = glob(self::APP_DEFINITIONS);
         
+        
+        
         /**
          * Reunimos os caminhos em uma única lista, com os arquivos do framework
          * antes dos arquivos da aplicação.
          *
-         * Essa ordem não permite sobrescrever definições: create() rejeita
-         * qualquer nome que já tenha sido registrado.
+         * Essa ordem não permite sobrescrever definições pois `create()`
+         * rejeita qualquer nome que já tenha sido registrado. A prioridade
+         * sempre deve ser as configurações do framework.
          */
 
         $configDefinitions = array_merge(
             $galastriConfigDefinitions, $appConfigDefinitions
         );
         
+        
+        
         foreach($configDefinitions as $definitionFile) {
+            
             /**
              * Cada arquivo deve retornar um array com as configurações que
              * define. Conferimos esse retorno antes de percorrer seu conteúdo.
@@ -270,10 +274,13 @@ final class Config
                 );
             }
 
+            
+            
             foreach ($definitions as $name => $definitions) {
+                
                 /**
                  * Dentro do arquivo, cada chave identifica uma configuração, e
-                 * seu valor precisa ser um array com a definição
+                 * seu valor precisa ser um `array` com a definição
                  * correspondente.
                  */
 
@@ -286,11 +293,17 @@ final class Config
                     );
                 }
 
+                
+                
                 /**
                  * Conferimos se todas as propriedades obrigatórias estão
-                 * presentes. Usamos array_key_exists() porque uma chave com
-                 * valor null também existe; a validade do conteúdo será
-                 * conferida por Definition.
+                 * presentes.
+                 *
+                 * Usamos `array_key_exists()` porque `isset()` retornaria
+                 * `false` se uma propriedade tivesse valor `null`, mesmo que
+                 * ela estivesse presente. Aqui queremos conferir sua
+                 * existência; a validade do conteúdo será verificada depois por
+                 * Definition.
                  */
 
                 foreach (self::REQUIRED_PROPERTIES as $requiredProperty) {
@@ -305,16 +318,15 @@ final class Config
                     }
                 }
 
+                
+                
                 /**
                  * Com a estrutura completa, solicitamos o registro da
                  * configuração. Definition prepara as regras e valida o valor
                  * padrão durante sua construção.
                  */
 
-                self::create(
-                    $name,
-                    $definitions,
-                );
+                self::create($name, $definitions);
             }
         }
     }
@@ -362,9 +374,11 @@ final class Config
                 ]
             );
         }
+        
+        
 
         /**
-         * Construímos o objeto antes de guardá-lo no array. Se suas
+         * Construímos o objeto antes de guardá-lo no `array`. Se suas
          * verificações lançarem uma exceção, esta configuração não será
          * acrescentada.
          */
@@ -403,12 +417,20 @@ final class Config
     public static function set(string $name, mixed $value): void
     {
         /**
-         * Exigimos que a configuração exista antes de acessar seu objeto.
-         * Depois, Definition aplica suas regras ao novo valor e só o armazena
-         * se todas forem atendidas.
+         * Confirmamos se a configuração existe antes de acessar seu objeto. O
+         * segundo argumento `true` faz `exists()` lançar uma exceção se o nome
+         * não estiver registrado, interrompendo a execução deste método.
          */
 
         self::exists($name, true);
+        
+        
+        
+        /**
+         * Com a existência confirmada, podemos solicitar a alteração de seu
+         * valor.
+         */
+        
         self::$config[$name]->setValue($value);
     }
 
@@ -424,13 +446,65 @@ final class Config
      * Podemos informar um segundo argumento para usar como valor alternativo
      * caso a configuração não exista. Sem esse argumento, a ausência da
      * configuração gera uma exceção.
-     *
-     * Por exemplo, `Config::get('tema', 'claro')` retorna 'claro' se não houver
-     * uma configuração chamada 'tema'.
-     *
-     * O valor alternativo não substitui um valor existente. Se a configuração
-     * estiver carregada e seu valor for `false`, `null` ou uma string vazia,
-     * esse será o retorno da consulta.
+     * 
+     * 🤓 EXPLICAÇÃO DETALHADA
+     * ┌───────────────────────────────────────────────────────────────────────┐
+     * │ Aqui vale uma explicação mais detalhada, pois o comportamento deste   │
+     * │ método pode não ser muito intuitivo à primeira vista.                 │
+     * │                                                                       │
+     * │ ***                                                                   │
+     * │                                                                       │
+     * │ Este método precisa receber o nome da configuração e, opcionalmente,  │
+     * │ um valor alternativo, que será retornado no lugar de dar um erro.     │
+     * │                                                                       │
+     * │ O detalhe importante é saber se esse segundo valor foi informado ou   │
+     * │ não. Afinal, não informar um valor alternativo é diferente de         │
+     * │ informar `null` de propósito:                                         │
+     * │                                                                       │
+     * │ EXEMPLOS                                                              │
+     * │ ┌───────────────────────────────────────────────────────────────────┐ │
+     * │ │ * Config::get('tema');                                            │ │
+     * │ │                                                                   │ │
+     * │ │   Neste caso, se a configuração `tema` não existir, nossa         │ │
+     * │ │   expectativa é de que o método lance uma exceção com erro.       │ │
+     * │ │                                                                   │ │
+     * │ │   Isso porque não existe nenhum outro dado para retornar no lugar │ │
+     * │ │   e o framework não pode inventar um valor do nada.               │ │
+     * │ │                                                                   │ │
+     * │ │   Também não queremos que essa ausência passe silenciosamente.    │ │
+     * │ │                                                                   │ │
+     * │ │ * Config::get('tema', null);                                      │ │
+     * │ │                                                                   │ │
+     * │ │   Já neste caso, estamos informando explicitamente o valor        │ │
+     * │ │   alternativo caso a configuração `tema` não exista: o valor      │ │
+     * │ │   `null`.                                                         │ │
+     * │ │                                                                   │ │
+     * │ │   Embora `null` represente ausência de conteúdo, sua presença na  │ │
+     * │ │   chamada expressa uma escolha.                                   │ │
+     * │ └───────────────────────────────────────────────────────────────────┘ │
+     * │                                                                       │
+     * │ É por isso que usamos `...$parameters` na assinatura do método, pois  │
+     * │ desta forma o PHP reúne todo e qualquer valor passado na chamada em   │
+     * │ um array, mas na ordem em que foram informados.                       │
+     * │                                                                       │
+     * │ Assim, `Config::get('tema')` faz:                                     │
+     * │                                                                       │
+     * │ $parameters[0] = 'tema';                                              │
+     * │                                                                       │
+     * │ Já `Config::get('tema', null)` faz:                                   │
+     * │                                                                       │
+     * │ $parameters[0] = 'tema';                                              │
+     * │ $parameters[1] = null;                                                │
+     * │                                                                       │
+     * │ Nos dois casos, o nome da configuração está na posição 0. Porém, a    │
+     * │ posição 1 só existe quando houver algo informado como segundo         │
+     * │ parâmetro. Isso permite identificar que um valor alternativo foi      │
+     * │ informado ou não, mesmo que seu conteúdo seja `null`.                 │
+     * │                                                                       │
+     * │ Mais adiante, no catch, consultamos justamente a existência da        │
+     * │ posição 1 para decidir entre retornar o valor alternativo ou repassar │
+     * │ a exceção.                                                            │
+     * └───────────────────────────────────────────────────────────────────────┘
      *
      *
      * _________________________________
@@ -446,35 +520,65 @@ final class Config
     
     public static function get(...$parameters): mixed
     {
+        /**
+         * Os três pontos na assinatura (...) também permitem chamar o método sem
+         * informar nada, deixando $parameters vazio.
+         *
+         * Como precisamos do nome da configuração para fazer a consulta,
+         * conferimos se o primeiro argumento foi informado. Essa checagem
+         * verifica apenas a presença da posição 0, não seu conteúdo.
+         */
+        if (!array_key_exists(0, $parameters)) {
+            throw new \ArgumentCountError(
+                'Config::get() exige o nome da configuração.'
+            );
+        }
+        
+        
+        
         try {
             /**
-             * O primeiro argumento identifica a configuração. Exigimos sua
-             * existência para recuperar o valor do objeto correspondente.
+             * A posição 0 contém o nome da configuração. Definimos $name com o
+             * valor dela e checamos se existe. Se não existir, o método
+             * exists() irá lançar uma exceção, que será capturada pelo `catch`
+             * posteriormente.
              */
 
             $name = $parameters[0];
 
             self::exists($name, true);
+            
+            
+            
+            /**
+             * Se a configuração existir, então retornamos o valor dela.
+             */
             return self::$config[$name]->getValue();
-
+            
+            
+            
         } catch (Exception $e) {
             /**
-             * Se a consulta lançar uma exceção do framework, verificamos se o
-             * segundo argumento foi informado.
+             * Este catch pega a exceção lançada por exists() se a configuração
+             * informada não existir.
              *
-             * Usamos array_key_exists() para distinguir a ausência do argumento
-             * de um valor alternativo null. Assim, null também pode ser um
-             * retorno escolhido por quem chamou o método.
+             * Neste caso, verificamos se o segundo parâmetro foi informado (no
+             * caso, se $parameters[1] existe). Se existir, retornamos o valor
+             * dele.
              */
 
             if (array_key_exists(1, $parameters)) {
                 return $parameters[1];
             }
 
+            
+            
             /**
-             * Sem um valor alternativo, repassamos a mesma exceção para que o
-             * código responsável pela chamada possa tratar a falha.
-             */
+            * Se não houver segundo parâmetro, então não temos um valor
+            * alternativo para retornar. Precisamos interromper este método e
+            * lançar a exceção novamente, permitindo que o código responsável
+            * pela chamada trate a falha.
+            */
 
             throw $e;
         }

@@ -1,34 +1,276 @@
 <?php
 /**
- * Documentação:
- * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-Router
+ * -----------------------------------------------------------------------------
+ * 📂
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║                     ARQUIVO /galastri/core/Router.php                     ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ * xxx
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+
+
+/**
+ * 🟢 NAMESPACE DA CLASSE
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * Router pertence ao núcleo do framework.
  */
 
 namespace galastri\core;
+
+
+
+/**
+ * 🟢 CLASSES UTILIZADAS
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * xxx
+ *
+ * ┌─────────────┬─────────────────────────────────────────────────────────────┐
+ * │ Classe      │ Uso                                                         │
+ * ├─────────────┼─────────────────────────────────────────────────────────────┤
+ * │ `Config`    │ xxx                                                         │
+ * ├─────────────┼─────────────────────────────────────────────────────────────┤
+ * │ `Exception` │ xxx                                                         │
+ * ├─────────────┼─────────────────────────────────────────────────────────────┤
+ * │ `Message`   │ xxx                                                         │
+ * ├─────────────┼─────────────────────────────────────────────────────────────┤
+ * │ `Tools`     │ xxx                                                         │
+ * └─────────────┴─────────────────────────────────────────────────────────────┘
+ */
 
 use galastri\core\config\Config;
 use galastri\extensions\Exception;
 use galastri\language\Message;
 use galastri\modules\Tools;
 
+
+
+/**
+ * 🟢 CLASSE Router
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * xxx
+ */
+
 final class Router
 {
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                              CONSTANTES                               ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     */
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
+    
     private const APP_CONFIG_FILE_ROUTES = PROJECT_DIR.'/app/config/routes.php';
 
+    
+    
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                             PROPRIEDADES                              ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     */
+
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
+    
     private static string $rootDir;
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
+    
     private static array $routeData;
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
+    
     private static array $urlParts;
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
+    
     private static string $nodeName = '';
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
+    
     private static string $controllerName = '';
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
     private static array $controllerNamespace = ['app', 'controllers'];
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
     private static array $dynamicNodes = [];
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
     private static string $methodName = 'main';
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
     private static bool $isValidRoute = true;
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
     private static bool $removedIndexFromNamespace = false;
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
     private static array $parameters = [];
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @var xxx
+     */
+
+    
+    
+    
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                                MÉTODOS                                ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     */
+    
+    /**
+     * 🟢 CLASSE ESTÁTICA
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Os recursos desta classe são acessados diretamente por chamadas como
+     * `Router::run()`, sem precisar criar um objeto.
+     *
+     * Por isso, deixamos o construtor privado para impedir que a classe seja
+     * instanciada com `new Router()`.
+     */
 
     private function __construct() {}
 
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     public static function run(): void
     {
         self::$routeData = Config::importConfig(self::APP_CONFIG_FILE_ROUTES);
@@ -41,6 +283,18 @@ final class Router
         self::resolveParameters();
     }
 
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function configureRootDir(): void
     {
         $rootDir = array_key_first(self::$routeData);
@@ -57,7 +311,19 @@ final class Router
             );
         }
     }
-
+   
+   
+   
+    /**
+    * 🟢 xxx
+    * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    * xxx
+    *
+    *
+    * _________________________________
+    * @return void
+    */
+    
     private static function setUrlParts(): void
     {
         $requestPath = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
@@ -73,7 +339,19 @@ final class Router
 
         self::$urlParts = $urlParts;
     }
-
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function resolveNodes(): void
     {
         $partValue = self::$urlParts[0] ?? null;
@@ -105,7 +383,19 @@ final class Router
             }
         }
     }
-
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function processNodeData(string $className): void
     {
         array_shift(self::$urlParts);
@@ -114,7 +404,19 @@ final class Router
         self::resolveNamespace($className);
         self::resolveNodes();
     }
-
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function configureRouteProperties(): void
     {
         self::setConfigIfExists('displayErrors', false);
@@ -195,7 +497,19 @@ final class Router
         self::setConfigIfExists('forceMimeType');
         self::setConfigIfExists('includeProjectMetadata');
     }
-
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function configureNodeProperties(): void
     {
         if(self::setConfigIfExists('controller')) {
@@ -206,7 +520,19 @@ final class Router
             self::$controllerNamespace[] = self::$routeData['controller'];
         }
     }
-
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function configureEndpointProperties(): void
     {
         if (self::setConfigIfExists('method') && self::$routeData['method'] !== '') {
@@ -247,7 +573,19 @@ final class Router
             );
         }
     }
-
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function resolveEndpoints(): void
     {
         if (Config::get('output') !== 'file' && count(preg_grep('/^@main(:|$)/', array_keys(self::$routeData))) == 0) {
@@ -286,7 +624,19 @@ final class Router
         self::$methodName = Tools::toCamelCase($methodName);
         self::configureEndpointProperties();
     }
-
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function resolveParameters(): void
     {
         $parametersValues = array_values(array_filter(explode('/', Config::get('parameters'))));
@@ -307,7 +657,19 @@ final class Router
             self::$isValidRoute = false;
         }
     }
-
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function resolveNamespace(string $partValue): void
     {
         if (isset(self::$routeData['namespace'])) {
@@ -327,7 +689,18 @@ final class Router
         self::$controllerNamespace[] = self::$controllerName;
     }
 
-    /************************ */
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
 
     private static function removePrefixOnce(string $string, string $prefix): string
     {
@@ -353,57 +726,187 @@ final class Router
         return false;
     }
 
-    /************************ */
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
 
     public static function getUrlParts(): array
     {
         return self::$urlParts;
     }
-
+    
+    
+    
+    /**
+    * 🟢 xxx
+    * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    * xxx
+    *
+    *
+    * _________________________________
+    * @return void
+    */
+    
     public static function getControllerName(): string
     {
         return self::$controllerName;
     }
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
     
     public static function getControllerNamespace(): array
     {
         return self::$controllerNamespace;
     }
     
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     public static function getDynamicNodeValues(): array
     {
         return self::$dynamicNodes;
     }
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
     
     public static function getDynamicNode(string $key): string
     {
         return self::$dynamicNodes[$key];
     }
     
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     public static function getMethodName(): string
     {
         return self::$methodName;
     }
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
     
     public static function isValidRoute(): bool
     {
         return self::$isValidRoute;
     }
     
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     public static function getParameterValues(): array
     {
         return self::$parameters;
     }
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
     
     public static function getParameter(string $key): ?string
     {
         return self::$parameters[$key] ?? null;
     }
     
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
     public static function getRootDir(): string
     {
         return self::$rootDir;
     }
+    
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @return void
+     */
     
     public static function getBaseHref(): string
     {

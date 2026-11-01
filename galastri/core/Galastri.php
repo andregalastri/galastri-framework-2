@@ -379,6 +379,8 @@ final class Galastri
 
     private function __construct() {}
 
+    
+    
     /**
      * 🟢 DEFINIÇÃO DO FUSO HORÁRIO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -137,7 +137,7 @@ final class Config
      * Precisamos informar o valor padrão, as regras de tipos e valores, as
      * expressões regulares e o contexto. Mesmo quando uma regra não impõe
      * restrições, sua propriedade precisa existir com o valor que a deixa
-     * desativada, como um `array` ou uma `string` vazia.
+     * desativada, como um `array` vazio ou uma `string` vazia.
      *
      * Essa lista permite conferir se a definição está completa antes de criar o
      * objeto `Definition`. A validação do conteúdo de cada propriedade fica a
@@ -247,7 +247,7 @@ final class Config
          *
          * Essa ordem não permite sobrescrever definições pois `create()`
          * rejeita qualquer nome que já tenha sido registrado. A prioridade
-         * sempre deve ser as configurações do framework.
+         * sempre deve ser das configurações do framework.
          */
 
         $configDefinitions = array_merge(
@@ -269,7 +269,7 @@ final class Config
                 throw new Exception(
                     Message::get("CONFIG_FILE_RETURNED_INVALID_DATA"),
                     [
-                        PROJECT_DIR.'/'.$definitionFile,
+                        $definitionFile,
                     ]
                 );
             }
@@ -521,8 +521,8 @@ final class Config
     public static function get(...$parameters): mixed
     {
         /**
-         * Os três pontos na assinatura (...) também permitem chamar o método sem
-         * informar nada, deixando $parameters vazio.
+         * Os três pontos na assinatura (...) também permitem chamar o método
+         * sem informar nada, deixando $parameters vazio.
          *
          * Como precisamos do nome da configuração para fazer a consulta,
          * conferimos se o primeiro argumento foi informado. Essa checagem
@@ -574,11 +574,11 @@ final class Config
             
             
             /**
-            * Se não houver segundo parâmetro, então não temos um valor
-            * alternativo para retornar. Precisamos interromper este método e
-            * lançar a exceção novamente, permitindo que o código responsável
-            * pela chamada trate a falha.
-            */
+             * Se não houver segundo parâmetro, então não temos um valor
+             * alternativo para retornar. Precisamos interromper este método e
+             * lançar a exceção novamente, permitindo que o código responsável
+             * pela chamada trate a falha.
+             */
 
             throw $e;
         }

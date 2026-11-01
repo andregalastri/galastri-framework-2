@@ -229,19 +229,6 @@ final class Router
     
     
     /**
-     * 🟢 xxx
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
-     *
-     * _________________________________
-     * @var xxx
-     */
-
-    
-    
-    
-    /**
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                                MÉTODOS                                ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
@@ -665,7 +652,10 @@ final class Router
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * xxx
      *
-     *
+     * 
+     * _________________________________
+     * @param xxx $xxx  
+     *    xxx
      * _________________________________
      * @return void
      */
@@ -699,7 +689,14 @@ final class Router
      *
      *
      * _________________________________
-     * @return void
+     * @param xxx $xxx  
+     *    xxx
+     * 
+     * @param xxx $xxx  
+     *    xxx
+     * _________________________________
+     * @return string
+     *    xxx
      */
 
     private static function removePrefixOnce(string $string, string $prefix): string
@@ -711,6 +708,25 @@ final class Router
         return $string;
     }
 
+    
+    
+    /**
+     * 🟢 xxx
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * xxx
+     *
+     *
+     * _________________________________
+     * @param xxx $xxx  
+     *    xxx
+     * 
+     * @param xxx $xxx  
+     *    xxx
+     * _________________________________
+     * @return bool
+     *    xxx
+     */
+    
     private static function setConfigIfExists(string $configName /*, [1]*/): bool
     {
         if (isset(self::$routeData[$configName])) {
@@ -735,7 +751,8 @@ final class Router
      *
      *
      * _________________________________
-     * @return void
+     * @return array
+     *    xxx
      */
 
     public static function getUrlParts(): array
@@ -752,7 +769,8 @@ final class Router
     *
     *
     * _________________________________
-    * @return void
+    * @return string
+    *    xxx
     */
     
     public static function getControllerName(): string
@@ -769,7 +787,8 @@ final class Router
      *
      *
      * _________________________________
-     * @return void
+     * @return array
+     *    xxx
      */
     
     public static function getControllerNamespace(): array
@@ -786,7 +805,8 @@ final class Router
      *
      *
      * _________________________________
-     * @return void
+     * @return array
+     *    xxx
      */
     
     public static function getDynamicNodeValues(): array
@@ -803,7 +823,11 @@ final class Router
      *
      *
      * _________________________________
-     * @return void
+     * @param xxx $xxx  
+     *    xxx
+     * _________________________________
+     * @return string
+     *    xxx
      */
     
     public static function getDynamicNode(string $key): string
@@ -820,7 +844,8 @@ final class Router
      *
      *
      * _________________________________
-     * @return void
+     * @return string
+     *    xxx
      */
     
     public static function getMethodName(): string
@@ -837,7 +862,8 @@ final class Router
      *
      *
      * _________________________________
-     * @return void
+     * @return bool
+     *    xxx
      */
     
     public static function isValidRoute(): bool
@@ -854,7 +880,8 @@ final class Router
      *
      *
      * _________________________________
-     * @return void
+     * @return array
+     *    xxx
      */
     
     public static function getParameterValues(): array
@@ -871,7 +898,11 @@ final class Router
      *
      *
      * _________________________________
-     * @return void
+     * @param xxx $xxx  
+     *    xxx
+     * _________________________________
+     * @return null|string
+     *    xxx
      */
     
     public static function getParameter(string $key): ?string
@@ -888,7 +919,8 @@ final class Router
      *
      *
      * _________________________________
-     * @return void
+     * @return string
+     *    xxx
      */
     
     public static function getRootDir(): string
@@ -905,7 +937,8 @@ final class Router
      *
      *
      * _________________________________
-     * @return void
+     * @return string
+     *    xxx
      */
     
     public static function getBaseHref(): string

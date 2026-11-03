@@ -339,38 +339,77 @@ final class Tools
         return $defaultValue;
     }
 
-    public static function trimLeft(string $string, ...$replacementList): string
+    public static function trimLeft(string $string, string $prefix, ?int $limit = null): string
     {
-        $quoteReplacement = function ($value) {
-            return preg_quote($value, '/');
-        };
+        if ($limit !== null && $limit < 0) {
+            throw new Exception(
+                'O limite de remoções não pode ser negativo.'
+            );
+        }
 
-        $replacementList = array_map($quoteReplacement, $replacementList);
+        if ($prefix === '' || $limit === 0) {
+            return $string;
+        }
 
-        return preg_replace('/^('.implode('|', $replacementList).')\b\s*/i', '', $string);
+        $length = strlen($prefix);
+        $removed = 0;
+
+        while (($limit === null || $removed < $limit) && str_starts_with($string, $prefix)) {
+            $string = substr($string, $length);
+            $removed++;
+        }
+
+        return $string;
     }
 
-    public static function trimRight(string $string, ...$replacementList): string
+    public static function trimRight(string $string, string $suffix, ?int $limit = null): string
     {
-        $quoteReplacement = function ($value) {
-            return preg_quote($value, '/');
-        };
+        if ($limit !== null && $limit < 0) {
+            throw new Exception(
+                'O limite de remoções não pode ser negativo.'
+            );
+        }
 
-        $replacementList = array_map($quoteReplacement, $replacementList);
+        if ($suffix === '' || $limit === 0) {
+            return $string;
+        }
 
-        return preg_replace('/('.implode('|', $replacementList).')\b\s*$/i', '', $string);
+        $length = strlen($suffix);
+        $removed = 0;
+
+        while (
+            ($limit === null || $removed < $limit)
+            && str_ends_with($string, $suffix)
+        ) {
+            $string = substr($string, 0, -$length);
+            $removed++;
+        }
+
+        return $string;
     }
 
-    public static function trimBoth(string $string, ...$replacementList): string
+    public static function trimBoth(string $string, string $text, ?int $limit = null): string
     {
-        $quoteReplacement = function ($value) {
-            return preg_quote($value, '/');
-        };
+        $string = self::trimLeft($string, $text, $limit);
+        $string = self::trimRight($string, $text, $limit);
 
-        $replacementList = array_map($quoteReplacement, $replacementList);
+        return $string;
+    }
+    
+    public static function ensurePrefix(string $string, string $prefix): string
+    {
+        return $prefix.self::trimLeft($string, $prefix);
+    }
 
-        $string = preg_replace('/^('.implode('|', $replacementList).')\b\s*/i', '', $string);
-        $string = preg_replace('/('.implode('|', $replacementList).')\b\s*$/i', '', $string);
+    public static function ensureSuffix(string $string, string $suffix): string
+    {
+        return self::trimRight($string, $suffix).$suffix;
+    }
+
+    public static function ensureAffixes(string $string, string $prefix, string $suffix): string
+    {
+        $string = self::ensurePrefix($string, $prefix);
+        $string = self::ensureSuffix($string, $prefix);
 
         return $string;
     }

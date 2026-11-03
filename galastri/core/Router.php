@@ -859,7 +859,7 @@ final class Router
     
     
     /**
-     * 🟢 xxx
+     * 🟢 PROCESSAMENTO DO NÓ ENCONTRADO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Quando resolveNodes() chama esse método, ele já encontrou um nó e colocou
      * as configurações dele em `$routeData`. Agora precisamos processar esse nó
@@ -868,8 +868,8 @@ final class Router
      *
      * _________________________________
      * @param string $partValue  
-     *    Valor do nó encontrado que será tratado para compor parte do namespace
-     *    até à classe controller.
+     *    Trecho que será tratado para compor o namespace completo da classe
+     *    controller.
      * _________________________________
      * @return void
      */
@@ -913,8 +913,7 @@ final class Router
         
         /**
          * Depois, `resolveNamespace()` atualiza o namespace da classe
-         * controller, adicionando o ter,p junto aos demais nomes já
-         * inseridos.
+         * controller, acrescentando o nome obtido a partir de `$partValue`.
          */
         
         self::resolveNamespace($partValue);
@@ -946,23 +945,84 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Esse método pega as configurações presentes em `$routeData` e aplica
+     * apenas aquelas que pertencem ao contexto solicitado.
+     * 
+     * O $context funciona como um filtro. Se receber 'debug', por exemplo,
+     * estamos dizendo: "Nesta rodada, vamos cuidar só das configurações de
+     * debug".
+     * 
+     * ✔️ EXEMPLO
+     * ┌───────────────────────────────────────────────────────────────────────┐
+     * │ Se o método receber `debug` no contexto, ele terá a tarefa cuidar das │
+     * │ configurações apenas deste contexto, consultando quais configurações  │
+     * │ pertencem a este grupo e aplicando somente as configurações que       │
+     * │ estiverem declaradas na rota atual.                                   │
+     * │                                                                       │
+     * │ E isso serve também para os demais contextos e para cada bloco de     │
+     * │ configuração de rota encontrado.                                      │
+     * └───────────────────────────────────────────────────────────────────────┘
+     * 
      *
-     *
+     * _________________________________
+     * @param string $context  
+     *    Define o contexto das configurações que serão atualizadas.
      * _________________________________
      * @return void
      */
     
     private static function configurePropertiesByContext(string $context): void
     {
+        /**
+         * O `foreach` percorre todas as configurações registradas em
+         * `Config::list()`. Em cada loop, temos o nome da configuração em
+         * `$name` e o objeto que descreve suas regras em `$definition`.
+         */
+        
         foreach (Config::list() as $name => $definition) {
+            
+        
+        
+            /**
+             * Antes de aplicar qualquer valor, fazemos duas conferências:
+             * 
+             * 1. Essa configuração pertence ao contexto solicitado? Se
+             *    `getContext()` retornar outro contexto, o `continue` pula para
+             *    a próxima configuração.
+             * 
+             * 2. Ela foi informada na condiguração da rota que estamos
+             *    processando? Se o nome não existir em `$routeData`, pulamos
+             *    também. Nesse caso, o valor que já estava em `Config` continua
+             *    valendo.
+             */
+            
             if ($definition->getContext() !== $context) {
                 continue;
             }
 
+            
+            
+            /**
+             * 💡 OBSERVAÇÃO
+             * ┌────────────────────────────────────────────────────────────┐
+             * │ Usamos `array_key_exists()` ao invés de `isset()` pois uma │
+             * │ configuração com valor `null` também poderá contar como    │
+             * │ válida, caso a configuração esteja definida para aceitar   │
+             * │ valores `null`.                                            │
+             * └────────────────────────────────────────────────────────────┘
+             */
+            
             if (!array_key_exists($name, self::$routeData)) {
                 continue;
             }
+            
+            
+            
+            /**
+             * Passou pelas duas? Então pegamos o valor informado na rota e o
+             * entregamos ao `Config::set()`, que cuida de validá-lo e
+             * armazená-lo.
+             */
 
             Config::set($name, self::$routeData[$name]);
         }

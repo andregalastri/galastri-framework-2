@@ -861,22 +861,83 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Quando resolveNodes() chama esse método, ele já encontrou um nó e colocou
+     * as configurações dele em `$routeData`. Agora precisamos processar esse nó
+     * antes de seguir para a próxima parte da URL.
      *
      *
      * _________________________________
-     * @param string $className  
-     *    xxx
+     * @param string $partValue  
+     *    Valor do nó encontrado que será tratado para compor parte do namespace
+     *    até à classe controller.
      * _________________________________
      * @return void
      */
     
-    private static function processNodeData(string $className): void
+    private static function processNodeData(string $partValue): void
     {
+        /**
+         * Primeiro, `array_shift()` remove a primeira parte de `$urlParts`.
+         * 
+         * O motivo é que não precisamos mais dele, já o encontramos, então ele
+         * é removido da lista para que possamos prosseguir.
+         * 
+         * ✔️ EXEMPLO
+         * ┌───────────────────────────────────────────────────────────────┐
+         * │ Se acabamos de encontrar `/produtos`, aconteceria o seguinte: │
+         * │                                                               │
+         * │ Antes:                                                        │
+         * │ $urlParts = ['produtos', 'listar', 'ativos'];                 │
+         * │                                                               │
+         * │ array_shift(self::$urlParts);                                 │
+         * │                                                               │
+         * │ Depois:                                                       │
+         * │ $urlParts = ['listar', 'ativos'];                             │
+         * └───────────────────────────────────────────────────────────────┘
+         */
+        
         array_shift(self::$urlParts);
 
+        
+        
+        /**
+         * Em seguida, `configureRouteProperties()` aplica as configurações dos
+         * contextos `debug` e `route` que estiverem presentes nesse nó. Assim,
+         * conforme entramos no caminho, as configurações encontradas passam a
+         * valer. O que não estiver definido ali mantém o valor que já tinha.
+         */
+        
         self::configureRouteProperties();
-        self::resolveNamespace($className);
+        
+        
+        
+        /**
+         * Depois, `resolveNamespace()` atualiza o namespace da classe
+         * controller, adicionando o ter,p junto aos demais nomes já
+         * inseridos.
+         */
+        
+        self::resolveNamespace($partValue);
+        
+        
+        
+        /**
+         * Com essa parte resolvida, chegamos a um `resolveNodes()` de novo.
+         * 
+         * Só que agora a situação já mudou: a parte anterior da URL não está
+         * mais na lista e `$routeData` contém apenas o conteúdo do nó em que
+         * acabamos de entrar. Então a próxima busca acontece dentro dele,
+         * olhando a próxima parte da URL.
+         * 
+         * É esse reencontro entre os dois métodos que faz a busca avançar:
+         * `resolveNodes()` faz a busca e encontra o nó; `processNodeData()`
+         * prepara o que corresponde a ele e chama a busca novamente.
+         * 
+         * Quando não houver outro nó para entrar, inclusive quando encontramos
+         * um endpoint, essa sequência para, e o run() segue com as etapas
+         * restantes.
+         */
+        
         self::resolveNodes();
     }
     

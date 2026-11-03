@@ -382,6 +382,114 @@ final class Galastri
     
     
     /**
+     * 🟢 RODANDO O FRAMEWORK
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * O run() reúne a sequência de trabalho que Galastri precisa conduzir para
+     * atender à requisição. É aqui que definimos a ordem das etapas, desde a
+     * preparação das configurações até a execução da saída. Cada método chamado
+     * cuida de uma parte desse trabalho.
+     *
+     * O papel de run() é manter essa sequência explícita. Os detalhes do que
+     * cada parte faz ficam nos métodos responsáveis por cada etapa; aqui
+     * conseguimos acompanhar como essas partes trabalham juntas.
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+
+    public static function run(): void
+    {
+        /**
+         * Começamos com Config::run() e Router::run(), pois precisamos preparar
+         * as configurações e identificar a rota antes de decidir como atender
+         * ao acesso. A rota determina informações que usaremos nas próximas
+         * etapas, como a saída escolhida, o controller e os métodos que serão
+         * chamados.
+         *
+         * Aproveite para ver sobre as classes `Config` e `Router` agora e
+         * depois volte aqui:
+         *
+         * 🔗 LINK: /galastri/core/config/Config.php  
+         * 🔗 LINK: /galastri/core/Router.php  
+         */
+
+        Config::run();
+        Router::run();
+
+
+
+        /**
+         * Com essa preparação concluída, aplicamos o fuso horário e
+         * identificamos a classe de saída. Precisamos conhecer essa classe
+         * desde já porque algumas verificações dependem dela: a ausência de um
+         * controller, por exemplo, pode ser permitida quando a saída consegue
+         * entregar um arquivo diretamente do disco.
+         */
+
+        self::setTimezone();
+        self::setOutputClass();
+
+
+
+        /**
+         * Em seguida, verificamos se a requisição pode prosseguir.
+         *
+         * Existem situações que podem interromper o processamento antes de
+         * chegarmos ao código da aplicação.
+         *
+         * Aqui, as possibilidades de interrupção são:
+         * - Redirecionamento forçado na configuração.
+         * - Modo offline ativado.
+         * - Rota inválida.
+         * - Falha de autenticação.
+         */
+
+        self::checkForceRedirectTo();
+        self::checkOffline();
+        self::isValidRoute();
+        self::checkAuthentication();
+
+
+
+        /**
+         * Aqui preparamos o controller: identificamos sua classe, conferimos a
+         * herança exigida pelo framework e verificamos os métodos que
+         * pretendemos executar.
+         *
+         * Fazemos isso antes de criar o objeto porque seu construtor já inicia
+         * as chamadas aos métodos da aplicação. Por isso, queremos chegar a
+         * esse momento com essa preparação concluída.
+         */
+        self::checkControllerNamespace();
+        self::setMethodName();
+        self::setHttpMethodName();
+
+
+
+        /**
+         * Quando há um controller disponível, chamamos `executeController()`.
+         * Durante essa chamada, o controller executa seus métodos e reúne os
+         * resultados que serão consultados pela saída.
+         */
+        if (self::controllerExists()) {
+            self::executeController();
+        }
+
+
+
+        /**
+         * Por fim, chamamos `executeOutput()`. Essa etapa fica fora da condição
+         * `controllerExists()` porque também precisamos produzir uma resposta
+         * quando seguimos sem controller, já que alguns formatos de saída podem
+         * não exigir um controller para funcionar.
+         */
+        self::executeOutput();
+    }
+    
+    
+    
+    /**
      * 🟢 DEFINIÇÃO DO FUSO HORÁRIO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Define o fuso horário padrão que o PHP vai usar durante a requisição.
@@ -1325,114 +1433,6 @@ final class Galastri
     public static function getControllerHttpMethodName(): string
     {
        return self::$controllerHttpMethodName;
-    }
-
-
-
-    /**
-     * 🟢 RODANDO O FRAMEWORK
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * O run() reúne a sequência de trabalho que Galastri precisa conduzir para
-     * atender à requisição. É aqui que definimos a ordem das etapas, desde a
-     * preparação das configurações até a execução da saída. Cada método chamado
-     * cuida de uma parte desse trabalho.
-     *
-     * O papel de run() é manter essa sequência explícita. Os detalhes do que
-     * cada parte faz ficam nos métodos responsáveis por cada etapa; aqui
-     * conseguimos acompanhar como essas partes trabalham juntas.
-     *
-     *
-     * _________________________________
-     * @return void
-     */
-
-    public static function run(): void
-    {
-        /**
-         * Começamos com Config::run() e Router::run(), pois precisamos preparar
-         * as configurações e identificar a rota antes de decidir como atender
-         * ao acesso. A rota determina informações que usaremos nas próximas
-         * etapas, como a saída escolhida, o controller e os métodos que serão
-         * chamados.
-         *
-         * Aproveite para ver sobre as classes `Config` e `Router` agora e
-         * depois volte aqui:
-         *
-         * 🔗 LINK: /galastri/core/config/Config.php  
-         * 🔗 LINK: /galastri/core/Router.php  
-         */
-
-        Config::run();
-        Router::run();
-
-
-
-        /**
-         * Com essa preparação concluída, aplicamos o fuso horário e
-         * identificamos a classe de saída. Precisamos conhecer essa classe
-         * desde já porque algumas verificações dependem dela: a ausência de um
-         * controller, por exemplo, pode ser permitida quando a saída consegue
-         * entregar um arquivo diretamente do disco.
-         */
-
-        self::setTimezone();
-        self::setOutputClass();
-
-
-
-        /**
-         * Em seguida, verificamos se a requisição pode prosseguir.
-         *
-         * Existem situações que podem interromper o processamento antes de
-         * chegarmos ao código da aplicação.
-         *
-         * Aqui, as possibilidades de interrupção são:
-         * - Redirecionamento forçado na configuração.
-         * - Modo offline ativado.
-         * - Rota inválida.
-         * - Falha de autenticação.
-         */
-
-        self::checkForceRedirectTo();
-        self::checkOffline();
-        self::isValidRoute();
-        self::checkAuthentication();
-
-
-
-        /**
-         * Aqui preparamos o controller: identificamos sua classe, conferimos a
-         * herança exigida pelo framework e verificamos os métodos que
-         * pretendemos executar.
-         *
-         * Fazemos isso antes de criar o objeto porque seu construtor já inicia
-         * as chamadas aos métodos da aplicação. Por isso, queremos chegar a
-         * esse momento com essa preparação concluída.
-         */
-        self::checkControllerNamespace();
-        self::setMethodName();
-        self::setHttpMethodName();
-
-
-
-        /**
-         * Quando há um controller disponível, chamamos `executeController()`.
-         * Durante essa chamada, o controller executa seus métodos e reúne os
-         * resultados que serão consultados pela saída.
-         */
-        if (self::controllerExists()) {
-            self::executeController();
-        }
-
-
-
-        /**
-         * Por fim, chamamos `executeOutput()`. Essa etapa fica fora da condição
-         * `controllerExists()` porque também precisamos produzir uma resposta
-         * quando seguimos sem controller, já que alguns formatos de saída podem
-         * não exigir um controller para funcionar.
-         */
-        self::executeOutput();
     }
 }
 

@@ -37,7 +37,7 @@ final class Message
     private const DEFINITION_MISSING_REQUIRED_PROPERTY = 'Erro na definição da configuração "{{}}": É obrigatório informar a propriedade "{{}}".';
 
     private const DEFINITION_CONFIG_NAME_ALREADY_IN_USE = 'Erro na definição de configuração: O nome de configuração "{{}}" já está sendo usado.';
-
+    
     /**
      * Valor de configuração.
      */
@@ -56,6 +56,8 @@ final class Message
     private const CONFIG_DOESNT_EXIST = 'Erro: A configuração "{{}}" não existe.';
 
     private const CONFIG_EXISTS = 'Erro: A configuração "{{}}" existe.';
+    
+    private const CONFIG_NAME_NOT_PROVIDED = 'Erro: Config::get() exige o nome da configuração.';
 
     /**
      * Arquivo de configuração.

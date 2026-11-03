@@ -530,8 +530,8 @@ final class Config
          * verifica apenas a presença da posição 0, não seu conteúdo.
          */
         if (!array_key_exists(0, $parameters)) {
-            throw new \ArgumentCountError(
-                'Config::get() exige o nome da configuração.'
+            throw new Exception(
+                Message::get("CONFIG_NAME_NOT_PROVIDED")
             );
         }
         

@@ -943,7 +943,7 @@ final class Router
     
     
     /**
-     * 🟢 xxx
+     * 🟢 APLICAÇÃO DAS CONFIGURAÇÕES POR CONTEXTO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Esse método pega as configurações presentes em `$routeData` e aplica
      * apenas aquelas que pertencem ao contexto solicitado.
@@ -953,20 +953,21 @@ final class Router
      * debug".
      * 
      * ✔️ EXEMPLO
-     * ┌───────────────────────────────────────────────────────────────────────┐
-     * │ Se o método receber `debug` no contexto, ele terá a tarefa cuidar das │
-     * │ configurações apenas deste contexto, consultando quais configurações  │
-     * │ pertencem a este grupo e aplicando somente as configurações que       │
-     * │ estiverem declaradas na rota atual.                                   │
-     * │                                                                       │
-     * │ E isso serve também para os demais contextos e para cada bloco de     │
-     * │ configuração de rota encontrado.                                      │
-     * └───────────────────────────────────────────────────────────────────────┘
+     * ┌──────────────────────────────────────────────────────────────────────┐
+     * │ Se o método receber `debug` no contexto, ele terá a tarefa de cuidar │
+     * │ das configurações apenas deste contexto, consultando quais           │
+     * │ configurações pertencem a este grupo e aplicando somente as          │
+     * │ configurações que estiverem declaradas na rota atual.                │
+     * │                                                                      │
+     * │ E isso serve também para os demais contextos e para cada bloco de    │
+     * │ configuração de rota encontrado.                                     │
+     * └──────────────────────────────────────────────────────────────────────┘
      * 
      *
      * _________________________________
      * @param string $context  
-     *    Define o contexto das configurações que serão atualizadas.
+     *    Contexto usado para selecionar quais configurações presentes em
+     *    `$routeData` serão aplicadas.
      * _________________________________
      * @return void
      */
@@ -990,7 +991,7 @@ final class Router
              *    `getContext()` retornar outro contexto, o `continue` pula para
              *    a próxima configuração.
              * 
-             * 2. Ela foi informada na condiguração da rota que estamos
+             * 2. Ela foi informada na configuração da rota que estamos
              *    processando? Se o nome não existir em `$routeData`, pulamos
              *    também. Nesse caso, o valor que já estava em `Config` continua
              *    valendo.
@@ -1033,7 +1034,9 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Esse método reúne duas chamadas que aplicam configurações de contexto
+     * `route` e `debug` que estejam em `$routeData` no momento em que for
+     * chamado.
      *
      *
      * _________________________________

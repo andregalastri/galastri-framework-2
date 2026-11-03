@@ -1032,11 +1032,15 @@ final class Router
     
     
     /**
-     * 🟢 xxx
+     * 🟢 APLICAÇÃO DAS CONFIGURAÇÕES DE DEBUG E ROTA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Esse método reúne duas chamadas que aplicam configurações de contexto
-     * `route` e `debug` que estejam em `$routeData` no momento em que for
-     * chamado.
+     * Esse método reúne duas chamadas que aplicam as configurações dos
+     * contextos `debug` e `route` presentes em `$routeData` no momento
+     * da chamada.
+     * 
+     * É como dizer: "Já estamos com os dados desse nó ou endpoint em mãos.
+     * Agora veja quais configurações de `debug` e de `route` foram informadas
+     * aqui e aplique os valores".
      *
      *
      * _________________________________

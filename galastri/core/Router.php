@@ -1373,13 +1373,13 @@ final class Router
          *    uma chave válida caso não haver correspondência entre a parte da
          *    URL e os endpoints disponíveis em `$routeData`.
          * 
-         * -  $endpointExists: armazena se um endpoint diferente de `@main` foi
-         *    encontrado em `$routeData`.
+         * -  $endpointExists: indica se existe um endpoint para atender ao
+         *    acesso, incluindo o endpoint padrão `@main`.
          */
 
         $methodName = 'main';
         $endpointkey = '@main';
-        $endpointExists = false;
+        $endpointExists = isset($routeData[$endpointkey]);
 
         
         

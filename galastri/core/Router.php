@@ -1361,12 +1361,26 @@ final class Router
          * Agora precisamos encontrar a chave do endpoint atual dentro do
          * `$routeData`.
          *
-         * Declaramos aqui a variável auxiliar `$endpointExists` que armazena se
-         * um endpoint foi encontrado em `$routeData`.
-         *
+         * Declaramos aqui algumas variáveis auxiliar
+         * 
+         * -  $methodName: armazena o nome do método que será chamado no
+         *    controller. Iniciamos com o nome padrão 'main' para garantir um
+         *    valor válido caso não encontremos um endpoint para ser definido
+         *    como método a ser chamado.
+         * 
+         * -  $endpointkey: armazena a chave do endpoint que iremos puxar de
+         *    `$routeData`. Iniciamos com o valor padrão `@main` para garantir
+         *    uma chave válida caso não haver correspondência entre a parte da
+         *    URL e os endpoints disponíveis em `$routeData`.
+         * 
+         * -  $endpointExists: armazena se um endpoint diferente de `@main` foi
+         *    encontrado em `$routeData`.
          */
 
+        $methodName = 'main';
+        $endpointkey = '@main';
         $endpointExists = false;
+
         
         
         /**
@@ -1394,10 +1408,11 @@ final class Router
                 
                 
                 /**
-                 * Se a parte da URL coincidir com o nome do endpoint,
-                 * removemos a parte de `$urlParts`, pois não precisamos
-                 * mais dela, e definimos o endpoint como nome do método a
-                 * ser chamado, convertido em camelCase.
+                 * Se a parte da URL coincidir com o nome do endpoint, removemos
+                 * a parte de `$urlParts`, pois não precisamos mais dela, e
+                 * definimos o endpoint como nome do método a ser chamado e
+                 * definimos o nome da chave de onde iremos puxar as
+                 * configurações de $routeData.
                  *
                  * 💡 OBSERVAÇÃO
                  * ┌────────────────────────────────────────────────────┐
@@ -1410,17 +1425,13 @@ final class Router
                  * │ endpoint.                                          │
                  * └────────────────────────────────────────────────────┘
                  */
+                
                 if ($urlPartAsMethod == $endpointMethodName) {
                     
                     array_shift(self::$urlParts);
                     
-                    self::$routeData = $endpointData;
-                    self::$methodName = Tools::toCamelCase($endpointMethodName);
-                    
-                    /**
-                     * Como o endpoint existe, então alteramos `$endpointExists`
-                     * para `true`.
-                     */
+                    $methodName = $endpointMethodName;
+                    $endpointkey = $key;
                     $endpointExists = true;
                     
                     break;
@@ -1431,13 +1442,13 @@ final class Router
         
         /**
          * Com a escolha feita, fazemos uma última verificação:
-         * 
-         * Se o endpoint escolhido não existir, significa que não há mais nada a
-         * ser processado, então encerramos o método antecipadamente, desde que
-         * o formato de saída também seja do tipo `file`.
-         * 
-         * Deve ser assim pois a saída 'file' fica dispensada da exigência de
-         * ter um endpoint, podendo prosseguir normalmente.
+         *
+         * Se o endpoint escolhido não existir, isso não deverá causar problemas
+         * se o formato de saída for `file`.
+         *
+         * A saída `file`, como dito anteriormente, fica dispensada da exigência
+         * de ter um endpoint. Pra este formato de saída, tanto faz se há
+         * endpoint ou não, ela pode prosseguir normalmente em ambos casos.
          */
         
         if ($output === 'file' && !$endpointExists) {
@@ -1446,12 +1457,23 @@ final class Router
         
         
         /**
-         * Se existir um endpoint, então agora a propriedade `$routeData` contém
-         * os dados desse endpoint.
+         * Se existir um endpoint, então armazenamos os dados deste endpoint
+         * dentro de $routeData.
          * 
-         * Reaplicamos suas configurações gerais de `configureRouteProperties()`,
-         * e chamamos `configureEndpointProperties()` para cuidar das
-         * configurações específicas do contexto 'endpoint'.
+         * Também definimos o nome do método formatado em camelCase na
+         * propriedade $methodName.
+         */
+        
+        self::$routeData = $routeData[$endpointkey];
+        self::$methodName = Tools::toCamelCase($methodName);
+        
+        /**
+         * Reaplicamos as configurações gerais de rota, para garantir que
+         * configurações de contexto `route` ou `debug` dentro do endpoint sejam
+         * aplicadas.
+         * 
+         * Por fim, chamamos `configureEndpointProperties()` para cuidar das
+         * configurações específicas do contexto `endpoint`.
          */
         self::configureRouteProperties();
         self::configureEndpointProperties();

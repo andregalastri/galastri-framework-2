@@ -1056,12 +1056,12 @@ final class Router
     
     
     /**
-     * 🟢 xxx
+     * 🟢 APLICAÇÃO DAS CONFIGURAÇÕES DO NÓ
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Esse método reúne comandos que aplicam as configurações de contexto
      * `node` presentes em `$routeData` no momento da chamada.
      *
-     * É como dizer: "Já estamos com os dados desse nó ou endpoint em mãos.
+     * É como dizer: "Já estamos com os dados do último nó encontrado em mãos.
      * Agora veja quais configurações de `node` foram informadas aqui e aplique
      * os valores".
      * 
@@ -1082,12 +1082,12 @@ final class Router
         
         
         /**
-         * Depois vem um ajuste especial: dentro de $routeData, existe uma
-         * configuração chamda `controller`?
+         * Depois vem um ajuste especial: dentro de `$routeData`, existe uma
+         * configuração chamada `controller`?
          * 
          * Até aqui, o nome do `controller` foi montado a partir dos nós
          * encontrados, mas pode acontecer do desenvolvedor preferir escolher um
-         * controller específico para aquele nó.
+         * controller diferente do padrão.
          * 
          * Quando houver uma configuração `controller` no nó, o nome do
          * controller deixa de ser o padrão e passa a ser o que foi configurado.
@@ -1119,25 +1119,26 @@ final class Router
              * Por isso, puxamos a configuração `controller` e atribuímos o
              * valor dela para a propriedade $controllerName.
              */
+            
             self::$controllerName = Config::get('controller');
 
             
             
             /**
-             * Também precisamos reajustar o caminho do namespace, pois ele
-             * precisa refletir o caminho com o nome do controller correto. O
-             * `array_pop()` retira o último nome do namespace atual e insere o
-             * valor configurado no lugar.
+             * Também precisamos atualizar o namespace com o nome do controller
+             * escolhido. Primeiro, `array_pop()` remove o último nome do array.
+             * Depois, acrescentamos o valor de `$controllerName` no lugar.
              * 
              * ✔️ CONFORME O EXEMPLO ANTERIOR
              * ┌──────────────────────────────────────────────────────────────┐
-             * │ `array_pop()` remove `Produtos` e depois c coloca `Catalogo` │
-             * │ no lugar, deixando $controllerNamespace armazenando a array  │
+             * │ Removemos `Produtos` com `array_pop()` e acrescentamos       │
+             * │ `Catalogo` em seguida. Assim, `$controllerNamespace` contém: │
              * │ ['app', 'controllers', 'Admin', 'Catalogo'].                 │
              * │                                                              │
              * │ A rota não muda, ela ainda aponta pra `/admin/produtos`.     │
              * └──────────────────────────────────────────────────────────────┘
              */
+            
             array_pop(self::$controllerNamespace);
 
             self::$controllerNamespace[] = self::$controllerName;
@@ -1149,8 +1150,12 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Esse método reúne comandos que aplicam as configurações de contexto
+     * `node` presentes em `$routeData` no momento da chamada.
      *
+     * É como dizer: "Já estamos com os dados do endpoint encontrado em mãos.
+     * Agora veja quais configurações de `endpoint` foram informadas aqui e
+     * aplique os valores".
      *
      * _________________________________
      * @return void
@@ -1158,23 +1163,128 @@ final class Router
     
     private static function configureEndpointProperties(): void
     {
+        /**
+        * Aplica as configurações do contexto 'endpoint' que estiverem presentes
+        * em $routeData neste momento.
+        */
+        
         self::configurePropertiesByContext('endpoint');
         
+        /**
+         * Depois vem alguns ajustes especiais, que respondem às seguintes
+         * perguntas:
+         * 
+         * 1. Dentro de `$routeData`, existe uma configuração chamada `method`?
+         * 
+         *    Até aqui, o nome do método a ser chamado foi montado a partir do
+         *    endpoint encontrado, mas pode acontecer do desenvolvedor preferir
+         *    escolher um método diferente do padrão.
+         * 
+         *    Quando houver uma configuração `method` no endpoint, o nome do
+         *    method deixa de ser o padrão e passa a ser o que foi configurado.
+         * 
+         *    ✔️ EXEMPLO
+         *    ┌────────────────────────────────────────────────────────────────┐
+         *    │ Suponha a seguinte rota: `/produtos/listar`.                   │
+         *    │                                                                │
+         *    │ Por padrão, essa rota estaria definindo que o método é         │
+         *    │ `listar`                                                       │
+         *    │                                                                │
+         *    │ Mas imagine que o endpoint `@listar` tenha esta configuração:  │
+         *    │                                                                │
+         *    │ 'method' => '@abrirLista'                                      │
+         *    │                                                                │
+         *    │ Isso é como dizer: "O endereço continua terminando em          │
+         *    │ `/listar`, mas o método a ser executado aqui é                 │
+         *    │ `abrirLista()`".                                               │
+         *    │                                                                │
+         *    │ Ou seja, a propriedade `$methodName` precisa ser alterada      │
+         *    │ para o que estiver definido na configuração do endpoint.       │
+         *    └────────────────────────────────────────────────────────────────┘
+         */
+        
         if (array_key_exists('method', self::$routeData)) {
+            
+            /**
+             * Por isso, puxamos a configuração `method` e atribuímos o valor
+             * dela para uma variável temporária.
+             */
+            
             $methodName = Config::get('method');
+            
+            
+            
+            /**
+             * Se o valor puxado da configuração `method` não for vazia, então
+             * armazenamos o valor na propriedade $method.
+             */
 
             if ($methodName !== '') {
+                
+            
+            
+                /**
+                 * Antes de armazenar, porém, retiramos o @ da string.
+                 */
+                
                 self::$methodName = ltrim($methodName, '@');
             }
         }
 
+        
+        
+        /**
+         * 2. Dentro de `$routeData`, existe uma configuração chamada
+         *    `httpMethod`?
+         * 
+         *    Esta configuração associa tipos de requisição HTTP a nomes de
+         *    métodos do controller, por isso, será reformatada antes de ser
+         *    armazenada.
+         */
+        
         if (array_key_exists('httpMethod', self::$routeData)) {
+            
+        
+        
+            /**
+             * A nova formatação segue um padrão previsível: chaves em minúsculo
+             * e valores sem `@`.
+             * 
+             * ✔️ EXEMPLO
+             * ┌───────────────────────────────────────────────────────────────┐
+             * │ Suponha a seguinte configuração no endpoint:                  │
+             * │ ┌─────────────────────────────┐                               │
+             * │ │ 'httpMethod' => [           │                               │
+             * │ │     'POST' => '@salvar',    │                               │
+             * │ │     'DELETE' => '@excluir', │                               │
+             * │ │ ]                           │                               │
+             * │ └─────────────────────────────┘                               │
+             * │                                                               │
+             * │ O `foreach` percorre essas associações e monta um novo array  │
+             * │ com uma escrita padronizada, resultando em:                   │
+             * │                                                               │
+             * │ ┌────────────────────────────┐                                │
+             * │ │ [                          │                                │
+             * │ │     'post' => 'salvar',    │                                │
+             * │ │     'delete' => 'excluir', │                                │
+             * │ │ ]                          │                                │
+             * │ └────────────────────────────┘                                │
+             * └───────────────────────────────────────────────────────────────┘
+             */
+            
             $httpMethod = [];
-
+            
             foreach (Config::get('httpMethod') as $type => $method) {
                 $httpMethod[mb_strtolower($type)] = ltrim($method, '@');
             }
 
+            
+            
+            /**
+             * Por fim, o valor reformatado é inserido no lugar da configuração
+             * bruta.
+             */
+            
             Config::set('httpMethod', $httpMethod);
         }
     }

@@ -1058,8 +1058,13 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Esse método reúne comandos que aplicam as configurações de contexto
+     * `node` presentes em `$routeData` no momento da chamada.
      *
+     * É como dizer: "Já estamos com os dados desse nó ou endpoint em mãos.
+     * Agora veja quais configurações de `node` foram informadas aqui e aplique
+     * os valores".
+     * 
      *
      * _________________________________
      * @return void
@@ -1067,12 +1072,72 @@ final class Router
     
     private static function configureNodeProperties(): void
     {
+        /**
+         * Aplica as configurações do contexto 'node' que estiverem presentes em
+         * $routeData neste momento.
+         */
         
         self::configurePropertiesByContext('node');
         
+        
+        
+        /**
+         * Depois vem um ajuste especial: dentro de $routeData, existe uma
+         * configuração chamda `controller`?
+         * 
+         * Até aqui, o nome do `controller` foi montado a partir dos nós
+         * encontrados, mas pode acontecer do desenvolvedor preferir escolher um
+         * controller específico para aquele nó.
+         * 
+         * Quando houver uma configuração `controller` no nó, o nome do
+         * controller deixa de ser o padrão e passa a ser o que foi configurado.
+         * 
+         * 
+         * ✔️ EXEMPLO
+         * ┌───────────────────────────────────────────────────────────────────┐
+         * │ Suponha a seguinte rota: `/admin/produtos`.                       │
+         * │                                                                   │
+         * │ Por padrão, essa rota estaria definindo que o controller é        │
+         * │ `Produtos`                                                        │
+         * │                                                                   │
+         * │ Mas imagine que o nó `/produtos` tenha esta configuração:         │
+         * │                                                                   │
+         * │ 'controller' => 'Catalogo'                                        │
+         * │                                                                   │
+         * │ Isso é como dizer: "O endereço continua terminando em             │
+         * │ `/produtos`, mas quem atende aqui é a classe controller           │
+         * │ `Catalogo`".                                                      │
+         * │                                                                   │
+         * │ Ou seja, a propriedade `$controllerName` precisa ser alterada     │
+         * │ para o que estiver definido na configuração do nó.                │
+         * └───────────────────────────────────────────────────────────────────┘
+         */
+        
         if (array_key_exists('controller', self::$routeData)) {
+            
+            /**
+             * Por isso, puxamos a configuração `controller` e atribuímos o
+             * valor dela para a propriedade $controllerName.
+             */
             self::$controllerName = Config::get('controller');
 
+            
+            
+            /**
+             * Também precisamos reajustar o caminho do namespace, pois ele
+             * precisa refletir o caminho com o nome do controller correto. O
+             * `array_pop()` retira o último nome do namespace atual e insere o
+             * valor configurado no lugar.
+             * 
+             * ✔️ CONFORME O EXEMPLO ANTERIOR
+             * ┌──────────────────────────────────────────────────────────────┐
+             * │ `array_pop()` remove `Produtos` e depois c coloca `Catalogo` │
+             * │ no lugar, deixando $controllerNamespace armazenando a array  │
+             * │ ['app', 'controllers', 'Admin', 'Catalogo'].                 │
+             * │                                                              │
+             * │ A rota não muda, ela ainda aponta pra `/admin/produtos`.     │
+             * └──────────────────────────────────────────────────────────────┘
+             */
             array_pop(self::$controllerNamespace);
 
             self::$controllerNamespace[] = self::$controllerName;

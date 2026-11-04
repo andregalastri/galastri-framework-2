@@ -197,13 +197,13 @@ final class Router
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Guarda o nome do último nó encontrado no arquivo de rotas, como /produtos
      * ou /?apelido, durante o processamento de nós.
-     * 
+     *
      * ⚠️ IMPORTANTE
      * ┌───────────────────────────────────────────────────────────────────────┐
      * │ Esta propriedade é usada apenas na mensagem de erro que informa em    │
      * │ qual nó está faltando o endpoint principal `@main`.                   │
      * └───────────────────────────────────────────────────────────────────────┘
-     * 
+     *
      *
      * _________________________________
      * @var string
@@ -293,13 +293,13 @@ final class Router
      * 🟢 NOME DO MÉTODO DA ROTA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Armazena o nome do método do controller que irá atender a rota. Possui o
-     * valor 'main' como padrão, para os casos quando não há um `endpoint`
+     * valor 'main' como padrão, para os casos quando não há um endpoint
      * explícito na URL.
      *
-     * O nome do `endpoint` é adaptado ao formato camelCase e o controller
-     * precisa seguir este padrão. Se o `endpoint` for 'nossa-empresa', então o
-     * nome do método armazenado aqui será 'nossaEmpresa'.
-     * 
+     * O nome do endpoint é adaptado ao formato camelCase e o controller precisa
+     * seguir este padrão. Se o endpoint for 'nossa-empresa', então o nome do
+     * método armazenado aqui será 'nossaEmpresa'.
+     *
      *
      * _________________________________
      * @var string
@@ -316,7 +316,7 @@ final class Router
      *
      * Começa com `true` e passa para `false` quando falta um parâmetro
      * obrigatório ou alguma parte da URL sobra.
-     * 
+     *
      * ⚠️ IMPORTANTE
      * ┌───────────────────────────────────────────────────────────────────┐
      * │ Parâmetros opcionais (iniciado com ? na configuração de rota) não │
@@ -358,20 +358,20 @@ final class Router
     /**
      * 🟢 VALORES DOS PARÂMETROS DA ROTA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Guarda os valores recebidos nas partes da URL após o `endpoint`,
-     * associados aos nomes definidos na configuração `parameters`.
+     * Guarda os valores recebidos nas partes da URL após o endpoint, associados
+     * aos nomes definidos na configuração `parameters`.
      *
      * ✔️ EXEMPLO
-     * ┌────────────────────────────────────────────────────────────────────────┐
-     * │ Por exemplo, se configurarmos `'parameters' => '/tipo/?ordem'` e a URL │
-     * │ terminar com `/ativos/nome`, obtemos:                                  │
-     * │                                                                        │
-     * │ [                                                                      │
-     * │     'tipo' => 'ativos',                                                │
-     * │     'ordem' => 'nome'                                                  │
-     * │ ].                                                                     │
-     * └────────────────────────────────────────────────────────────────────────┘
-     * 
+     * ┌───────────────────────────────────────────────────────────────────────┐
+     * │ Por exemplo, se configurarmos `'parameters' => '/tipo/?ordem'` e a    │
+     * │ URL terminar com `/ativos/nome`, obtemos:                             │
+     * │                                                                       │
+     * │ [                                                                     │
+     * │     'tipo' => 'ativos',                                               │
+     * │     'ordem' => 'nome'                                                 │
+     * │ ].                                                                    │
+     * └───────────────────────────────────────────────────────────────────────┘
+     *
      * 💡 OBSERVAÇÃO
      * ┌───────────────────────────────────────────────────────────────────────┐
      * │ O ponto de interrogação na configuração dos parâmetros identifica um  │
@@ -433,10 +433,10 @@ final class Router
         /**
          * Começamos importando o array do arquivo de configuração de rotas.
          * Neste momento, `$routeData` contém a estrutura inteira do arquivo.
-         * 
+         *
          * Durante o processo de busca pelas configurações com base na URL, esta
-         * propriedade passará a armazenar apenas os dados do nó ou `endpoint`
-         * que estivermos processando.
+         * propriedade passará a armazenar apenas os dados do nó ou endpoint que
+         * estivermos processando.
          */
 
         self::$routeData = Config::importConfig(self::APP_CONFIG_FILE_ROUTES);
@@ -457,8 +457,8 @@ final class Router
         
         /**
          * Ao terminar a busca dos nós, armazenamos o `controller` informado no
-         * nó final, identificamos o `endpoint` e relacionamos as partes
-         * restantes aos parâmetros da rota.
+         * nó final, identificamos o endpoint e relacionamos as partes restantes
+         * aos parâmetros da rota.
          */
 
         self::configureNodeProperties();
@@ -499,7 +499,7 @@ final class Router
         
         /**
          * Conferimos o formato antes de guardar o caminho.
-         * 
+         *
          * A raiz deve conter a raiz `/` e pode conter um caminho em que cada
          * parte se inicia com `/` seguida de letras, números, sublinhados e
          * hífens.
@@ -535,7 +535,7 @@ final class Router
      * Essa separação permite consumir uma parte por vez durante o processamento
      * de busca da rota, mantendo disponíveis os valores que ainda não foram
      * interpretados.
-     * 
+     *
      * 💡 OBSERVAÇÃO
      * ┌───────────────────────────────────────────────────────────────────────┐
      * │ Os dados enviados após o sinal de interrogação ? não participam desse │
@@ -552,10 +552,10 @@ final class Router
         /**
          * Puxamos o valor de REQUEST_URI, que inclui o caminho completo da URL,
          * com exceção do domínio.
-         * 
+         *
          * Precisamos guardar apenas o caminho entre o domínio e um possível
          * ponto de interrogação ?.
-         * 
+         *
          * ✔️ EXEMPLO
          * ┌────────────────────────────────────────────────────────────────┐
          * │ Caso a URL seja https://exemplo.com/produtos/listar?ordem=nome │
@@ -563,7 +563,7 @@ final class Router
          * │ precisamos relacionar com as rotas. O restante, não usaremos   │
          * │ aqui.                                                          │
          * └────────────────────────────────────────────────────────────────┘
-         * 
+         *
          * Para nós, portanto, só interessa o caminho formado por barras /.
          */
 
@@ -634,7 +634,7 @@ final class Router
      *
      * Os nós podem ter nomes fixos, como `/produtos`, ou receber valores
      * através de uma definição dinâmica, como `/?apelido`. Também precisamos
-     * reconhecer quando o próximo trecho corresponde a um `endpoint`, pois a
+     * reconhecer quando o próximo trecho corresponde a um endpoint, pois a
      * preparação desse acesso pertence a outra etapa.
      *
      * Essa resolução permite percorrer nós dentro de outros nós, acompanhando a
@@ -650,21 +650,21 @@ final class Router
         /**
          * Este método funciona de maneira recursiva, por isso pode parecer que
          * algumas partes dele estejam fora de lugar, como o trecho abaixo.
-         * 
+         *
          * Ocorre o seguinte: `$urlParts` começa armazenando todas as partes da
          * URL. Quando `resolveNodes()` é chamado, ele vai iniciar uma cadeia de
          * resolução destas partes, trecho a trecho.
-         * 
+         *
          * A cada parte da URL encontrada nas configurações de rota,
          * `resolveNodes()` chamará `processNodeData()`, que removerá a parte
          * correspondente ao nó atual de `$urlParts` e processará suas
          * configurações e chamará `resolveNodes()` novamente.
-         * 
-         * O item removido de `$urlParts` é sempre o da posição [0].
-         * Isso significa que o item que estava na posição [1] passa a ocupar a
+         *
+         * O item removido de `$urlParts` é sempre o da posição [0]. Isso
+         * significa que o item que estava na posição [1] passa a ocupar a
          * posição [0], o da posição [2] passa a ocupar a posição [1] e assim
          * por diante.
-         * 
+         *
          * Logo, `$urlParts` sempre vai armazenar, na posição zero [0], a
          * próxima parte da URL que deverá ser interpretada.
          *
@@ -672,7 +672,7 @@ final class Router
          * busca, ela ficará vazia. Nesse caso, a posição [0] de `$urlParts`
          * deixará de existir, não havendo mais partes para prosseguir. Isso
          * indicará que a chamada de `resolveNodes()` deve ser encerrada.
-         * 
+         *
          * É isso que estamos testando abaixo. Estamos verificando se
          * `$urlParts[0]` existe, o que pode parecer estranho à primeira vista,
          * mas trata-se de um teste que leva em conta as possíveis recursões. Se
@@ -694,31 +694,28 @@ final class Router
          * Se houver prosseguimento, precisamos identificar o que a parte
          * armazenada em `$partValue` representa:
          *
-         * a) O nó raiz, indicado pela string vazia
-         * b) Um nó fixo, cuja chave começa com `/`
-         * c) Um endpoint, cuja chave começa com `@`
-         * d) Um nó dinâmico, cuja chave começa com `/?`
+         * a) O nó raiz, indicado pela string vazia b) Um nó fixo, cuja chave
+         * começa com `/` c) Um endpoint, cuja chave começa com `@` d) Um nó
+         * dinâmico, cuja chave começa com `/?`
          */ 
         
         /**
-         * a)
-         * Começaremos verificando se estamos no começo do processamento de
+         * a) Começaremos verificando se estamos no começo do processamento de
          * rotas.
-         * 
+         *
          * Se a string de `$partValue` for vazia, isso indica que esta é a
          * primeira chamada de `resolveNodes()`. Neste caso, a única chave que
          * podemos puxar é a da raiz do array de rotas.
-         * 
+         *
          * Atribuímos ao `$partName`, neste caso, o valor da chave da raiz.
-         * 
-         * 
-         * b)
-         * Porém, se `$partValue` não for vazia, significa que já estamos com o
-         * processamento das rotas em andamento.
-         * 
-         * Neste caso, vamos começar testando se `$partValue` corresponde
-         * a um nó fixo.
-         * 
+         *
+         *
+         * b) Porém, se `$partValue` não for vazia, significa que já estamos com
+         * o processamento das rotas em andamento.
+         *
+         * Neste caso, vamos começar testando se `$partValue` corresponde a um
+         * nó fixo.
+         *
          * Atribuímos ao `$partName`, neste caso, o valor de $partValue iniciado
          * com barra /.
          */
@@ -728,11 +725,11 @@ final class Router
         if (array_key_exists($partName, self::$routeData)) {
             
             /**
-             * Se encontrarmos a chave armazenada em `$partName`, substituímos
-             * o conteúdo de `$routeData` pelo conteúdo desse nó.
+             * Se encontrarmos a chave armazenada em `$partName`, substituímos o
+             * conteúdo de `$routeData` pelo conteúdo desse nó.
              *
-             * Assim, na próxima chamada, procuraremos as próximas partes
-             * apenas dentro do nó encontrado.
+             * Assim, na próxima chamada, procuraremos as próximas partes apenas
+             * dentro do nó encontrado.
              *
              * Basicamente, vamos entrando no array em níveis cada vez mais
              * profundos, conforme encontramos os nós do caminho recebido.
@@ -744,13 +741,13 @@ final class Router
             
             /**
              * Armazenamos o nome do nó atual na propriedade $nodeName.
-             * 
+             *
              * ⚠️ IMPORTANTE
-             * ┌───────────────────────────────────────────────────────────────┐
-             * │ Esta propriedade é usada apenas na mensagem de erro que       │
-             * │ informa em qual nó está faltando o `endpoint` principal       │
-             * │ `@main`, não tem outra utilidade.                             │
-             * └───────────────────────────────────────────────────────────────┘
+             * ┌─────────────────────────────────────────────────────────┐
+             * │ Esta propriedade é usada apenas na mensagem de erro que │
+             * │ informa em qual nó está faltando o endpoint principal   │
+             * │ `@main`, não tem outra utilidade.                       │
+             * └─────────────────────────────────────────────────────────┘
              */
             
             self::$nodeName = $partName;
@@ -769,16 +766,15 @@ final class Router
         
         
         /**
-         * c)
-         * Se o teste para nó fixo não funcionar, então vamos para o próximo
-         * teste, verificando se $partValue é um `endpoint`.
+         * c) Se o teste para nó fixo não funcionar, então vamos para o próximo
+         * teste, verificando se $partValue é um endpoint.
          */
         
         if (array_key_exists('@'.$partValue, self::$routeData)) {
             
             /**
-             * Se for um `endpoint`, então encerramos a busca por nós aqui. Não
-             * faremos mais nada, trataremos do `endpoint` nas próximas etapas.
+             * Se for um endpoint, então encerramos a busca por nós aqui. Não
+             * faremos mais nada, trataremos do endpoint nas próximas etapas.
              */
             
             return;
@@ -787,10 +783,9 @@ final class Router
         
         
         /**
-         * d)
-         * Se o teste para `endpoint` não funcionar, então faremos um último
+         * d) Se o teste para endpoint não funcionar, então faremos um último
          * teste, verificando se $partValue é um nó dinâmico.
-         * 
+         *
          * Para isso, precisamos procurar alguma chave iniciada com `/?` nas
          * configurações atuais da rota. Se ela existir, então o nó atual será
          * processado como um nó dinâmico.
@@ -807,9 +802,9 @@ final class Router
                  * Encontramos um nó dinâmico. A variável local `$routeData`
                  * contém os dados desse nó, recebidos pelo foreach.
                  *
-                 * Atribuímos esses dados à propriedade `self::$routeData`,
-                 * para que a próxima chamada procure as próximas partes
-                 * apenas dentro desse nó.
+                 * Atribuímos esses dados à propriedade `self::$routeData`, para
+                 * que a próxima chamada procure as próximas partes apenas
+                 * dentro desse nó.
                  */
                 
                 self::$routeData = $routeData;
@@ -818,13 +813,13 @@ final class Router
                 
                 /**
                  * Armazenamos o nome do nó atual na propriedade $nodeName.
-                 * 
+                 *
                  * ⚠️ IMPORTANTE
-                 * ┌───────────────────────────────────────────────────────────────┐
-                 * │ Esta propriedade é usada apenas na mensagem de erro que       │
-                 * │ informa em qual nó está faltando o `endpoint` principal       │
-                 * │ `@main`, não tem outra utilidade.                             │
-                 * └───────────────────────────────────────────────────────────────┘
+                 * ┌─────────────────────────────────────────────────────────┐
+                 * │ Esta propriedade é usada apenas na mensagem de erro que │
+                 * │ informa em qual nó está faltando o endpoint principal   │
+                 * │ `@main`, não tem outra utilidade.                       │
+                 * └─────────────────────────────────────────────────────────┘
                  */
                 
                 self::$nodeName = $key;
@@ -834,10 +829,10 @@ final class Router
                 /**
                  * Armazenamos o nome e o valor do nó dinâmico no array
                  * `$dynamicNodes`.
-                 * 
+                 *
                  * Supondo que a chave do nó dinâmico seja `/?apelido` e que
                  * essa parte da URL contiver `maria`, armazenaremos:
-                 * 
+                 *
                  * self::$dynamicNodes['apelido'] = 'maria';
                  */
                 $parameterName = ltrim($key, '/?');
@@ -878,21 +873,19 @@ final class Router
     {
         /**
          * Primeiro, `array_shift()` remove a primeira parte de `$urlParts`.
-         * 
+         *
          * O motivo é que não precisamos mais dele, já o encontramos, então ele
          * é removido da lista para que possamos prosseguir.
-         * 
+         *
          * ✔️ EXEMPLO
          * ┌───────────────────────────────────────────────────────────────┐
          * │ Se acabamos de encontrar `/produtos`, aconteceria o seguinte: │
          * │                                                               │
-         * │ Antes:                                                        │
-         * │ $urlParts = ['produtos', 'listar', 'ativos'];                 │
+         * │ Antes: $urlParts = ['produtos', 'listar', 'ativos'];          │
          * │                                                               │
          * │ array_shift(self::$urlParts);                                 │
          * │                                                               │
-         * │ Depois:                                                       │
-         * │ $urlParts = ['listar', 'ativos'];                             │
+         * │ Depois: $urlParts = ['listar', 'ativos'];                     │
          * └───────────────────────────────────────────────────────────────┘
          */
         
@@ -922,16 +915,16 @@ final class Router
         
         /**
          * Com essa parte resolvida, chegamos a um `resolveNodes()` de novo.
-         * 
+         *
          * Só que agora a situação já mudou: a parte anterior da URL não está
          * mais na lista e `$routeData` contém apenas o conteúdo do nó em que
          * acabamos de entrar. Então a próxima busca acontece dentro dele,
          * olhando a próxima parte da URL.
-         * 
+         *
          * É esse reencontro entre os dois métodos que faz a busca avançar:
          * `resolveNodes()` faz a busca e encontra o nó; `processNodeData()`
          * prepara o que corresponde a ele e chama a busca novamente.
-         * 
+         *
          * Quando não houver outro nó para entrar, inclusive quando encontramos
          * um endpoint, essa sequência para, e o run() segue com as etapas
          * restantes.
@@ -947,11 +940,11 @@ final class Router
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Esse método pega as configurações presentes em `$routeData` e aplica
      * apenas aquelas que pertencem ao contexto solicitado.
-     * 
+     *
      * O $context funciona como um filtro. Se receber 'debug', por exemplo,
      * estamos dizendo: "Nesta rodada, vamos cuidar só das configurações de
      * debug".
-     * 
+     *
      * ✔️ EXEMPLO
      * ┌──────────────────────────────────────────────────────────────────────┐
      * │ Se o método receber `debug` no contexto, ele terá a tarefa de cuidar │
@@ -962,7 +955,7 @@ final class Router
      * │ E isso serve também para os demais contextos e para cada bloco de    │
      * │ configuração de rota encontrado.                                     │
      * └──────────────────────────────────────────────────────────────────────┘
-     * 
+     *
      *
      * _________________________________
      * @param string $context  
@@ -986,11 +979,11 @@ final class Router
         
             /**
              * Antes de aplicar qualquer valor, fazemos duas conferências:
-             * 
+             *
              * 1. Essa configuração pertence ao contexto solicitado? Se
              *    `getContext()` retornar outro contexto, o `continue` pula para
              *    a próxima configuração.
-             * 
+             *
              * 2. Ela foi informada na configuração da rota que estamos
              *    processando? Se o nome não existir em `$routeData`, pulamos
              *    também. Nesse caso, o valor que já estava em `Config` continua
@@ -1035,9 +1028,9 @@ final class Router
      * 🟢 APLICAÇÃO DAS CONFIGURAÇÕES DE DEBUG E ROTA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Esse método reúne duas chamadas que aplicam as configurações dos
-     * contextos `debug` e `route` presentes em `$routeData` no momento
-     * da chamada.
-     * 
+     * contextos `debug` e `route` presentes em `$routeData` no momento da
+     * chamada.
+     *
      * É como dizer: "Já estamos com os dados desse nó ou endpoint em mãos.
      * Agora veja quais configurações de `debug` e de `route` foram informadas
      * aqui e aplique os valores".
@@ -1064,7 +1057,7 @@ final class Router
      * É como dizer: "Já estamos com os dados do último nó encontrado em mãos.
      * Agora veja quais configurações de `node` foram informadas aqui e aplique
      * os valores".
-     * 
+     *
      *
      * _________________________________
      * @return void
@@ -1084,15 +1077,15 @@ final class Router
         /**
          * Depois vem um ajuste especial: dentro de `$routeData`, existe uma
          * configuração chamada `controller`?
-         * 
+         *
          * Até aqui, o nome do `controller` foi montado a partir dos nós
          * encontrados, mas pode acontecer do desenvolvedor preferir escolher um
          * controller diferente do padrão.
-         * 
+         *
          * Quando houver uma configuração `controller` no nó, o nome do
          * controller deixa de ser o padrão e passa a ser o que foi configurado.
-         * 
-         * 
+         *
+         *
          * ✔️ EXEMPLO
          * ┌───────────────────────────────────────────────────────────────────┐
          * │ Suponha a seguinte rota: `/admin/produtos`.                       │
@@ -1128,7 +1121,7 @@ final class Router
              * Também precisamos atualizar o namespace com o nome do controller
              * escolhido. Primeiro, `array_pop()` remove o último nome do array.
              * Depois, acrescentamos o valor de `$controllerName` no lugar.
-             * 
+             *
              * ✔️ CONFORME O EXEMPLO ANTERIOR
              * ┌──────────────────────────────────────────────────────────────┐
              * │ Removemos `Produtos` com `array_pop()` e acrescentamos       │
@@ -1151,10 +1144,10 @@ final class Router
      * 🟢 APLICAÇÃO DAS CONFIGURAÇÕES DO ENDPOINT
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Esse método reúne comandos que aplicam as configurações de contexto
-     * `endpoint` presentes em `$routeData` no momento da chamada.
+     * endpoint presentes em `$routeData` no momento da chamada.
      *
      * É como dizer: "Já estamos com os dados do endpoint encontrado em mãos.
-     * Agora veja quais configurações de `endpoint` foram informadas aqui e
+     * Agora veja quais configurações de endpoint foram informadas aqui e
      * aplique os valores".
      *
      * _________________________________
@@ -1173,17 +1166,17 @@ final class Router
         /**
          * Depois vêm alguns ajustes especiais, que respondem às seguintes
          * perguntas:
-         * 
+         *
          * 1. Dentro de `$routeData`, existe uma configuração chamada `method`?
-         * 
+         *
          *    Até aqui, o nome do método a ser chamado foi montado a partir do
          *    endpoint encontrado, mas pode acontecer do desenvolvedor preferir
          *    escolher um método diferente do padrão.
-         * 
+         *
          *    Quando a configuração `method` do endpoint informar uma string não
          *    vazia, usamos esse valor para substituir o nome do método definido
          *    até aqui.
-         * 
+         *
          *    ✔️ EXEMPLO
          *    ┌────────────────────────────────────────────────────────────────┐
          *    │ Suponha a seguinte rota: `/produtos/listar`.                   │
@@ -1296,7 +1289,14 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * O objetivo desse método é identificar qual endpoint será usado, aplicar
+     * suas configurações definidas no array de rotas e preparar o nome do
+     * método que será chamado no controller.
+     *
+     * Até aqui, o `Router` descobriu em qual nó da aplicação a URL chegou. Mas
+     * encontrar esse nó ainda não encerra o trabalho: dentro dele podem existir
+     * vários `endpoints`, cada um representando uma ação disponível naquele
+     * endereço.
      *
      *
      * _________________________________
@@ -1305,40 +1305,155 @@ final class Router
     
     private static function resolveEndpoints(): void
     {
-        if (Config::get('output') !== 'file' && count(preg_grep('/^@main(:|$)/', array_keys(self::$routeData))) == 0) {
+        /**
+         * Separamos alguns dados em variáveis para facilitar a leitura do
+         * código.
+         */
+        
+        $output = Config::get('output');
+        $routeData = self::$routeData;
+        $routeKeys = array_keys($routeData);
+        
+        
+        
+        /**
+         * O `preg_grep()` captura as chaves que contenham `@main` ou `@main:` e
+         * armazena em `$mainEndpoints` em um array. Se o array estiver vazio,
+         * significa que não existe nenhuma chave `@main`.
+         */
+        
+        $mainEndpoints = preg_grep('/^@main(:|$)/', $routeKeys);
+        
+        
+        
+        /**
+         * Quando a saída é diferente de 'file', é obrigatória a presença de uma
+         * chave `@main`. Ela funciona como o ponto de acesso padrão daquele nó,
+         * usado quando nenhum endpoint é indicado ou reconhecido na próxima
+         * parte da URL.
+         *
+         * Se essa definição não for encontrada, lançamos uma exceção informando
+         * o arquivo de rotas e o nome do nó em que está faltando a definição de
+         * `@main`.
+         *
+         * ⚠️ IMPORTANTE
+         * ┌───────────────────────────────────────────────────────────────────┐
+         * │ A saída 'file' fica dispensada dessa exigência porque pode        │
+         * │ entregar um arquivo sem precisar de um controller nem um          │
+         * │ endpoint.                                                         │
+         * └───────────────────────────────────────────────────────────────────┘
+         */
+        
+        if ($output !== 'file' && $mainEndpoints === []) {
             throw new Exception(
                 Message::get("ROUTER_MAIN_METHOD_NOT_FOUND"),
                 [
-                    str_replace(PROJECT_DIR.'/', '', self::APP_CONFIG_FILE_ROUTES),
+                    str_replace(
+                        PROJECT_DIR.'/', '', self::APP_CONFIG_FILE_ROUTES),
                     self::$nodeName,
                 ]
             );
         }
+        
+        
+        
+        /**
+         * Agora precisamos encontrar a chave do endpoint atual dentro do
+         * `$routeData`.
+         *
+         * Declaramos aqui a variável auxiliar `$endpointExists` que armazena se
+         * um endpoint foi encontrado em `$routeData`.
+         *
+         */
 
-        $methodName = 'main';
-
-        foreach (self::$routeData as $key => $routeData) {
+        $endpointExists = false;
+        
+        
+        /**
+         * O `foreach` então percorre as entradas de `$routeData`. Precisamos
+         * buscar apenas aquelas cujas chaves começam com `@`.
+         */
+        
+        foreach ($routeData as $key => $endpointData) {
+            
+        
+        
             if (strpos($key, '@') === 0) {
-                $endpointMethodName = ltrim($key, '@');
+                
+                /**
+                 * Sempre que acharmos, limpamos do nome do endpoint e
+                 * comparamos se ela corresponde à parte da URL ainda disponível
+                 * em $urlParts[0].
+                 *
+                 * Se `$urlParts` for vazio, usaremos 'main' nessa comparação.
+                 */
+            
                 $urlPartAsMethod = self::$urlParts[0] ?? 'main';
+                $endpointMethodName = ltrim($key, '@');
 
+                
+                
+                /**
+                 * Se a parte da URL coincidir com o nome do endpoint,
+                 * removemos a parte de `$urlParts`, pois não precisamos
+                 * mais dela, e definimos o endpoint como nome do método a
+                 * ser chamado, convertido em camelCase.
+                 *
+                 * 💡 OBSERVAÇÃO
+                 * ┌────────────────────────────────────────────────────┐
+                 * │ Note que se nenhuma parte corresponder ao nome do  │
+                 * │ endpoint, não removemos a parte de $urlParts.      │
+                 * │                                                    │
+                 * │ Isso é necessário pois na próxima etapa vamos      │
+                 * │ verificar se estas partes remanescentes do `array` │
+                 * │ correspondem à possíveis valores de parâmetro de   │
+                 * │ endpoint.                                          │
+                 * └────────────────────────────────────────────────────┘
+                 */
                 if ($urlPartAsMethod == $endpointMethodName) {
+                    
                     array_shift(self::$urlParts);
                     
-                    $methodName = $endpointMethodName;
+                    self::$routeData = $endpointData;
+                    self::$methodName = Tools::toCamelCase($endpointMethodName);
+                    
+                    /**
+                     * Como o endpoint existe, então alteramos `$endpointExists`
+                     * para `true`.
+                     */
+                    $endpointExists = true;
+                    
                     break;
                 }
             }
         }
-
-        if (Config::get('output') === 'file' && !isset(self::$routeData['@'.$methodName])) {
+        
+        
+        /**
+         * Com a escolha feita, fazemos uma última verificação:
+         * 
+         * Se o endpoint escolhido não existir, significa que não há mais nada a
+         * ser processado, então encerramos o método antecipadamente, desde que
+         * o formato de saída também seja do tipo `file`.
+         * 
+         * Deve ser assim pois a saída 'file' fica dispensada da exigência de
+         * ter um endpoint, podendo prosseguir normalmente.
+         */
+        
+        if ($output === 'file' && !$endpointExists) {
             return;
         }
-
-        self::$routeData = self::$routeData['@'.$methodName];
+        
+        
+        /**
+         * Se existir um endpoint, então agora a propriedade `$routeData` contém
+         * os dados desse endpoint.
+         * 
+         * Reaplicamos suas configurações gerais de `configureRouteProperties()`,
+         * e chamamos `configureEndpointProperties()` para cuidar das
+         * configurações específicas do contexto 'endpoint'.
+         */
         self::configureRouteProperties();
-
-        self::$methodName = Tools::toCamelCase($methodName);
         self::configureEndpointProperties();
     }
     
@@ -1421,8 +1536,7 @@ final class Router
      *
      *
      * _________________________________
-     * @return array<string>
-     *    xxx
+     * @return array<string> xxx
      */
 
     public static function getUrlParts(): array
@@ -1439,8 +1553,7 @@ final class Router
      *
      *
      * _________________________________
-     * @return string
-     *    xxx
+     * @return string xxx
      */
     
     public static function getControllerName(): string
@@ -1457,8 +1570,7 @@ final class Router
      *
      *
      * _________________________________
-     * @return array<string>
-     *    xxx
+     * @return array<string> xxx
      */
     
     public static function getControllerNamespace(): array
@@ -1475,8 +1587,7 @@ final class Router
      *
      *
      * _________________________________
-     * @return array<string,string>
-     *    xxx
+     * @return array<string,string> xxx
      */
     
     public static function getDynamicNodeValues(): array
@@ -1496,8 +1607,7 @@ final class Router
      * @param string $key  
      *    xxx
      * _________________________________
-     * @return string
-     *    xxx
+     * @return string xxx
      */
     
     public static function getDynamicNode(string $key): string
@@ -1514,8 +1624,7 @@ final class Router
      *
      *
      * _________________________________
-     * @return string
-     *    xxx
+     * @return string xxx
      */
     
     public static function getMethodName(): string
@@ -1532,8 +1641,7 @@ final class Router
      *
      *
      * _________________________________
-     * @return bool
-     *    xxx
+     * @return bool xxx
      */
     
     public static function isValidRoute(): bool
@@ -1550,8 +1658,7 @@ final class Router
      *
      *
      * _________________________________
-     * @return array<string,string|null>
-     *    xxx
+     * @return array<string,string|null> xxx
      */
     
     public static function getParameterValues(): array
@@ -1571,8 +1678,7 @@ final class Router
      * @param string $key  
      *    xxx
      * _________________________________
-     * @return null|string
-     *    xxx.
+     * @return null|string xxx.
      */
     
     public static function getParameter(string $key): ?string
@@ -1589,8 +1695,7 @@ final class Router
      *
      *
      * _________________________________
-     * @return string
-     *    xxx.
+     * @return string xxx.
      */
     
     public static function getRootDir(): string
@@ -1607,8 +1712,7 @@ final class Router
      *
      *
      * _________________________________
-     * @return string
-     *    xxx
+     * @return string xxx
      */
     
     public static function getBaseHref(): string

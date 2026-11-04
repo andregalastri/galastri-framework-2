@@ -1148,10 +1148,10 @@ final class Router
     
     
     /**
-     * 🟢 xxx
+     * 🟢 APLICAÇÃO DAS CONFIGURAÇÕES DO ENDPOINT
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Esse método reúne comandos que aplicam as configurações de contexto
-     * `node` presentes em `$routeData` no momento da chamada.
+     * `endpoint` presentes em `$routeData` no momento da chamada.
      *
      * É como dizer: "Já estamos com os dados do endpoint encontrado em mãos.
      * Agora veja quais configurações de `endpoint` foram informadas aqui e
@@ -1171,7 +1171,7 @@ final class Router
         self::configurePropertiesByContext('endpoint');
         
         /**
-         * Depois vem alguns ajustes especiais, que respondem às seguintes
+         * Depois vêm alguns ajustes especiais, que respondem às seguintes
          * perguntas:
          * 
          * 1. Dentro de `$routeData`, existe uma configuração chamada `method`?
@@ -1180,8 +1180,9 @@ final class Router
          *    endpoint encontrado, mas pode acontecer do desenvolvedor preferir
          *    escolher um método diferente do padrão.
          * 
-         *    Quando houver uma configuração `method` no endpoint, o nome do
-         *    method deixa de ser o padrão e passa a ser o que foi configurado.
+         *    Quando a configuração `method` do endpoint informar uma string não
+         *    vazia, usamos esse valor para substituir o nome do método definido
+         *    até aqui.
          * 
          *    ✔️ EXEMPLO
          *    ┌────────────────────────────────────────────────────────────────┐
@@ -1198,8 +1199,8 @@ final class Router
          *    │ `/listar`, mas o método a ser executado aqui é                 │
          *    │ `abrirLista()`".                                               │
          *    │                                                                │
-         *    │ Ou seja, a propriedade `$methodName` precisa ser alterada      │
-         *    │ para o que estiver definido na configuração do endpoint.       │
+         *    │ Ou seja, a propriedade `$methodName` precisa ser alterada para │
+         *    │ o que estiver definido na configuração do endpoint.            │
          *    └────────────────────────────────────────────────────────────────┘
          */
         
@@ -1215,8 +1216,8 @@ final class Router
             
             
             /**
-             * Se o valor puxado da configuração `method` não for vazia, então
-             * armazenamos o valor na propriedade $method.
+             * Se o valor puxado da configuração `method` não for vazio, então
+             * armazenamos o valor na propriedade `$methodName`.
              */
 
             if ($methodName !== '') {
@@ -1224,7 +1225,8 @@ final class Router
             
             
                 /**
-                 * Antes de armazenar, porém, retiramos o @ da string.
+                 * Antes de armazenar, porém, removemos os caracteres `@` que
+                 * estiverem no início da string.
                  */
                 
                 self::$methodName = ltrim($methodName, '@');
@@ -1236,7 +1238,7 @@ final class Router
         /**
          * 2. Dentro de `$routeData`, existe uma configuração chamada
          *    `httpMethod`?
-         * 
+         *
          *    Esta configuração associa tipos de requisição HTTP a nomes de
          *    métodos do controller, por isso, será reformatada antes de ser
          *    armazenada.
@@ -1249,7 +1251,7 @@ final class Router
             /**
              * A nova formatação segue um padrão previsível: chaves em minúsculo
              * e valores sem `@`.
-             * 
+             *
              * ✔️ EXEMPLO
              * ┌───────────────────────────────────────────────────────────────┐
              * │ Suponha a seguinte configuração no endpoint:                  │

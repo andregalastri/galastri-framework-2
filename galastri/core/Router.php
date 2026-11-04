@@ -1668,8 +1668,17 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
+     * Esse método monta, aos poucos, o caminho completo do namespace até a
+     * classe do controller, acompanhando a passagem pelos nós da rota, para
+     * determinar onde o framework deve procurar a classe do controller
+     * responsável pela rota acessada. Para isso, combina os nomes dos nós
+     * percorridos com a estrutura de namespaces da aplicação, respeitando uma
+     * eventual configuração manual de namespace.
+     * 
+     * Com isso, ele transforma o caminho reconhecido em uma identificação de
+     * classe, como `app\controllers\Admin\Produtos`, que será usada depois por
+     * `Galastri` para localizar e executar o controller.
+     * 
      *
      * _________________________________
      * @param string $partValue
@@ -1680,32 +1689,209 @@ final class Router
 
     private static function resolveNamespace(string $partValue): void
     {
+        /**
+         * Começamos definindo variáveis auxiliares para facilitar a leitura do
+         * código.
+         * 
+         * -  `$routeData` armazena os dados do nó atual.
+         * 
+         * -  `$namespace` armazena o caminho construído até o momento.
+         * 
+         * -  `$removedIndexFromNamespace` armazena o indicador de que a remoção
+         *    de Index já aconteceu. Explicaremos isso melhor mais adiante.
+         */
+        
         $routeData = self::$routeData;
         $namespace = self::$controllerNamespace;
-        $indexAlreadyRemoved = self::$removedIndexFromNamespace;
+        $removedIndexFromNamespace = self::$removedIndexFromNamespace;
+        
+        
+        
+        /**
+         * Aqui verificamos se o nó possui uma configuração `namespace`, que
+         * fornece outra base para o namespace.
+         * 
+         * O motivo disso é que, por padrão, construímos com o caminho do
+         * namespace conforme os nomes dos nós anteriormente armazenads. Mas o
+         * nó da rota pode informar uma base de namespace própria.
+         * 
+         * Se esta configuração existir, então construímos o caminho com base no
+         * que foi informado nela.
+         * 
+         * ✔️ EXEMPLO
+         * ┌──────────────────────────────────────────────────────────────────┐
+         * │ Na configuração de rotas:                                        │
+         * │                                                                  │
+         * │ 'namespace' => 'app\\administracao'                              │
+         * │                                                                  │
+         * │ É processado e transformado em um array através da função        │
+         * │ explode(), separando a string pelas barras invertidas.           │
+         * │                                                                  │
+         * │ ['app', 'administracao']                                         │
+         * └──────────────────────────────────────────────────────────────────┘
+         */
         
         if (isset($routeData['namespace'])) {
+            
+            /**
+             * Pegamos a string armazenada na configuração `namespace` e
+             * separamos os valores em um array, dividindo com base nas barras
+             * invertidas.
+             */
+            
+            
+            
             $configuredNamespace = $routeData['namespace'];
             $namespaceParts = explode('\\', $configuredNamespace);
+            
+            /**
+             * Filtramos e armazenamos o array sem valores vazios.
+             */
+            
+            
             
             $namespace = array_filter($namespaceParts);
         }
         
-        $namespaceCount = count($namespace);
-
-        if (!$indexAlreadyRemoved && $namespaceCount > 2) {
-            self::$removedIndexFromNamespace = true;
-
+        
+        
+        /**
+         * Neste bloco `if` temos que fazer uma explicação mais detalhada.
+         * 
+         * O método `resolveNamespace()` é executado para cada nó encontrado,
+         * incluindo o nó raiz, acrescentando ao array `$controllerNamespace` o
+         * nome de classe correspondente àquele nó.
+         * 
+         * Por exemplo, em `https://site.com/produtos/listar`:
+         * 
+         * - `$controllerNamespace` armazenará ['app', 'controllers',
+         *   'Produtos'].
+         * 
+         * - 'listar' fica de fora pois é o endpoint.
+         * 
+         * - 'app' e 'controllers' são os valores iniciais padrão.
+         * 
+         * Temos aqui, portanto, o conhecimento de que o controller `Produtos`
+         * irá atender esta URL.
+         * 
+         * Mas e quando a URL for apenas `https://site.com`?
+         *
+         * Se considerássemos somente as partes preenchidas do caminho, teríamos
+         * apenas ['app', 'controllers'], sem indicação de controller. Qual
+         * classe atenderia esse acesso?
+         * 
+         * Para entender isso, precisamos lembrar que `setUrlParts()` sempre
+         * gera o array `$urlParts` com uma string vazia na posição [0].
+         * 
+         * - Para `https://site.com/produtos/listar`, ele gera ['', 'produtos',
+         *   'listar'].
+         * 
+         * - Para `https://site.com`, ele gera apenas [''], já que não há outras
+         *   partes pra armazenar.
+         * 
+         * A string vazia na posição [0] é colocada de propósito: ela representa
+         * o nó raiz, por onde começamos a construir o namespace. Nesse ponto,
+         * ainda não temos o nome de outro nó para identificar o controller.
+         * Por isso, `resolveNamespace()` usa o nome padrão `Index`, garantindo
+         * que a raiz também tenha um controller para atender à requisição,
+         * mesmo quando não houver outras partes no caminho da URL.
+         * 
+         * `Index`? Por que?
+         * 
+         * Porque é isso que se espera de um acesso como `https://site.com`: o
+         * acesso à página inicial, à index.
+         * 
+         * Na montagem padrão, portanto, começamos com `Index` como controller
+         * da raiz e ajustamos esse caminho conforme encontramos outros nós.
+         * 
+         * Portanto:
+         * 
+         * - Em `https://site.com`, o namespace resultante é
+         *   `app\controllers\Index`
+         * 
+         * E aí vem o motivo do processamento abaixo. Esse `Index` inicial
+         * representa o controller da raiz e de seus endpoints. Se avançarmos
+         * para outro nó, precisamos retirá-lo antes de acrescentar o nome
+         * correspondente ao próximo nó.
+         *
+         * Na montagem padrão, isso acontece na segunda chamada: o namespace
+         * já contém ['app', 'controllers', 'Index'], portanto possui mais de
+         * duas partes, e a remoção ainda não aconteceu.
+         *
+         * Sem essa limpeza, formaríamos um caminho como
+         * `app\controllers\Index\Produtos`, exigindo uma pasta `Index` para
+         * guardar os demais controllers.
+         *
+         * Registramos essa remoção em `$removedIndexFromNamespace` para que
+         * ela aconteça apenas uma vez. Assim, um nó posterior chamado `/index`
+         * poderá acrescentar seu próprio `Index` ao caminho e mantê-lo ali.
+         * 
+         * Portanto, considerando `produtos` e `controle` como nós, e `listar`
+         * e `cadastrar` como endpoints:
+         *
+         * - Em `https://site.com`, o nome completo da classe será
+         *   `app\controllers\Index`, localizada em
+         *   `app/controllers/Index.php`.
+         *
+         * - Em `https://site.com/produtos/listar`, será
+         *   `app\controllers\Produtos`, localizada em
+         *   `app/controllers/Produtos.php`.
+         *
+         * - Em `https://site.com/produtos/controle/cadastrar`, será
+         *   `app\controllers\Produtos\Controle`, localizada em
+         *   `app/controllers/Produtos/Controle.php`.
+         *
+         * Veja que, ao avançarmos para outro nó, o nome anterior passa a
+         * representar uma subpasta no caminho do controller. No último
+         * exemplo, `Produtos` representa a pasta e `Controle` é a classe
+         * que atenderá o acesso.
+         *
+         * Esses exemplos consideram o namespace padrão. Se a configuração
+         * `namespace` fornecer outra base, a contagem e a filtragem serão
+         * feitas sobre a base configurada, que substituiu o caminho acumulado.
+         */
+        
+        if (!$removedIndexFromNamespace && count($namespace) > 2) {
+            
+        
+        
+            /**
+             * Com a condição acima satisfeita, removemos da lista a parte
+             * cujo valor seja 'Index' e marcamos essa limpeza como realizada.
+             *
+             * Como `$removedIndexFromNamespace` é uma propriedade estática, seu
+             * valor permanece disponível entre as chamadas deste método, sem
+             * precisar recebê-lo por parâmetro. Nas próximas passagens, a
+             * condição encontrará esse indicador como `true` e impedirá que a
+             * limpeza seja executada novamente.
+             */
+            
             $namespace = array_filter($namespace, function ($value) {
                 return $value !== 'Index';
             });
+            
+            self::$removedIndexFromNamespace = true;
         }
 
+        
+        
+        /**
+         * Por fim, preparamos o nome correspondente ao nó atual. A string vazia
+         * representa a raiz e recebe o nome Index. Nos demais casos, tratamos o
+         * valor para PascalCase: minha-conta, por exemplo, vira MinhaConta.
+         */
+        
         self::$controllerName =
             $partValue === '' ? 'Index' : Tools::toPascalCase($partValue);
 
-        $namespace[] = self::$controllerName;
+            
+            
+        /**
+         * Concluímos acrescentando o nome da classe à lista de composição do
+         * namespace e guardamos o caminho atualizado.
+         */
         
+        $namespace[] = self::$controllerName;
         self::$controllerNamespace = $namespace;
     }
 

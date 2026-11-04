@@ -1666,7 +1666,7 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 MONTAGEM DO NAMESPACE DO CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Esse método monta, aos poucos, o caminho completo do namespace até a
      * classe do controller, acompanhando a passagem pelos nós da rota, para
@@ -1681,8 +1681,9 @@ final class Router
      * 
      *
      * _________________________________
-     * @param string $partValue
-     *    xxx
+     * @param string $partValue  
+     *    Trecho que será tratado para compor o namespace completo da classe
+     *    controller. Uma string vazia representa o nó raiz.
      * _________________________________
      * @return void
      */
@@ -1697,8 +1698,8 @@ final class Router
          * 
          * -  `$namespace` armazena o caminho construído até o momento.
          * 
-         * -  `$removedIndexFromNamespace` armazena o indicador de que a remoção
-         *    de Index já aconteceu. Explicaremos isso melhor mais adiante.
+         * -  `$removedIndexFromNamespace` indica se a limpeza de 'Index' já foi
+         *    realizada. Explicaremos isso melhor mais adiante.
          */
         
         $routeData = self::$routeData;
@@ -1711,9 +1712,9 @@ final class Router
          * Aqui verificamos se o nó possui uma configuração `namespace`, que
          * fornece outra base para o namespace.
          * 
-         * O motivo disso é que, por padrão, construímos com o caminho do
-         * namespace conforme os nomes dos nós anteriormente armazenads. Mas o
-         * nó da rota pode informar uma base de namespace própria.
+         * Por padrão, o namespace acompanha os nomes dos nós já percorridos.
+         * Mas o nó atual pode informar uma base própria, substituindo o caminho
+         * acumulado até aqui.
          * 
          * Se esta configuração existir, então construímos o caminho com base no
          * que foi informado nela.
@@ -1792,11 +1793,11 @@ final class Router
          * A string vazia na posição [0] é colocada de propósito: ela representa
          * o nó raiz, por onde começamos a construir o namespace. Nesse ponto,
          * ainda não temos o nome de outro nó para identificar o controller.
-         * Por isso, `resolveNamespace()` usa o nome padrão `Index`, garantindo
-         * que a raiz também tenha um controller para atender à requisição,
-         * mesmo quando não houver outras partes no caminho da URL.
+         * Por isso, `resolveNamespace()` usa o nome padrão `Index` para
+         * identificar o controller da raiz, mesmo quando não houver outras
+         * partes no caminho da URL.
          * 
-         * `Index`? Por que?
+         * `Index`? Por quê?
          * 
          * Porque é isso que se espera de um acesso como `https://site.com`: o
          * acesso à página inicial, à index.
@@ -1822,9 +1823,10 @@ final class Router
          * `app\controllers\Index\Produtos`, exigindo uma pasta `Index` para
          * guardar os demais controllers.
          *
-         * Registramos essa remoção em `$removedIndexFromNamespace` para que
-         * ela aconteça apenas uma vez. Assim, um nó posterior chamado `/index`
-         * poderá acrescentar seu próprio `Index` ao caminho e mantê-lo ali.
+         * Registramos essa remoção na propriedade `$removedIndexFromNamespace`
+         * para que ela aconteça apenas uma vez. Assim, um nó posterior chamado
+         * `/index` poderá acrescentar seu próprio `Index` ao caminho e mantê-lo
+         * ali.
          * 
          * Portanto, considerando `produtos` e `controle` como nós, e `listar`
          * e `cadastrar` como endpoints:
@@ -1903,11 +1905,9 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
-     *
-     * _________________________________
-     * @return array<string> xxx
+     * @return array<string>  
+     *    Retorna um `array` de `strings` com as partes da URL que ainda
+     *    sobraram após o processamento da rota.
      */
 
     public static function getUrlParts(): array
@@ -1920,11 +1920,8 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
-     *
-     * _________________________________
-     * @return string xxx
+     * @return string  
+     *    Retorna uma `string` com o nome da classe do controller identificado.
      */
 
     public static function getControllerName(): string
@@ -1937,11 +1934,9 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
-     *
-     * _________________________________
-     * @return array<string> xxx
+     * @return array<string>  
+     *    Retorna um `array` de `strings` com todos os valores recebidos nos nós
+     *    dinâmicos, associados aos respectivos nomes
      */
 
     public static function getControllerNamespace(): array
@@ -1954,11 +1949,9 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
-     *
-     * _________________________________
-     * @return array<string,string> xxx
+     * @return array<string,string>  
+     *    Retorna um `array` de `strings` com todos os valores recebidos nos nós
+     *    dinâmicos, associados aos respectivos nomes.
      */
 
     public static function getDynamicNodeValues(): array
@@ -1971,19 +1964,17 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
-     *
-     * _________________________________
      * @param string $key
-     *    xxx
+     *    É o nome do nó dinâmico conforme definido na configuração de rota.
      * _________________________________
-     * @return string xxx
+     * @return string  
+     *    Retornauma `string` com o valor de um nó dinâmico específico ou `null`
+     *    se o nome não existir.
      */
 
-    public static function getDynamicNode(string $key): string
+    public static function getDynamicNode(string $key): ?string
     {
-        return self::$dynamicNodes[$key];
+        return self::$dynamicNodes[$key] ?? null;
     }
 
 
@@ -1991,11 +1982,10 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
-     *
-     * _________________________________
-     * @return string xxx
+     * @return string  
+     *    Retorna uma `string` com o nome do método do controller escolhido para
+     *    atender ao endpoint, já considerando uma possível substituição pela
+     *    configuração method.
      */
 
     public static function getMethodName(): string
@@ -2008,11 +1998,9 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
-     *
-     * _________________________________
-     * @return bool xxx
+     * @return bool  
+     *    Retorna `true` se a rota é considerada válida de acordo com a quantidade de
+     *    parâmetros ou `false`, em caso negativo.
      */
 
     public static function isValidRoute(): bool
@@ -2025,11 +2013,9 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
-     *
-     * _________________________________
-     * @return array<string,string|null> xxx
+     * @return array<string,string|null>  
+     *    Retorna um `array` de `strings` com todos os parâmetros da rota com
+     *    seus respectivos valores.
      */
 
     public static function getParameterValues(): array
@@ -2042,14 +2028,12 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
-     *
+     * @param string $key  
+     *    Nome do parâmetro a ser recuperado.
      * _________________________________
-     * @param string $key
-     *    xxx
-     * _________________________________
-     * @return null|string xxx.
+     * @return null|string  
+     *    Retorna uma `string`com o valor do parâmetro informado ou `null` se
+     *    ele não existir.
      */
 
     public static function getParameter(string $key): ?string
@@ -2062,11 +2046,8 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
-     *
-     * _________________________________
-     * @return string xxx.
+     * @return string  
+     *    Retorna uma `string` com o caminho raiz configurado para as rotas.
      */
 
     public static function getRootDir(): string
@@ -2079,11 +2060,9 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
-     *
-     *
-     * _________________________________
-     * @return string xxx
+     * @return string  
+     *    Retorna uma string com o caminho raiz formatado para servir de base na
+     *    montagem de links.
      */
 
     public static function getBaseHref(): string

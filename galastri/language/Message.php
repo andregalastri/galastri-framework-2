@@ -121,7 +121,9 @@ final class Message
     private const ROUTER_INVALID_ENDPOINT_PARAMETERS = 'Erro de configuração em "{{}}": O valor "{{}}" é inválido para o parâmetro "parameters". Exemplo válido: "/param1/?param2". Acesse a documentação para entender seu funcionamento.';
 
     private const ROUTER_MAIN_METHOD_NOT_FOUND = 'Erro de configuração em "{{}}": O endpoint @main não foi definido no node "{{}}"';
-
+    
+    private const ROUTER_DYNAMIC_NODE_NOT_FOUND = 'O nó dinâmico "{{}}" não foi encontrado na rota atual.';
+    
     /**
      * Controller
      */

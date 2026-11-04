@@ -1452,6 +1452,7 @@ final class Router
         }
 
 
+        
         /**
          * Se existir um endpoint, então armazenamos os dados deste endpoint
          * dentro da propriedade $routeData.
@@ -1463,6 +1464,8 @@ final class Router
         self::$routeData = $routeData[$endpointkey];
         self::$methodName = Tools::toCamelCase($methodName);
 
+        
+        
         /**
          * Reaplicamos as configurações gerais de rota, para garantir que
          * configurações de contexto `route` ou `debug` dentro do endpoint sejam
@@ -1481,46 +1484,182 @@ final class Router
     /**
      * 🟢 xxx
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * xxx
+     * Esse método pega as partes que sobraram de `$urlParts`, após a
+     * identificação dos nós e do endpoint, e distribui esses valores entre os
+     * parâmetros do endpoint, caso tenham sido configurados.
+     * 
+     * ✔️ EXEMPLO
+     * ┌──────────────────────────────────────────────────────────────────┐
+     * │ Imagine esta configuração:                                       │
+     * │ ┌──────────────────────────────┐                                 │
+     * │ │ 'parameters' => '/id/?ordem' │                                 │
+     * │ └──────────────────────────────┘                                 │
+     * │                                                                  │
+     * │ E suponha que estas partes da URL sobraram em $urlParts:         │
+     * │ ┌────────────────┐                                               │
+     * │ │ ['42', 'nome'] │                                               │
+     * │ └────────────────┘                                               │
+     * │                                                                  │
+     * │ Neste caso, o parâmetro `id` armazenará o valor '42', enquanto o │
+     * │ parâmetro `ordem` irá armazenar 'nome'.                          │
+     * └──────────────────────────────────────────────────────────────────┘
+     * 
+     * O método também confere se faltou algum parâmetro obrigatório ou checaram
+     * parâmetros a mais do que o definido.
      *
-     *
+     * 
      * _________________________________
      * @return void
      */
 
     private static function resolveParameters(): void
     {
+        /**
+         * Declaramos algumas variáveis auxiliares para ajudar na compreensão do
+         * código.
+         * 
+         * Puxamos a string armazenada na configuração `parameters` e separamos
+         * ela em um array através do `explode()`. Usamos array_filter pra
+         * remover possíveis valores vazios da array.
+         * 
+         * ✔️ EXEMPLO
+         * ┌────────────────────────────────────────┐
+         * │ No nosso exemplo anterior, a string... │
+         * │                                        │
+         * │ '/id/?ordem'                           │
+         * │                                        │
+         * │ ...será convertida pra um array        │
+         * │                                        │
+         * │ ['id', '?ordem']                       │
+         * └────────────────────────────────────────┘
+         */
+        
         $parametersConfig = Config::get('parameters');
 
         $parametersList = explode('/', $parametersConfig);
         $parametersList = array_filter($parametersList);
-
-        $parametersValues = array_values($parametersList);
-
+        $parametersList = array_values($parametersList);
+        
+        /**
+         * Depois, fazemos algumas conferências:
+         *
+         * - `$hasUrlParts` informa se ainda há partes da URL disponíveis
+         * 
+         * - `$hasParameters` informa se temos parâmetros configurados para
+         *   recebê-las.
+         *
+         * Se existem valores na URL, mas nenhum parâmetro foi definido,
+         * marcamos a rota como inválida, pois há dados em excesso que não temos
+         * onde encaixar.
+         * 
+         * ⚠️ IMPORTANTE
+         * ┌──────────────────────────────────────────────────────────────────┐
+         * │ A invalidação da rota só tem sentido quando a classe de formato  │
+         * │ de saída exigir um controller. Quando não exigir, as partes      │
+         * │ remanescentes de $urlParts ainda ficam disponíveis para que o    │
+         * │ formato de saída decida o que fazer com elas.                    │
+         * └──────────────────────────────────────────────────────────────────┘
+         * 
+         * Neste caso, encerramos o método prematuramente, pois não há nada mais
+         * a ser feito.
+         */
+        
         $hasUrlParts = count(self::$urlParts) > 0;
-        $hasParameters = count($parametersValues) > 0;
+        $hasParameters = count($parametersList) > 0;
 
         if ($hasUrlParts && !$hasParameters) {
             self::$isValidRoute = false;
+            return;
         }
+        
+        /**
+         * Prosseguimos com o `foreach` que fará a distribuição dos valores
+         * armazenados em $urlParts para os parâmetros, um de cada vez.
+         */
 
-        foreach ($parametersValues as $parameterId) {
+        foreach ($parametersList as $parameterId) {
+                
+            /**
+             * Em cada volta, verificamos se o nome do parâmetro começa com ?.
+             * Se começar, é opcional; caso contrário, é obrigatório.
+             *
+             * Também atualizamos `$hasUrlParts` porque a lista das partes vai
+             * diminuindo conforme formos atribuindo os valores aos parâmetros.
+             * Por isso, precisamos sempre conferir se o parâmetro atual é
+             * obrigatório e se ainda há partes da URL a serem atribuídas ao
+             * parâmetro. Se não houver mais nenhum valor disponível em
+             * $urlParts, então faltam parâmetros obrigatórios, o que torna a
+             * rota inválida.
+             */
+            
             $isRequired = strpos($parameterId, '?') !== 0;
             $hasUrlParts = count(self::$urlParts) > 0;
 
             if ($isRequired && !$hasUrlParts) {
                 self::$isValidRoute = false;
             }
+            
+            /**
+             * Limpamos o nome do parâmetro removendo o sinal de ?, caso haja, e
+             * armazenamos o primeiro valor de $urlParts ao mesmo tempo que
+             * removemos ela do array.
+             */
 
             $parameterName = ltrim($parameterId, '?');
             $parameterValue = array_shift(self::$urlParts);
 
+            /**
+             * Guardamos a associação entre o nome do parâmetro e o valor da
+             * parte da URL.
+             * 
+             * ✔️ EXEMPLO
+             * ┌────────────────────────────────────────────────────────────┐
+             * │ Voltando ao exemplo do início da descrição deste método, o │
+             * │ resultado armazenado na propriedade $parameters após todo  │
+             * │ este processamento será:                                   │
+             * │ ┌────────────────────────┐                                 │
+             * │ │ [                      │                                 │
+             * │ │     'id' => '42',      │                                 │
+             * │ │     'ordem' => 'nome', │                                 │
+             * │ │ ]                      │                                 │
+             * │ └────────────────────────┘                                 │
+             * │                                                            │
+             * │ Se a URL não trouxer a parte 'nome' o valor armazenado     │
+             * │ retornará `null`, pois `ordem` é opcional:                 │
+             * │ ┌──────────────────────┐                                   │
+             * │ │ [                    │                                   │
+             * │ │     'id' => '42',    │                                   │
+             * │ │     'ordem' => null, │                                   │
+             * │ │ ]                    │                                   │
+             * │ └──────────────────────┘                                   │
+             * └────────────────────────────────────────────────────────────┘
+             */
+            
             self::$parameters[$parameterName] = $parameterValue;
         }
 
+        
+        /**
+         * Por último, conferimos se sobrou alguma parte da URL.
+         * 
+         * Após o preenchimento de todos os parâmetros, a lista em `$urlParts`
+         * precisa estar vazia. Se ainda houver valores, significa que a URL
+         * trouxe mais partes do que a configuração permite, então a rota também
+         * é marcada como inválida.
+         */
+        
         if (self::$urlParts !== []) {
             self::$isValidRoute = false;
         }
+        
+        /**
+         * ⚠️ IMPORTANTE
+         * ┌───────────────────────────────────────────────────────────────┐
+         * │ Esse método apenas registra o resultado em `$isValidRoute`; a │
+         * │ decisão de interromper o acesso fica para a conferência feita │
+         * │ depois na classe `Galastri`.                                  │
+         * └───────────────────────────────────────────────────────────────┘
+         */
     }
 
 

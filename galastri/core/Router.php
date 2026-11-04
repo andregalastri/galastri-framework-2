@@ -1482,7 +1482,7 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 DISTRIBUIÇÃO E CONFERÊNCIA DOS PARÂMETROS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Esse método pega as partes que sobraram de `$urlParts`, após a
      * identificação dos nós e do endpoint, e distribui esses valores entre os
@@ -1504,8 +1504,8 @@ final class Router
      * │ parâmetro `ordem` irá armazenar 'nome'.                          │
      * └──────────────────────────────────────────────────────────────────┘
      * 
-     * O método também confere se faltou algum parâmetro obrigatório ou checaram
-     * parâmetros a mais do que o definido.
+     * O método também confere se faltou algum valor obrigatório ou se sobraram
+     * partes da URL após o preenchimento dos parâmetros configurados.
      *
      * 
      * _________________________________
@@ -1518,9 +1518,10 @@ final class Router
          * Declaramos algumas variáveis auxiliares para ajudar na compreensão do
          * código.
          * 
-         * Puxamos a string armazenada na configuração `parameters` e separamos
-         * ela em um array através do `explode()`. Usamos array_filter pra
-         * remover possíveis valores vazios da array.
+         * Puxamos a string armazenada na configuração `parameters` e usamos
+         * `explode()` para separar os nomes dos parâmetros em um array.
+         * Depois, `array_filter()` remove as entradas vazias e `array_values()`
+         * reorganiza os índices para que sejam consecutivos, começando em zero.
          * 
          * ✔️ EXEMPLO
          * ┌────────────────────────────────────────┐
@@ -1583,13 +1584,13 @@ final class Router
              * Em cada volta, verificamos se o nome do parâmetro começa com ?.
              * Se começar, é opcional; caso contrário, é obrigatório.
              *
-             * Também atualizamos `$hasUrlParts` porque a lista das partes vai
-             * diminuindo conforme formos atribuindo os valores aos parâmetros.
-             * Por isso, precisamos sempre conferir se o parâmetro atual é
-             * obrigatório e se ainda há partes da URL a serem atribuídas ao
-             * parâmetro. Se não houver mais nenhum valor disponível em
-             * $urlParts, então faltam parâmetros obrigatórios, o que torna a
-             * rota inválida.
+             * Também atualizamos `$hasUrlParts` porque a lista diminui conforme
+             * atribuímos os valores aos parâmetros.
+             *
+             * Se o parâmetro atual for obrigatório e não houver mais nenhum
+             * valor disponível em `$urlParts`, marcamos a rota como inválida.
+             * Mesmo assim, continuamos o processamento para registrar todos os
+             * parâmetros, incluindo aqueles que ficarão sem valor.
              */
             
             $isRequired = strpos($parameterId, '?') !== 0;
@@ -1600,9 +1601,9 @@ final class Router
             }
             
             /**
-             * Limpamos o nome do parâmetro removendo o sinal de ?, caso haja, e
-             * armazenamos o primeiro valor de $urlParts ao mesmo tempo que
-             * removemos ela do array.
+             * Removemos os caracteres `?` do início do nome do parâmetro.
+             * Depois, retiramos o primeiro valor de `$urlParts` e o guardamos
+             * em `$parameterValue`. Se o array estiver vazio, recebemos `null`.
              */
 
             $parameterName = ltrim($parameterId, '?');
@@ -1624,8 +1625,8 @@ final class Router
              * │ │ ]                      │                                 │
              * │ └────────────────────────┘                                 │
              * │                                                            │
-             * │ Se a URL não trouxer a parte 'nome' o valor armazenado     │
-             * │ retornará `null`, pois `ordem` é opcional:                 │
+             * │ Se a URL não trouxer 'nome', `ordem` receberá `null`.      │
+             * │ Por ser opcional, sua ausência não invalida a rota:        │
              * │ ┌──────────────────────┐                                   │
              * │ │ [                    │                                   │
              * │ │     'id' => '42',    │                                   │

@@ -337,8 +337,8 @@ final class Router
     /**
      * 🟢 CONTROLE DA REMOÇÃO DE INDEX DO NAMESPACE
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Registra se já aplicamos o filtro de `Index` durante a montagem do
-     * namespace do controller.
+     * Registra se já passamos pelo primeiro nó depois da raiz, onde decidimos
+     * se precisamos retirar o `Index` inicial.
      *
      * `Index` representa o controller padrão da raiz. Ao avançarmos para outros
      * nós, precisamos evitar que esse nome continue ocupando uma parte
@@ -572,8 +572,9 @@ final class Router
 
 
         /**
-         * Começamos o tratamento do caminho fazendo a remoção do caminho raiz
-         * caso ele apareça no início da string.
+         * Começamos removendo o caminho raiz. Acrescentamos uma `/` aos dois
+         * caminhos para comparar trechos completos. Assim, a raiz `/app` só é
+         * removida quando o caminho é `/app` ou começa com `/app/`.
          */
 
         $partsString = Tools::trimLeft($requestPath.'/', self::$rootDir.'/', 1);
@@ -1236,6 +1237,9 @@ final class Router
          *    Esta configuração associa tipos de requisição HTTP a nomes de
          *    métodos do controller, por isso, será reformatada antes de ser
          *    armazenada.
+         *
+         *    Cada valor precisa ser uma string. Se encontrarmos um valor de
+         *    outro tipo, lançamos uma exceção indicando a entrada inválida.
          */
 
         if (array_key_exists('httpMethod', self::$routeData)) {
@@ -1325,9 +1329,8 @@ final class Router
 
 
         /**
-         * O `preg_grep()` seleciona a chave exata `@main` e as chaves iniciadas
-         * com `@main:`, reunindo os resultados no array `$mainEndpoints`.
-         * Se o array estiver vazio, nenhuma chave corresponde a esses formatos.
+         * O `preg_grep()` procura a chave exata `@main`. Se `$mainEndpoints`
+         * estiver vazio, essa chave não existe no nó.
          */
 
         $mainEndpoints = preg_grep('/\A@main\z/', $routeKeys);
@@ -1707,8 +1710,8 @@ final class Router
          * 
          * -  `$namespace` armazena o caminho construído até o momento.
          * 
-         * -  `$removedIndexFromNamespace` indica se a limpeza de 'Index' já foi
-         *    realizada. Explicaremos isso melhor mais adiante.
+         * -  `$removedIndexFromNamespace` indica se já passamos pelo primeiro
+         *    nó depois da raiz. Explicaremos isso melhor mais adiante.
          */
         
         $routeData = self::$routeData;
@@ -1824,9 +1827,9 @@ final class Router
          * para outro nó, precisamos retirá-lo antes de acrescentar o nome
          * correspondente ao próximo nó.
          *
-         * Na montagem padrão, isso acontece na segunda chamada: o namespace
-         * já contém ['app', 'controllers', 'Index'], portanto possui mais de
-         * duas partes, e a remoção ainda não aconteceu.
+         * Na montagem padrão, isso acontece na segunda chamada, quando
+         * encontramos o primeiro nó depois da raiz. Nesse ponto, o namespace
+         * ainda contém ['app', 'controllers', 'Index'].
          *
          * Sem essa limpeza, formaríamos um caminho como
          * `app\controllers\Index\Produtos`, exigindo uma pasta `Index` para
@@ -1857,9 +1860,9 @@ final class Router
          * exemplo, `Produtos` representa a pasta e `Controle` é a classe
          * que atenderá o acesso.
          *
-         * Esses exemplos consideram o namespace padrão. Se a configuração
-         * `namespace` fornecer outra base, a contagem e a filtragem serão
-         * feitas sobre a base configurada, que substituiu o caminho acumulado.
+         * Esses exemplos consideram o namespace padrão. Se o primeiro nó
+         * depois da raiz definir um `namespace` próprio, essa base substitui
+         * o caminho acumulado e dispensa a retirada do `Index` inicial.
          */
         
         if (!$removedIndexFromNamespace && $partValue !== '') {
@@ -1867,14 +1870,12 @@ final class Router
         
         
             /**
-             * Com a condição acima satisfeita, removemos da lista todas as
-             * partes cujo valor seja 'Index' e marcamos a limpeza como feita.
+             * Se o nó não definir um `namespace` próprio, `array_pop()` retira
+             * o último item do caminho acumulado, que é o `Index` da raiz.
              *
-             * Como `$removedIndexFromNamespace` é uma propriedade estática, seu
-             * valor permanece disponível entre as chamadas deste método, sem
-             * precisar recebê-lo por parâmetro. Nas próximas passagens, a
-             * condição encontrará esse indicador como `true` e impedirá que a
-             * limpeza seja executada novamente.
+             * Em ambos os casos, marcamos que já passamos pelo primeiro nó
+             * depois da raiz. Nas próximas chamadas, o indicador estará como
+             * `true` e o método vai pular este bloco.
              */
             
             if (!isset($routeData['namespace'])) {

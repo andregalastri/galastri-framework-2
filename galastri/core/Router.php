@@ -223,7 +223,7 @@ final class Router
      * ┌───────────────────────────────────────────────────────────────────────┐
      * │ Na rota `/produtos/busca`, `/produtos` pode ser identificado como o   │
      * │ nó, enquanto `busca` é o endpoint. Neste caso, esta propriedade vai   │
-     * │ armazenar o nome 'Produto', em PascalCase, após ser tratada.          │
+     * │ armazenar o nome 'Produtos', em PascalCase.                           │
      * └───────────────────────────────────────────────────────────────────────┘
      *
      * Note que aqui guardamos apenas o nome da classe. As partes que formam seu
@@ -275,7 +275,7 @@ final class Router
      * 🟢 VALORES RECEBIDOS NOS NÓS DINÂMICOS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Guarda os valores dos nós dinâmicos, aqueles cujas chaves começam com
-     * /?).
+     * `/?`.
      *
      * Se a rota contém `/?apelido` e a URL informa 'maria' nessa posição,
      * guardamos ['apelido' => 'maria']. Assim, a mesma definição de nó pode
@@ -319,8 +319,8 @@ final class Router
      *
      * ⚠️ IMPORTANTE
      * ┌───────────────────────────────────────────────────────────────────┐
-     * │ Parâmetros opcionais (iniciado com ? na configuração de rota) não │
-     * │ alteram esta propriedade.                                         │
+     * │ A falta de valor para um parâmetro opcional, indicado por `?`,    │
+     * │ não invalida a rota.                                              │
      * └───────────────────────────────────────────────────────────────────┘
      *
      * Esse resultado fica disponível para que `Galastri` decida como
@@ -337,8 +337,8 @@ final class Router
     /**
      * 🟢 CONTROLE DA REMOÇÃO DE INDEX DO NAMESPACE
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Registra se já executamos a retirada de `Index` durante a montagem do
-     * namespace de um controller que é a página inicial.
+     * Registra se já aplicamos o filtro de `Index` durante a montagem do
+     * namespace do controller.
      *
      * `Index` representa o controller padrão da raiz. Ao avançarmos para outros
      * nós, precisamos evitar que esse nome continue ocupando uma parte
@@ -380,8 +380,8 @@ final class Router
      * │ Quando não há uma parte da URL para preencher um parâmetro opcional,  │
      * │ seu valor é armazenado como null.                                     │
      * │                                                                       │
-     * │ Já a ausência de um parâmetro obrigatório (ou seja, sem ?), retornará │
-     * │ erro de rota inválida.                                                │
+     * │ Já se faltar um valor obrigatório, ele também fica como `null` e o    │
+     * │ `Router` marca a rota como inválida.                                  │
      * └───────────────────────────────────────────────────────────────────────┘
      *
      *
@@ -573,7 +573,7 @@ final class Router
 
         /**
          * Começamos o tratamento do caminho fazendo a remoção do caminho raiz
-         * caso ele apareça do início da string.
+         * caso ele apareça no início da string.
          */
 
         $partsString = Tools::trimLeft($requestPath, self::$rootDir, 1);
@@ -583,8 +583,8 @@ final class Router
         /**
          * Declaramos `$urlParts` com uma string vazia logo na primeira posição.
          * O motivo disso é que, antes de procurar pelos nós recebidos na URL,
-         * precisamos processar as configurações de rota que estão logo no raiz
-         * da cadeia.
+         * precisamos processar as configurações de rota que estão logo no nó
+         * raiz da cadeia.
          *
          * A string vazia, portanto, é o sinal que resolveNodes() e
          * resolveNamespace() usarão para identificar que estamos tratando o nó
@@ -651,9 +651,10 @@ final class Router
          * Este método funciona de maneira recursiva, por isso pode parecer que
          * algumas partes dele estejam fora de lugar, como o trecho abaixo.
          *
-         * Ocorre o seguinte: `$urlParts` começa armazenando todas as partes da
-         * URL. Quando `resolveNodes()` é chamado, ele vai iniciar uma cadeia de
-         * resolução destas partes, trecho a trecho.
+         * `$urlParts` começa com a string vazia reservada para o nó raiz e as
+         * partes do caminho que sobraram após a remoção da raiz. Quando
+         * `resolveNodes()` é chamado, ele vai iniciar uma cadeia de resolução
+         * dessas partes, trecho a trecho.
          *
          * A cada parte da URL encontrada nas configurações de rota,
          * `resolveNodes()` chamará `processNodeData()`, que removerá a parte
@@ -831,7 +832,7 @@ final class Router
                  * `$dynamicNodes`.
                  *
                  * Supondo que a chave do nó dinâmico seja `/?apelido` e que
-                 * essa parte da URL contiver `maria`, armazenaremos:
+                 * essa parte da URL contenha `maria`, armazenaremos:
                  *
                  * self::$dynamicNodes['apelido'] = 'maria';
                  */
@@ -1327,14 +1328,13 @@ final class Router
 
 
         /**
-         * Quando a saída é diferente de 'file', é obrigatória a presença de uma
-         * chave `@main`. Ela funciona como o ponto de acesso padrão daquele nó,
-         * usado quando nenhum endpoint é indicado ou reconhecido na próxima
-         * parte da URL.
+         * Quando a saída é diferente de 'file' e a busca acima não encontra
+         * nenhuma chave, lançamos uma exceção informando o arquivo de rotas e
+         * o nome do nó.
          *
-         * Se essa definição não for encontrada, lançamos uma exceção informando
-         * o arquivo de rotas e o nome do nó em que está faltando a definição de
-         * `@main`.
+         * Na seleção do endpoint, a chave `@main` funciona como o ponto de
+         * acesso padrão daquele nó, usado quando a próxima parte da URL não
+         * corresponde a nenhum endpoint.
          *
          * ⚠️ IMPORTANTE
          * ┌───────────────────────────────────────────────────────────────────┐
@@ -1394,7 +1394,7 @@ final class Router
 
                 /**
                  * Para cada chave encontrada, removemos os caracteres `@` do
-                 * início para comparamos o nome obtido com a próxima parte da
+                 * início e comparamos o nome obtido com a próxima parte da
                  * URL, disponível em `$urlParts[0]`.
                  *
                  * Se `$urlParts` estiver vazio, usaremos 'main' na comparação.
@@ -1807,8 +1807,8 @@ final class Router
          * 
          * Portanto:
          * 
-         * - Em `https://site.com`, o namespace resultante é
-         *   `app\controllers\Index`
+         * - Em `https://site.com`, o nome completo da classe é
+         *   `app\controllers\Index`.
          * 
          * E aí vem o motivo do processamento abaixo. Esse `Index` inicial
          * representa o controller da raiz e de seus endpoints. Se avançarmos
@@ -1858,8 +1858,8 @@ final class Router
         
         
             /**
-             * Com a condição acima satisfeita, removemos da lista a parte
-             * cujo valor seja 'Index' e marcamos essa limpeza como realizada.
+             * Com a condição acima satisfeita, removemos da lista todas as
+             * partes cujo valor seja 'Index' e marcamos a limpeza como feita.
              *
              * Como `$removedIndexFromNamespace` é uma propriedade estática, seu
              * valor permanece disponível entre as chamadas deste método, sem
@@ -1935,7 +1935,7 @@ final class Router
      * 🟢 PARTES DO NAMESPACE DO CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return array<string>  
-     *    Retorna um `array` de `strings` com as partes que compõem o namespace
+     *    Retorna um `array` de `strings` com as partes que compõem o nome
      *    completo da classe do controller.
      */
 
@@ -1965,7 +1965,7 @@ final class Router
      * 🟢 VALOR DE UM NÓ DINÂMICO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @param string $key
-     *    É o nome do nó dinâmico conforme definido na configuração de rota.
+     *    É o nome do nó dinâmico sem o prefixo `/?` da configuração da rota.
      * _________________________________
      * @return null|string
      *    Retorna uma `string` com o valor de um nó dinâmico específico ou `null`

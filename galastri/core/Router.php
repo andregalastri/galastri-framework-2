@@ -1903,7 +1903,7 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 PARTES RESTANTES DA URL
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return array<string>  
      *    Retorna um `array` de `strings` com as partes da URL que ainda
@@ -1918,7 +1918,7 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 NOME DO CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return string  
      *    Retorna uma `string` com o nome da classe do controller identificado.
@@ -1932,11 +1932,11 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 PARTES DO NAMESPACE DO CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return array<string>  
-     *    Retorna um `array` de `strings` com todos os valores recebidos nos nós
-     *    dinâmicos, associados aos respectivos nomes
+     *    Retorna um `array` de `strings` com as partes que compõem o namespace
+     *    completo da classe do controller.
      */
 
     public static function getControllerNamespace(): array
@@ -1947,7 +1947,7 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 VALORES DOS NÓS DINÂMICOS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return array<string,string>  
      *    Retorna um `array` de `strings` com todos os valores recebidos nos nós
@@ -1962,13 +1962,13 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 VALOR DE UM NÓ DINÂMICO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @param string $key
      *    É o nome do nó dinâmico conforme definido na configuração de rota.
      * _________________________________
-     * @return string  
-     *    Retornauma `string` com o valor de um nó dinâmico específico ou `null`
+     * @return null|string
+     *    Retorna uma `string` com o valor de um nó dinâmico específico ou `null`
      *    se o nome não existir.
      */
 
@@ -1980,7 +1980,7 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 NOME DO MÉTODO DO CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return string  
      *    Retorna uma `string` com o nome do método do controller escolhido para
@@ -1996,7 +1996,7 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 VALIDADE DA ROTA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return bool  
      *    Retorna `true` se a rota é considerada válida de acordo com a quantidade de
@@ -2011,11 +2011,11 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 VALORES DOS PARÂMETROS DA ROTA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return array<string,string|null>  
-     *    Retorna um `array` de `strings` com todos os parâmetros da rota com
-     *    seus respectivos valores.
+     *    Retorna um `array` com os nomes dos parâmetros da rota associados aos
+     *    respectivos valores, que podem ser strings ou `null`.
      */
 
     public static function getParameterValues(): array
@@ -2026,14 +2026,14 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 VALOR DE UM PARÂMETRO DA ROTA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @param string $key  
      *    Nome do parâmetro a ser recuperado.
      * _________________________________
      * @return null|string  
-     *    Retorna uma `string`com o valor do parâmetro informado ou `null` se
-     *    ele não existir.
+     *    Retorna uma `string` com o valor do parâmetro informado ou `null` se
+     *    ele não existir ou estiver sem valor.
      */
 
     public static function getParameter(string $key): ?string
@@ -2044,7 +2044,7 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 CAMINHO RAIZ DAS ROTAS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return string  
      *    Retorna uma `string` com o caminho raiz configurado para as rotas.
@@ -2058,7 +2058,7 @@ final class Router
 
 
     /**
-     * 🟢 xxx
+     * 🟢 CAMINHO BASE PARA LINKS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return string  
      *    Retorna uma string com o caminho raiz formatado para servir de base na

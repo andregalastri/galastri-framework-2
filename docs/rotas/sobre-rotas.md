@@ -316,7 +316,7 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Nem sempre as URLs irão declarar explicitamente um `endpoint`. Em alguns
  * casos, a URL pode terminar em um `node`, sem especificar qual método da
- * classe *controller* deve ser executado.
+ * classe `controller` deve ser executado.
  *
  * Quando isso ocorre, o framework assume que o método a ser chamado é `main()`,
  * que funciona como um método padrão sempre que o `endpoint` é omitido.
@@ -404,7 +404,7 @@
  * como parâmetros.
  *
  * Neste caso, `id` é armazenado no parâmetro `tipo`, e `123` no parâmetro
- * `codigo`, tornando esses valores acessíveis dentro do método **`main()`** .
+ * `codigo`, tornando esses valores acessíveis dentro do método `main()` .
  */
 
 
@@ -468,8 +468,8 @@
  * │ }                                      │
  * └────────────────────────────────────────┘
  * 
- * O nome da classe *controller* deve ser idêntico ao nome do arquivo, pois o
- * *autoloader* do **Composer** faz essa correspondência automaticamente.
+ * O nome da classe `controller` deve ser idêntico ao nome do arquivo, pois o
+ * `autoloader` do Composer faz essa correspondência automaticamente.
  * 
  * Se houver aninhamento de `nodes`, a estrutura das pastas deve refletir essa
  * hierarquia.
@@ -535,14 +535,19 @@
  * │ }                                       │
  * └─────────────────────────────────────────┘
  * 
- * O nome da classe *controller* deve ser idêntico ao nome do arquivo, pois o
- * *autoloader* do **Composer** faz essa correspondência automaticamente.
+ * O nome da classe `controller` deve ser idêntico ao nome do arquivo, pois o
+ * `autoloader` do Composer faz essa correspondência automaticamente.
  */
 
 
 
 /**
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * ▶️ PRÓXIMO TÓPICO:  
+ * Se quiser consultar as opções que você pode usar no arquivo de rotas, dá uma
+ * olhada no tópico `Configurações de rota`, depois volte aqui e vá para o
+ * próximo tópico:  
  * 🔗 LINK: /docs/rotas/configuracoes-de-rota.md
- */ 
+ *
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * ▶️ PRÓXIMO TÓPICO:
+ * 🔗 LINK: /public/index.php
+ */

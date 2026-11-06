@@ -66,6 +66,14 @@
  * └──────────────────┴────────────────────────────────────────────────────────┘
  *
  * 
+ * - Se quiser ver como declarar uma rota nesse arquivo, dá uma olhada no tópico
+ *   `Sobre rotas`, depois volte aqui:  
+ *   🔗 LINK: /docs/rotas/sobre-rotas.md
+ *
+ * - Se você já sabe montar uma rota e quer consultar as opções que pode usar,
+ *   veja o tópico `Configurações de rota`, depois volte aqui:  
+ *   🔗 LINK: /docs/rotas/configuracoes-de-rota.md
+ * 
  * 
  * 🔶 SUBPASTA app/controllers
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

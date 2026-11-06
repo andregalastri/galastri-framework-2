@@ -1165,6 +1165,8 @@ final class Router
 
         self::configurePropertiesByContext('endpoint');
 
+        
+        
         /**
          * Depois vêm alguns ajustes especiais, que respondem às seguintes
          * perguntas:
@@ -1448,6 +1450,7 @@ final class Router
         }
 
 
+        
         /**
          * Com a escolha feita, verificamos se há configurações de um endpoint
          * para processar.
@@ -1553,6 +1556,8 @@ final class Router
         });
         $parametersList = array_values($parametersList);
         
+        
+        
         /**
          * Depois, fazemos algumas conferências:
          *
@@ -1585,13 +1590,17 @@ final class Router
             return;
         }
         
+        
+        
         /**
          * Prosseguimos com o `foreach` que fará a distribuição dos valores
          * armazenados em $urlParts para os parâmetros, um de cada vez.
          */
 
         foreach ($parametersList as $parameterId) {
-                
+               
+        
+        
             /**
              * Em cada volta, verificamos se o nome do parâmetro começa com ?.
              * Se começar, é opcional; caso contrário, é obrigatório.
@@ -1612,6 +1621,8 @@ final class Router
                 self::$isValidRoute = false;
             }
             
+            
+            
             /**
              * Removemos os caracteres `?` do início do nome do parâmetro.
              * Depois, retiramos o primeiro valor de `$urlParts` e o guardamos
@@ -1621,6 +1632,8 @@ final class Router
             $parameterName = ltrim($parameterId, '?');
             $parameterValue = array_shift(self::$urlParts);
 
+            
+            
             /**
              * Guardamos a associação entre o nome do parâmetro e o valor da
              * parte da URL.
@@ -1652,6 +1665,7 @@ final class Router
         }
 
         
+        
         /**
          * Por último, conferimos se sobrou alguma parte da URL.
          * 
@@ -1664,6 +1678,8 @@ final class Router
         if (self::$urlParts !== []) {
             self::$isValidRoute = false;
         }
+        
+        
         
         /**
          * ⚠️ IMPORTANTE
@@ -1751,18 +1767,16 @@ final class Router
              * separamos os valores em um array, dividindo com base nas barras
              * invertidas.
              */
-            
-            
-            
+
             $configuredNamespace = $routeData['namespace'];
             $namespaceParts = explode('\\', $configuredNamespace);
+            
+            
             
             /**
              * Filtramos e armazenamos o array sem valores vazios.
              */
-            
-            
-            
+
             $namespace = array_filter($namespaceParts);
         }
         
@@ -2080,3 +2094,15 @@ final class Router
         return rtrim(self::$rootDir, '/').'/';
     }
 }
+
+
+
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * ◀️ VOLTAR AO TÓPICO ANTERIOR:
+ *
+ * Volte ao método `run()` de `Galastri` e continue a leitura logo depois da
+ * chamada a `Router::run()`.
+ *
+ * 🔗 LINK: /galastri/core/Galastri.php
+ */

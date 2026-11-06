@@ -1230,9 +1230,6 @@ final class Galastri
      * │ correspondente.                                                     │
      * └─────────────────────────────────────────────────────────────────────┘
      *
-     * Se ainda não viu, conheça sobre o fluxo de dados e os tipos de saída:
-     * 🔗 LINK: /docs/fluxo-de-dados.md
-     *
      * Uma boa ideia é começar a entender os detalhes de cada classe de saída,
      * começando pela View:
      * 🔗 LINK: /galastri/core/output/View.php
@@ -1441,5 +1438,5 @@ final class Galastri
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * ▶️ PRÓXIMO TÓPICO:
- * 🔗 LINK: /galastri/core/output/View.php
+ * 🔗 LINK: /docs/fluxo-de-dados.md
  */

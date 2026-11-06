@@ -280,5 +280,5 @@
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * ▶️ PRÓXIMO TÓPICO:
- * 🔗 LINK: /public/index.php
+ * 🔗 LINK: /galastri/core/output/View.php
  */

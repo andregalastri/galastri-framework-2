@@ -576,7 +576,7 @@ final class Router
          * caso ele apareça no início da string.
          */
 
-        $partsString = Tools::trimLeft($requestPath, self::$rootDir, 1);
+        $partsString = Tools::trimLeft($requestPath.'/', self::$rootDir.'/', 1);
 
 
 
@@ -1271,6 +1271,13 @@ final class Router
             $httpMethod = [];
 
             foreach (Config::get('httpMethod') as $type => $method) {
+                if (!is_string($method)) {
+                    throw new Exception(
+                        Message::get('CONFIG_INVALID_TYPE'),
+                        ["httpMethod[$type]", 'string', Tools::typeOf($method)]
+                    );
+                }
+
                 $httpMethod[mb_strtolower($type)] = ltrim($method, '@');
             }
 
@@ -1323,7 +1330,7 @@ final class Router
          * Se o array estiver vazio, nenhuma chave corresponde a esses formatos.
          */
 
-        $mainEndpoints = preg_grep('/^@main(:|$)/', $routeKeys);
+        $mainEndpoints = preg_grep('/\A@main\z/', $routeKeys);
 
 
 
@@ -1424,7 +1431,7 @@ final class Router
                  * └────────────────────────────────────────────────────┘
                  */
 
-                if ($urlPartAsMethod == $endpointMethodName) {
+                if ($urlPartAsMethod === $endpointMethodName) {
 
                     array_shift(self::$urlParts);
 
@@ -1538,7 +1545,9 @@ final class Router
         $parametersConfig = Config::get('parameters');
 
         $parametersList = explode('/', $parametersConfig);
-        $parametersList = array_filter($parametersList);
+        $parametersList = array_filter($parametersList, function ($value) {
+            return $value !== '';
+        });
         $parametersList = array_values($parametersList);
         
         /**
@@ -1853,7 +1862,7 @@ final class Router
          * feitas sobre a base configurada, que substituiu o caminho acumulado.
          */
         
-        if (!$removedIndexFromNamespace && count($namespace) > 2) {
+        if (!$removedIndexFromNamespace && $partValue !== '') {
             
         
         
@@ -1868,9 +1877,9 @@ final class Router
              * limpeza seja executada novamente.
              */
             
-            $namespace = array_filter($namespace, function ($value) {
-                return $value !== 'Index';
-            });
+            if (!isset($routeData['namespace'])) {
+                array_pop($namespace);
+            }
             
             self::$removedIndexFromNamespace = true;
         }

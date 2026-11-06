@@ -1230,10 +1230,10 @@ final class Galastri
      * │ correspondente.                                                     │
      * └─────────────────────────────────────────────────────────────────────┘
      *
-     * Uma boa ideia é começar a entender os detalhes de cada classe de saída,
-     * começando pela View:
-     * 🔗 LINK: /galastri/core/output/View.php
-     *
+     * - Veremos detalhadamente sobre formatos de saída no próximo tópico. Se
+     *   quiser adiantar, veja mais em:  
+     *   🔗 LINK: /docs/fluxo-de-dados.md
+     * 
      * A escolha da classe de saída já aconteceu em `setOutputClass()`, quando
      * guardamos seu nome completo em `$output`. Agora usamos essa referência
      * para chamar seu método estático `run()`.

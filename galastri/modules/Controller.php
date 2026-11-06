@@ -122,7 +122,7 @@ abstract class Controller
      * retorno de `main()` ou de outro método, como `listar()`.
      *
      * _________________________________
-     * @var array{}|array{string|int,mixed}
+     * @var array<int|string,mixed>
      */
 
     private array $controllerMethodData = [];
@@ -415,8 +415,8 @@ abstract class Controller
      * 🟢 CONSULTANDO O NOME DO PROJETO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return string  
-     *    Retorna uma string com o nome que está armazenado `projectName` neste
-     *    momento da requisição. 
+     *    Retorna uma string com o nome que está armazenado em `projectName`
+     *    neste momento da requisição. 
      */
     
     final protected function getProjectName(): string
@@ -725,12 +725,12 @@ abstract class Controller
      * @param string $key  
      *    Nome do parâmetro que queremos consultar.
      * _________________________________
-     * @return string|false  
+     * @return null|string  
      *    Retorna uma string com o valor do parâmetro. Se o parâmetro estiver
      *    sem valor ou se o nome informado não existir, retorna `null`.
      */
     
-    final protected function getParameter(string $key): bool|null|string
+    final protected function getParameter(string $key): null|string
     {
         return Router::getParameter($key) ?? null;
     }
@@ -742,8 +742,8 @@ abstract class Controller
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return array  
      *    Retorna um array com os valores dos nós dinâmicos encontrados na URL,
-     *    usando o nome de cada nó como chave.Se não houver nós dinâmicos,
-     *    retorna uma array vazia.
+     *    usando o nome de cada nó como chave. Se não houver nós dinâmicos,
+     *    retorna um array vazio.
      */
     
     final protected function getDynamicNodeValues(): array
@@ -775,8 +775,8 @@ abstract class Controller
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * ◀️ VOLTAR AO TÓPICO ANTERIOR:
  *
- * Volte ao método `executeController()` de `Galastri` e retome a leitura
- * logo depois do link que trouxe você até aqui.
+ * Volte ao método `executeController()` de `Galastri` e retome a leitura logo
+ * depois do link que trouxe você até aqui.
  *
  * 🔗 LINK: /galastri/core/Galastri.php
  */

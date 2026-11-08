@@ -1214,7 +1214,7 @@ final class Galastri
 
 
     /**
-     * 🟢 PASSANDO A BOLA PRO FORMATO DE SAÍDA
+     * 🟢 CHAMANDO A CLASSE DE FORMATO DE SAÍDA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * O `executeOutput()` é o momento em que entregamos à classe de saída a
      * responsabilidade de preparar e enviar a resposta da requisição.
@@ -1230,8 +1230,8 @@ final class Galastri
      * │ correspondente.                                                     │
      * └─────────────────────────────────────────────────────────────────────┘
      *
-     * - Veremos detalhadamente sobre formatos de saída no próximo tópico. Se
-     *   quiser adiantar, veja mais em:  
+     * - Veremos os formatos de saída em detalhes no próximo tópico. Se quiser
+     *   adiantar, veja mais em:  
      *   🔗 LINK: /docs/fluxo-de-dados.md
      * 
      * A escolha da classe de saída já aconteceu em `setOutputClass()`, quando

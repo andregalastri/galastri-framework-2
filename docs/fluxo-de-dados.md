@@ -169,7 +169,7 @@
  * JSON e envia o resultado pra quem fez a requisição. Numa resposta comum, o
  * cabeçalho `Content-Type` indica `application/json`.
  *
- * Se a aplicação usar o módulo `ResponseStream::send()`, a resposta passa a ser
+ * Se a aplicação chamar `ResponseStream::send()`, a resposta passa a ser
  * enviada em NDJSON. Cada envio ocupa uma linha com seu próprio JSON. Quando a
  * execução chega a `Json::run()`, os dados reunidos pelo controller são
  * enviados como a última linha.

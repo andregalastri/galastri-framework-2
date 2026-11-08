@@ -107,6 +107,7 @@ abstract class Controller
      * Se o construtor for chamado de novo para esse mesmo objeto, usamos esse
      * valor para evitar que os métodos da aplicação rodem outra vez.
      *
+     * 
      * _________________________________
      * @var bool
      */
@@ -121,6 +122,7 @@ abstract class Controller
      * Guarda o array retornado pelo método escolhido para a rota. Pode ser o
      * retorno de `main()` ou de outro método, como `listar()`.
      *
+     * 
      * _________________________________
      * @var array<int|string,mixed>
      */
@@ -138,6 +140,7 @@ abstract class Controller
      *
      * Na ausência de um método HTTP a executar, o array fica vazio.
      *
+     * 
      * _________________________________
      * @var array
      */
@@ -156,6 +159,7 @@ abstract class Controller
      * É esse array que `getResponse()` entrega quando a saída consulta o
      * resultado do controller.
      *
+     * 
      * _________________________________
      * @var array
      */
@@ -173,6 +177,7 @@ abstract class Controller
      * Até essa chamada, o array fica vazio. A saída `File` pode consultar esses
      * dados ao preparar o arquivo que será entregue.
      *
+     * 
      * _________________________________
      * @var array{}|array{0:string,1:string,2:string}
      */
@@ -204,6 +209,7 @@ abstract class Controller
      * Cada controller define o que acontece nos seus próprios métodos, e o
      * construtor da classe base cuida da ordem em que eles são chamados.
      *
+     * 
      * _________________________________
      * @return void
      */
@@ -244,6 +250,7 @@ abstract class Controller
      * Cada controller concreto precisa ter um `main()` que retorne um array.
      * Pode ser um array vazio, como o `[]` que vimos no `Index`.
      *
+     * 
      * _________________________________
      * @return array  
      *    Dados que serão reunidos na resposta do controller.

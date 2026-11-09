@@ -1,7 +1,19 @@
 <?php
 /**
- * Documentação:
- * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-Json
+ * -----------------------------------------------------------------------------
+ * 📂
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║                  ARQUIVO /galastri/core/output/Json.php                   ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ * Quando a configuração `output` é `json`, esta classe converte o array com os
+ * dados reunidos pelo controller em JSON e envia o resultado pra quem fez a
+ * requisição.
+ *
+ * A aplicação também pode usar esta classe para enviar dados antes de terminar
+ * o processamento. Nesse caso, a resposta usa NDJSON. Cada envio ocupa uma
+ * linha com seu próprio JSON, e os dados reunidos pelo controller são enviados
+ * na última linha.
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 
 namespace galastri\core\output;

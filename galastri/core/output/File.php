@@ -475,9 +475,9 @@ final class File
 
         
         /**
-         * `checkMimeType()` usará a extensão guardada aqui pra consultar
-         * o tipo MIME configurado em `forceMimeType` e os tipos aceitos
-         * em `MIME_TYPE_LIST` quando `validateMimeType` estiver ativo.
+         * `checkMimeType()` usa a extensão guardada aqui pra consultar
+         * `forceMimeType`. Se `validateMimeType` estiver ativo, também usa a
+         * extensão pra consultar os tipos aceitos em `MIME_TYPE_LIST`.
          */
         
         self::$extension = $extension;
@@ -560,10 +560,10 @@ final class File
     /**
      * 🟢 REUNINDO OS DADOS DO ARQUIVO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Pega o arquivo armazenado na propriedade `$path` e armazena seu conteúdo
-     * na chave [0]. Depois o nome do arquivo é armazenado na chave [1]. Por
-     * último, o tipo MIME definido em `checkMimeType()` é aramzenado na chave
-     * [2].
+     * Armazena os dados do arquivo na propriedade `$contents`. Na chave `0`,
+     * guarda o conteúdo do arquivo. Na chave `1`, guarda o nome do arquivo sem
+     * as pastas do caminho. Na chave `2`, guarda o tipo MIME definido em
+     * `checkMimeType()`.
      *
      * 
      * _________________________________
@@ -632,7 +632,7 @@ final class File
     private static function download(): void
     {
         /**
-         * Aplicamos a política de cache das rotas com `authTag`
+         * Aplicamos a política de cache das rotas com `authTag`.
          */
         
         self::applyAuthenticationCachePolicy();
@@ -694,9 +694,14 @@ final class File
         
         
         /**
-         * `Expires` indica que a resposta já está expirada para evitar
-         * armazenamento em cache. `Content-Length` informa o tamanho do arquivo
-         * em bytes para que o navegador mostre o progresso de download.
+         * Com `Expires: 0`, o navegador pode guardar uma cópia do arquivo, mas
+         * ela já chega vencida. Isso permite que o navegador armazene o arquivo
+         * em cache, mas ele normalmente confere junto ao servidor se a cópia
+         * que guardou ainda é válida ou se precisa baixar o arquivo de novo,
+         * por exemplo, em caso de alteração.
+         * 
+         * `Content-Length` informa o tamanho do arquivo em bytes para que o
+         * navegador mostre o progresso do download.
          */
         
         header('Expires: 0');
@@ -736,6 +741,7 @@ final class File
      * @return bool  
      *    Retorna sempre `false`, pois a saída `File` não exige um controller.
      */
+    
     public static function requiresController(): bool
     {
         return false;

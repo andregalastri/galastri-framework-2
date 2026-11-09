@@ -202,10 +202,9 @@ final class Json
         
         
         /**
-         * Se já tiver havido um envio do método `stream()`, ele já terá enviado
-         * cabeçalhos. Se não, ainda pudemos alterá-los. Neste caso usamos
-         * `Content-Type` pra indicar se o corpo da resposta está em JSON ou
-         * NDJSON.
+         * Se ainda pudermos alterar os cabeçalhos, usamos `Content-Type`
+         * pra indicar o formato da resposta. Com o streaming ativo, usamos
+         * NDJSON. Nos demais casos, usamos JSON.
          */
         
         if (!headers_sent()) {
@@ -330,11 +329,6 @@ final class Json
     /**
      * 🟢 VERIFICANDO SE O STREAMING ESTÁ ATIVO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Retorna `true` se `stream()` já preparou o primeiro envio em NDJSON
-     * nesta requisição. Até lá, retorna `false`.
-     *
-     * 
-     * _________________________________
      * @return bool  
      *    Retorna `true` se `stream()` já preparou o primeiro envio em NDJSON
      *    nesta requisição ou, caso contrário, retorna `false`.

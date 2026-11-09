@@ -178,6 +178,8 @@ if (is_file(MIME_TYPES_FILE_PATH)) {
     $mimeTypeList = require(MIME_TYPES_FILE_PATH);
 }
 
+define('MIME_TYPE_LIST', $mimeTypeList);
+
 
 
 /**

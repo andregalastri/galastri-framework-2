@@ -107,6 +107,10 @@ final class Json
      *   caractere de substituição `�`.
      * - `JSON_THROW_ON_ERROR` faz `json_encode()` lançar uma `\JsonException`
      *   se a conversão falhar.
+     * 
+     * 
+     * _________________________________
+     * @var int
      */
     
     private const JSON_FLAGS = 
@@ -131,6 +135,10 @@ final class Json
      *
      * Quando o controller termina, `run()` consulta esse valor pra saber se
      * deve enviar os dados finais do controller em mais uma linha do NDJSON.
+     * 
+     * 
+     * _________________________________
+     * @var bool
      */
     
     private static bool $streaming = false;
@@ -361,3 +369,10 @@ final class Json
         return true;
     }
 }
+
+
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * ▶️ PRÓXIMO TÓPICO:
+ * 🔗 LINK: /galastri/core/output/File.php
+ */

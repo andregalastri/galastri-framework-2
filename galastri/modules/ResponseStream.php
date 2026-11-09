@@ -57,8 +57,8 @@ use galastri\core\output\Json;
  * lotes ainda estão sendo processados.
  *
  * Cada chamada acrescenta uma linha com seu próprio JSON à resposta. Quando o
- * controller termina, o framework envia os dados que ele reuniu para a resposta
- * final na última linha do NDJSON.
+ * controller termina, o framework converte em JSON o array que o método
+ * `getResponse()` do controller devolve e envia esse JSON na última linha.
  */
 
 final class ResponseStream
@@ -73,7 +73,7 @@ final class ResponseStream
     
     
     
-     /**
+    /**
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                             PROPRIEDADES                              ║
      * ╚═══════════════════════════════════════════════════════════════════════╝

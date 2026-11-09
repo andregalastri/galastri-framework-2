@@ -82,14 +82,19 @@ final class File
     /**
      * 🟢 CACHE DO NAVEGADOR
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Em `render()`, usamos `checkBrowserCache()` pra saber se o navegador
-     * pode reaproveitar a cópia do arquivo que já tem em cache. Se puder,
-     * a resposta é `304` e `render()` termina sem enviar o conteúdo de novo.
+     * Em `render()`, usamos `checkBrowserCache()` pra saber se o navegador pode
+     * reaproveitar a cópia do arquivo que já tem em cache. Se puder, a resposta
+     * é `304` e `render()` termina sem enviar o conteúdo de novo.
      *
-     * Quando a rota tem `authTag` configurada, o trait orienta o navegador
-     * a não guardar a resposta em cache. Em `render()`, essa política é
-     * aplicada dentro de `checkBrowserCache()`. Em `download()`, chamamos
+     * Quando a rota tem `authTag` configurada, o trait orienta o navegador a
+     * não guardar a resposta em cache. Em `render()`, essa política é aplicada
+     * dentro de `checkBrowserCache()`. Em `download()`, chamamos
      * `applyAuthenticationCachePolicy()` diretamente.
+     *
+     * - Abra `BrowserCache.php` e depois, volte pra continuar a leitura de
+     *   `File.php`.
+     *
+     *   🔗 LINK: /galastri/core/output/traits/BrowserCache.php
      */
     
     use traits\BrowserCache;
@@ -216,9 +221,9 @@ final class File
     /**
      * 🟢 ENVIANDO O ARQUIVO
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * `Galastri` chama este método na etapa de saída das rotas que usam
-     * `output => 'file'`. A partir daqui, a classe `File` reúne os dados do
-     * arquivo e cuida do envio na resposta HTTP.
+     * `Galastri` chama este método na etapa de saída das rotas que usam `output
+     * => 'file'`. A partir daqui, a classe `File` reúne os dados do arquivo e
+     * cuida do envio na resposta HTTP.
      *
      *
      * _________________________________
@@ -272,8 +277,8 @@ final class File
     /**
      * 🟢 BUSCANDO O ARQUIVO PREPARADO PELO CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Se houver um controller, pedimos a `Galastri` os dados do arquivo que
-     * o controller preparou e guardamos o array em `$contents`.
+     * Se houver um controller, pedimos a `Galastri` os dados do arquivo que o
+     * controller preparou e guardamos o array em `$contents`.
      *
      * Se o controller não preparou um arquivo, `Galastri` fornece um array
      * vazio. É neste caso que `run()` sabe que precisa procurar o arquivo no
@@ -587,6 +592,7 @@ final class File
      * `run()` chama este método pra enviar o arquivo para exibição no
      * navegador.
      *
+     * 
      * _________________________________
      * @return void
      */
@@ -668,9 +674,9 @@ final class File
         
         
         /**
-         * Em `$fallbackName`, montamos um nome de reserva pra navegadores
-         * que só leem `filename`. Por exemplo, se `$fileName` for
-         * `relatório.pdf`, trocamos o `ó` por `_` e obtemos `relat_rio.pdf`.
+         * Em `$fallbackName`, montamos um nome de reserva pra navegadores que
+         * só leem `filename`. Por exemplo, se `$fileName` for `relatório.pdf`,
+         * trocamos o `ó` por `_` e obtemos `relat_rio.pdf`.
          */
         
         $fallbackName = preg_replace('/[^a-zA-Z0-9._ -]/u', '_', $fileName);
@@ -678,14 +684,14 @@ final class File
         
         
         /**
-         * Em `Content-Disposition`, `attachment` pede ao navegador que
-         * baixe o arquivo. Os parâmetros `filename` e `filename*` sugerem
-         * o nome com que o arquivo será salvo.
+         * Em `Content-Disposition`, `attachment` pede ao navegador que baixe o
+         * arquivo. Os parâmetros `filename` e `filename*` sugerem o nome com
+         * que o arquivo será salvo.
          *
-         * Em `filename`, enviamos o nome de reserva (`relat_rio.pdf`).
-         * Em `filename*`, usamos `rawurlencode()` pra escrever o nome
-         * com acento como `relat%C3%B3rio.pdf`. O navegador que entende
-         * `filename*` decodifica esse valor e usa `relatório.pdf`.
+         * Em `filename`, enviamos o nome de reserva (`relat_rio.pdf`). Em
+         * `filename*`, usamos `rawurlencode()` pra escrever o nome com acento
+         * como `relat%C3%B3rio.pdf`. O navegador que entende `filename*`
+         * decodifica esse valor e usa `relatório.pdf`.
          */
         
         header('Content-Disposition: attachment; filename="'.$fallbackName.'"; '

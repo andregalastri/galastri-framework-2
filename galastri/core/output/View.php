@@ -30,9 +30,6 @@ namespace galastri\core\output;
 /**
  * 🟢 CLASSES UTILIZADAS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Antes de montar a página, precisamos descobrir quais arquivos serão usados e
- * conferir se eles existem. Estas classes ajudam nesse trabalho.
- *
  * ┌─────────────┬─────────────────────────────────────────────────────────────┐
  * │ Classe      │ Uso                                                         │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤

@@ -32,10 +32,6 @@ namespace galastri\core\config;
 /**
  * 🟢 CLASSES UTILIZADAS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Para preparar uma configuração e conferir os valores recebidos, precisamos
- * identificar tipos de dados e informar quando alguma regra não foi atendida.
- * Estas classes fornecem os recursos usados nessas verificações.
- *
  * ┌─────────────┬─────────────────────────────────────────────────────────────┐
  * │ Classe      │ Uso                                                         │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤

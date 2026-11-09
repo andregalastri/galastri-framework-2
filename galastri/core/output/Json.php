@@ -16,7 +16,30 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
+
+
+/**
+ * 🟢 NAMESPACE DA CLASSE
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * A classe `Json` é um dos formatos de saída do núcleo do framework.
+ */
+
 namespace galastri\core\output;
+
+
+
+/**
+ * 🟢 CLASSES UTILIZADAS
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * ┌─────────────┬─────────────────────────────────────────────────────────────┐
+ * │ Classe      │ Uso                                                         │
+ * ├─────────────┼─────────────────────────────────────────────────────────────┤
+ * │ `Galastri`  │ Fornece os dados que o controller reuniu para a resposta.   │
+ * ├─────────────┼─────────────────────────────────────────────────────────────┤
+ * │ `Exception` │ Usada se `stream()` não conseguir encerrar um buffer de     │
+ * │             │ saída ao iniciar o streaming.                               │
+ * └─────────────┴─────────────────────────────────────────────────────────────┘
+ */
 
 use galastri\core\Galastri;
 use galastri\extensions\Exception;

@@ -31,9 +31,6 @@ namespace galastri\core;
 /**
  * 🟢 CLASSES UTILIZADAS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Estas classes fornecem os recursos que usamos para preparar as respostas de
- * erro, consultar as configurações e registrar os detalhes das falhas.
- *
  * ┌─────────────┬─────────────────────────────────────────────────────────────┐
  * │ Classe      │ Uso                                                         │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤

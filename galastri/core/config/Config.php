@@ -29,10 +29,6 @@ namespace galastri\core\config;
 /**
  * 🟢 CLASSES UTILIZADAS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Para manter as configurações disponíveis, precisamos representar suas
- * definições e informar quando os dados recebidos estão incorretos. Estas
- * classes fornecem os recursos usados nessa preparação e nas consultas.
- *
  * ┌──────────────┬─────────────────────────────────────────────────────────┐
  * │ Classe       │ Uso                                                     │
  * ├──────────────┼─────────────────────────────────────────────────────────┤

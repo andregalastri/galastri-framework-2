@@ -30,10 +30,6 @@ namespace galastri\modules;
 /**
  * 🟢 CLASSES UTILIZADAS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Quando chegamos aqui, o framework já sabe qual rota foi acessada e quais
- * métodos devem rodar. As classes abaixo nos dão acesso a essas informações e
- * às configurações que podemos consultar ou ajustar durante a execução.
- *
  * ┌────────────┬──────────────────────────────────────────────────────────────┐
  * │ Classe     │ Uso                                                          │
  * ├────────────┼──────────────────────────────────────────────────────────────┤

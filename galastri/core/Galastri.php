@@ -32,10 +32,6 @@ namespace galastri\core;
 /**
  * 🟢 CLASSES UTILIZADAS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Para conduzir o processamento, precisamos consultar as configurações,
- * identificar o destino da requisição e verificar se podemos continuar.
- * Estas classes fornecem os recursos usados em cada uma dessas etapas.
- *
  * ┌──────────────────┬───────────────────────────────────────────────────────┐
  * │ Classe           │ Uso                                                   │
  * ├──────────────────┼───────────────────────────────────────────────────────┤

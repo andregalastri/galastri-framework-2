@@ -30,9 +30,6 @@ namespace galastri\core\output\engines;
 /**
  * 🟢 CLASSES UTILIZADAS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Estas classes fornecem os dados do controller, o caminho da view e os recursos
- * pra informar quando um valor não pode ser escrito no HTML por `print()`.
- *
  * ┌─────────────┬─────────────────────────────────────────────────────────────┐
  * │ Classe      │ Uso                                                         │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤

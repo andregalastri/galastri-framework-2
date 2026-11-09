@@ -30,10 +30,6 @@ namespace galastri\core;
 /**
  * 🟢 CLASSES UTILIZADAS
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Para interpretar as rotas, precisamos consultar suas configurações, preparar
- * nomes de classes e métodos e informar quando uma definição não pode ser
- * utilizada. Estas classes fornecem os recursos usados nesse trabalho.
- *
  * ┌─────────────┬─────────────────────────────────────────────────────────────┐
  * │ Classe      │ Uso                                                         │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤

@@ -248,6 +248,12 @@ final class Json
      * prepara e escreve os dados na resposta HTTP. Assim, quem fez a requisição
      * pode receber os dados enquanto o controller ainda estiver executando.
      *
+     * Dá uma olhada em `ResponseStream.php` pra ver como os dados que o
+     * controller passa pra `send()` chegam até aqui. Depois volte pra
+     * acompanhar como `stream()` envia esses dados em NDJSON.
+     *
+     * 🔗 LINK: /galastri/modules/ResponseStream.php
+     * 
      * 
      * _________________________________
      * @param array $data

@@ -148,6 +148,10 @@ final class Message
     private const OUTPUT_UNDEFINED_FILE_MIME_EXTENSION = 'A extensão "{{}}" não possui um tipo MIME definido na configuração.';
 
     private const OUTPUT_UNLISTED_FILE_MIME_TYPE = 'O tipo MIME "{{}}" não foi configurado como um tipo válido para arquivos "{{}}".';
+    
+    private const OUTPUT_STREAM_BUFFER_NOT_REMOVABLE = 'Não foi possível iniciar o streaming: existe um buffer que não permite ser encerrado.';
+    
+    private const OUTPUT_STREAM_BUFFER_FLUSH_FAILED = 'Não foi possível liberar e encerrar um buffer de saída.';
 
     /**
      * Redirect

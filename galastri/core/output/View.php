@@ -61,6 +61,8 @@ use galastri\modules\Tools;
 /**
  * 🟢 CLASSE View
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * A classe `View` monta a resposta HTML da rota.
+ * 
  * Pense numa página de produtos. O controller prepara a lista, e a view usa
  * esses dados pra montar o trecho da página que mostra os produtos. Se a rota
  * usa um template, ele dá a estrutura da página e pode incluir a view no ponto

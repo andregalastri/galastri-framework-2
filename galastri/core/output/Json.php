@@ -44,13 +44,70 @@ namespace galastri\core\output;
 use galastri\core\Galastri;
 use galastri\extensions\Exception;
 
+
+
+/**
+ * 🟢 CLASSE Json
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * A classe `Json` cuida da resposta HTTP das rotas que usam `output => 'json'`.
+ * Quando o controller termina, ela converte em JSON os dados que ele reuniu e
+ * envia o resultado pra quem fez a requisição. Ela também permite enviar dados
+ * enquanto o controller ainda está rodando.
+ *
+ * Imagine uma tela que mostra o andamento da importação de uma planilha. A cada
+ * lote, o controller pode chamar `ResponseStream::send()` pra informar quantos
+ * registros já foram importados. A classe `Json` envia cada atualização em uma
+ * linha e, quando a importação termina, envia o resultado na última linha da
+ * mesma resposta. Cada linha contém um JSON completo. Esse formato se chama
+ * NDJSON.
+ */
+
 final class Json
 {
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                                TRAITS                                 ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     */
+    
+        /**
+     * 🟢 CACHE DO NAVEGADOR
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * O trait `BrowserCache` fornece o método
+     * `applyAuthenticationCachePolicy()`. Em `run()` e no primeiro envio de
+     * `stream()`, chamamos esse método pra impedir que o navegador guarde em
+     * cache a resposta de uma rota com `authTag` configurada.
+     */
+    
     use traits\BrowserCache;
+    
+    
+    
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                              CONSTANTES                               ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     */
 
     private const JSON_FLAGS = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR;
     
+    
+    
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                             PROPRIEDADES                              ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     */
+    
     private static bool $streaming = false;
+    
+    
+    
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                                MÉTODOS                                ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     */
     
     private function __construct() {}
     

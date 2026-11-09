@@ -7,6 +7,7 @@
 namespace galastri\core\output;
 
 use galastri\core\Galastri;
+use galastri\extensions\Exception;
 
 final class Json
 {

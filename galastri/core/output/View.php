@@ -5,9 +5,9 @@
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║                  ARQUIVO /galastri/core/output/View.php                   ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
- * Lá em `Galastri`, vimos o framework chamar classe de formato de saída. Quando
- * a configuração `output` for definida como `view`, é aqui que a página começa a
- * ser montada.
+ * Lá em `Galastri`, vimos o framework chamar a classe de formato de saída.
+ * Quando a configuração `output` for definida como `view`, é aqui que a página
+ * começa a ser montada.
  *
  * A classe localiza o arquivo da view e confere se a rota usa um template.
  * Durante a montagem da página, esses arquivos podem consultar os dados que o
@@ -302,7 +302,7 @@ final class View
         /**
          * Armazenamos a configuração de `templateFile` e verificamos se ela não
          * está vazia. Se estiver, isso indica que a rota usa só a view, então
-         * não atribuimos valor à propriedade `$templatePath`.
+         * não atribuímos valor à propriedade `$templatePath`.
          */
         
         $templateFile = Config::get('templateFile');
@@ -351,9 +351,10 @@ final class View
      * 🟢 MONTANDO E ENVIANDO A PÁGINA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Executa o template ou a view e guarda o HTML produzido. Com a página
-     * pronta, verifica se precisa enviar o conteúdo ou se o navegador pode
-     * reaproveitar sua cópia em cache através da comparação do conteúdo de
-     * ambos.
+     * pronta, consulta `checkBrowserCache()` pra saber se o navegador pode
+     * reaproveitar sua cópia em cache. Essa verificação compara o ETag do HTML
+     * gerado com os valores enviados pelo navegador no cabeçalho
+     * `If-None-Match`.
      *
      * _________________________________
      * @return void
@@ -487,3 +488,11 @@ final class View
         return true;
     }
 }
+
+
+
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * ▶️ PRÓXIMO TÓPICO:
+ * 🔗 LINK: /galastri/core/output/Json.php
+ */

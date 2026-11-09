@@ -141,33 +141,59 @@ trait BrowserCache
     }
 
     
-    
     /**
-     * 🟢 CONFERINDO A CÓPIA GUARDADA PELO NAVEGADOR
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Quando o navegador pergunta se pode usar a cópia que guardou em cache,
-     * este método confere se ela ainda corresponde ao que a saída enviaria
-     * agora.
+     * Este método cuida do cache das respostas de `View` e `File`. Ele prepara
+     * as informações que permitem ao navegador guardar uma cópia da página ou
+     * do arquivo e conferir, em outro acesso, se pode continuar usando essa
+     * cópia. Isso evita que o servidor envie os mesmos dados novamente quando o
+     * navegador já tem uma versão válida.
+     *
+     * `View` chama este método depois de montar o HTML. `File` faz a chamada
+     * depois de obter o conteúdo do arquivo. Portanto, quando chegamos aqui,
+     * essas classes já prepararam o que enviariam ao navegador e aguardam o
+     * resultado desta verificação pra decidir se precisam fazer esse envio.
+     *
+     * Com o cache configurado em `browserCache`, informamos ao navegador por
+     * quanto tempo a cópia pode ser aproveitada e enviamos um código que
+     * identifica a versão do conteúdo. Esse código é chamado de `ETag`.
+     *
+     * Quando o navegador precisa conferir a cópia que guardou, ele pode
+     * devolver o `ETag` que recebeu. O método compara esse código com o do
+     * conteúdo preparado para a requisição atual. Se forem iguais, define o
+     * status HTTP `304`, avisando que aquela cópia foi reaproveitada, sem que a
+     * saída então envie o conteúdo novamente.
      *
      * _________________________________
      * @param string $currentContent  
-     *    Dados usados pra gerar o `ETag` da resposta atual. `View` passa o HTML
-     *    que montou. `File` passa o conteúdo e o nome do arquivo.
+     *    String do conteúdo usado pra gerar o `ETag` da resposta. `View` passa
+     *    o HTML que montou. `File` passa o conteúdo do arquivo junto com seu
+     *    nome, pra que uma alteração no nome também seja considerada na
+     *    conferência.
      * _________________________________
-     * @return bool   
-     *    Retorna `true` quando define o status `304`. Nesse caso, a saída é
-     *    encerrada, sem enviar a resposta atual (que é a mesma do conteúdo em
-     *    cache). Se retornar `false`, a saída segue com a resposta que estava
-     *    preparando.
+     * @return bool  
+     *    Retorna `true` quando pode reaproveitar o conteúdo em cache. Quem
+     *    chamou o método usa esse retorno pra encerrar a saída sem enviar o
+     *    conteúdo. Com `false`, a saída prossegue com o envio da resposta
+     *    normalmente.
      */
-    
     private static function checkBrowserCache(string $currentContent): bool
     {
         /**
-         * Em rotas com `authTag`, a política de armazenamento é de não gravar
-         * nada em cache. Antes de iniciarmos qualquer verificação de cache,
-         * validamos aqui se a rota possui uma `authTag`. Se for o caso,
-         * encerramos e não prosseguimos com a verificação.
+         * Primeiro, aplicamos a política de cache das rotas com autenticação.
+         * Quando a configuração `authTag` está preenchida, o framework orienta
+         * o navegador a não guardar a resposta em cache, desde que ainda seja
+         * possível alterar os cabeçalhos.
+         *
+         * `applyAuthenticationCachePolicy()` retorna `true` ao encontrar
+         * `authTag` preenchida. Nesse caso, saímos de `checkBrowserCache()` com
+         * `false`, avisando a `View` ou `File` que deve enviar o conteúdo
+         * preparado para esta requisição. Assim, mesmo que o navegador tenha
+         * mandado o `ETag` de uma cópia antiga, encerramos este método antes da
+         * comparação que poderia fazer a saída responder para aproveitar o
+         * cache.
+         *
+         * Se `authTag` estiver vazia, a chamada retorna `false`. Neste caso,
+         * seguimos com as próximas verificações de cache.
          */
         
         if (self::applyAuthenticationCachePolicy()) {
@@ -177,8 +203,25 @@ trait BrowserCache
         
         
         /**
-         * Só fazemos essa conferência em requisições `GET` e `HEAD`. Se o
-         * método não estiver disponível em `$_SERVER`, usamos `GET`.
+         * A partir daqui, fazemos uma série de testes pra decidir se devemos
+         * reaproveitar o cache do navegador.
+         */
+        
+        /**
+         * 1. Verificar o tipo da requisição HTTP.
+         *
+         *    Consultamos esse tipo em `$_SERVER['REQUEST_METHOD']`. Se a chave
+         *    estiver ausente ou guardar `null`, usamos `GET` como padrão.
+         *
+         *    Só prosseguimos se a requisição for `GET` e `HEAD`, pois o HTTP
+         *    permite responder com `304` apenas nesses dois tipos de
+         *    requisição. `GET` pede o conteúdo da página ou do arquivo. `HEAD`
+         *    pede apenas os cabeçalhos, que trazem informações sobre esse
+         *    conteúdo, sem receber a página ou o arquivo.
+         *
+         *    Se a requisição usar outro tipo, como `POST`, encerramos este
+         *    método com `false` para que `View` ou `File` segue com o envio da
+         *    resposta preparada para a requisição.
          */
         
         $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -190,11 +233,24 @@ trait BrowserCache
         
         
         /**
-         * Se a resposta já tem um status definido, ele precisa ser `200` pra
-         * seguir com a conferência. Assim, uma resposta de erro, por exemplo,
-         * segue com o status que já tinha e não é armazenada em cache.
+         * 2. Conferir o status da resposta HTTP.
+         *    
+         *    Conferimos o status HTTP da resposta pra decidir se podemos
+         *    continuar a verificação do cache. `http_response_code()` consulta
+         *    esse status, cujo padrão em requisições web é `200` (OK).
+         *
+         *    Só retornamos `false` aqui se houver um código HTTP diferente de
+         *    `200`. Nesse caso, a classe de saída segue enviando a resposta com
+         *    o status que já tinha. Isso evita que um erro `404`, por exemplo,
+         *    seja substituído por um `304`, que orientaria o navegador a usar a
+         *    cópia em cache em vez de receber a resposta de erro.
+         *
+         *    Se o status for `200`, seguimos com as próximas verificações.
+         *    Também seguimos se a função retornar `false`, indicando que não há
+         *    um status definido, como pode acontecer numa execução do PHP pelo
+         *    terminal.
          */
-
+        
         $status = http_response_code();
 
         if ($status !== false && $status !== 200) {
@@ -204,128 +260,179 @@ trait BrowserCache
         
         
         /**
-         * Com `browserCache` preenchido, lemos seus dados sendo a duração do
-         * cache em segundos na chave `0` e a diretiva que vai acompanhar
-         * `max-age`, na chave `1`.
+         * 3. Checar se `browserCache` está definido.
          * 
-         * Se a chave `0` não estiver definida, usamos `0`. Se a chave `1` não
-         * estiver definida, usamos `public`.
+         *    Testamos se a configuração de rota `browserCache` foi definida. Se
+         *    não foi, ela será vazia e retornamos `false` e a classe de saída
+         *    prossegue. O mesmo ocorre se ela for definida, mas vazia, dá no
+         *    mesmo.
          */
         
         $browserCache = Config::get('browserCache');
 
-        if (is_array($browserCache) && !empty($browserCache)) {
+        if (empty($browserCache)) {
+            return false;
+        }
+        
+        
+        
+        /**
+         * 4. Checar se a configuração `browserCache` foi preenchida
+         *    corretamente.
+         * 
+         *    Separamos os valores de `browserCache` que usaremos pra montar os
+         *    cabeçalhos de cache da resposta.
+         *
+         *    - A chave `0` informa o prazo de validade da cópia em cache, em
+         *      segundos.  
+         *    - A chave `1` fornece as diretivas que vão acompanhar `max-age` no
+         *      cabeçalho `Cache-Control`.
+         *
+         *    Quando uma dessas chaves não existe ou guarda `null`, usamos o
+         *    padrão correspondente: `0` para a duração e `'public'` para as
+         *    diretivas.
+         */
             
-            $cacheDuration = $browserCache[0] ?? 0;
-            $cacheControl = $browserCache[1] ?? 'public';
+        $cacheDuration = $browserCache[0] ?? 0;
+        $cacheControl = $browserCache[1] ?? 'public';
+        
+        
+        
+        /**
+         * Conferimos se a duração é um inteiro maior ou igual a zero, como
+         * esperado para esse prazo em segundos.
+         *
+         * Se o valor for de outro tipo ou for negativo, interrompemos
+         * o processamento com uma exceção. O valor `0` é aceito.
+         */
+        
+        if (!is_int($cacheDuration) || $cacheDuration < 0) {
+            throw new Exception(
+                Message::get('CACHE_INVALID_DURATION')
+            );
+        }
+        
+        
+        
+        /**
+         * Conferimos também se as diretivas de cache control estão numa string,
+         * pois esse texto será incluído no cabeçalho `Cache-Control`.
+         * 
+         * Se o valor for de outro tipo, lançamos uma exceção.
+         */
+        
+        if (!is_string($cacheControl)) {
+            throw new Exception(
+                Message::get('CACHE_INVALID_CACHE_CONTROL')
+            );
+        }
+        
+        
+        
+        /**
+         * Com as estas verificações atendidas, seguimos para a preparação dos
+         * cabeçalhos.
+         */
+        
+        /**
+         * Geramos um identificador para a versão atual da resposta, aplicando
+         * `md5()` aos dados recebidos em `$currentContent`.
+         *
+         * Esse identificador será enviado no cabeçalho `ETag` da resposta. Numa
+         * próxima requisição, o navegador poderá devolvê-lo para perguntar se a
+         * cópia que guardou ainda corresponde à atual.
+         */
+        
+        $etag = md5($currentContent);
+        
+        
+        
+        /**
+         * Guardamos o instante atual para calcular o vencimento do
+         * cache, somando a ele a duração configurada em segundos.
+         */
+
+        $now = time();
+        
+        
+        
+        /**
+         * Definimos os cabeçalhos que orientam o navegador sobre o cache desta
+         * resposta:
+         *
+         * - `Cache-Control`: reúne as diretivas de `$cacheControl` e acrescenta
+         *   `max-age`, que informa o prazo de validade da cópia (em segundos).
+         */
+        
+        header('Cache-Control: '.$cacheControl.', max-age='.$cacheDuration);
+
+        
+        
+        /** 
+         * - `Expires`: informa o vencimento do cache em data/hora GMT, contando
+         *   a partir da data/hora atual. Fazemos isso somando a data/hora atual
+         *   armazenada em `$now` com a duração do cache armazenado em
+         *   `$cacheDuration`.
+         * 
+         *   💡 OBSERVAÇÃO
+         *   ┌────────────────────────────────────────────────────────────────┐
+         *   │ Quando o navegador consegue identificar o `max-age`, ele usará │
+         *   │ este no lugar da data de `Expires`.                            │
+         *   └────────────────────────────────────────────────────────────────┘
+         */
+        
+        $gmtDateTime = gmdate('D, d M Y H:i:s', $now + $cacheDuration);
+        header('Expires: '.$gmtDateTime.' GMT');
+
+        
+        
+        /**
+         * - `ETag`: envia o identificador desta saída que acabamos de gerar,
+         *   entre aspas.
+         */
+
+        header('ETag: "'.$etag.'"');
+        
+
+        $ifNoneMatch = trim($_SERVER['HTTP_IF_NONE_MATCH'] ?? '');
+        $matched = $ifNoneMatch === '*';
+
+        if (!$matched) {
             
             
+            $remaining = $ifNoneMatch;
 
-            /**
-             * A duração do cache precisa ser um inteiro maior ou igual a zero.
-             * Verificamos isso para garantir que o preenchimento está correto e
-             * lançamos uma exceção caso o valor seja inválido.
-             */
-            
-            if (!is_int($cacheDuration) || $cacheDuration < 0) {
-                throw new Exception(
-                    Message::get('CACHE_INVALID_DURATION')
-                );
-            }
+            while ($remaining !== '') {
+                $remaining = ltrim($remaining, " \t,");
 
-            
-            
-            /**
-             * Fazemos o mesmo com a diretiva de cache, que precisa ser uma
-             * string.
-             */
-            if (!is_string($cacheControl)) {
-                throw new Exception(
-                    Message::get('CACHE_INVALID_CACHE_CONTROL')
-                );
-            }
-
-            
-            
-            /**
-             * Geramos o `ETag` que identifica a versão atual do conteúdo e
-             * informamos a duração do cache em `Cache-Control` e `Expires`.
-             *
-             * Como a conferência é feita pelo `ETag`, removemos `Last-Modified`
-             * se ele já tiver sido definido.
-             */
-            
-            $etag = md5($currentContent);
-            $now = time();
-
-            header('Cache-Control: ' . $cacheControl . ', max-age=' . $cacheDuration, true);
-            header('Expires: ' . gmdate('D, d M Y H:i:s', $now + $cacheDuration) . ' GMT', true);
-            header('ETag: "' . $etag . '"', true);
-
-            header_remove('Last-Modified');
-            
-            
-            
-            /**
-             * O navegador envia os identificadores que quer comparar com o
-             * `ETag` atual em `If-None-Match`. Se o cabeçalho vier com `*`,
-             * basta que exista uma versão do recurso pedido.
-             */
-
-            $ifNoneMatch = trim($_SERVER['HTTP_IF_NONE_MATCH'] ?? '');
-            $matched = $ifNoneMatch === '*';
-
-            if (!$matched) {
-                
-            
-                /**
-                 * O cabeçalho pode trazer mais de um `ETag`, separado por
-                 * vírgulas. Lemos um por vez, aceitando também o prefixo `W/`,
-                 * que indica um `ETag` fraco.
-                 *
-                 * Se encontrarmos um trecho inválido, descartamos a
-                 * correspondência mesmo que um `ETag` anterior tenha batido.
-                 */
-                
-                $remaining = $ifNoneMatch;
-
-                while ($remaining !== '') {
-                    $remaining = ltrim($remaining, " \t,");
-
-                    if ($remaining === '') {
-                        break;
-                    }
-
-                    if (preg_match('~\A(?:W/)?"([\x21\x23-\x7E\x80-\xFF]*)"~', $remaining, $match) !== 1) {
-                        $matched = false;
-                        break;
-                    }
-
-                    if ($match[1] === $etag) {
-                        $matched = true;
-                    }
-
-                    $remaining = substr($remaining, strlen($match[0]));
-                    $remaining = ltrim($remaining, " \t");
-
-                    if ($remaining !== '' && $remaining[0] !== ',') {
-                        $matched = false;
-                        break;
-                    }
+                if ($remaining === '') {
+                    break;
                 }
-            }
-            
-            /**
-             * Com uma correspondência, o status `304` diz ao navegador que ele
-             * pode reaproveitar a cópia que já tem.
-             */
 
-            if ($matched) {
-                http_response_code(304);
-                return true;
+                if (preg_match('~\A(?:W/)?"([\x21\x23-\x7E\x80-\xFF]*)"~', $remaining, $match) !== 1) {
+                    $matched = false;
+                    break;
+                }
+
+                if ($match[1] === $etag) {
+                    $matched = true;
+                }
+
+                $remaining = substr($remaining, strlen($match[0]));
+                $remaining = ltrim($remaining, " \t");
+
+                if ($remaining !== '' && $remaining[0] !== ',') {
+                    $matched = false;
+                    break;
+                }
             }
         }
 
+        if ($matched) {
+            http_response_code(304);
+            return true;
+        }
+        
         return false;
     }
 }

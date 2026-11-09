@@ -91,7 +91,7 @@ final class File
      * dentro de `checkBrowserCache()`. Em `download()`, chamamos
      * `applyAuthenticationCachePolicy()` diretamente.
      *
-     * - Abra `BrowserCache.php` e depois, volte pra continuar a leitura de
+     * - Abra `BrowserCache.php` e depois volte pra continuar a leitura de
      *   `File.php`.
      *
      *   🔗 LINK: /galastri/core/output/traits/BrowserCache.php

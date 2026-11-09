@@ -429,11 +429,38 @@ final class File
 
     
     
+    /**
+     * 🟢 CONFERINDO A EXTENSÃO DO ARQUIVO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Confere se a rota permite a extensão do arquivo encontrado no disco. Se o
+     * arquivo passar por essa conferência, guardamos a extensão pra usar em
+     * `checkMimeType()`.
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function checkExtension(): void
     {
+        /**
+         * Pegamos a extensão pelo nome do arquivo no caminho que
+         * `checkFileExists()` guardou em `$path`. Para `manual.pdf`, por
+         * exemplo, pegamos `pdf`, sem o ponto. Se o arquivo não tiver extensão,
+         * usamos uma string vazia.
+         */
+        
         $fileInfo = pathinfo(self::$path);
 
         $extension = $fileInfo['extension'] ?? '';
+        
+        
+        /**
+         * Uma lista vazia em `allowedFileExtensions` deixa a rota aceitar
+         * qualquer extensão nesta etapa. Se a lista estiver preenchida e a
+         * extensão do arquivo não estiver nela, lançamos uma exceção que mostra
+         * a extensão encontrada e as extensões permitidas.
+         */
+        
         $allowedExtensions = Config::get('allowedFileExtensions');
         $isThisExtensionInvalid = !in_array($extension, $allowedExtensions);
 
@@ -446,13 +473,38 @@ final class File
             );
         }
 
+        
+        /**
+         * `checkMimeType()` usará a extensão guardada aqui pra consultar
+         * o tipo MIME configurado em `forceMimeType` e os tipos aceitos
+         * em `MIME_TYPE_LIST` quando `validateMimeType` estiver ativo.
+         */
+        
         self::$extension = $extension;
     }
 
     
     
+    /**
+     * 🟢 CONFERINDO O TIPO MIME DO ARQUIVO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Define o tipo MIME que vai acompanhar os dados do arquivo encontrado no
+     * disco. Esse valor identifica o formato do arquivo na resposta, como
+     * `application/pdf` para um PDF.
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function checkMimeType(): void
     {
+        /**
+         * Se `forceMimeType` indicar um tipo MIME pra extensão que
+         * `checkExtension()` guardou, usamos o tipo configurado. Caso
+         * contrário, pedimos ao PHP que identifique o tipo MIME do arquivo no
+         * caminho guardado em `$path`.
+         */
+        
         $extension = self::$extension;
         $forceMimeType = Config::get('forceMimeType');
 
@@ -462,6 +514,17 @@ final class File
             $mimeType = mime_content_type(self::$path);
         }
 
+        
+        
+        /**
+         * Com `validateMimeType` ativo, consultamos `MIME_TYPE_LIST` pra saber
+         * quais tipos MIME são aceitos pra extensão do arquivo. Essa
+         * conferência também vale pro tipo vindo de `forceMimeType`.
+         *
+         * Lançamos uma exceção se a extensão não estiver na lista ou se o tipo
+         * MIME não estiver entre os aceitos pra ela.
+         */
+        
         if (Config::get('validateMimeType')) {
             if (!isset(MIME_TYPE_LIST[$extension])) {
                 throw new Exception(
@@ -482,10 +545,30 @@ final class File
             }
         }
 
+        
+        
+        /**
+         * Guardamos o tipo MIME pra que `setFileContents()` possa reuni-lo com
+         * o conteúdo e o nome do arquivo.
+         */
+        
         self::$mimeType = $mimeType;
     }
 
     
+    
+    /**
+     * 🟢 REUNINDO OS DADOS DO ARQUIVO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Pega o arquivo armazenado na propriedade `$path` e armazena seu conteúdo
+     * na chave [0]. Depois o nome do arquivo é armazenado na chave [1]. Por
+     * último, o tipo MIME definido em `checkMimeType()` é aramzenado na chave
+     * [2].
+     *
+     * 
+     * _________________________________
+     * @return void
+     */
     
     private static function setFileContents(): void
     {
@@ -498,24 +581,82 @@ final class File
 
     
     
+    /**
+     * 🟢 ENVIANDO O ARQUIVO PRA EXIBIÇÃO
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * `run()` chama este método pra enviar o arquivo para exibição no
+     * navegador.
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function render(): void
     {
-        if (self::checkBrowserCache((string) self::$contents[0].self::$contents[1])) {
+        /**
+         * Juntamos o conteúdo e o nome do arquivo pra que `checkBrowserCache()`
+         * confira se o navegador pode reaproveitar a cópia que tem em cache. Se
+         * puder, `checkBrowserCache()` prepara a resposta `304` e encerramos o
+         * método sem enviar o conteúdo de novo.
+         */
+        
+        if (self::checkBrowserCache(self::$contents[0].self::$contents[1])) {
             return;
         }
 
+        
+        
+        /**
+         * Informamos o tipo MIME em `Content-Type` pra que o navegador saiba
+         * como interpretar o arquivo. Em seguida, escrevemos o conteúdo do
+         * arquivo no corpo da resposta.
+         */
+        
         header('Content-type: '.self::$contents[2]);
         @print(self::$contents[0]);
     }
 
     
     
+    /**
+     * 🟢 ENVIANDO O ARQUIVO PRA DOWNLOAD
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Quando `isDownloadableFile` está ativo, `run()` chama este método. Em
+     * `Content-Disposition`, pedimos ao navegador que baixe o arquivo e
+     * sugerimos um nome pra salvá-lo.
+     *
+     * _________________________________
+     * @return void
+     */
+    
     private static function download(): void
     {
+        /**
+         * Aplicamos a política de cache das rotas com `authTag`
+         */
+        
         self::applyAuthenticationCachePolicy();
+        
+        
+        
+        /**
+         * Informamos ao navegador o formato do arquivo que ele vai baixar, como
+         * `application/pdf` para um PDF. O tipo MIME vem do controller quando
+         * ele prepara o arquivo, ou de `checkMimeType()` quando buscamos o
+         * arquivo no disco.
+         */
 
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
+        header('Content-Type: '.self::$contents[2]);
+        
+        
+        
+        /**
+         * Preparamos o nome do arquivo pra usar no cabeçalho. Tratamos o nome
+         * como UTF-8 e trocamos barras e caracteres de controle, como quebras
+         * de linha, por `_`. Se o nome ficar vazio ou for `.` ou `..`, usamos
+         * `download`.
+         */
+        
         $fileName = mb_convert_encoding(self::$contents[1], 'UTF-8', 'UTF-8');
         $fileName = str_replace(['/', '\\'], '_', $fileName);
         $fileName = preg_replace('/[\x00-\x1F\x7F]/u', '_', $fileName);
@@ -524,12 +665,52 @@ final class File
             $fileName = 'download';
         }
 
+        
+        
+        /**
+         * Em `$fallbackName`, montamos um nome de reserva pra navegadores
+         * que só leem `filename`. Por exemplo, se `$fileName` for
+         * `relatório.pdf`, trocamos o `ó` por `_` e obtemos `relat_rio.pdf`.
+         */
+        
         $fallbackName = preg_replace('/[^a-zA-Z0-9._ -]/u', '_', $fileName);
+        
+        
+        
+        /**
+         * Em `Content-Disposition`, `attachment` pede ao navegador que
+         * baixe o arquivo. Os parâmetros `filename` e `filename*` sugerem
+         * o nome com que o arquivo será salvo.
+         *
+         * Em `filename`, enviamos o nome de reserva (`relat_rio.pdf`).
+         * Em `filename*`, usamos `rawurlencode()` pra escrever o nome
+         * com acento como `relat%C3%B3rio.pdf`. O navegador que entende
+         * `filename*` decodifica esse valor e usa `relatório.pdf`.
+         */
+        
         header('Content-Disposition: attachment; filename="'.$fallbackName.'"; '
             .'filename*=UTF-8\'\''.rawurlencode($fileName));
             
+        
+        
+        /**
+         * `Expires` indica que a resposta já está expirada para evitar
+         * armazenamento em cache. `Content-Length` informa o tamanho do arquivo
+         * em bytes para que o navegador mostre o progresso de download.
+         */
+        
         header('Expires: 0');
         header('Content-Length: '.mb_strlen(self::$contents[0], '8bit'));
+        
+        
+        
+        /**
+         * Chamamos `flush()` antes de abrir o buffer que vai receber o conteúdo
+         * do arquivo. Depois de escrever o conteúdo, `ob_end_flush()` libera e
+         * encerra esse buffer. O último `flush()` pede ao PHP que libere a
+         * saída.
+         */
+        
         flush();
         ob_start();
         @print(self::$contents[0]);

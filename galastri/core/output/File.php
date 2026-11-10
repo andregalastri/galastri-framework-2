@@ -753,3 +753,20 @@ final class File
         return false;
     }
 }
+
+
+
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * ▶️ PRÓXIMO TÓPICO:
+ *
+ * Aqui terminamos a leitura do fluxo padrão de uma requisição: desde a
+ * inicialização do framework, passando pela identificação da rota e pela
+ * execução do controller quando necessário, até o envio da resposta.
+ *
+ * O próximo tópico apresenta os módulos e as extensões do framework, com
+ * um índice para você escolher qual recurso quer conhecer e consultar
+ * conforme precisar.
+ *
+ * 🔗 LINK: /docs/estrutura-e-funcionamento/modulos-extensoes-e-outros.md
+ */

@@ -24,14 +24,14 @@
  * 🔶 O QUE É UM MÓDULO?
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * Na filosofia de programação do framework é entendido que uma classe é
- * considerado um módulo se:
+ * considerada um módulo se:
  * 
  * - Oferece métodos para usos gerais, como manipulação de arquivos, análise de
  *   debug ou performance, validação e processamento de dados, etc.
  * 
  * - Pode ou deve ser usada pelo usuário do framework.
  * 
- * - Pode ou deve ser usada pelo próprio framework, podendo ser fundamentais
+ * - Pode ou deve ser usada pelo próprio framework, podendo ser fundamental
  *   para seu funcionamento ou não.
  *
  * Imagine que a aplicação precise criar uma pasta pra guardar os arquivos.
@@ -71,8 +71,8 @@
  * 
  * ✱ HttpData.php
  *   ───────────────────────────────────────────────────────────────────────────
- *   Permite consultar os dados enviados dados enviadospor requisições GET, POST
- *   JSON, etc.  
+ *   Permite consultar os dados enviados depois do `?` na URL, em formulários
+ *   POST ou no corpo da requisição em JSON.
  *   🔗 LINK: /galastri/modules/HttpData.php
  *
  * 
@@ -119,7 +119,7 @@
 /**
  * 🟢 SOBRE EXTENSÕES
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * As extensões são classes internas do framework que extendem classes padrão do
+ * As extensões são classes internas do framework que estendem classes padrão do
  * PHP, através de herança, pra ajustar ou acrescentar comportamentos.
  * 
  * As extensões ficam localizadas em `/galastri/extensions`.
@@ -137,9 +137,9 @@
  *   framework.
  *
  * - É voltada para uso no framework, não sendo uma ferramenta voltada a
- *   usuários, apesar de poderem utilizar.
+ *   usuários, apesar de poderem utilizá-la.
  *
- * A classe `Exception` do framework, por exemplo, extende as funcionalidades de
+ * A classe `Exception` do framework, por exemplo, estende as funcionalidades de
  * `\Exception` do PHP.
  *
  * ⚠️ IMPORTANTE

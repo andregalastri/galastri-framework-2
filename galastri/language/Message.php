@@ -161,12 +161,8 @@ final class Message
     /**
      * Authentication
      */
-    private const AUTHENTICATION_UNDEFINED_AUTH_TAG = 'Erro de autenticação: Nenhuma tag de autenticação foi definida. Defina-o como parâmetro do método.';
-
-    private const AUTHENTICATION_UNCONFIGURED_AUTH_TAG = 'Erro de autenticação: A tag de autenticação "{{}}" não foi configurada. Use setAuthTag() antes de create().';
-
-    private const AUTHENTICATION_UNCONFIGURED_SECRET_KEY = 'Erro de autenticação: A chave secreta não foi configurada. Configure-a usando o método "configure" antes de usar o método "create".';
-
+    private const AUTHENTICATION_UNCONFIGURED_AUTH_TAG = 'Erro de autenticação: A tag de autenticação "{{}}" não foi registrada. Use register() antes de alterar seus dados.';
+    
     private const AUTHENTICATION_SESSION_REGENERATION_FAILED = 'Não foi possível renovar a sessão de autenticação.';
 
     /**

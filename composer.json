@@ -9,8 +9,16 @@
         }
     ],
     "require": {
-        "php": ">=8.0.0",
-        "ext-gd": "*"
+        "php": ">=8.1.0",
+        "ext-ctype": "*",
+        "ext-fileinfo": "*",
+        "ext-filter": "*",
+        "ext-gd": "*",
+        "ext-mbstring": "*",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-pdo_sqlite": "*",
+        "ext-session": "*"
     },
     "autoload": {
         "psr-4": {

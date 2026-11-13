@@ -176,7 +176,7 @@ abstract class Controller
      * `Router`. Agora podemos executar o que foi escolhido e guardar o resultado.
      *
      * Chamamos `callControllerMethod()` pra executar o método correspondente e,
-     * em seguida, `mergeReturns()` prepara a resposta final do controller.
+     * em seguida, `buildResponse()` prepara a resposta final do controller.
      *
      * O `final` faz com que os controllers da aplicação usem este construtor.
      * Cada controller define o que acontece nos seus próprios métodos, e o
@@ -203,7 +203,7 @@ abstract class Controller
         if (!$this->isConstructed) {
             
             $this->callControllerMethod();
-            $this->mergeReturns();
+            $this->buildResponse();
 
             $this->isConstructed = true;
         }
@@ -262,7 +262,7 @@ abstract class Controller
         
         /**
          * Guardamos o array retornado em `$controllerMethodData` para usar
-         * depois, quando `mergeReturns()` montar a resposta do controller.
+         * depois, quando `buildResponse()` montar a resposta do controller.
          */
         
         $this->controllerMethodData = $this->$controllerMethodName();
@@ -282,15 +282,15 @@ abstract class Controller
      * @return void
      */
     
-    private function mergeReturns(): void
+    private function buildResponse(): void
     {
         /**
          * Inicializamos `$this->response` com os dados retornados pelo método do
-         * controller. O uso de `array_merge()` garante uma cópia do array e
-         * reorganiza eventuais chaves numéricas em sequência a partir de zero.
+         * controller. O desempacotamento preserva as chaves de texto e reorganiza
+         * as chaves numéricas em sequência a partir de zero.
          */
-        
-        $this->response = array_merge($this->controllerMethodData);
+
+        $this->response = [...$this->controllerMethodData];
         
         
         
@@ -627,7 +627,7 @@ abstract class Controller
      * 🟢 CONSULTANDO A RESPOSTA DO CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * @return array  
-     *    Retorna um array com os dados reunidos por `mergeReturns()`. Se
+     *    Retorna um array com os dados preparados por `buildResponse()`. Se
      *    `includeProjectMetadata` estiver ativa, o array também inclui os dados
      *    do projeto na chave `meta`.
      */

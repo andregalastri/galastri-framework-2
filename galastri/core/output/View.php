@@ -33,9 +33,7 @@ namespace galastri\core\output;
  * ┌─────────────┬─────────────────────────────────────────────────────────────┐
  * │ Classe      │ Uso                                                         │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤
- * │ `Router`    │ Fornece as partes do namespace do controller.               │
- * ├─────────────┼─────────────────────────────────────────────────────────────┤
- * │ `Galastri`  │ Informa qual método do controller foi chamado para a rota.  │
+ * │ `Router`    │ Fornece o namespace do controller e o endpoint da rota.     │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤
  * │ `Config`    │ Fornece os valores de `viewFile`, `viewFolder` e            │
  * │             │ `templateFile`.                                             │
@@ -50,7 +48,6 @@ namespace galastri\core\output;
  */
 
 use galastri\core\Router;
-use galastri\core\Galastri;
 use galastri\core\config\Config;
 use galastri\extensions\Exception;
 use galastri\language\Message;
@@ -225,27 +222,29 @@ final class View
         
         
         /**
-         * Se a configuração estiver vazia, montamos o caminho a partir do
-         * namespace do controller e do método escolhido para a rota.
+         * Se a configuração estiver vazia, montamos o caminho padrão a partir do
+         * namespace do controller e do nome do endpoint identificado para a rota.
          */
 
         if ($viewFile == '') {
         
             /**
              * Retiramos as duas primeiras partes do namespace e juntamos as
-             * demais com barras. Depois, acrescentamos o nome do método e a
-             * extensão `.php`.
+             * demais com barras. Depois, pegamos o nome do endpoint atual,
+             * convertemos para camelCase e acrescentamos a extensão `.php`.
              *
-             * Se o método for `listar()` em `app\controllers\Produtos`, por
-             * exemplo, o resultado aqui é `Produtos/listar.php`.
+             * Se o endpoint for `@listar` no controller `app\controllers\Produtos`,
+             * por exemplo, o resultado aqui é `Produtos/listar.php`, mesmo se a
+             * rota tiver sido configurada para executar um método alternativo.
              */
             
             $namespace = Router::getControllerNamespace();
             $controllerParts = Tools::deleteFirstKey($namespace, 2);
             $controllerName = implode('/', $controllerParts);
 
-            $methodName = Galastri::getControllerMethodName();
-            $viewFile = $controllerName.'/'.$methodName.'.php';
+            $endpointName = Router::getEndpointName();
+            $viewName = Tools::toCamelCase($endpointName);
+            $viewFile = $controllerName.'/'.$viewName.'.php';
         }
         
         

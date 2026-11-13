@@ -108,11 +108,13 @@
  * └───────────────────────────────────────────────────────────────────────────┘
  *
  * Espera-se que a view esteja em `/app/views/Produtos/listar.php`, sendo
- * `produtos` a parte referente ao controller e `listar` o método.
+ * `produtos` a parte referente ao controller e `listar` o método a ser chamado
+ * por padrão.
  *
  * Esse é o comportamento padrão. Se quiser mudar a pasta onde a saída procura a
  * view, use a configuração de rota `viewFolder`. Se quiser indicar qual arquivo
- * usar para um endpoint, use `viewFile`.
+ * usar para um endpoint, use `viewFile`. Também pode-se trocar o método a ser
+ * chamado usando a configuração `method` ou `onHttpMethod`.
  *
  *
  *

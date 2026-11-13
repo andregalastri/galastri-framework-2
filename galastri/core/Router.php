@@ -286,6 +286,29 @@ final class Router
 
 
     /**
+     * 🟢 NOME DO ENDPOINT DA ROTA
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Esta propriedade armazena o nome do endpoint identificado para atender à
+     * requisição atual, sem o caractere `@` inicial.
+     *
+     * Enquanto `$methodName` guarda o nome do método do controller que será
+     * executado, e que pode ser alterado por configurações de rota ou por
+     * `onHttpMethod`, esta propriedade preserva a chave original do endpoint
+     * (como 'main', 'listar' ou 'nossa-empresa').
+     *
+     * O motivo disso é permitir que outros recursos do framework, como a saída
+     * em `View`, tenham acesso ao endpoint real da URL, sem vincular o endpoint
+     * a um método, que pode ser alterado por `method` ou `onHttpMethod`.
+     *
+     *
+     * _________________________________
+     * @var string
+     */
+    private static string $endpointName = '';
+
+
+
+    /**
      * 🟢 NOME DO MÉTODO DA ROTA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Armazena o nome do método do controller que irá atender a rota. Possui o
@@ -1498,11 +1521,13 @@ final class Router
          * Se existir um endpoint, então armazenamos os dados deste endpoint
          * dentro da propriedade $routeData.
          *
-         * Também formatamos o nome do método em camelCase e o armazenamos na
+         * Guardamos o nome do endpoint (sem o `@`) em `self::$endpointName`
+         * e formatamos o nome do método em camelCase para armazenar na
          * propriedade `self::$methodName`.
          */
 
         self::$routeData = $routeData[$endpointkey];
+        self::$endpointName = ltrim($endpointkey, '@');
         self::$methodName = Tools::toCamelCase($methodName);
 
         
@@ -2135,6 +2160,21 @@ final class Router
     public static function getMethodName(): string
     {
         return self::$methodName;
+    }
+
+
+
+    /**
+     * 🟢 NOME DO ENDPOINT DA ROTA
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * @return string  
+     *    Retorna uma `string` com o nome do endpoint preservado como o
+     *    identificado para a rota, sem o caractere `@`.
+     */
+
+    public static function getEndpointName(): string
+    {
+        return self::$endpointName;
     }
 
 

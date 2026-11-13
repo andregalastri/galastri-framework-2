@@ -60,36 +60,20 @@
  *      interrompendo a execução se necessário.
  *
  *    Também verificamos a validade da rota e a autenticação configurada.
- *    Depois, identificamos o controller e conferimos os métodos que serão
- *    chamados antes de começar a execução da aplicação.
+ *    Depois, identificamos o controller e conferimos o método que será
+ *    chamado antes de começar a execução da aplicação.
  *
- * 4️⃣ EXECUÇÃO DA CONTROLLER
+ * 4️⃣ EXECUÇÃO DO CONTROLLER
  *    ──────────────────────────────────────────────────────────────────────────
- *    A controller executa o método associado à rota e, quando configurado,
- *    também executa o método adequado para o tipo de requisição HTTP (GET,
- *    POST, etc.).
+ *    O controller executa o método associado à rota (ou o método configurado
+ *    especificamente para o verbo HTTP recebido, em `onHttpMethod`).
  *
- *    A programação do usuário ocorre nesses métodos, que podem incluir
- *    importações de classes ou dados personalizados. Os dados processados devem
- *    ser retornados em um `array`, o qual será utilizado na etapa de retorno
- *    de dados.
+ *    A programação da aplicação ocorre nesse método, que pode consultar bancos
+ *    de dados, executar regras de negócio e preparar a resposta. Os dados
+ *    processados devem ser retornados em um `array`, que será entregue à classe
+ *    responsável pela saída.
  *
- * 5️⃣ ORDEM DOS MÉTODOS
- *    ──────────────────────────────────────────────────────────────────────────
- *    1. Execução do Método da Rota: Executamos o método escolhido para atender
- *       à rota e guardamos seu retorno.
- *
- *    2. Execução do Método para o Tipo de Requisição HTTP: Quando existe uma
- *       associação para o tipo recebido, executamos o método adicional e
- *       guardamos seu retorno separadamente.
- *
- *    O retorno do primeiro método não é passado como argumento para o segundo.
- *    A classe base `Controller` reúne os retornos após as chamadas.
- *
- *    O resultado final será um array contendo todos os dados processados,
- *    prontos para serem retornados e usados na etapa de saída.
- *
- * 6️⃣ RETORNO DOS DADOS
+ * 5️⃣ RETORNO DOS DADOS
  *    ──────────────────────────────────────────────────────────────────────────
  *    O fluxo é finalizado com a execução da classe responsável pelo formato de
  *    saída.

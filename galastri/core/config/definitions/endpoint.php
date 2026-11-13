@@ -11,7 +11,7 @@ return [
         'invalidTypes' => [],
         'validValues' => [],
         'invalidValues' => [],
-        'validRegex' => '',
+        'validRegex' => '/\A[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*\z/',
         'invalidRegex' => '',
         'context' => 'endpoint',
     ],
@@ -27,7 +27,7 @@ return [
         'context' => 'endpoint',
     ],
 
-    'httpMethod' => [
+    'onHttpMethod' => [
         'defaultValue' => [],
         'validTypes' => ['array'],
         'invalidTypes' => [],

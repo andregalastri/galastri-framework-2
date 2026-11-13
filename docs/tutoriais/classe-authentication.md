@@ -40,8 +40,10 @@
  * │                                                                           │
  * │         '/login' => [                                                     │
  * │             '@main' => [                                                  │
- * │                 'httpMethod' => [                                         │
- * │                     'POST' => '@autenticar',                              │
+ * │                 'onHttpMethod' => [                                       │
+ * │                     'POST' => [                                           │
+ * │                         'method' => 'autenticar',                         │
+ * │                     ],                                                    │
  * │                 ],                                                        │
  * │             ],                                                            │
  * │         ],                                                                │
@@ -52,8 +54,10 @@
  * │                                                                           │
  * │             '@main' => [],                                                │
  * │             '@perfil' => [                                                │
- * │                 'httpMethod' => [                                         │
- * │                     'POST' => '@atualizarPerfil',                         │
+ * │                 'onHttpMethod' => [                                       │
+ * │                     'POST' => [                                           │
+ * │                         'method' => 'atualizarPerfil',                    │
+ * │                     ],                                                    │
  * │                 ],                                                        │
  * │             ],                                                            │
  * │             '@renovar' => [],                                             │
@@ -81,8 +85,9 @@
  * Com essas rotas definidas:
  *
  * - As rotas `/` e `/login` ficam abertas pra qualquer visitante. Em `/login`,
- *   uma requisição `GET` executa apenas `main()`, exibindo o formulário. Uma
- *   requisição `POST` executa `main()` e depois `autenticar()`.
+ *   uma requisição `GET` executa `main()`, exibindo o formulário. Já uma
+ *   requisição `POST` executa diretamente `autenticar()`, conforme configurado
+ *   em `onHttpMethod`.
  *
  * - Tudo dentro de `/painel-admin` exige uma autenticação válida com a tag
  *   `'acesso-admin'`. Se o usuário não estiver autenticado, o framework o
@@ -303,9 +308,9 @@
  *    já existia) e outra pra criar `'tema'` (que ainda não existia). Lembre-se
  *    de que `setField()` aceita apenas `string`, `int`, `bool` ou `null`.
  *
- * 4. Como `perfil()` roda antes de `atualizarPerfil()` na requisição `POST`, os
- *    novos valores retornados por `atualizarPerfil()` substituem os anteriores
- *    na resposta final montada pelo `Controller`.
+ * 4. Numa requisição `GET` em `/painel-admin/perfil`, o framework executa
+ *    `perfil()`. Já numa requisição `POST`, a configuração `onHttpMethod`
+ *    direciona a execução diretamente para o método `atualizarPerfil()`.
  */
 
 

@@ -36,8 +36,7 @@ namespace galastri\modules;
  * │ `Router`   │ Fornece os parâmetros e os valores dos nós dinâmicos da      │
  * │            │ rota, além do caminho raiz e da base usada nos links.        │
  * ├────────────┼──────────────────────────────────────────────────────────────┤
- * │ `Galastri` │ Informa quais métodos foram escolhidos e se há um método     │
- * │            │ associado ao tipo de requisição HTTP para executar.          │
+ * │ `Galastri` │ Informa qual método foi escolhido para atender à rota.       │
  * ├────────────┼──────────────────────────────────────────────────────────────┤
  * │ `Config`   │ Permite consultar e alterar configurações da rota. Também    │
  * │            │ informa se a resposta deve incluir os dados do projeto.      │
@@ -66,9 +65,8 @@ use galastri\core\config\Config;
  *
  * Essa divisão vale para os outros controllers que criarmos. Cada um implementa
  * seu próprio `main()` e os demais métodos de que precisar. A classe base chama
- * o método escolhido para a rota e, se houver outro associado ao tipo de
- * requisição HTTP, chama esse também. Depois, reúne os retornos para que a
- * classe de saída possa consultar a resposta.
+ * o método escolhido para a rota e disponibiliza seu retorno para que a classe
+ * de saída possa consultar a resposta.
  *
  * `Controller` é uma classe abstrata. O objeto que o framework cria é sempre de
  * uma classe da aplicação que herda essa classe aqui como base, conforme ocorre
@@ -128,27 +126,9 @@ abstract class Controller
 
 
     /**
-     * 🟢 RETORNO DO MÉTODO ASSOCIADO AO HTTP
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Guarda o array retornado pelo método associado ao tipo de requisição
-     * HTTP. Se a configuração associar POST a `salvar()`, por exemplo, é aqui
-     * que guardamos o retorno de `salvar()` quando ele for chamado.
-     *
-     * Na ausência de um método HTTP a executar, o array fica vazio.
-     *
-     * 
-     * _________________________________
-     * @var array
-     */
-
-    private array $controllerHttpMethodData = [];
-
-
-
-    /**
      * 🟢 DADOS DA RESPOSTA
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Guarda o resultado de juntar os dois retornos acima. Se a opção
+     * Guarda os dados retornados pelo método do controller. Se a opção
      * `includeProjectMetadata` estiver ativa, esse array também recebe a chave
      * `meta` com os dados do projeto.
      *
@@ -189,21 +169,18 @@ abstract class Controller
      */
     
     /**
-     * 🟢 EXECUTANDO OS MÉTODOS DO CONTROLLER
+     * 🟢 EXECUTANDO O CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Quando `Galastri` cria o controller da aplicação, o PHP chama este
-     * construtor. A rota e os métodos já foram identificados. Agora podemos
-     * executar o que foi escolhido e guardar o resultado.
+     * construtor. A rota e o método a ser chamado já foram identificados pelo
+     * `Router`. Agora podemos executar o que foi escolhido e guardar o resultado.
      *
-     * Primeiro, `callControllerMethod()` chama o método da rota. Depois,
-     * `callHttpMethod()` chama o método associado ao tipo de requisição HTTP,
-     * se houver um para executar. Cada chamada guarda seu retorno separado.
-     *
-     * Com os retornos em mãos, `mergeReturns()` monta a resposta do controller.
+     * Chamamos `callControllerMethod()` pra executar o método correspondente e,
+     * em seguida, `mergeReturns()` prepara a resposta final do controller.
      *
      * O `final` faz com que os controllers da aplicação usem este construtor.
      * Cada controller define o que acontece nos seus próprios métodos, e o
-     * construtor da classe base cuida da ordem em que eles são chamados.
+     * construtor da classe base garante a sequência padrão de execução.
      *
      * 
      * _________________________________
@@ -226,7 +203,6 @@ abstract class Controller
         if (!$this->isConstructed) {
             
             $this->callControllerMethod();
-            $this->callHttpMethod();
             $this->mergeReturns();
 
             $this->isConstructed = true;
@@ -295,47 +271,11 @@ abstract class Controller
     
     
     /**
-     * 🟢 CHAMANDO O MÉTODO ASSOCIADO AO HTTP
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Executa o método associado ao tipo da requisição HTTP recebida, quando
-     * houver um. É assim que uma rota pode chamar `salvar()` ao receber um
-     * POST, por exemplo.
-     *
-     *
-     * _________________________________
-     * @return void
-     */
-
-    private function callHttpMethod(): void
-    {
-        /**
-         * Recuperamos de `Galastri` o nome escolhido para o tipo de
-         * requisição atual.
-         */
-        
-        $controllerHttpMethodName = Galastri::getControllerHttpMethodName();
-
-        
-        
-        /**
-         * `Galastri` já conferiu se há um método pra chamar no controller.
-         * Se houver, usamos o nome que acabamos de recuperar e guardamos
-         * o array retornado em `$controllerHttpMethodData`.
-         */
-        
-        if (Galastri::httpMethodExists()) {
-            $this->controllerHttpMethodData = $this->$controllerHttpMethodName();
-        }
-    }
-
-    
-    
-    /**
      * 🟢 MONTANDO A RESPOSTA DO CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Reúne os dados retornados pelos métodos do controller em um único
-     * array, que a classe de saída pode consultar quando for preparar a
-     * resposta da requisição.
+     * Prepara os dados retornados pelo método do controller em um array de
+     * resposta, que a classe de saída pode consultar quando for preparar a
+     * entrega da requisição.
      *
      *
      * _________________________________
@@ -345,21 +285,12 @@ abstract class Controller
     private function mergeReturns(): void
     {
         /**
-         * Juntamos primeiro o retorno do método da rota e depois o retorno do
-         * método associado ao HTTP.
-         *
-         * Se os dois retornarem uma chave como `mensagem`, por exemplo, fica o
-         * valor do método associado ao HTTP, pois seu array vem por último na
-         * chamada a `array_merge()`.
-         *
-         * Os valores com chaves numéricas são colocados em sequência, com novos
-         * índices a partir de zero.
+         * Inicializamos `$this->response` com os dados retornados pelo método do
+         * controller. O uso de `array_merge()` garante uma cópia do array e
+         * reorganiza eventuais chaves numéricas em sequência a partir de zero.
          */
         
-        $this->response = array_merge(
-            $this->controllerMethodData,
-            $this->controllerHttpMethodData,
-        );
+        $this->response = array_merge($this->controllerMethodData);
         
         
         

@@ -453,12 +453,14 @@ final class Router
 
         /**
          * Ao terminar a busca dos nós, armazenamos o `controller` informado no
-         * nó final, identificamos o endpoint e relacionamos as partes restantes
-         * aos parâmetros da rota.
+         * nó final, identificamos o endpoint, aplicamos as configurações
+         * específicas do método HTTP da requisição e relacionamos as partes
+         * restantes aos parâmetros da rota.
          */
 
         self::configureNodeProperties();
         self::resolveEndpoints();
+        self::resolveHttpMethod();
         self::resolveParameters();
     }
 
@@ -956,14 +958,21 @@ final class Router
      *
      *
      * _________________________________
-     * @param string $context
+     * @param string $context  
      *    Contexto usado para selecionar quais configurações presentes em
      *    `$routeData` serão aplicadas.
+     * 
+     * @param array $exclude  
+     *    Lista de nomes de configurações que devem ser desconsideradas neste
+     *    contexto.
      * _________________________________
      * @return void
      */
 
-    private static function configurePropertiesByContext(string $context): void
+    private static function configurePropertiesByContext(
+        string $context,
+        array  $exclude = []
+    ): void
     {
         /**
          * O `foreach` percorre todas as configurações registradas em
@@ -976,19 +985,27 @@ final class Router
 
 
             /**
-             * Antes de aplicar qualquer valor, fazemos duas conferências:
+             * Antes de aplicar qualquer valor, fazemos três conferências:
              *
              * 1. Essa configuração pertence ao contexto solicitado? Se
              *    `getContext()` retornar outro contexto, o `continue` pula para
              *    a próxima configuração.
              *
-             * 2. Ela foi informada na configuração da rota que estamos
+             * 2. Essa configuração foi informada na lista de exceções de
+             *    `$exclude`? Se foi, pulamos a atribuição para preservar o
+             *    valor original.
+             *
+             * 3. Ela foi informada na configuração da rota que estamos
              *    processando? Se o nome não existir em `$routeData`, pulamos
              *    também. Nesse caso, o valor que já estava em `Config` continua
              *    valendo.
              */
 
             if ($definition->getContext() !== $context) {
+                continue;
+            }
+
+            if (in_array($name, $exclude, true)) {
                 continue;
             }
 
@@ -1011,7 +1028,7 @@ final class Router
 
 
             /**
-             * Passou pelas duas? Então pegamos o valor informado na rota e o
+             * Passou pelas três? Então pegamos o valor informado na rota e o
              * entregamos ao `Config::set()`, que cuida de validá-lo e
              * armazená-lo.
              */
@@ -1186,7 +1203,7 @@ final class Router
          *    │                                                                │
          *    │ Mas imagine que o endpoint `@listar` tenha esta configuração:  │
          *    │                                                                │
-         *    │ 'method' => '@abrirLista'                                      │
+         *    │ 'method' => 'abrirLista'                                       │
          *    │                                                                │
          *    │ Isso é como dizer: "O endereço continua terminando em          │
          *    │ `/listar`, mas o método a ser executado aqui é                 │
@@ -1218,79 +1235,94 @@ final class Router
 
 
                 /**
-                 * Antes de armazenar, porém, removemos os caracteres `@` que
-                 * estiverem no início da string.
+                 * Guardamos o nome do método informado. A regra de validação da
+                 * configuração `method` já garante que ele seja um identificador
+                 * válido no PHP.
                  */
 
-                self::$methodName = ltrim($methodName, '@');
+                self::$methodName = $methodName;
             }
         }
 
 
 
         /**
-         * 2. Dentro de `$routeData`, existe uma configuração chamada
-         *    `httpMethod`?
+         * 2. Dentro de `$routeData`, existe a configuração `onHttpMethod`?
          *
-         *    Esta configuração associa tipos de requisição HTTP a nomes de
-         *    métodos do controller, por isso, será reformatada antes de ser
-         *    armazenada.
+         *    Esta configuração associa tipos de requisição HTTP (como GET ou
+         *    POST) a blocos com configurações de rota e endpoint.
          *
-         *    Cada valor precisa ser uma string. Se encontrarmos um valor de
-         *    outro tipo, lançamos uma exceção indicando a entrada inválida.
+         *    Cada método HTTP informado deve ser uma string, e seu valor deve
+         *    ser um array com as configurações daquele método. Se algum valor
+         *    estiver fora do tipo esperado, lançamos uma exceção.
          */
 
-        if (array_key_exists('httpMethod', self::$routeData)) {
+        if (array_key_exists('onHttpMethod', self::$routeData)) {
 
 
 
             /**
-             * A nova formatação segue um padrão previsível: chaves em minúsculo
-             * e valores sem `@`.
+             * Padronizamos as chaves dos métodos HTTP convertendo seus nomes
+             * para letras minúsculas.
              *
              * ✔️ EXEMPLO
              * ┌───────────────────────────────────────────────────────────────┐
              * │ Suponha a seguinte configuração no endpoint:                  │
              * │ ┌─────────────────────────────┐                               │
-             * │ │ 'httpMethod' => [           │                               │
-             * │ │     'POST' => '@salvar',    │                               │
-             * │ │     'DELETE' => '@excluir', │                               │
+             * │ │ 'onHttpMethod' => [         │                               │
+             * │ │     'POST' => [             │                               │
+             * │ │         'method' => 'salvar'│                               │
+             * │ │     ],                      │                               │
+             * │ │     'DELETE' => [           │                               │
+             * │ │         'method' => 'apagar'│                               │
+             * │ │     ],                      │                               │
              * │ │ ]                           │                               │
              * │ └─────────────────────────────┘                               │
              * │                                                               │
-             * │ O `foreach` percorre essas associações e monta um novo array  │
-             * │ com uma escrita padronizada, resultando em:                   │
+             * │ O `foreach` percorre essas entradas e monta um novo array com │
+             * │ as chaves padronizadas em minúsculas:                         │
              * │                                                               │
-             * │ ┌────────────────────────────┐                                │
-             * │ │ [                          │                                │
-             * │ │     'post' => 'salvar',    │                                │
-             * │ │     'delete' => 'excluir', │                                │
-             * │ │ ]                          │                                │
-             * │ └────────────────────────────┘                                │
+             * │ ┌─────────────────────────────┐                               │
+             * │ │ [                           │                               │
+             * │ │     'post' => [             │                               │
+             * │ │         'method' => 'salvar'│                               │
+             * │ │     ],                      │                               │
+             * │ │     'delete' => [           │                               │
+             * │ │         'method' => 'apagar'│                               │
+             * │ │     ],                      │                               │
+             * │ │ ]                           │                               │
+             * │ └─────────────────────────────┘                               │
              * └───────────────────────────────────────────────────────────────┘
              */
 
-            $httpMethod = [];
+            $httpMethodConfigurations = [];
 
-            foreach (Config::get('httpMethod') as $type => $method) {
-                if (!is_string($method)) {
+            foreach (Config::get('onHttpMethod') as $httpMethod => $configurations) {
+                if (!is_string($httpMethod)) {
                     throw new Exception(
                         Message::get('CONFIG_INVALID_TYPE'),
-                        ["httpMethod[$type]", 'string', Tools::typeOf($method)]
+                        ['onHttpMethod: chave', 'string', Tools::typeOf($httpMethod)]
                     );
                 }
 
-                $httpMethod[mb_strtolower($type)] = ltrim($method, '@');
+                if (!is_array($configurations)) {
+                    throw new Exception(
+                        Message::get('CONFIG_INVALID_TYPE'),
+                        ["onHttpMethod[$httpMethod]", 'array', Tools::typeOf($configurations)]
+                    );
+                }
+
+                $httpMethodConfigurations[mb_strtolower($httpMethod)] = $configurations;
             }
 
 
 
             /**
-             * Por fim, o valor reformatado é inserido no lugar da configuração
-             * bruta.
+             * Por fim, o array com as chaves padronizadas substitui o valor
+             * original na configuração `onHttpMethod`.
              */
 
-            Config::set('httpMethod', $httpMethod);
+            Config::set('onHttpMethod', $httpMethodConfigurations);
         }
     }
 
@@ -1486,6 +1518,98 @@ final class Router
 
         self::configureRouteProperties();
         self::configureEndpointProperties();
+    }
+
+    
+    
+    /**
+     * 🟢 CONFIGURAÇÕES ESPECÍFICAS DO MÉTODO HTTP
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Este método aplica configurações de rota e endpoint quando a requisição
+     * utiliza um método HTTP cadastrado na configuração `onHttpMethod`.
+     *
+     * Se o endpoint possuir essa configuração e o método HTTP da requisição
+     * (como GET, POST, etc.) estiver listado nela, carregamos o bloco desse
+     * método e aplicamos suas definições sobre a rota atual.
+     *
+     * Isso permite alterar dinamicamente o método a ser chamado no controller,
+     * inclusive configurações de rota como o formato de saída (`output`), a
+     * autenticação (`authTag`), etc., que serão aplicadas exclusivamente para
+     * aquele verbo HTTP.
+     *
+     * Se não houver `onHttpMethod`, ou se o método da requisição não constar
+     * nele, o endpoint segue com as configurações padrão já aplicadas.
+     *
+     *
+     * _________________________________
+     * @return void
+     */
+    
+    private static function resolveHttpMethod(): void
+    {
+        /**
+         * Recuperamos as configurações de `onHttpMethod`. Se nenhuma associação
+         * tiver sido definida para este endpoint, encerramos a execução do
+         * método mantendo as configurações já aplicadas.
+         */
+    
+        $httpMethodConfigurations = Config::get('onHttpMethod');
+
+        if ($httpMethodConfigurations === []) {
+            return;
+        }
+
+        
+        
+        /**
+         * Lemos o método HTTP da requisição atual em
+         * `$_SERVER['REQUEST_METHOD']` e o convertemos para minúsculas. Se ele
+         * não constar entre as opções configuradas em `onHttpMethod`, também
+         * retornamos sem alterar nada.
+         */
+        
+        $requestHttpMethod = mb_strtolower($_SERVER['REQUEST_METHOD']);
+
+        if (!array_key_exists($requestHttpMethod, $httpMethodConfigurations)) {
+            return;
+        }
+
+        
+        
+        /**
+         * Carregamos em `$routeData` o bloco de configurações definido para
+         * este método HTTP e aplicamos suas definições por contexto:
+         *
+         * - `debug`: reaplica as configurações de depuração.
+         * 
+         * - `route`: reaplica opções da rota, exceto `namespace` (que não pode
+         *   ser alterado por um método HTTP).
+         * 
+         * - `endpoint`: reaplica opções do endpoint, exceto `onHttpMethod`
+         *   (evitando aninhamento).
+         */
+        
+        self::$routeData = $httpMethodConfigurations[$requestHttpMethod];
+
+        self::configurePropertiesByContext('debug');
+        self::configurePropertiesByContext('route', exclude: ['namespace']);
+        self::configurePropertiesByContext('endpoint', exclude: ['onHttpMethod']);
+
+        
+        
+        /**
+         * Consultamos o valor atual de `method`, que pode ter sido definido no
+         * endpoint ou substituído pelo bloco da requisição HTTP. Se ele não
+         * estiver vazio, atualizamos `$methodName` com esse nome.
+         *
+         * Quando estiver vazio, mantemos o método escolhido anteriormente.
+         */
+        
+        $methodName = Config::get('method');
+
+        if ($methodName !== '') {
+            self::$methodName = $methodName;
+        }
     }
 
 

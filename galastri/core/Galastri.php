@@ -207,40 +207,6 @@ final class Galastri
 
 
     /**
-     * 🟢 NOME DO MÉTODO HTTP DA REQUISIÇÃO
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Armazena o nome de um método do controller que será chamado conforme o
-     * tipo da requisição HTTP recebida, como GET ou POST.
-     *
-     * ✔️ EXEMPLO
-     * ┌───────────────────────────────────────────────────────────────────────┐
-     * │ Imagine uma rota que usa `main()` e que, na configuração              │
-     * │ `httpMethod`, associa apenas POST ao método salvar(). Queremos que    │
-     * │ `main()` seja executado ao acessar essa rota e que `salvar()` seja    │
-     * │ chamado também quando o acesso ocorrer por POST.                      │
-     * │                                                                       │
-     * │ Nesse exemplo, o comportamento seria:                                 │
-     * │                                                                       │
-     * │ - Uma requisição GET executa apenas main().                           │
-     * │                                                                       │
-     * │ - Uma requisição POST executa `main()` e, depois, `salvar()`.         │
-     * └───────────────────────────────────────────────────────────────────────┘
-     *
-     * Quando o controller é instanciado, o construtor da classe base executa
-     * primeiro o método da rota. Em seguida, consulta
-     * `Galastri::getControllerHttpMethodName()` para obter o nome do método
-     * adicional armazenado aqui e chamá-lo se a associação for válida.
-     *
-     *
-     * _________________________________
-     * @var string
-     */
-
-    private static string $controllerHttpMethodName = '';
-
-
-
-    /**
      * 🟢 EXISTÊNCIA DO CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Indica se temos um controller para usar nesta requisição.
@@ -264,42 +230,6 @@ final class Galastri
      */
 
     private static bool $controllerExists = true;
-
-
-
-    /**
-     * 🟢 EXISTÊNCIA DO MÉTODO HTTP DA REQUISIÇÃO
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Indica se há uma associação entre o método HTTP da requisição atual e um
-     * método adicional do controller.
-     *
-     * Ela começa em `false`, porque essa chamada adicional é opcional. Durante
-     * a preparação, consultamos a configuração `httpMethod`. Se houver uma
-     * associação para o tipo de requisição recebido, guardamos o nome do método
-     * e verificamos se ele existe no controller. O indicador só passa para
-     * `true` se o método existir; caso contrário, permanece em `false` e
-     * lançamos uma exceção.
-     *
-     * ✔️ EXEMPLO
-     * ┌───────────────────────────────────────────────────────────────────────┐
-     * │ Por exemplo, se apenas POST estiver associado a `salvar()`, uma       │
-     * │ requisição GET mantém o indicador em `false`.                         │
-     * │                                                                       │
-     * │ Uma requisição POST faz o indicador passar para `true` somente se     │
-     * │ `salvar()` existir no controller. Se não existir, o indicador         │
-     * │ permanece em `false` e lançamos uma exceção.                          │
-     * └───────────────────────────────────────────────────────────────────────┘
-     *
-     * Depois, o construtor da classe base Controller consulta esse valor
-     * através de `Galastri::httpMethodExists()`. É essa consulta que decide se
-     * haverá a chamada adicional, depois da execução do método da rota.
-     *
-     *
-     * _________________________________
-     * @var bool
-     */
-
-    private static bool $controllerHttpMethodExists = false;
 
 
 
@@ -400,8 +330,8 @@ final class Galastri
          * Começamos com Config::run() e Router::run(), pois precisamos preparar
          * as configurações e identificar a rota antes de decidir como atender
          * ao acesso. A rota determina informações que usaremos nas próximas
-         * etapas, como a saída escolhida, o controller e os métodos que serão
-         * chamados.
+         * etapas, como a saída escolhida, o controller e o método que será
+         * chamado.
          *
          * Aproveite para ver sobre as classes `Config` e `Router` agora e
          * depois volte aqui:
@@ -450,23 +380,22 @@ final class Galastri
 
         /**
          * Aqui preparamos o controller: identificamos sua classe, conferimos a
-         * herança exigida pelo framework e verificamos os métodos que
+         * herança exigida pelo framework e verificamos o método que
          * pretendemos executar.
          *
          * Fazemos isso antes de criar o objeto porque seu construtor já inicia
-         * as chamadas aos métodos da aplicação. Por isso, queremos chegar a
-         * esse momento com essa preparação concluída.
+         * a chamada ao método da aplicação. Por isso, queremos chegar a esse
+         * momento com essa preparação concluída.
          */
         self::checkControllerNamespace();
         self::setMethodName();
-        self::setHttpMethodName();
 
 
 
         /**
          * Quando há um controller disponível, chamamos `executeController()`.
-         * Durante essa chamada, o controller executa seus métodos e reúne os
-         * resultados que serão consultados pela saída.
+         * Durante essa chamada, o controller executa o método da rota e prepara
+         * os resultados que serão consultados pela saída.
          */
         if (self::controllerExists()) {
             self::executeController();
@@ -1032,140 +961,6 @@ final class Galastri
 
 
     /**
-     * 🟢 VERIFICAÇÃO E DEFINIÇÃO DO MÉTODO HTTP DO CONTROLLER
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Aqui procuramos uma configuração adicional das configurações de rota
-     * chamada `httpMethod`.
-     *
-     * Uma mesma rota pode ter a necessidade de fazer uma execução adicional
-     * dependendo do tipo de requisição HTTP enviado ao backend.
-     *
-     * ✔️ EXEMPLO
-     * ┌─────────────────────────────────────────────────────────────────────┐
-     * │ Imagine que queremos executar o método `main()` ao acessar a rota,  │
-     * │ mas que quando o tipo de requisição for `POST`, ele execute mais um │
-     * │ método, que configuraríamos com o nome `salvar` no `httpMethod`.    │
-     * │                                                                     │
-     * │ Nesta configuração:                                                 │
-     * │                                                                     │
-     * │ - Uma requisição GET executa apenas main().                         │
-     * │                                                                     │
-     * │ - Uma requisição PUT executa apenas main().                         │
-     * │                                                                     │
-     * │ - Mas uma requisição POST executa main() e, depois, salvar().       │
-     * │                                                                     │
-     * │ OBSERVAÇÃO                                                          │
-     * │ ┌─────────────────────────────────────────────────────────────────┐ │
-     * │ │ Perceba que o método associado em httpMethod é executado depois │ │
-     * │ │ do método da rota.                                              │ │
-     * │ └─────────────────────────────────────────────────────────────────┘ │
-     * └─────────────────────────────────────────────────────────────────────┘
-     *
-     * 🔴 TODO: Futuramente criar uma opção que permita que o método seja
-     * executado ANTES do método principal da rota.
-     *
-     *
-     * _________________________________
-     * @return void
-     */
-
-    private static function setHttpMethodName(): void
-    {
-        /**
-         * Primeiro consultamos $controllerExists. Se estivermos seguindo sem
-         * controller, retornamos imediatamente, porque não há um método para
-         * preparar.
-         */
-
-        if (!self::controllerExists()) {
-            return;
-        }
-
-
-        /**
-         * Recuperamos o valor da configuração de rota `httpMethod`. Se ela não
-         * for vazia, vai retornar um array contendo a lista relacionando um
-         * tipo de requisição com o nome de um método do controller.
-         *
-         * ✔️ EXEMPLO
-         * ┌────────────────────────────┐
-         * │ [                          │
-         * │     'get' => 'listar',     │
-         * │     'post' => 'adicionar', │
-         * │     'delete' => 'remover', │
-         * │ ];                         │
-         * └────────────────────────────┘
-         */
-
-        $httpMethodList = Config::get('httpMethod');
-
-
-
-        /**
-         * Lemos o tipo da requisição em `$_SERVER['REQUEST_METHOD']` e o
-         * convertemos para minúsculas porque o `Router` também organiza as
-         * chaves de `httpMethod` dessa maneira.
-         */
-        $serverHttpMethod = mb_strtolower($_SERVER['REQUEST_METHOD']);
-
-
-
-        /**
-         * Quando `httpMethodList` não for vazia e encontrarmos uma associação
-         * para o tipo de requisição recebido, seguimos com a preparação do
-         * método HTTP.
-         */
-        if (!empty($httpMethodList) && array_key_exists($serverHttpMethod, $httpMethodList)) {
-
-            /**
-             * Precisamos deixar duas informações disponíveis para a execução no
-             * controller:
-             *
-             * 1. O nome do método do controller associado ao tipo de requisição
-             *    recebido.
-             *
-             * 2. A informação de que existe uma chamada adicional preparada que
-             *    deve ser executada no controller.
-             *
-             * O construtor da classe base `Controller` consulta esses valores
-             * para decidir se chama outro método após o método da rota.
-             */
-
-            self::$controllerHttpMethodName = $httpMethodList[$serverHttpMethod];
-
-            self::$controllerHttpMethodExists = method_exists(
-                self::$controllerNamespace, self::$controllerHttpMethodName
-            );
-
-
-
-            /**
-             * Encontrar a associação, porém, ainda não garante que o método
-             * indicado exista no controller.
-             *
-             * Se configurarmos o nome `salvar` na rota sem criar esse método
-             * dentro do controller, a execução não conseguirá atender ao que
-             * foi definido.
-             *
-             * Por isso, conferimos sua existência e lançamos uma exceção se ele
-             * não for encontrado, encerrando a execução.
-             */
-
-            if(!self::$controllerHttpMethodExists) {
-                throw new Exception(
-                    Message::get("CONTROLLER_METHOD_NOT_FOUND"),
-                    [
-                        self::$controllerNamespace,
-                        self::$controllerHttpMethodName.'()',
-                    ]
-                );
-            }
-        }
-    }
-
-
-
-    /**
      * 🟢 A EXECUÇÃO DO CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * O `executeController()` é o momento em que criamos esse controller e
@@ -1174,8 +969,8 @@ final class Galastri
      * Embora o método tenha apenas uma linha, que é criar o objeto, `new`
      * também executa o construtor do controller. Como o controller herda de
      * `galastri\modules\Controller`, é o construtor dessa classe base que
-     * conduz o trabalho: chama o método da rota, depois o método associado ao
-     * tipo de requisição HTTP, quando houver, e reúne seus retornos.
+     * conduz o trabalho: chama o método escolhido para a rota e prepara sua
+     * resposta.
      *
      *
      * Aproveite para ver sobre a classe base Controller agora e depois volte
@@ -1280,31 +1075,6 @@ final class Galastri
 
 
     /**
-     * 🟢 CHECANDO SE O MÉTODO HTTP EXISTE
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Informa se há um método adicional preparado para o tipo de requisição
-     * HTTP recebido.
-     *
-     * A classe base `Controller` consulta esse indicador para decidir se deve
-     * executar a chamada adicional depois do método da rota. Quando não há uma
-     * associação para o tipo de requisição recebido, o retorno permanece em
-     * false.
-     *
-     *
-     * _________________________________
-     * @return bool  
-     *    Retorna `true` se o método adicional associado à requisição HTTP
-     *    existe. Se não, retorna `false`.
-     */
-
-    public static function httpMethodExists(): bool
-    {
-        return self::$controllerHttpMethodExists;
-    }
-
-
-
-    /**
      * 🟢 RECUPERANDO A RESPOSTA DO CONTROLLER
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      * Recupera a resposta preparada pelo controller.
@@ -1404,28 +1174,6 @@ final class Galastri
     public static function getControllerMethodName(): string
     {
        return self::$controllerMethodName;
-    }
-
-
-
-    /**
-     * 🟢 RECUPERANDO O NOME DO MÉTODO HTTP DO CONTROLLER
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Retorna o nome do método adicional associado ao tipo de requisição HTTP
-     * recebido, guardado em `$controllerHttpMethodName`.
-     *
-     * Quando não há associação, o nome permanece uma string vazia.
-     *
-     *
-     * _________________________________
-     * @return string  
-     *    Retorna uma `string` com o nome do método adicional associado à
-     *    requisição HTTP ou uma string vazia quando não há associação.
-     */
-
-    public static function getControllerHttpMethodName(): string
-    {
-       return self::$controllerHttpMethodName;
     }
 }
 

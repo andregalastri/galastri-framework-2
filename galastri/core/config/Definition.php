@@ -311,7 +311,7 @@ final class Definition
      *
      * Essa informação classifica a configuração dentro da organização do
      * framework. Por exemplo, `output` pertence ao contexto `route`, enquanto
-     * `httpMethod` pertence ao contexto `endpoint`.
+     * `onHttpMethod` pertence ao contexto `endpoint`.
      *
      * 
      * _________________________________

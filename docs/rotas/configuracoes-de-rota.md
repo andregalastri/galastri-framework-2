@@ -1121,31 +1121,31 @@
  * a partir da rota) não seja adequado ou desejado.
  *
  * 🖥️ EXEMPLO DE USO
- * ┌────────────────────────────────────────────────┐
- * │ <?php                                          │
- * │                                                │
- * │ return [                                       │
- * │     '/' => [                                   │
- * │         'output' => 'view',                    │
- * │                                                │
- * │         '@main' => [                           │
- * │             ...                                │
- * │         ],                                     │
- * │                                                │
- * │         '/produtos' => [                       │
- * │             '@main' => [                       │
- * │                 ...                            │
- * │             ],                                 │
- * │                                                │
- * │             '@listar' => [                     │
- * │                 'method' => '@exibirProdutos', │
- * │             ],                                 │
- * │         ],                                     │
- * │                                                │
- * │         ...                                    │
- * │     ],                                         │
- * │ ];                                             │
- * └────────────────────────────────────────────────┘
+ * ┌───────────────────────────────────────────────┐
+ * │ <?php                                         │
+ * │                                               │
+ * │ return [                                      │
+ * │     '/' => [                                  │
+ * │         'output' => 'view',                   │
+ * │                                               │
+ * │         '@main' => [                          │
+ * │             ...                               │
+ * │         ],                                    │
+ * │                                               │
+ * │         '/produtos' => [                      │
+ * │             '@main' => [                      │
+ * │                 ...                           │
+ * │             ],                                │
+ * │                                               │
+ * │             '@listar' => [                    │
+ * │                 'method' => 'exibirProdutos', │
+ * │             ],                                │
+ * │         ],                                    │
+ * │                                               │
+ * │         ...                                   │
+ * │     ],                                        │
+ * │ ];                                            │
+ * └───────────────────────────────────────────────┘
  *
  * No exemplo acima, o método padrão para a rota
  * `www.dominio.com/produtos/listar` seria `listar()` , mas foi alterado para
@@ -1231,20 +1231,23 @@
  *
  *
  *
- * 🔶 httpMethod
+ * 🔶 onHttpMethod
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * - Tipo: `array`
  * - Valor padrão: []
  *
- * Define o comportamento do `endpoint` com base no tipo de requisição HTTP
- * (como `GET`, `POST`, etc.), especificando o método da classe controller que
- * será executado para cada tipo de requisição.
+ * Permite definir configurações específicas para a rota ou endpoint com base no
+ * método HTTP da requisição (como `GET`, `POST`, `PUT`, `DELETE`, etc.).
  *
- * A configuração é definida no formato `tipo => @método`, onde:
+ * A configuração associa cada método HTTP a um bloco de configurações:
  *
- * - `tipo`: O tipo da requisição (`GET`, `POST`, `PUT`, etc.)
- * - `@método`: O nome do método da classe controller que será executado para
- *   aquela requisição.
+ * - Chave: O método HTTP da requisição (`GET`, `POST`, etc.)
+ * 
+ * - Valor: Um array contendo as configurações a serem aplicadas quando a
+ *   requisição utilizar aquele método HTTP.
+ *
+ * Por exemplo, podemos definir a configuração `method` dentro de um método HTTP
+ * para que o framework execute um método específico do controller:
  *
  * 🖥️ EXEMPLO DE USO
  * ┌─────────────────────────────────────────────┐
@@ -1264,10 +1267,13 @@
  * │             ],                              │
  * │                                             │
  * │             '@cadastro' => [                │
- * │                 'httpMethod' => [           │
- * │                     'GET' => '@listar',     │
- * │                     'POST' => '@adicionar', │
- * │                     'DELETE' => '@remover', │
+ * │                 'onHttpMethod' => [         │
+ * │                     'GET' => [              │
+ * │                         'method' => 'listar'│
+ * │                     ],                      │
+ * │                     'POST' => [             │
+ * │                         'method' => 'salvar'│
+ * │                     ],                      │
  * │                 ],                          │
  * │             ],                              │
  * │         ],                                  │
@@ -1277,19 +1283,29 @@
  * │ ];                                          │
  * └─────────────────────────────────────────────┘
  *
- * No exemplo acima, o método `cadastro()` continua obrigatório e é executado
- * primeiro. Depois, o tipo da requisição determina a chamada adicional:
+ * No exemplo acima:
  *
- * - GET: executa `cadastro()` e, depois, `listar()`.
- * - POST: executa `cadastro()` e, depois, `adicionar()`.
- * - DELETE: executa `cadastro()` e, depois, `remover()`.
+ * - Uma requisição GET em `/produtos/cadastro` executa o método `listar()` do
+ *   controller `Produtos`.
+ * 
+ * - Uma requisição POST em `/produtos/cadastro` executa o método `salvar()` do
+ *   controller `Produtos`.
  *
- * O retorno de `cadastro()` não é passado como argumento para o método
- * seguinte. A classe base `Controller` reúne os arrays retornados depois
- * das chamadas.
+ * Se a requisição utilizar um método HTTP que não esteja configurado em
+ * `onHttpMethod` (como um PUT), o framework mantém o comportamento padrão do
+ * endpoint, executando o método `cadastro()`.
  *
- * Se não houver uma associação para o tipo de requisição recebido,
- * apenas `cadastro()` será executado.
+ * Além de `method`, outras configurações, como `output` e `authTag`, também
+ * podem ser personalizadas dentro do bloco de cada método HTTP.
+ *
+ * Só as opções informadas nesse bloco substituem os valores anteriores. Se
+ * ele não informar `method`, por exemplo, continua valendo o método escolhido
+ * para o endpoint, inclusive quando esse nome veio da configuração `method`
+ * do próprio endpoint.
+ *
+ * São reaplicadas as configurações dos contextos `debug`, `route` e
+ * `endpoint`, com exceção de `namespace` e do próprio `onHttpMethod`.
+ * Configurações do contexto `node`, como `controller`, não são reaplicadas.
  */
 
 

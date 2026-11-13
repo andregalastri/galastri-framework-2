@@ -1350,7 +1350,7 @@ final class Authentication
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * 📖 ACESSE O TUTORIAL DA CLASSE:
+ * 📖 ACESSE O TUTORIAL DE USO DA CLASSE:
  * 🔗 LINK: /docs/tutoriais/classe-authentication.md
  * 
  * ◀️ VOLTAR AO TÓPICO ANTERIOR:

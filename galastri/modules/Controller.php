@@ -776,10 +776,13 @@ abstract class Controller
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 📖 ACESSE O TUTORIAL DE USO DA CLASSE:
+ * 🔗 LINK: /docs/tutoriais/classe-controller.md
+ * 
+ * Acesse o tutorial apenas se você não estiver seguindo a documentação do fluxo
+ * de dados do framework.
+ * 
+ * 
  * ◀️ VOLTAR AO TÓPICO ANTERIOR:
- *
- * Volte ao método `executeController()` de `Galastri` e retome a leitura logo
- * depois do link que trouxe você até aqui.
- *
  * 🔗 LINK: /galastri/core/Galastri.php
  */

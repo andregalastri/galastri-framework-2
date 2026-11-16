@@ -19,8 +19,8 @@
 /**
  * 🟢 NAMESPACE DO TRAIT
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * A trait `BrowserCache` é uma extensão dos formatos de saída do núcleo do
- * framework.
+ * A trait `BrowserCache` faz parte das traits internas dos formatos de saída do
+ * núcleo do framework.
  */
 
 namespace galastri\core\output\traits;

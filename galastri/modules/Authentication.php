@@ -163,6 +163,20 @@ final class Authentication
      * ║                                MÉTODOS                                ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
      */
+    
+    /**
+     * 🟢 CLASSE ESTÁTICA
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * Os recursos desta classe são acessados diretamente por chamadas como
+     * `Authentication::register()`, sem precisar criar um objeto.
+     *
+     * Por isso, deixamos o construtor privado para impedir que a classe seja
+     * instanciada com `new Authentication()`.
+     */
+
+    private function __construct() {}
+    
+    
 
     /**
      * 🟢 REGISTRO DE UMA AUTENTICAÇÃO

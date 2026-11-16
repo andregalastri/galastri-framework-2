@@ -12,15 +12,15 @@ use galastri\modules\Validation;
 
 class Exception extends \Exception
 {
-    public bool $displayValidationError = false;
+    public bool $allowMessageDisplay = false;
     public ?string $errorSource = null;
     
     protected array $data = [];
     
     public function __construct()
     {
-        $this->displayValidationError = Validation::$displayValidationError;
-        Validation::$displayValidationError = false;
+        $this->allowMessageDisplay = Validation::$allowMessageDisplay;
+        Validation::$allowMessageDisplay = false;
 
         $this->__overload(func_get_args());
         parent::__construct($this->getMessage());

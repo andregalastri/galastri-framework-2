@@ -11,14 +11,44 @@ use galastri\language\Message;
 
 class MysqlDatabase
 {
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                                TRAITS                                 ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     */
+    
     use traits\CoreDatabase {
         traits\CoreDatabase::setPort as private parentSetPort;
     }
+    
+    
+    
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                              CONSTANTES                               ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     */
 
     const DRIVER = 'mysql';
-    
+
+
+
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                             PROPRIEDADES                              ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     */
+
     private array $requiredConfigKeys = ['host', 'port', 'username', 'password', 'database'];
     private array $requiredProperties = ['host', 'username', 'database'];
+
+
+    
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                                MÉTODOS                                ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     */
 
     public function __construct(?string $dbConfigName = null)
     {

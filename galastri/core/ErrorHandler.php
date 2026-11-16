@@ -42,8 +42,8 @@ namespace galastri\core;
  * │             │ enviar o erro como uma nova linha JSON nesse mesmo fluxo.   │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤
  * │ `Exception` │ Representa a exceção própria do framework. Sua propriedade  │
- * │             │ `displayValidationError` pode autorizar a exibição da       │
- * │             │ mensagem de validação, enquanto `errorSource` informa a     │
+ * │             │ `allowMessageDisplay` pode autorizar a exibição da          │
+ * │             │ mensagem da exceção, enquanto `errorSource` informa a       │
  * │             │ classificação usada para escolher o status HTTP.            │
  * ├─────────────┼─────────────────────────────────────────────────────────────┤
  * │ `Message`   │ Busca a mensagem genérica que mostramos quando os detalhes  │
@@ -450,44 +450,43 @@ final class ErrorHandler
                  * Caso seja, então precisamos atribuir dois valores que vão
                  * incrementar a saída de erro.
                  * 
-                 * ┌──────────────────────────┬───────────────────────────────┐
-                 * │ `$errorSource`           │ Traz a origem da exceção,     │
-                 * │                          │ podendo vir da classe         │
-                 * │                          │ Validation, Permission ou     │
-                 * │                          │ Authentication. Esta          │
-                 * │                          │ informação é importante pois  │
-                 * │                          │ permite maior precisão no     │
-                 * │                          │ código de retorno HTTP à      │
-                 * │                          │ requisição.                   │
-                 * │                          │                               │
-                 * │                          │ Por padrão ela é `null`,      │
-                 * │                          │ podendo manter um status já   │
-                 * │                          │ definido ou código 500.       │
-                 * ├──────────────────────────┼───────────────────────────────┤
-                 * │ `displayValidationError` │ Traz uma autorização          │
-                 * │                          │ alternativa para mostrar a    │
-                 * │                          │ mensagem de erro de validação │
-                 * │                          │ mesmo com a configuração de   │
-                 * │                          │ rota `displayErrors`          │
-                 * │                          │ desativada.                   │
-                 * │                          │                               │
-                 * │                          │ Por padrão ela é `false`,     │
-                 * │                          │ garantindo que a configuração │
-                 * │                          │ de rota seja levada em conta. │
-                 * └──────────────────────────┴───────────────────────────────┘
+                 * ┌───────────────────────┬───────────────────────────────┐
+                 * │ `$errorSource`        │ Traz a origem da exceção,     │
+                 * │                       │ podendo vir da classe         │
+                 * │                       │ Validation, Permission ou     │
+                 * │                       │ Authentication. Esta          │
+                 * │                       │ informação é importante pois  │
+                 * │                       │ permite maior precisão no     │
+                 * │                       │ código de retorno HTTP à      │
+                 * │                       │ requisição.                   │
+                 * │                       │                               │
+                 * │                       │ Por padrão ela é `null`,      │
+                 * │                       │ podendo manter um status já   │
+                 * │                       │ definido ou código 500.       │
+                 * ├───────────────────────┼───────────────────────────────┤
+                 * │ `allowMessageDisplay` │ Traz uma autorização          │
+                 * │                       │ alternativa para mostrar a    │
+                 * │                       │ mensagem desta exceção, mesmo │
+                 * │                       │ com a configuração de rota    │
+                 * │                       │ `displayErrors` desativada.   │
+                 * │                       │                               │
+                 * │                       │ Por padrão ela é `false`,     │
+                 * │                       │ garantindo que a configuração │
+                 * │                       │ de rota seja levada em conta. │
+                 * └───────────────────────┴───────────────────────────────┘
                  */
                 
                 $errorSource = null;
-                $displayValidationError = false;
+                $allowMessageDisplay = false;
 
                 if ($e instanceof Exception) {
                     $errorSource = $e->errorSource;
-                    $displayValidationError = $e->displayValidationError;
+                    $allowMessageDisplay = $e->allowMessageDisplay;
                 }
                 
                 self::printError(
                     $code, $message, $file, $line, $trace,
-                    $displayValidationError, $errorSource
+                    $allowMessageDisplay, $errorSource
                 );
             }
         );
@@ -674,26 +673,33 @@ final class ErrorHandler
      * `false` pra garantir que nenhuma informação interna com dados sensíveis
      * vaze para usuários.
      *
+     * Quando uma exceção autoriza a exibição da própria mensagem por meio de
+     * `allowMessageDisplay`, podemos mostrar esse texto mesmo com a
+     * configuração de rota desativada. Essa autorização vale só pra mensagem
+     * daquela exceção; arquivo, linha e histórico continuam dependendo das
+     * configurações de exibição correspondentes.
+     *
      * Se nenhuma dessas condições permitir mostrar a mensagem real, exibimos a
      * mensagem genérica armazenada em `DEFAULT_ERROR_MESSAGE`, na classe
      * `Message`.
      *
      * O arquivo de log salvo na pasta /logs, porém, continua armazenando o
-     * caminho original do arquivo.
+     * texto original da mensagem.
      *
      *
      * _________________________________
      * @param string $message  
      *    Mensagem original da falha.
      *
-     * @param bool $displayValidationError  
-     *    Autoriza mostrar esta mensagem ou não.
+     * @param bool $allowMessageDisplay  
+     *    Autoriza mostrar esta mensagem mesmo com `displayErrors` desativado.
+     *    Se for `false`, a exibição depende dessa configuração de rota.
      * _________________________________
      * @return string Mensagem original ou a mensagem genérica.
      */
     
     private static function
-        getMessage(string $message, bool $displayValidationError = false): string
+        getMessage(string $message, bool $allowMessageDisplay = false): string
     {
         /**
          * Consultamos as configurações de rota `displayErrors` com fallback pra
@@ -702,18 +708,17 @@ final class ErrorHandler
          * das configurações da rota, não liberamos a exibição de mensagens
          * internas por esse caminho.
          *
-         * Já o parâmetro `$displayValidationError` é usado pela classe
-         * Validation para autorizar a exibição de mensagens de erro de
-         * validação. Ela opera como um autorizador alternativo, mas que não
-         * sobrescreve a configuração de rota, apenas permite que as mensagens
-         * de erro de validação de dados possam ser mostradas mesmo com a
-         * configuração de rota `displayErrors` em `false`.
+         * Já o parâmetro `$allowMessageDisplay` traz a autorização recebida da
+         * própria exceção para mostrar sua mensagem. Ele opera como um
+         * autorizador alternativo, sem alterar a configuração de rota. Assim,
+         * uma mensagem autorizada pode ser mostrada mesmo com `displayErrors`
+         * em `false`, sem liberar a exibição de mensagens de outras falhas.
          *
-         * Sendo a configuração de rota, ou `$displayValidationError`, `true`, a
+         * Sendo a configuração de rota, ou `$allowMessageDisplay`, `true`, a
          * mensagem é retornada para ser mostrada.
          */
         
-        if (Config::get('displayErrors', false) || $displayValidationError) {
+        if (Config::get('displayErrors', false) || $allowMessageDisplay) {
             return $message;
         }
 
@@ -955,9 +960,9 @@ final class ErrorHandler
      * @param array<int,array<string,mixed>> $trace  
      *    Histórico disponível para esta falha.
      *
-     * @param bool $displayValidationError  
-     *    Autorizador da classe `Validation` que opera como autorização
-     *    alternativa à da configuração de rota `displayErrors`.
+     * @param bool $allowMessageDisplay  
+     *    Autorização recebida da exceção para mostrar sua mensagem mesmo com a
+     *    configuração de rota `displayErrors` desativada. Por padrão é `false`.
      *
      * @param string|null $errorSource  
      *    Classificação da origem da falha. Será usada para escolher o status
@@ -969,7 +974,7 @@ final class ErrorHandler
     
     private static function printError(int|string $code, string $message,
         string $file, int $line, array $trace,
-        bool $displayValidationError = false,
+        bool $allowMessageDisplay = false,
         ?string $errorSource = null): void
     {
         /**
@@ -1077,7 +1082,7 @@ final class ErrorHandler
             'code' => $code,
             'origin' => self::getFile($file),
             'line' => self::getLine($line),
-            'message' => self::getMessage($message, $displayValidationError),
+            'message' => self::getMessage($message, $allowMessageDisplay),
             'trace' => self::getTrace($trace),
             'warning' => true,
             'error' => true,

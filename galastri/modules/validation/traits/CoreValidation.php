@@ -60,7 +60,7 @@ trait CoreValidation
             );
         }
 
-        $exception->displayValidationError = true;
+        $exception->allowMessageDisplay = true;
         $exception->errorSource = 'validation';
 
         throw $exception;

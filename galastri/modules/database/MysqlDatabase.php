@@ -6,9 +6,6 @@
 
 namespace galastri\modules\database;
 
-use galastri\extensions\Exception;
-use galastri\language\Message;
-
 class MysqlDatabase
 {
     /**

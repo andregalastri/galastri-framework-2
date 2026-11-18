@@ -452,9 +452,9 @@ final class ErrorHandler
                  * 
                  * ┌───────────────────────┬───────────────────────────────┐
                  * │ `$errorSource`        │ Traz a origem da exceção,     │
-                 * │                       │ podendo vir da classe         │
-                 * │                       │ Validation, Permission ou     │
-                 * │                       │ Authentication. Esta          │
+                 * │                       │ podendo indicar validação,    │
+                 * │                       │ autenticação, permissões ou   │
+                 * │                       │ banco de dados. Esta          │
                  * │                       │ informação é importante pois  │
                  * │                       │ permite maior precisão no     │
                  * │                       │ código de retorno HTTP à      │
@@ -966,14 +966,18 @@ final class ErrorHandler
      *
      * @param string|null $errorSource  
      *    Classificação da origem da falha. Será usada para escolher o status
-     *    HTTP. Pode receber 'validation', 'authentication', 'permission' ou
-     *    `null` quando não houver uma origem específica.
+     *    HTTP. Pode receber 'validation', 'authentication', 'permission',
+     *    'database' ou `null` quando não houver uma origem específica.
      * _________________________________
      * @return void
      */
     
-    private static function printError(int|string $code, string $message,
-        string $file, int $line, array $trace,
+    private static function printError(
+        int|string $code,
+        string $message,
+        string $file,
+        int $line,
+        array $trace,
         bool $allowMessageDisplay = false,
         ?string $errorSource = null): void
     {
@@ -1661,6 +1665,9 @@ final class ErrorHandler
      * já definido para a resposta. Caso esteja entre 400 e 599, mantemos esse
      * valor para preservar uma decisão anterior, como uma resposta 404.
      *
+     * Quando a origem é 'database', retornamos 500 mesmo que outro status de
+     * erro já tenha sido definido para a resposta.
+     * 
      * Sem uma origem reconhecida e sem um status de erro anterior, usamos 500
      * como padrão para a falha.
      *
@@ -1674,8 +1681,8 @@ final class ErrorHandler
      *
      * _________________________________
      * @param string|null $errorSource  
-     *    Classificação da falha: 'validation', 'authentication', 'permission'
-     *    ou null quando não houver uma classificação específica.
+     *    Classificação da falha: 'validation', 'authentication', 'permission',
+     *    'database' ou null quando não houver uma classificação específica.
      * _________________________________
      * @return int Status HTTP que deve acompanhar a resposta.
      */
@@ -1690,6 +1697,9 @@ final class ErrorHandler
         switch ($errorSource) {
             case 'validation':
                 return 422;
+                
+            case 'database':
+                return 500;
 
             case 'authentication':
             case 'permission':

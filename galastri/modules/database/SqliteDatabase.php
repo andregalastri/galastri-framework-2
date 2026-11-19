@@ -78,13 +78,7 @@ class SqliteDatabase
     /**
      * 🟢 ESTRUTURA COMPARTILHADA DE BANCO DE DADOS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Esta trait reúne toda a lógica compartilhada pelas classes de banco de
-     * dados do framework, evitando repetir esse código em cada driver e deixando
-     * nesta classe apenas o que é específico do SQLite.
-     *
-     * Acesse o arquivo da trait `CoreDatabase` pra ver como ela funciona e
-     * depois volte aqui:
-     * 🔗 LINK: /galastri/modules/database/traits/CoreDatabase.php
+       as chaves obrigatórias
      */
     
     use traits\CoreDatabase;
@@ -130,8 +124,8 @@ class SqliteDatabase
      * na configuração do SQLite em `/app/config/database.php`.
      *
      * Quando carregamos uma conexão desse arquivo, conferimos por esta lista se
-     * o bloco correspondente informou a chave `'location'`. A chave `'options'`
-     * fica fora porque é opcional na configuração.
+     * o bloco correspondente informou as chaves obrigatórias para abrir o
+     * banco. A chave `'options'` fica fora porque é opcional na configuração.
      * 
      * ⚠️ IMPORTANTE
      * ┌───────────────────────────────────────────────────────────────────┐
@@ -153,9 +147,10 @@ class SqliteDatabase
      * Esta propriedade lista os nomes das propriedades que não podem estar
      * vazias no momento de abrir a conexão com o SQLite.
      *
-     * Antes de instanciar o `PDO`, conferimos por esta lista se `location` foi
-     * preenchida, seja pelo arquivo `/app/config/database.php` ou pelo setter
-     * `setLocation()`. A propriedade `$options` fica fora porque é opcional.
+     * Antes de instanciar o `PDO`, conferimos por esta lista se as chaves
+     * informadas foram preenchida, seja pelo arquivo `/app/config/database.php`
+     * ou pelos setters da instância. A propriedade `$options` fica fora porque
+     * é opcional.
      *
      * ⚠️ IMPORTANTE
      * ┌───────────────────────────────────────────────────────────────────┐
@@ -233,10 +228,10 @@ class SqliteDatabase
         
         
         /**
-         * Quando `$config` for, de fato, uma configuração válida, preenchemos a
-         * localização obrigatória do banco e as opções extras do `PDO`. Como
-         * `options` é opcional no arquivo de configuração, usamos um array
-         * vazio como fallback quando ela não estiver definida.
+         * Quando `$config` for, de fato, uma configuração válida, preenchemos
+         * os dados da conexão pelos setters da instância. Como `options` é
+         * opcional no arquivo de configuração, usamos um array vazio como
+         * fallback quando ela não estiver definida.
          */
         
         $this->setLocation($config['location']);

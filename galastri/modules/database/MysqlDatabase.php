@@ -1,10 +1,68 @@
 <?php
 /**
- * Documentação:
- * https://github.com/andregalastri/galastri-framework-2/wiki/Classe-MysqlDatabase
+ * -----------------------------------------------------------------------------
+ * 📂
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║           ARQUIVO /galastri/modules/database/MysqlDatabase.php            ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ * Este arquivo define a classe responsável por criar e gerenciar conexões com
+ * bancos de dados MySQL no framework.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+
+
+/**
+ * 🟢 NAMESPACE DA CLASSE
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * A classe `MysqlDatabase` faz parte dos drivers internos do módulo de banco
+ * de dados do framework.
  */
 
 namespace galastri\modules\database;
+
+
+
+/**
+ * Esta classe cria e gerencia conexões com bancos de dados MySQL no framework.
+ *
+ * Diferente de bancos baseados em arquivo ou memória, como o SQLite, o MySQL
+ * roda em um servidor próprio e exige autenticação. Por isso, para abrir a
+ * conexão, precisamos informar múltiplas informações para o `PDO`, quando forem
+ * necessárias.
+ *
+ * Em vez de instanciá-la diretamente com `new MysqlDatabase()`, usamos
+ * `Database::createMysql()` pra obter a instância. Podemos informar o nome de
+ * uma configuração já cadastrada em `/app/config/database.php` ou deixar sem
+ * argumento para preencher os dados da conexão manualmente antes de chamar
+ * `connect()`.
+ *
+ * ✔️ EXEMPLO
+ * ┌───────────────────────────────────────────────────────────────────────────┐
+ * │ Usando uma configuração chamada `'mysql-example'` já cadastrada em        │
+ * │ `/app/config/database.php`:                                               │
+ * │                                                                           │
+ * │ ┌─────────────────────────────────────────────────────┐                   │
+ * │ │ $db = Database::createMysql('mysql-example');       │                   │
+ * │ │ $db->connect();                                     │                   │
+ * │ └─────────────────────────────────────────────────────┘                   │
+ * │                                                                           │
+ * │ Ou criando uma instância vazia pra definir os dados manualmente na hora:  │
+ * │                                                                           │
+ * │ ┌─────────────────────────────────────────────────────┐                   │
+ * │ │ $db = Database::createMysql();                      │                   │
+ * │ │ $db->setHost('localhost')                           │                   │
+ * │ │    ->setDatabase('minha_aplicacao')                 │                   │
+ * │ │    ->setUsername('root')                            │                   │
+ * │ │    ->setPassword('123456')                          │                   │
+ * │ │    ->connect();                                     │                   │
+ * │ └─────────────────────────────────────────────────────┘                   │
+ * └───────────────────────────────────────────────────────────────────────────┘
+ *
+ * Nos dois casos, depois de conectar com `connect()`, temos à disposição os
+ * recursos pra preparar e enviar consultas, vincular parâmetros, controlar
+ * transações, tratar erros e ler os resultados retornados pelo banco.
+ */
 
 class MysqlDatabase
 {
@@ -26,7 +84,7 @@ class MysqlDatabase
      * ╚═══════════════════════════════════════════════════════════════════════╝
      */
 
-    const DRIVER = 'mysql';
+    private const DRIVER = 'mysql';
 
 
 

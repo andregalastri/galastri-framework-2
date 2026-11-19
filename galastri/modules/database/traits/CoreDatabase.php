@@ -77,22 +77,12 @@ trait CoreDatabase
      * ╔═══════════════════════════════════════════════════════════════════════╗
      * ║                              CONSTANTES                               ║
      * ╚═══════════════════════════════════════════════════════════════════════╝
-     *
-     * Esta trait não possui constantes.
-     */
-    
-    
-    
-    /**
-     * ╔═══════════════════════════════════════════════════════════════════════╗
-     * ║                             PROPRIEDADES                              ║
-     * ╚═══════════════════════════════════════════════════════════════════════╝
      */
     
     /**
      * 🟢 CAMINHO DO ARQUIVO DE CONFIGURAÇÕES
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     * Esta propriedade guarda a localização do arquivo de configurações de
+     * Esta constante guarda a localização do arquivo de configurações de
      * bancos de dados da aplicação.
      *
      * Quando criamos uma conexão informando o nome de uma configuração, é nesse
@@ -105,10 +95,16 @@ trait CoreDatabase
      * _________________________________
      * @var string
      */
+
+    private const CONFIG_FILE = PROJECT_DIR.'/app/config/database.php';
     
-    private string $configFile = PROJECT_DIR.'/app/config/database.php';
     
     
+    /**
+     * ╔═══════════════════════════════════════════════════════════════════════╗
+     * ║                             PROPRIEDADES                              ║
+     * ╚═══════════════════════════════════════════════════════════════════════╝
+     */
     
     /**
      * 🟢 INSTÂNCIA ATIVA DO PDO
@@ -2409,7 +2405,7 @@ trait CoreDatabase
      * e `SqliteDatabase`, quando criamos a instância por
      * `Database::createMysql('nome-da-config')` ou
      * `Database::createSqlite('nome-da-config')` com base em uma configuração
-     * definida no arquivo indicado em `$configFile`.
+     * definida no arquivo indicado em `CONFIG_FILE`.
      * 
      * Centralizamos essa leitura aqui para evitar repetir a busca do arquivo e
      * as validações de chaves em cada driver.
@@ -2449,10 +2445,10 @@ trait CoreDatabase
          * aplicação tivesse escolhido configurar a conexão manualmente.
          */
 
-        if (!file_exists($this->configFile)) {
+        if (!file_exists(self::CONFIG_FILE)) {
             throw new Exception(
                 Message::get('CONFIG_FILE_NOT_FOUND'),
-                [$this->configFile]
+                [self::CONFIG_FILE]
             );
         }
 
@@ -2466,7 +2462,7 @@ trait CoreDatabase
          * `true` no lugar do array.
          */
         
-        $configData = require $this->configFile;
+        $configData = require self::CONFIG_FILE;
 
         
         

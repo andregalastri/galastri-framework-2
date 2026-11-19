@@ -42,8 +42,8 @@
  *
  * ✅ BANCO DE DADOS  
  *    ──────────────────────────────────────────────────────────────────────────
- *    A classe `Database` permite acesso a bancos MySQL e SQLite com múltiplos
- *    recursos que facilitam consultas e operações!
+ *    As classes `MysqlDatabase` e `SqliteDatabase` permitem acesso a bancos
+ *    MySQL e SQLite com múltiplos recursos que facilitam consultas e operações!
  *
  *
  * ✅ OBTENÇÃO DE DADOS DE REQUISIÇÕES FACILITADA  

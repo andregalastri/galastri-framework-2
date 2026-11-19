@@ -282,8 +282,8 @@
  * │ `database`          │ Contém as implementações de acesso ao MySQL e ao    │
  * │                     │ SQLite.                                             │
  * ├─────────────────────┼─────────────────────────────────────────────────────┤
- * │ `database/traits`   │ Reúne trechos de implementação que podem ser        │
- * │                     │ reutilizados pelas variações do módulo Database.    │
+ * │ `database/traits`   │ Reúne a lógica compartilhada pelas classes de       │
+ * │                     │ acesso ao banco de dados.                           │
  * ├─────────────────────┼─────────────────────────────────────────────────────┤
  * │ `validation`        │ Contém as implementações de validação de textos,    │
  * │                     │ números, datas e horários.                          │

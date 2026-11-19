@@ -9,12 +9,13 @@
  * aplicação.
  *
  * Ele retorna um `array` onde cada chave define o nome de uma conexão. Quando
- * passamos esse nome para `Database::createMysql()` ou
- * `Database::createSqlite()`, o framework busca os dados daqui automaticamente.
+ * informamos esse nome ao criar uma instância de `MysqlDatabase` ou
+ * `SqliteDatabase`, carregamos automaticamente os dados da configuração
+ * correspondente neste arquivo.
  *
  * ✔️ EXEMPLO
  * ┌───────────────────────────────────────────────────────────────────────────┐
- * │ $db = Database::createMysql('mysql-example');                             │
+ * │ $db = new MysqlDatabase('mysql-example');                                 │
  * └───────────────────────────────────────────────────────────────────────────┘
  *
  * Se preferir configurar a conexão manualmente pelos setters da instância, não
@@ -108,5 +109,4 @@ return [
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * ◀️ VOLTAR A UM TÓPICO ANTERIOR:
  * 🔗 LINK: /galastri/modules/database/traits/CoreDatabase.php
- * 🔗 LINK: /galastri/modules/Database.php
  */

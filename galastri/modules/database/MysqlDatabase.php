@@ -15,8 +15,8 @@
 /**
  * 🟢 NAMESPACE DA CLASSE
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * A classe `MysqlDatabase` faz parte dos drivers internos do módulo de banco
- * de dados do framework.
+ * A classe `MysqlDatabase` faz parte dos módulos de banco de dados do
+ * framework.
  */
 
 namespace galastri\modules\database;
@@ -31,11 +31,10 @@ namespace galastri\modules\database;
  * conexão, precisamos informar múltiplas informações para o `PDO`, quando forem
  * necessárias.
  *
- * Em vez de instanciá-la diretamente com `new MysqlDatabase()`, usamos
- * `Database::createMysql()` pra obter a instância. Podemos informar o nome de
- * uma configuração já cadastrada em `/app/config/database.php` ou deixar sem
- * argumento para preencher os dados da conexão manualmente antes de chamar
- * `connect()`.
+ * Criamos a instância com `new MysqlDatabase()`. Podemos informar ao construtor
+ * o nome de uma configuração já cadastrada em `/app/config/database.php` ou
+ * deixar sem argumento para preencher os dados da conexão manualmente antes de
+ * chamar `connect()`.
  *
  * ✔️ EXEMPLO
  * ┌───────────────────────────────────────────────────────────────────────────┐
@@ -43,14 +42,14 @@ namespace galastri\modules\database;
  * │ `/app/config/database.php`:                                               │
  * │                                                                           │
  * │ ┌─────────────────────────────────────────────────────┐                   │
- * │ │ $db = Database::createMysql('mysql-example');       │                   │
+ * │ │ $db = new MysqlDatabase('mysql-example');           │                   │
  * │ │ $db->connect();                                     │                   │
  * │ └─────────────────────────────────────────────────────┘                   │
  * │                                                                           │
  * │ Ou criando uma instância vazia pra definir os dados manualmente na hora:  │
  * │                                                                           │
  * │ ┌─────────────────────────────────────────────────────┐                   │
- * │ │ $db = Database::createMysql();                      │                   │
+ * │ │ $db = new MysqlDatabase();                          │                   │
  * │ │ $db->setHost('localhost')                           │                   │
  * │ │    ->setDatabase('minha_aplicacao')                 │                   │
  * │ │    ->setUsername('root')                            │                   │

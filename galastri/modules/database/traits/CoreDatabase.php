@@ -2401,11 +2401,11 @@ trait CoreDatabase
      * Este método localiza, valida e retorna os dados de uma configuração
      * cadastrada no arquivo `/app/config/database.php`.
      *
-     * Ele é chamado pelo construtor das classes de driver, como `MysqlDatabase`
-     * e `SqliteDatabase`, quando criamos a instância por
-     * `Database::createMysql('nome-da-config')` ou
-     * `Database::createSqlite('nome-da-config')` com base em uma configuração
-     * definida no arquivo indicado em `CONFIG_FILE`.
+     * Chamamos este método nos construtores das classes de driver, como
+     * `MysqlDatabase` e `SqliteDatabase`. Para carregar uma configuração do
+     * arquivo indicado em `CONFIG_FILE`, passamos o nome dela ao criar a
+     * instância, como em `new MysqlDatabase('nome-da-config')` ou `new
+     * SqliteDatabase('nome-da-config')`.
      * 
      * Centralizamos essa leitura aqui para evitar repetir a busca do arquivo e
      * as validações de chaves em cada driver.

@@ -15,8 +15,8 @@
 /**
  * 🟢 NAMESPACE DA CLASSE
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * A classe `SqliteDatabase` faz parte dos drivers internos do módulo de banco
- * de dados do framework.
+ * A classe `SqliteDatabase` faz parte dos módulos de banco de dados do
+ * framework.
  */
 
 namespace galastri\modules\database;
@@ -32,11 +32,10 @@ namespace galastri\modules\database;
  * servidor, porta, usuário ou senha para abrir a conexão: basta indicar onde o
  * banco está localizado e, se necessário, passar opções extras para o `PDO`.
  *
- * Em vez de instanciá-la diretamente com `new SqliteDatabase()`, usamos
- * `Database::createSqlite()` pra obter a instância. Podemos informar o nome de
- * uma configuração já cadastrada em `/app/config/database.php` ou deixar sem
- * argumento para preencher os dados da conexão manualmente antes de chamar
- * `connect()`.
+ * Criamos a instância com `new SqliteDatabase()`. Podemos informar ao
+ * construtor o nome de uma configuração já cadastrada em
+ * `/app/config/database.php` ou deixar sem argumento para preencher os dados da
+ * conexão manualmente antes de chamar `connect()`.
  *
  * ✔️ EXEMPLO
  * ┌───────────────────────────────────────────────────────────────────────────┐
@@ -44,14 +43,14 @@ namespace galastri\modules\database;
  * │ `/app/config/database.php`:                                               │
  * │                                                                           │
  * │ ┌─────────────────────────────────────────────────────┐                   │
- * │ │ $db = Database::createSqlite('sqlite-example');     │                   │
+ * │ │ $db = new SqliteDatabase('sqlite-example');         │                   │
  * │ │ $db->connect();                                     │                   │
  * │ └─────────────────────────────────────────────────────┘                   │
  * │                                                                           │
  * │ Ou criando uma instância vazia pra definir o caminho manualmente na hora: │
  * │                                                                           │
  * │ ┌─────────────────────────────────────────────────────┐                   │
- * │ │ $db = Database::createSqlite();                     │                   │
+ * │ │ $db = new SqliteDatabase();                         │                   │
  * │ │ $db->setLocation(':memory:')->connect();            │                   │
  * │ └─────────────────────────────────────────────────────┘                   │
  * └───────────────────────────────────────────────────────────────────────────┘
@@ -187,7 +186,7 @@ class SqliteDatabase
      * 1. Carregando automaticamente uma configuração de
      *    `/app/config/database.php`, informando a chave da configuração do
      *    banco de dados que se quer acessar no parâmetro `$dbConfigName`, como
-     *    `Database::createSqlite('nome_da_config')`.
+     *    `new SqliteDatabase('nome_da_config')`.
      * 
      * 2. Não informando nada para gerar a instância vazia, deixando a conexão
      *    para ser configurada manualmente pelos setters depois.
@@ -313,6 +312,6 @@ class SqliteDatabase
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * ◀️ VOLTAR A UM TÓPICO ANTERIOR:
- * 🔗 LINK: /galastri/modules/Database.php
+ * ◀️ VOLTAR AO TÓPICO ANTERIOR:
+ * 🔗 LINK: /docs/estrutura-e-funcionamento/modulos-extensoes-e-outros.md
  */

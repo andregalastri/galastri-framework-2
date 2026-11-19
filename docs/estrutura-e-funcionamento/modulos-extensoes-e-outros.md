@@ -45,9 +45,9 @@
  * 
  * 🔶 ÍNDICE
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Cada item a seguir aponta pra classe principal do módulo. Classes adicionais
- * que cuidam de operações específicas ficam listadas ou referenciadas na
- * documentação das classes principais.
+ * Nos itens a seguir, encontramos as classes dos módulos que podemos usar na
+ * aplicação. Classes auxiliares ficam listadas ou referenciadas na documentação
+ * das classes que as utilizam.
  * 
  *
  * ✱ Authentication.php
@@ -63,10 +63,16 @@
  *   🔗 LINK: /galastri/modules/Controller.php
  *
  * 
- * ✱ Database.php
+ * ✱ MysqlDatabase.php
  *   ───────────────────────────────────────────────────────────────────────────
- *   Cria os objetos de acesso a bancos de dados MySQL e SQLite.  
- *   🔗 LINK: /galastri/modules/Database.php
+ *   Cria e gerencia conexões com bancos de dados MySQL.  
+ *   🔗 LINK: /galastri/modules/database/MysqlDatabase.php
+ *
+ * 
+ * ✱ SqliteDatabase.php
+ *   ───────────────────────────────────────────────────────────────────────────
+ *   Cria e gerencia conexões com bancos de dados SQLite.  
+ *   🔗 LINK: /galastri/modules/database/SqliteDatabase.php
  *
  * 
  * ✱ HttpData.php
